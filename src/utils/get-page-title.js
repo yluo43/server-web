@@ -1,6 +1,6 @@
 import defaultSettings from '@/settings'
 
-const title = defaultSettings.title || 'CBM'
+const title = defaultSettings.title || 'PMIS'
 
 export default function getPageTitle(pageTitle) {
   if (pageTitle) {

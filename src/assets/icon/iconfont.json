@@ -1,9 +1,9 @@
 {
   "id": "3700155",
-  "name": "cbmIcon",
+  "name": "pmisIcon",
   "font_family": "element-icons",
   "css_prefix_text": "el-icon-",
-  "description": "cbm",
+  "description": "pmis",
   "glyphs": [
     {
       "icon_id": "31685777",

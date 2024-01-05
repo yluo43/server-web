@@ -7,7 +7,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'cbm' // page title
+const name = defaultSettings.title || 'pmis' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -31,7 +31,7 @@ module.exports = {
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
   publicPath: './',
-  outputDir: 'cbm-ui',
+  outputDir: 'pmis-ui',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
