@@ -4,17 +4,22 @@
       <el-header >
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist" >
-<!--            <el-form-item label="部门名称:" prop="account">-->
-<!--              <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable></el-input>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="部门负责人:" prop="phone">-->
-<!--              <el-input v-model="dataForm.managerName" placeholder="请输入部门负责人" clearable></el-input>-->
-<!--            </el-form-item>-->
-<!--            <div style="display: contents;">-->
-<!--              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询-->
-<!--              </el-button>-->
-<!--              <el-button type="primary" @click="resetForm()" icon="el-icon-search">重置</el-button>-->
-<!--            </div>-->
+            <el-form-item label="姓名:" prop="name">
+              <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="归属部门:" prop="deptId">
+              <el-select v-model="dataForm.deptId" filterable clearable placeholder="请选择">
+                <el-option v-for="item in deptList" :key="item.deptName" :label="item.deptName" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="工号:" prop="empId">
+              <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable></el-input>
+            </el-form-item>
+            <div style="display: contents;">
+              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
+              </el-button>
+              <el-button type="primary" @click="resetForm()" icon="el-icon-search">重置</el-button>
+            </div>
           </div>
         </el-form>
       </el-header>
@@ -85,6 +90,12 @@
           </template>
         </template>
 
+        <template v-slot:deptId="row">
+          <template >
+            {{changeDept(row)}}
+          </template>
+        </template>
+
       </baseTable>
     </el-container>
     <baseDialog :title="titles" ref="addOrUpdateDialog" :width="'800px'" :height="'600px'">
@@ -104,14 +115,16 @@ export default {
     return {
       titles: '',
       dataForm: {
-        deptName: '',
-        managerName: ''
+        name: '',
+        deptId: '',
+        empId: ''
       },
+      deptList:[],
       tableData: {
         theads: [
           {label: '姓名', prop: 'name',width:'100px'},
           {label: '邮箱', prop: 'mailbox',width:'180px'},
-          {label: '部门', prop: 'deptId',width: "120px"},
+          {label: '部门', prop: 'deptId',width: "120px",slotName:'deptId'},
           {label: '职位', prop: 'empPost',width: "120px"},
           {label: '团队', prop: 'teamId',width: "120px"},
           {label: '工号', prop: 'empId',width: "120px"},
@@ -163,6 +176,16 @@ export default {
     // })
   },
   methods: {
+    changeDept(row){
+      let name
+      this.deptList.forEach(dept =>{
+        if(dept.id === row.item.deptId){
+          name =  dept.deptName
+        }
+      })
+
+      return name;
+    },
     changeParentId(row){
       let name
       this.deptList.forEach(dept =>{
