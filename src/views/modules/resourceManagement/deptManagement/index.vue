@@ -31,11 +31,6 @@
           </template>
         </template>
 
-<!--        <template v-slot:managerSlot="row">-->
-<!--          <template >-->
-<!--            {{changeManagerId(row)}}-->
-<!--          </template>-->
-<!--        </template>-->
 
 
         <template v-slot:parentId="row">
@@ -69,9 +64,6 @@ export default {
       },
       deptList:[],
       managerList:[
-        {"managerId": "7", "managerName": '彭刚'},
-        {"managerId": "28", "managerName": '金东星'},
-        {"managerId": "8", "managerName": '鄢军'}
       ],
       tableData: {
         theads: [
@@ -105,16 +97,20 @@ export default {
     })
 
     //初始化managerList
-    // this.$http({
-    //   url: this.$http.adornUrl('/userRole/list'),
-    //   method: 'get'
-    // }).then(({data}) => {
-    //   if (data && data.code === 200) {
-    //     this.managerList = data.payload
-    //   } else {
-    //     this.$message.error(data.msg)
-    //   }
-    // })
+    this.$http({
+      url: this.$http.adornUrl('/employee/selectEmployeeList'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        data.payload.forEach(data=>{
+          if(data.empLevel=='6-'||data.empLevel=='6'||data.empLevel=='7'||data.empLevel=='8'||data.empLevel=='9'||data.empLevel=='6+'){
+            this.managerList.push(data)
+          }
+        })
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
   },
   methods: {
     changeParentId(row){

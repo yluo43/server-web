@@ -170,9 +170,9 @@ export default {
         this.options.height = '100%'
         this.options.minHeight = '515px'
       } else {
-        this.options.maxHeight = '500px'
+        this.options.maxHeight = '425px'
         this.options.height = '100%'
-        this.options.minHeight = '515px'
+        this.options.minHeight = '425px'
       }
     },
     __initTable(tableData) {

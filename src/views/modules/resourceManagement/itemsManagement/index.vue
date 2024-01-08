@@ -69,7 +69,7 @@ export default {
           // {label: 'ID', prop: 'id',width:'100px'},
           {label: '项目名称', prop: 'name'},
           {label: '所属部门', prop: 'deptId',slotName:'deptId'},
-          {label: '团队(暂无)', prop: 'teamId'},
+          // {label: '团队(暂无)', prop: 'teamId'},
           {label: '创建时间', prop: 'createTime'},
           {label: '更新时间', prop: 'updateTime'},
           {label: '创建人', prop: 'createUser'},

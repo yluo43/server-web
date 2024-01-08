@@ -1,7 +1,7 @@
 <template>
   <div class="mdgContent">
     <el-container class="el-container__mdgContent">
-      <el-form :inline="true" :rules="dataRule" :model="dataForm" ref="dataForm">
+      <el-form :inline="true"  :model="dataForm" ref="dataForm">
         <div>
           <el-form-item label="部门ID" prop="id" >
             <el-input v-model="dataForm.id"  clearable :disabled="true"></el-input>
@@ -12,9 +12,9 @@
           <el-form-item label="部门负责人" prop="managerId">
             <el-select  v-model="managerId" placeholder="请选择部门负责人" >
               <el-option      v-for="item in managerList"
-                              :key="item.managerId"
-                              :label="item.managerName"
-                              :value="item.managerId">
+                              :key="item.empId"
+                              :label="item.name"
+                              :value="item.empId">
               </el-option>
             </el-select>
           </el-form-item>
@@ -41,19 +41,6 @@
 <script>
 export default {
   data() {
-    // 邮箱验证
-    var validEmail = (rule, value, callback) => {
-      let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})(,([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4}))*$/
-      if (value === '' || value === undefined || value === null) {
-        callback()
-      } else {
-        if (reg.test(value)) {
-          callback()
-        } else {
-          callback(new Error('邮箱格式错误'))
-        }
-      }
-    }
     return {
       query: false,
       managerList:[],
@@ -66,14 +53,6 @@ export default {
         managerName: '',
         managerId: '',
         parentId: ''
-      },
-      dataRule: {
-        deptName: [
-          { required: false, message: '部门名称不能为空', trigger: 'blur' }
-        ],
-        managerId: [
-          { required: false, message: '请选择部门负责人', trigger: 'blur' }
-          ]
       }
     }
   },
@@ -85,7 +64,7 @@ export default {
       this.dataForm.deptName = list.deptName
       this.managerId = list.managerId
       this.parentId = list.parentId
-
+      console.log(this.managerList);
       //初始化deptList
       this.$http({
         url: this.$http.adornUrl('/deptInfo/listAll'),

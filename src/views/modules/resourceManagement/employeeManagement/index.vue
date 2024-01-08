@@ -60,10 +60,10 @@
 
 
         <template v-slot:departStatus="row">
-          <template v-if="row.item.state == 0" >
+          <template v-if="row.item.departStatus == 0" >
             <el-tag type="danger">离职</el-tag>
           </template>
-          <template v-if="row.item.state == 1" >
+          <template v-if="row.item.departStatus == 1" >
             <el-tag type="success">在职</el-tag>
           </template>
         </template>
@@ -96,6 +96,7 @@
           </template>
         </template>
 
+
       </baseTable>
     </el-container>
     <baseDialog :title="titles" ref="addOrUpdateDialog" :width="'800px'" :height="'600px'">
@@ -119,6 +120,7 @@ export default {
         deptId: '',
         empId: ''
       },
+      managerList:{},
       deptList:[],
       tableData: {
         theads: [
@@ -126,7 +128,8 @@ export default {
           {label: '邮箱', prop: 'mailbox',width:'180px'},
           {label: '部门', prop: 'deptId',width: "120px",slotName:'deptId'},
           {label: '职位', prop: 'empPost',width: "120px"},
-          {label: '团队', prop: 'teamId',width: "120px"},
+          {label: '直接上级', prop: 'parentId',width: "120px",slotName:'parentId'},
+          // {label: '团队', prop: 'teamId',width: "120px"},
           {label: '工号', prop: 'empId',width: "120px"},
           {label: '入职时间', prop: 'entryDate',width: "120px"},
           {label: '离职时间', prop: 'departDate',width: "120px"},
@@ -163,17 +166,7 @@ export default {
       }
     })
 
-    //初始化managerList
-    // this.$http({
-    //   url: this.$http.adornUrl('/userRole/list'),
-    //   method: 'get'
-    // }).then(({data}) => {
-    //   if (data && data.code === 200) {
-    //     this.managerList = data.payload
-    //   } else {
-    //     this.$message.error(data.msg)
-    //   }
-    // })
+
   },
   methods: {
     changeDept(row){
@@ -196,9 +189,11 @@ export default {
       return name;
     },
     changeManagerId(row){
+
+      console.log(this.managerName)
       let name
       this.managerList.forEach(manager =>{
-        if(manager.managerId === row.item.managerId){
+        if(manager.managerId === row.item.parentId){
           name =  manager.managerName
         }
       });
@@ -295,5 +290,8 @@ export default {
 }
 ::v-deep .el-table__cell{
   text-align: center;
+}
+::v-deep .el-table__cell {
+  padding: 2px 0 !important;
 }
 </style>
