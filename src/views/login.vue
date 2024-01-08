@@ -3,7 +3,7 @@
     <div class="logoTitle">
       <img :src="logo" class="sidebar-logo" style="height: 90px">
       <div id="u2300_text" >
-        <p><span style="color: dodgerblue">物联网项目结算平台</span></p>
+        <p><span style="color: dodgerblue">PMIS平台</span></p>
       </div>
     </div>
     <div class="login-border">
