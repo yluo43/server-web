@@ -128,7 +128,7 @@ export default {
           {label: '邮箱', prop: 'mailbox',width:'180px'},
           {label: '部门', prop: 'deptId',width: "120px",slotName:'deptId'},
           {label: '职位', prop: 'empPost',width: "120px"},
-          {label: '直接上级', prop: 'parentId',width: "120px",slotName:'parentId'},
+          {label: '直接上级', prop: 'parentName',width: "120px"},
           // {label: '团队', prop: 'teamId',width: "120px"},
           {label: '工号', prop: 'empId',width: "120px"},
           {label: '入职时间', prop: 'entryDate',width: "120px"},
