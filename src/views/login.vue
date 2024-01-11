@@ -159,7 +159,7 @@ export default {
       }).then(result => {
         if (result.data.code === 200) {
           this.$message.success('登录成功')
-          setCName(result.data.payload.chineseName)
+          setCName(result.data.payload.name)
           this.$http({
             url: this.$http.adornUrl('/userInfo/menu'),
             method: 'get',
