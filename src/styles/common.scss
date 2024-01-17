@@ -420,3 +420,43 @@
   border-radius: 10px;
   background: #fff;
 }
+
+
+.el-input__inner{
+  height: 28px !important;
+  font-size: 12px !important;
+  padding: 0 5px !important;
+
+}
+
+
+.el-form--inline .el-form-item{
+
+  vertical-align: -webkit-baseline-middle;
+}
+.el-form-item{
+  margin-bottom: 2px !important;
+  width: 200px !important;
+}
+
+.el-form-item__content{
+  width: 130px;
+}
+.el-form-item__label{
+  font-size: 12px !important;
+  font-weight: 400;
+}
+.el-range-editor .el-range-input{
+  font-size: 11px;
+  width: 48%;
+
+}
+
+.el-range__close-icon{
+  display: none !important;
+}
+
+.el-button {
+  width: 80px;
+  height: 28px;
+}

@@ -23,7 +23,7 @@
               type="text"
               tabindex="1"
               auto-complete="on"
-              style="height:45px;"
+              style="height:45px"
               @keyup.enter.native="handleLogin"
             />
           </el-form-item>
@@ -326,6 +326,10 @@ $cursor: #666666; //输入框文字颜色
 </style>
 
 <style lang="scss" scoped>
+
+  .el-form-item{
+    width: 260px !important;
+  }
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;

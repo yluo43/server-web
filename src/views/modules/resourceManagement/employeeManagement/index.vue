@@ -1,31 +1,93 @@
 <template>
   <div style="height: 100%;">
     <el-container >
-      <el-header >
+      <el-header style=" height: 130px">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist" >
             <el-form-item label="姓名:" prop="name">
-              <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable></el-input>
-            </el-form-item>
-            <el-form-item label="归属部门:" prop="deptId">
-              <el-select v-model="dataForm.deptId" filterable clearable placeholder="请选择">
-                <el-option v-for="item in deptList" :key="item.deptName" :label="item.deptName" :value="item.id"></el-option>
-              </el-select>
+              <el-input v-model="dataForm.name" placeholder="请输入关键字" clearable></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
               <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable></el-input>
             </el-form-item>
+            <el-form-item label="邮箱:" prop="mailbox">
+              <el-input v-model="dataForm.mailbox" placeholder="请输入邮箱前缀" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="驻地:" prop="empLocation">
+              <el-select v-model="dataForm.empLocation" filterable clearable placeholder="请选择">
+                <el-option v-for="item in empLocations" :key="item.name" :label="item.name" :value="item.name"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属部门:" prop="deptNames">
+              <el-select  v-model="dataForm.deptNames" placeholder="请选择" >
+                <el-option      v-for="dept in deptNames"
+                                :key="dept.id"
+                                :label="dept.name"
+                                :value="dept.id"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属团队:" prop="teamNames">
+              <el-select  v-model="dataForm.teamNames" placeholder="请选择" >
+                <el-option      v-for="team in teamNames"
+                                :key="team.id"
+                                :label="team.name"
+                                :value="team.id"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="角色:" prop="roleName">
+              <el-select  v-model="dataForm.roleName" placeholder="请选择" >
+                <el-option      v-for="role in roleNames"
+                                :key="role.id"
+                                :label="role.name"
+                                :value="role.id"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="入职时间:" prop="entryDate" style="width: 280px !important;">
+              <el-date-picker
+                style="width: 220px;"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                v-model="dataForm.entryDate"
+                type="daterange"
+                range-separator="~"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item label="离职时间:" prop="departDate" style="width: 280px !important;">
+              <el-date-picker
+                style="width: 220px;"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                v-model="dataForm.departDate"
+                type="daterange"
+                range-separator="~"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+            </el-form-item>
             <div style="display: contents;">
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
               </el-button>
-              <el-button type="primary" @click="resetForm()" icon="el-icon-search">重置</el-button>
             </div>
           </div>
         </el-form>
+        <div class="chooseResult">
+          <span class="chooseResultStr" v-text="chooseStr"></span>
+          <span style="color:blue;margin-left: 100px;cursor: pointer" @click="batchDelete()"> 批量删除 </span>
+          <span style="color:blue;margin-left: 20px;cursor: pointer" @click="download()"> 批量下载 </span>
+          <span style="color:blue;margin-left: 20px;cursor: pointer" @click="add()"> 添加员工 </span>
+        </div>
       </el-header>
-      <div style="padding:20px 0 10px 2px;">
-        <el-button class="el-button-func" type="primary" @click="add()">添加员工</el-button>
-      </div>
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" >
         <template v-slot:clientType="row">
           <!--类型插槽-->
@@ -35,171 +97,250 @@
             <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
           </template>
         </template>
-
-        <template v-slot:admin="row">
-          <template v-if="row.item.admin == 0" >
-            <el-tag type="danger">否</el-tag>
-          </template>
-          <template v-if="row.item.admin == 1" >
-            <el-tag type="success">是</el-tag>
-          </template>
-        </template>
-
-
-        <template v-slot:state="row">
-          <template v-if="row.item.state == 0" >
-            <el-tag type="success">正式</el-tag>
-          </template>
-          <template v-if="row.item.state == 1" >
-            <el-tag >试用</el-tag>
-          </template>
-          <template v-if="row.item.state == 2" >
-            <el-tag type="danger">临时</el-tag>
-          </template>
-        </template>
-
-
-        <template v-slot:departStatus="row">
-          <template v-if="row.item.departStatus == 0" >
-            <el-tag type="danger">离职</el-tag>
-          </template>
-          <template v-if="row.item.departStatus == 1" >
-            <el-tag type="success">在职</el-tag>
-          </template>
-        </template>
-
-
-        <template v-slot:empType="row">
-          <template v-if="row.item.empType == 0" >
-            <el-tag type="success">总公司员工</el-tag>
-          </template>
-          <template v-if="row.item.empType == 1" >
-            <el-tag type="success">总公司员工</el-tag>
-          </template>
-          <template v-if="row.item.empType == 2" >
-            <el-tag type="success">专项员工</el-tag>
-          </template>
-          <template v-if="row.item.empType == 3" >
-            <el-tag type="success">研究生员工</el-tag>
-          </template>
-          <template v-if="row.item.empType == 4" >
-            <el-tag type="success">委培研究生员工</el-tag>
-          </template>
-          <template v-if="row.item.empType == 5" >
-            <el-tag type="success">实习生</el-tag>
-          </template>
-        </template>
-
-        <template v-slot:deptId="row">
-          <template >
-            {{changeDept(row)}}
-          </template>
-        </template>
-
-
       </baseTable>
+      <el-drawer
+        :title="title"
+        :visible.sync="drawer"
+        :direction="direction"
+        size="18%"
+      >
+        <div style="padding-left: 20px">
+          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
+            <el-form-item label="姓名:" prop="account">
+              <el-input v-model="editDataForm.name" clearable ></el-input>
+            </el-form-item>
+            <el-form-item label="工号:" prop="empId">
+              <el-input v-model="editDataForm.empId" clearable ></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱:" prop="mailbox">
+              <el-input v-model="editDataForm.mailbox" placeholder="请输入邮箱前缀" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="驻地:" prop="stationName">
+              <el-select v-model="editDataForm.stationId" filterable clearable placeholder="请选择">
+                <el-option v-for="location in empLocations"
+                           :key="location.id"
+                           :label="location.name"
+                           :value="location.id"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属部门:" prop="deptName">
+              <el-select  v-model="editDataForm.deptId" placeholder="请选择" >
+                <el-option      v-for="dept in deptNames"
+                                :key="dept.id"
+                                :label="dept.name"
+                                :value="dept.id"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属团队:" prop="backCitys">
+              <el-select  v-model="editDataForm.teamId" placeholder="请选择" >
+                <el-option      v-for="team in teamNames"
+                                :key="team.id"
+                                :label="team.name"
+                                :value="team.id"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="角色:" prop="roleName">
+              <el-select  v-model="editDataForm.roleId" placeholder="请选择" >
+                <el-option      v-for="role in roleNames"
+                                :key="role.id"
+                                :label="role.name"
+                                :value="role.id"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="入职时间:" prop="entryDate" >
+              <el-date-picker
+                style="width: 130px"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                v-model="editDataForm.entryDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item label="离职时间:" prop="entryDate"   :visible.sync="entryDateShow">
+              <el-date-picker
+                style="width: 130px"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                v-model="editDataForm.departDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+            <div style="display: inline-block; margin-top: 60px">
+              <el-button type="primary"  icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
+              <el-button type="primary"  icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
+            </div>
+          </el-form>
+        </div>
+      </el-drawer>
     </el-container>
-    <baseDialog :title="titles" ref="addOrUpdateDialog" :width="'800px'" :height="'600px'">
-      <template>
-        <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate"></addOrUpdate>
-      </template>
-    </baseDialog>
   </div>
 </template>
 <script>
 import baseTable from '../../base/baseTable.vue'
 import baseDialog from '../../base/baseDialog'
-import addOrUpdate from './addOrUpdata.vue'
+import { getCName } from '@/utils/auth'
+
 
 export default {
   data() {
     return {
-      titles: '',
+      title:'',
+      chooseStr:'已选择 0 项',
+      deleteIds:[],
+      drawer:false,
+      entryDateShow:false,
+      direction: 'rtl',
+      entryDate:'',
+      departDate:'',
       dataForm: {
         name: '',
-        deptId: '',
-        empId: ''
+        empId: '',
+        mailbox: '',
+        empLocation:'',
+        deptName:'',
+        teamName:'',
+        roleName:'',
+        entryDateStart:'',
+        entryDateEnd:'',
+        departDateStart:'',
+        departDateEnd:''
       },
-      managerList:{},
-      deptList:[],
+      editDataForm: {
+        name: '',
+        empId: '',
+        mailbox: '',
+        stationId:'',
+        deptId:'',
+        teamId:'',
+        roleId:'',
+        entryDate:'',
+        departStatusName:'',
+        departDate:'',
+        createUser:'',
+        updateUser:''
+      },
+      deptNames:[],
+      empLocations:[],
+      teamNames:[],
+      roleNames:[],
       tableData: {
         theads: [
-          {label: '姓名', prop: 'name',width:'100px'},
+          {label: '姓名', prop: 'name'},
+          {label: '工号', prop: 'empId'},
           {label: '邮箱', prop: 'mailbox',width:'180px'},
-          {label: '部门', prop: 'deptId',width: "120px",slotName:'deptId'},
-          {label: '职位', prop: 'empPost',width: "120px"},
-          {label: '直接上级', prop: 'parentName',width: "120px"},
-          // {label: '团队', prop: 'teamId',width: "120px"},
-          {label: '工号', prop: 'empId',width: "120px"},
-          {label: '入职时间', prop: 'entryDate',width: "120px"},
-          {label: '离职时间', prop: 'departDate',width: "120px"},
-          {label: '是否管理员', prop: 'admin',width: "120px",slotName:'admin'},
-          {label: '状态', prop: 'state',width: "120px",slotName:'state'},
-          {label: '离职状态', prop: 'departStatus',width: "120px",slotName:'departStatus'},
-          {label: '员工类型', prop: 'empType',width: "120px",slotName:'empType'},
-          {label: '级别', prop: 'empLevel'},
-          {label: '工作地点', prop: 'empLocation'},
-          {label: '创建时间', prop: 'createTime'},
-          {label: '更新时间', prop: 'updateTime'},
-          {label: '创建人', prop: 'createUser'},
-          {label: '更新人', prop: 'updateUser'},
-          {label: '操作', prop: 'clientType',fixed:'right',width:'120px',slotName:'clientType'}
+          {label: '驻地', prop: 'empLocation'},
+          {label: '归属部门', prop: 'deptName'},
+          {label: '归属团队', prop: 'teamName'},
+          {label: '角色', prop: 'roleName'},
+          {label: '入职时间', prop: 'entryDate'},
+          {label: '离职时间', prop: 'departDate'},
+          {label: '状态', prop: 'departStatusName'},
+          {label: '操作', prop: 'clientType',slotName:'clientType'}
         ],
         url: '/employee/selectEmployeeListWithPage'
       }
     }
   },
   components: {
-    baseTable, baseDialog, addOrUpdate
+    baseTable, baseDialog
   },
   mounted() {
     this.$refs.table.refresh(this.dataForm)
-    //初始化deptList
+
+    //初始化成本中心/部门
     this.$http({
-      url: this.$http.adornUrl('/deptInfo/listAll'),
+      url: this.$http.adornUrl('/common/getDept'),
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
-        this.deptList = data.payload.list
+        this.deptNames = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
+
+    //初始化驻地
+    this.$http({
+      url: this.$http.adornUrl('/common/getStation'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        this.empLocations = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
+    //初始化团队
+    this.$http({
+      url: this.$http.adornUrl('/common/getTeam'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        this.teamNames = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
+
+    //初始化角色
+    this.$http({
+      url: this.$http.adornUrl('/common/getRole'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        this.roleNames = data.payload
       } else {
         this.$message.error(data.msg)
       }
     })
 
 
+
+
   },
   methods: {
-    changeDept(row){
-      let name
-      this.deptList.forEach(dept =>{
-        if(dept.id === row.item.deptId){
-          name =  dept.deptName
+
+    editSubmit(){
+      let user =getCName()
+      this.editDataForm.createUser= user
+
+      this.$http({
+        url: this.$http.adornUrl("/employee/insertEmployee"),
+        method: 'post',
+        data: this.$http.adornData(
+          this.editDataForm
+        )
+      }).then(({ data }) => {
+        if (data.success) {
+          this.refresh()
+          this.$message({
+            message: '编辑成功！',
+            type: 'success'
+          });
+          this.drawer = false
+        } else {
+          this.$message.error(data.msg)
         }
       })
-
-      return name;
     },
-    changeParentId(row){
-      let name
-      this.deptList.forEach(dept =>{
-        if(dept.id === row.item.parentId){
-          name =  dept.deptName
-        }
-      });
-      return name;
+    add(){
+      this.drawer = true
+      this.title = '新增'
     },
-    changeManagerId(row){
 
-      console.log(this.managerName)
-      let name
-      this.managerList.forEach(manager =>{
-        if(manager.managerId === row.item.parentId){
-          name =  manager.managerName
-        }
-      });
-
-      return name;
-    },
     refresh() {
       this.$refs.dataForm.validate((valid) => {
         if (!valid) {
@@ -208,20 +349,7 @@ export default {
         this.$refs.table.refresh(this.dataForm)
       })
     },
-    add() {
-      this.titles = '添加员工'
-      this.$refs.addOrUpdateDialog.show()
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init('add', false,this.managerList)
-      })
-    },
-    alter(row) {
-      this.titles = '员工编辑'
-      this.$refs.addOrUpdateDialog.show()
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row.item, true,this.managerList)
-      })
-    },
+
     deleteList(row) {
       let id = ''
       id = row.item.id
@@ -262,27 +390,11 @@ export default {
   color: #333;
   padding: 0 0;
 }
-
 .el-form--inline > .inputlist {
-  padding-top: 20px;
+  /*padding-top: 20px;*/
   padding-left: 20px;
-  display: flex;
+  /*display: flex;*/
 }
-
-.el-form--inline > .inputlist > .el-form-item {
-  width: 26%;
-  margin-bottom: 20px;
-}
-
-.el-form-item__content {
-  width: 200px;
-}
-
-.el-button {
-  width: 80px;
-  height: 35px;
-}
-
 .el-button-func {
   width: 86px;
   height: 30px;
@@ -291,7 +403,25 @@ export default {
 ::v-deep .el-table__cell{
   text-align: center;
 }
-::v-deep .el-table__cell {
-  padding: 2px 0 !important;
+.chooseResult{
+  width: 98%;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 auto;
+  display: block;
+  background: #E9F3FF;
+  border-radius: 6px;
+  padding-left: 20px;
 }
+
+::v-deep .editForm .el-form-item__label{
+  width: 80px !important;
+}
+::v-deep .editForm .el-form-item{
+  width: 100% !important;
+}
+::v-deep  .el-date-editor .el-input__inner{
+    padding-left: 30px !important;
+  }
+
 </style>
