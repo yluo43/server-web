@@ -5,22 +5,24 @@
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist" >
             <el-form-item label="部门名称:" prop="account">
-              <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable></el-input>
+              <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="部门负责人:" prop="phone">
-              <el-input v-model="dataForm.managerName" placeholder="请输入部门负责人" clearable></el-input>
-            </el-form-item>
+<!--            <el-form-item label="部门负责人:" prop="phone">-->
+<!--              <el-input v-model="dataForm.managerName" placeholder="请输入部门负责人" clearable></el-input>-->
+<!--            </el-form-item>-->
             <div style="display: contents;">
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
               </el-button>
-              <el-button type="primary" @click="resetForm()" icon="el-icon-search">重置</el-button>
+              <el-button class="el-button-func" type="primary" @click="add()">添加部门</el-button>
+
+              <!--              <el-button type="primary" @click="resetForm()" icon="el-icon-search">重置</el-button>-->
             </div>
           </div>
         </el-form>
       </el-header>
-      <div style="padding:20px 0 10px 2px;">
-        <el-button class="el-button-func" type="primary" @click="addOrAlter()">添加部门</el-button>
-      </div>
+<!--      <div style="padding:0 0 10px 2px;">-->
+<!--        <el-button class="el-button-func" type="primary" @click="add()">添加部门</el-button>-->
+<!--      </div>-->
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" >
         <template v-slot:clientType="row">
           <!--类型插槽-->
@@ -30,47 +32,104 @@
             <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
           </template>
         </template>
-
-
-
         <template v-slot:parentId="row">
           <template >
             {{changeParentId(row)}}
           </template>
         </template>
-
       </baseTable>
+
+      <el-drawer
+        :title="title"
+        :visible.sync="drawer"
+        :direction="direction"
+        size="17%"
+      >
+        <el-form :inline="true"  :model="editDataForm" ref="editDataForm" class="editForm">
+          <div>
+            <el-form-item label="部门ID" prop="id" >
+              <el-input v-model="editDataForm.id"  clearable  maxlength="50"></el-input>
+            </el-form-item>
+            <el-form-item label="部门名称" prop="phone">
+              <el-input v-model="editDataForm.deptName"  placeholder="请输入部门名称" clearable maxlength="50"></el-input>
+            </el-form-item>
+            <el-form-item label="部门经理" prop="managerId">
+              <el-select  v-model="editDataForm.managerId" placeholder="请选择部门负责人" >
+                <el-option      v-for="item in managerList"
+                                :key="item.empId"
+                                :label="item.name"
+                                :value="item.empId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="部门助理" prop="assistantId">
+              <el-select  v-model="editDataForm.assistantId" placeholder="请选择部门负责人" >
+                <el-option      v-for="item in assistList"
+                                :key="item.empId"
+                                :label="item.name"
+                                :value="item.empId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="上级部门" prop="parentId">
+              <el-select  v-model="editDataForm.parentId" placeholder="请选择上级部门" >
+                <el-option      v-for="item in deptList"
+                                :key="item.id"
+                                :label="item.deptName"
+                                :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+
+            <div style="display: inline-block; margin-top: 30px;margin-left: 30px">
+              <el-button type="primary"  icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">保存</el-button>
+              <el-button   icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
+            </div>
+          </div>
+        </el-form>
+
+      </el-drawer>
+
     </el-container>
-    <baseDialog :title="titles" ref="addOrUpdateDialog" :width="'450px'" :height="'600px'">
-      <template>
-        <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate"></addOrUpdate>
-      </template>
-    </baseDialog>
+
   </div>
 </template>
 <script>
 import baseTable from '../../base/baseTable.vue'
 import baseDialog from '../../base/baseDialog'
-import addOrUpdate from './addOrUpdata.vue'
 
 export default {
   data() {
     return {
-      passwordType: true,
-      titles: '',
+      drawer:false,
+      direction: 'rtl',
+      title: '',
       dataForm: {
         deptName: '',
         managerName: ''
       },
+      editDataForm:{
+        deptName:'',
+        id:'',
+        managerId:'',
+        assistantId:'',
+        parentId:'',
+        managerName:''
+      },
       deptList:[],
       managerList:[
+      ],
+      assistList:[
       ],
       tableData: {
         theads: [
           {label: '部门序号', prop: 'id',width:'100px'},
           {label: '部门名称', prop: 'deptName'},
           // {label: '部门负责人', prop: 'managerId',width: "120px",slotName: 'managerSlot'},
-          {label: '部门负责人', prop: 'managerName'},
+          {label: '部门经理', prop: 'managerName'},
+          {label: '部门助理', prop: 'assistantName'},
           {label: '上级部门', prop: 'parentId',width: "120px",slotName:'parentId'},
           // {label: '上级部门', prop: 'pDeptName'},
           {label: '操作', prop: 'clientType', slotName: 'clientType'}
@@ -80,7 +139,7 @@ export default {
     }
   },
   components: {
-    baseTable, baseDialog, addOrUpdate
+    baseTable, baseDialog
   },
   mounted() {
     this.$refs.table.refresh(this.dataForm)
@@ -98,19 +157,27 @@ export default {
 
     //初始化managerList
     this.$http({
-      url: this.$http.adornUrl('/employee/selectEmployeeList'),
+      url: this.$http.adornUrl('/common/getManager?pid=1'),
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
-        data.payload.forEach(data=>{
-          if(data.empLevel=='6-'||data.empLevel=='6'||data.empLevel=='7'||data.empLevel=='8'||data.empLevel=='9'||data.empLevel=='6+'){
-            this.managerList.push(data)
-          }
-        })
+        this.managerList = data.payload
       } else {
         this.$message.error(data.msg)
       }
     })
+    //初始化部门助理
+    this.$http({
+      url: this.$http.adornUrl('/common/getManager?pid=2'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        this.assistList = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
+
   },
   methods: {
     changeParentId(row){
@@ -140,19 +207,56 @@ export default {
         this.$refs.table.refresh(this.dataForm)
       })
     },
-    addOrAlter() {
-      this.titles = '添加部门'
-      this.$refs.addOrUpdateDialog.show()
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init('add', false,this.managerList)
+    add() {
+      this.title = '部门添加'
+      this.drawer = true
+      this.op = 'add'
+      this.clear(this.editDataForm)
+
+    },
+    // 新增
+    editSubmit() {
+      let url
+      if(this.op=='add'){
+        url = '/deptInfo/add'
+      }else{
+        url = '/deptInfo/update'
+      }
+
+      this.managerList.forEach(manager =>{
+        if(manager.empId == this.editDataForm.managerId){
+          this.editDataForm.managerName = manager.name
+        }
+      })
+      this.$http({
+        url: this.$http.adornUrl(url),
+        method: 'post',
+        data: this.$http.adornData(
+          this.editDataForm
+        )
+      }).then(({ data }) => {
+        if (data.success) {
+          this.$message({
+            message: '操作成功',
+            type: 'success'
+          })
+          this.refresh()
+          this.drawer = false
+        } else {
+          this.$message.error(data.msg)
+        }
       })
     },
     alter(row) {
-      this.titles = '修改部门'
-      this.$refs.addOrUpdateDialog.show()
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row.item, true,this.managerList)
-      })
+      this.title = '部门编辑'
+      this.drawer = true
+      this.op = 'alter'
+
+      this.editDataForm = {...row.item}
+
+    },
+    clear(form){
+      Object.keys(form).forEach(key => (form[key] = ''));
     },
     deleteList(row) {
       let id = ''
@@ -197,23 +301,9 @@ export default {
 }
 
 .el-form--inline > .inputlist {
-  padding-top: 20px;
+  /*padding-top: 20px;*/
   padding-left: 20px;
-  display: flex;
-}
-
-.el-form--inline > .inputlist > .el-form-item {
-  width: 26%;
-  margin-bottom: 20px;
-}
-
-.el-form-item__content {
-  width: 200px;
-}
-
-.el-button {
-  width: 80px;
-  height: 35px;
+  /*display: flex;*/
 }
 
 .el-button-func {
@@ -224,4 +314,13 @@ export default {
 ::v-deep .el-table__cell{
   text-align: center;
 }
+
+
+::v-deep .editForm .el-form-item__label{
+  width: 80px !important;
+}
+::v-deep .editForm .el-form-item{
+  width: 100% !important;
+}
+
 </style>

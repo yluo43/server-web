@@ -1,27 +1,79 @@
 <template>
   <div style="height: 100%;">
     <el-container >
-      <el-header >
+      <el-header style=" height: 130px">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist" >
-<!--            <el-form-item label="部门名称:" prop="account">-->
-<!--              <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable></el-input>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item label="部门负责人:" prop="phone">-->
-<!--              <el-input v-model="dataForm.managerName" placeholder="请输入部门负责人" clearable></el-input>-->
-<!--            </el-form-item>-->
-<!--            <div style="display: contents;">-->
-<!--              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询-->
-<!--              </el-button>-->
-<!--              <el-button type="primary" @click="resetForm()" icon="el-icon-search">重置</el-button>-->
-<!--            </div>-->
+            <el-form-item label="团队名称:" prop="teamName">
+              <el-input v-model="dataForm.teamName" placeholder="输入关键字" clearable maxlength="50"></el-input>
+            </el-form-item>
+            <el-form-item label="团队负责人:" prop="managerIds" style="width: 240px !important;">
+              <el-select  v-model="dataForm.managerIds" placeholder="请选择" >
+                <el-option      v-for="manager in managerList"
+                                :key="manager.empId"
+                                :label="manager.name"
+                                :value="manager.empId"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="团队编码:" prop="teamId">
+              <el-input v-model="dataForm.teamId" placeholder="输入关键字" clearable maxlength="50"></el-input>
+            </el-form-item>
+
+            <el-form-item label="驻地:" prop="stationIds">
+              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择">
+                <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属部门:" prop="deptNames">
+              <el-select  v-model="dataForm.deptNames" placeholder="请选择" >
+                <el-option      v-for="dept in deptList"
+                                :key="dept.id"
+                                :label="dept.name"
+                                :value="dept.id"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="创建时间:" prop="createTime" style="width: 280px !important;">
+              <el-date-picker
+                style="width: 220px;"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                v-model="createTime"
+                type="daterange"
+                range-separator="~"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item label="状态:" prop="state" >
+              <el-select  v-model="dataForm.state" placeholder="请选择">
+                <el-option key="正常" label="正常" value="正常"></el-option>
+                <el-option key="解散" label="解散" value="解散"></el-option>
+              </el-select>
+            </el-form-item>
+            <div style="display: contents;">
+              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
+              </el-button>
+              <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+            </div>
           </div>
         </el-form>
+        <div class="chooseResult">
+          <span class="chooseResultStr" v-text="chooseStr"></span>
+          <span style="color:blue;margin-left: 100px" @click="batchDelete()"> 批量删除 </span>
+          <span style="color:blue;margin-left: 20px" @click="download()"> 批量下载 </span>
+          <span style="color:blue;margin-left: 20px" @click="add()"> 新建团队 </span>
+
+        </div>
       </el-header>
-      <div style="padding:20px 0 10px 2px;">
-        <el-button class="el-button-func" type="primary" @click="addOrAlter()">添加团队</el-button>
-      </div>
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" >
+
+      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
@@ -31,104 +83,345 @@
           </template>
         </template>
 
-        <template v-slot:managerSlot="row">
-          <template >
-            {{changeManagerId(row)}}
-          </template>
-        </template>
 
 
-        <template v-slot:parentId="row">
-          <template >
-            {{changeParentId(row)}}
-          </template>
-        </template>
+<!--        <template v-slot:teamNum="row">-->
+<!--          <template >-->
+<!--            <el-popover-->
+<!--              placement="top-start"-->
+<!--              width="200"-->
+<!--              trigger="hover">-->
+<!--              <div class="custom-content">-->
+<!--                {{row.item.teamMembers}}-->
+<!--              </div>-->
+<!--              <span slot="reference">{{row.item.teamNum}}</span>-->
+<!--            </el-popover>-->
+
+<!--          </template>-->
+<!--        </template>-->
+
+
+
+
+
 
       </baseTable>
+
+
+
+
+      <el-drawer
+        class="drawer"
+        :title="title"
+        :visible.sync="drawer"
+        :direction="direction"
+        size="25%"
+      >
+        <div style="padding-left: 20px">
+          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
+            <el-form-item label="团队名称:" prop="teamName">
+              <el-input v-model="editDataForm.teamName" clearable  maxlength="50"></el-input>
+            </el-form-item>
+
+            <el-form-item label="团队级别:" prop="teamLevel" >
+              <el-select  v-model="editDataForm.teamLevel" placeholder="请选择" @change="showParentStatus">
+                <el-option key="1" label="一级团队" value="1"></el-option>
+                <el-option key="2" label="二级团队" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="父团队:" prop="parentId"  v-if="showParent">
+              <el-select  v-model="editDataForm.parentId" placeholder="请选择" >
+                <el-option      v-for="team in parentTeam"
+                                :key="team.id"
+                                :label="team.name"
+                                :value="team.id"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="团队负责人:" prop="managerId" style="width: 240px !important;">
+              <el-select  v-model="editDataForm.managerId" placeholder="请选择" >
+                <el-option      v-for="manager in managerList"
+                                :key="manager.empId"
+                                :label="manager.name"
+                                :value="manager.empId"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="归属部门:" prop="deptId">
+              <el-select  v-model="editDataForm.deptId" placeholder="请选择" >
+                <el-option      v-for="dept in deptList"
+                                :key="dept.id"
+                                :label="dept.name"
+                                :value="dept.id"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+
+            <el-form-item label="团队驻地:" prop="stationId">
+              <el-select v-model="editDataForm.stationId" filterable clearable placeholder="请选择" @change="getTeamId">
+                <el-option v-for="location in empLocations"
+                           :key="location.id"
+                           :label="location.name"
+                           :value="location.id"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="团队编码:" prop="teamId">
+              <el-input v-model="editDataForm.teamId" clearable disabled="disabled"></el-input>
+            </el-form-item>
+
+            <el-form-item label="团队成员:" prop="teamMembers" >
+              <el-select v-model="editDataForm.teamMembers"
+                         filterable
+                         placeholder="请选择"
+                         :multiple= true
+                         :collapse-tags="true"
+              >
+                <el-option
+                  v-for="item in members"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="创建时间:" prop="createTime" >
+              <el-date-picker
+                style="width: 130px"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                v-model="editDataForm.createTime"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+
+            <el-form-item label="状态:" prop="state" v-if="departStatusNameShow">
+              <el-select  v-model="editDataForm.state" placeholder="请选择">
+                <el-option key="正常" label="正常" value="正常"></el-option>
+                <el-option key="解散" label="解散" value="解散"></el-option>
+              </el-select>
+            </el-form-item>
+
+
+            <div style="display: inline-block; margin-top: 60px">
+              <el-button type="primary"  icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
+              <el-button type="primary"  icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
+            </div>
+          </el-form>
+        </div>
+      </el-drawer>
+
     </el-container>
-    <baseDialog :title="titles" ref="addOrUpdateDialog" :width="'450px'" :height="'600px'">
-      <template>
-        <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate"></addOrUpdate>
-      </template>
-    </baseDialog>
+
   </div>
 </template>
 <script>
 import baseTable from '../../base/baseTable.vue'
 import baseDialog from '../../base/baseDialog'
-import addOrUpdate from './addOrUpdata.vue'
+import { getCName } from '@/utils/auth'
+
 
 export default {
   data() {
     return {
-      titles: '',
+      url:'',
+      showParent:false,
+      departStatusNameShow:false,
+      chooseStr:'已选择 0 项',
+      deleteIds:[],
+      empLocations:[],
+      managerList:[],
+      deptList:[],
+      parentTeam:[],
+      members:[],
+      drawer:false,
+      direction: 'rtl',
+      title: '',
+      createTime:'',
       dataForm: {
-        deptName: '',
-        managerName: ''
+        managerIds: '',
+        teamName: '',
+        teamId:'',
+        stationIds:'',
+        createTimeEnd:'',
+        createTimeStart:'',
+        state:''
       },
+      editDataForm: {
+        id:'',
+        createTime:'',
+        createUser:'',
+        managerId: '',
+        state: '',
+        stationId:'',
+        teamId:'',
+        teamMembers:'',
+        teamName:'',
+        state:'',
+        deptId:'',
+        teamLevel:'',
+        parentId:'',
+
+      },
+
+
       tableData: {
         theads: [
-          {label: 'ID', prop: 'id',width:'100px'},
-          {label: '项目名称', prop: 'name'},
-          {label: '所属部门', prop: 'deptId'},
-          {label: '团队', prop: 'teamId'},
+          {label: '团队名称', prop: 'teamName',width:'100px'},
+          {label: '团队负责人', prop: 'managerName'},
+          {label: '团队编码', prop: 'teamId'},
+          {label: '团队级别', prop: 'teamLevelName'},
+          {label: '父级团队', prop: 'parentName'},
+          {label: '驻地', prop: 'stationName'},
+          {label: '归属部门', prop: 'deptName'},
+          {label: '团队成员', prop: 'teamNum'},
           {label: '创建时间', prop: 'createTime'},
-          {label: '更新时间', prop: 'updateTime'},
-          {label: '创建人', prop: 'createUser'},
-          {label: '更新人', prop: 'updateUser'}
+          {label: '状态', prop: 'stateName'},
+          {label: '操作', prop: 'clientType', slotName: 'clientType'}
+
         ],
-        url: '/deptInfo/list'
+        url: '/team/selectTeamPage'
       }
     }
   },
   components: {
-    baseTable, baseDialog, addOrUpdate
+    baseTable, baseDialog
   },
   mounted() {
     this.$refs.table.refresh(this.dataForm)
-    //初始化deptList
+    this.freshParentTeam()
+    //初始化驻地
     this.$http({
-      url: this.$http.adornUrl('/deptInfo/listAll'),
+      url: this.$http.adornUrl('/common/getStation'),
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
-        this.deptList = data.payload.list
+        this.empLocations = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
+    //初始化deptList
+    this.$http({
+      url: this.$http.adornUrl('/common/getDept'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        this.deptList = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
+    //初始化managerList
+    this.$http({
+      url: this.$http.adornUrl('/employee/selectEmployeeList'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        data.payload.forEach(data=>{
+          if(data.empLevel=='6-'||data.empLevel=='6'||data.empLevel=='7'||data.empLevel=='8'||data.empLevel=='9'||data.empLevel=='6+'){
+            this.managerList.push(data)
+          }
+        })
       } else {
         this.$message.error(data.msg)
       }
     })
 
-    //初始化managerList
-    // this.$http({
-    //   url: this.$http.adornUrl('/userRole/list'),
-    //   method: 'get'
-    // }).then(({data}) => {
-    //   if (data && data.code === 200) {
-    //     this.managerList = data.payload
-    //   } else {
-    //     this.$message.error(data.msg)
-    //   }
-    // })
   },
   methods: {
-    changeParentId(row){
-      let name
-      this.deptList.forEach(dept =>{
-        if(dept.id === row.item.parentId){
-          name =  dept.deptName
-        }
-      });
-      return name;
+    showParentStatus(){
+      if(this.editDataForm.teamLevel == '2'){
+        this.showParent = true
+      }else{
+        this.showParent = false
+      }
     },
-    changeManagerId(row){
-      let name
-      this.managerList.forEach(manager =>{
-        if(manager.managerId === row.item.managerId){
-          name =  manager.managerName
-        }
-      });
 
-      return name;
+    freshMembers(){
+      //初始化没有团队的人员
+      this.$http({
+        url: this.$http.adornUrl('/common/getNotTeamEmp'),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.members = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+
+    },
+    freshMembersWithEdit(id){
+      //初始化没有团队的人员
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamEmpById?teamId='+id),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.members = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+
+    },
+    //生成团队编码
+    getTeamId(){
+      let stationId = this.editDataForm.stationId
+      let stationName =''
+      this.empLocations.forEach(location=>{
+        if(stationId == location.id){
+          stationName = location.name
+        }
+      })
+      this.$http({
+        url: this.$http.adornUrl("/team/getTeamIdByStation?stationId="+stationId+"&stationName="+stationName),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.editDataForm.teamId = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    editSubmit(){
+      let user =getCName()
+      this.editDataForm.createUser= user
+
+      this.$http({
+        url: this.$http.adornUrl(this.url),
+        method: 'post',
+        data: this.$http.adornData(
+          this.editDataForm
+        )
+      }).then(({ data }) => {
+        if (data.success) {
+          this.refresh()
+          this.$message({
+            message: '提交成功！',
+            type: 'success'
+          });
+          this.drawer = false
+          this.freshParentTeam()
+          this.freshMembers()
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
     refresh() {
       this.$refs.dataForm.validate((valid) => {
@@ -138,39 +431,103 @@ export default {
         this.$refs.table.refresh(this.dataForm)
       })
     },
-    addOrAlter() {
-      this.titles = '添加员工'
-      this.$refs.addOrUpdateDialog.show()
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init('add', false,this.managerList)
-      })
+    add() {
+      this.freshMembers()
+      this.title = '新建团队'
+      this.drawer = true
+      this.departStatusNameShow = false
+      this.clear(this.editDataForm)
+      this.url = '/team/add'
     },
     alter(row) {
-      this.titles = '员工编辑'
-      this.$refs.addOrUpdateDialog.show()
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row.item, true,this.managerList)
-      })
+      this.freshMembersWithEdit(row.item.id)
+      this.editDataForm = {...row.item}
+      this.title = '编辑团队'
+      this.drawer = true
+      this.url = '/team/update'
+      this.departStatusNameShow = true
+    },
+    onSelect(selection){
+      this.deleteIds = []
+      let totalMoney = 0
+      if(selection.length>0){
+        selection.forEach(a =>{
+          this.deleteIds.push(a.id)
+          totalMoney += a.totalMoney
+        })
+        this.chooseStr = '已选中'+this.deleteIds.length+'个团队'
+      }else{
+        this.chooseStr = '已选中 0 个团队'
+      }
+    },
+    clear(form){
+      Object.keys(form).forEach(key => (form[key] = ''));
     },
     deleteList(row) {
-      let id = ''
-      id = row.item.id
+      this.deleteIds = []
+      this.deleteIds.push(row.item.id)
 
-      this.$confirm(`您确定删除吗?`, '提示', {
+      this.$confirm('确定删除'+row.item.teamName+'吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/deptInfo/delete?id='+id),
+          url: this.$http.adornUrl('/team/delete'),
           method: 'post',
+          data: this.deleteIds
         }).then(({data}) => {
           if (data && data.code === 200) {
             this.$message({
               message: '删除成功',
               type: 'success'
             })
-            location.reload()
+            this.refresh()
+            this.freshParentTeam()
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
+
+    download(){
+      if(this.deleteIds.length <= 0){
+        this.$message.error('当前未选中任何团队数据！')
+        return ;
+      }
+      this.dataForm.ids = this.deleteIds
+      this.$http.downloadPost(this.$http.adornUrl('/team/export'), this.$http.adornParams(this.dataForm), this)
+
+    },
+
+    batchDelete(){
+      if(this.deleteIds.length <= 0){
+        this.$message.error('当前未选中任何团队！')
+        return ;
+      }
+      this.$confirm('已选中'+this.deleteIds.length+'个团队,确认批量删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/team/delete'),
+          method: 'post',
+          data: this.deleteIds
+        }).then(({data}) => {
+          if (data && data.code === 200) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.refresh()
+            this.freshParentTeam()
           } else {
             this.$message.error(data.msg)
           }
@@ -184,6 +541,19 @@ export default {
     },
     resetForm() {
       this.$refs.dataForm.resetFields()
+    },
+    freshParentTeam(){
+      //初始化parentTeam
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamBylevel?teamLevel=1'),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.parentTeam = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     }
   }
 }
@@ -195,23 +565,9 @@ export default {
 }
 
 .el-form--inline > .inputlist {
-  padding-top: 20px;
+  /*padding-top: 20px;*/
   padding-left: 20px;
-  display: flex;
-}
-
-.el-form--inline > .inputlist > .el-form-item {
-  width: 26%;
-  margin-bottom: 20px;
-}
-
-.el-form-item__content {
-  width: 200px;
-}
-
-.el-button {
-  width: 80px;
-  height: 35px;
+  /*display: flex;*/
 }
 
 .el-button-func {
@@ -222,4 +578,36 @@ export default {
 ::v-deep .el-table__cell{
   text-align: center;
 }
+
+.chooseResult{
+  width: 98%;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 auto;
+  display: block;
+  background: #E9F3FF;
+  border-radius: 6px;
+  padding-left: 20px;
+}
+
+::v-deep .drawer .el-form--inline .el-form-item__label {
+  width: 78px !important;
+}
+
+
+::v-deep .drawer .el-form-item {
+  margin-bottom: 2px !important;
+  width: 210px !important;
+}
+
+
+::v-deep  .el-date-editor .el-input__inner{
+  padding-left: 30px !important;
+}
+
+
+::v-deep .drawer .el-input__inner{
+  width: 170px !important;
+}
+
 </style>

@@ -5,21 +5,21 @@
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist" >
             <el-form-item label="姓名:" prop="name">
-              <el-input v-model="dataForm.name" placeholder="请输入关键字" clearable></el-input>
+              <el-input v-model="dataForm.name" placeholder="请输入关键字" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable></el-input>
+              <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="邮箱:" prop="mailbox">
-              <el-input v-model="dataForm.mailbox" placeholder="请输入邮箱前缀" clearable></el-input>
+              <el-input v-model="dataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="驻地:" prop="empLocation">
-              <el-select v-model="dataForm.empLocation" filterable clearable placeholder="请选择">
-                <el-option v-for="item in empLocations" :key="item.name" :label="item.name" :value="item.name"></el-option>
+              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择">
+                <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptNames">
-              <el-select  v-model="dataForm.deptNames" placeholder="请选择" >
+              <el-select  v-model="dataForm.deptIds" placeholder="请选择" >
                 <el-option      v-for="dept in deptNames"
                                 :key="dept.id"
                                 :label="dept.name"
@@ -30,7 +30,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamNames">
-              <el-select  v-model="dataForm.teamNames" placeholder="请选择" >
+              <el-select  v-model="dataForm.teamIds" placeholder="请选择" >
                 <el-option      v-for="team in teamNames"
                                 :key="team.id"
                                 :label="team.name"
@@ -41,7 +41,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="角色:" prop="roleName">
-              <el-select  v-model="dataForm.roleName" placeholder="请选择" >
+              <el-select  v-model="dataForm.roleIds" placeholder="请选择" >
                 <el-option      v-for="role in roleNames"
                                 :key="role.id"
                                 :label="role.name"
@@ -88,7 +88,7 @@
           <span style="color:blue;margin-left: 20px;cursor: pointer" @click="add()"> 添加员工 </span>
         </div>
       </el-header>
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" >
+      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
@@ -107,13 +107,13 @@
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
             <el-form-item label="姓名:" prop="account">
-              <el-input v-model="editDataForm.name" clearable ></el-input>
+              <el-input v-model="editDataForm.name" clearable  maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="editDataForm.empId" clearable ></el-input>
+              <el-input v-model="editDataForm.empId" clearable  maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="邮箱:" prop="mailbox">
-              <el-input v-model="editDataForm.mailbox" placeholder="请输入邮箱前缀" clearable></el-input>
+              <el-input v-model="editDataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="驻地:" prop="stationName">
               <el-select v-model="editDataForm.stationId" filterable clearable placeholder="请选择">
@@ -168,7 +168,16 @@
                 placeholder="选择日期">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="离职时间:" prop="entryDate"   :visible.sync="entryDateShow">
+
+            <el-form-item label="状态:" prop="departStatusName" v-if="departStatusNameShow">
+              <el-select  v-model="editDataForm.departStatusName" placeholder="请选择" @change="showEntryDate">
+                <el-option key="在职" label="在职" value="在职"></el-option>
+                <el-option key="离职" label="离职" value="离职"></el-option>
+              </el-select>
+            </el-form-item>
+
+
+            <el-form-item label="离职时间:" prop="entryDate"  v-if="entryDateShow" >
               <el-date-picker
                 style="width: 130px"
                 value-format="yyyy-MM-dd"
@@ -202,6 +211,7 @@ export default {
       deleteIds:[],
       drawer:false,
       entryDateShow:false,
+      departStatusNameShow:false,
       direction: 'rtl',
       entryDate:'',
       departDate:'',
@@ -209,16 +219,17 @@ export default {
         name: '',
         empId: '',
         mailbox: '',
-        empLocation:'',
-        deptName:'',
-        teamName:'',
-        roleName:'',
+        stationIds:'',
+        deptIds:'',
+        teamIds:'',
+        roleIds:'',
         entryDateStart:'',
         entryDateEnd:'',
         departDateStart:'',
         departDateEnd:''
       },
       editDataForm: {
+        id:'',
         name: '',
         empId: '',
         mailbox: '',
@@ -241,7 +252,7 @@ export default {
           {label: '姓名', prop: 'name'},
           {label: '工号', prop: 'empId'},
           {label: '邮箱', prop: 'mailbox',width:'180px'},
-          {label: '驻地', prop: 'empLocation'},
+          {label: '驻地', prop: 'stationName'},
           {label: '归属部门', prop: 'deptName'},
           {label: '归属团队', prop: 'teamName'},
           {label: '角色', prop: 'roleName'},
@@ -318,7 +329,7 @@ export default {
       this.editDataForm.createUser= user
 
       this.$http({
-        url: this.$http.adornUrl("/employee/insertEmployee"),
+        url: this.$http.adornUrl(this.url),
         method: 'post',
         data: this.$http.adornData(
           this.editDataForm
@@ -336,9 +347,25 @@ export default {
         }
       })
     },
+    alter(row){
+      this.editDataForm = {...row.item}
+      this.drawer = true
+      this.title = '编辑'
+      this.departStatusNameShow = true
+      this.url = '/employee/updateEmployee'
+
+    },
+    showEntryDate(){
+      if(this.editDataForm.departStatusName == '离职'){
+        this.entryDateShow = true
+      }else{
+        this.entryDateShow = false
+      }
+    },
     add(){
       this.drawer = true
       this.title = '新增'
+      this.url = '/employee/insertEmployee'
     },
 
     refresh() {
@@ -349,25 +376,25 @@ export default {
         this.$refs.table.refresh(this.dataForm)
       })
     },
-
     deleteList(row) {
-      let id = ''
-      id = row.item.id
-      this.$confirm(`您确定删除吗?`, '提示', {
+      this.deleteIds = []
+      this.deleteIds.push(row.item.id)
+      this.$confirm('确定删除吗（'+row.item.name+'）吗', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/employee/deleteEmployee?id='+id),
-          method: 'get',
+          url: this.$http.adornUrl('/employee/deleteEmployee'),
+          method: 'post',
+          data: this.deleteIds
         }).then(({data}) => {
           if (data && data.code === 200) {
             this.$message({
               message: '删除成功',
               type: 'success'
             })
-            location.reload()
+            this.refresh()
           } else {
             this.$message.error(data.msg)
           }
@@ -379,6 +406,62 @@ export default {
         });
       });
     },
+    onSelect(selection){
+      this.deleteIds = []
+      let totalMoney = 0
+      if(selection.length>0){
+        selection.forEach(a =>{
+          this.deleteIds.push(a.id)
+          totalMoney += a.totalMoney
+        })
+        this.chooseStr = '已选中'+this.deleteIds.length+'位成员'
+      }else{
+        this.chooseStr = '已选中 0 项'
+      }
+    },
+    batchDelete(){
+      if(this.deleteIds.length <= 0){
+        this.$message.error('当前未选中任何报销数据！')
+        return ;
+      }
+      this.$confirm('已选中'+this.deleteIds.length+'条报销数据,您确定删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/employee/deleteEmployee'),
+          method: 'post',
+          data: this.deleteIds
+        }).then(({data}) => {
+          if (data && data.code === 200) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.refresh()
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
+
+    download(){
+      if(this.deleteIds.length <= 0){
+        this.$message.error('当前未选中任何员工数据！')
+        return ;
+      }
+      this.dataForm.ids = this.deleteIds
+      this.$http.downloadPost(this.$http.adornUrl('/employee/export'), this.$http.adornParams(this.dataForm), this)
+
+    },
+
     resetForm() {
       this.$refs.dataForm.resetFields()
     }

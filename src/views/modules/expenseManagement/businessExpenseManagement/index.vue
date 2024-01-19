@@ -5,10 +5,10 @@
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist" >
             <el-form-item label="用户姓名:" prop="account">
-              <el-input v-model="dataForm.account" placeholder="输入关键字" clearable></el-input>
+              <el-input v-model="dataForm.account" placeholder="输入关键字" clearable  maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="dataForm.empId" placeholder="输入关键字" clearable></el-input>
+              <el-input v-model="dataForm.empId" placeholder="输入关键字" clearable maxlength="50"></el-input>
             </el-form-item>
 
             <el-form-item label="成本中心:" prop="costCenters">
@@ -58,7 +58,7 @@
             </el-form-item>
 
             <el-form-item label="目的城市:" prop="backCitys">
-              <el-input v-model="dataForm.backCitys" placeholder="输入关键字" clearable></el-input>
+              <el-input v-model="dataForm.backCitys" placeholder="输入关键字" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="出发日期:" prop="startDate" style="width: 280px !important;">
               <el-date-picker
@@ -157,10 +157,10 @@
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
             <el-form-item label="姓名:" prop="account">
-              <el-input v-model="editDataForm.account" clearable disabled="disabled"></el-input>
+              <el-input v-model="editDataForm.account" clearable disabled="disabled" maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="editDataForm.empId" clearable disabled="disabled"></el-input>
+              <el-input v-model="editDataForm.empId" clearable disabled="disabled" maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="归属部门:" prop="backCitys">
               <el-input v-model="editDataForm.deptName" clearable disabled="disabled"></el-input>
@@ -410,8 +410,6 @@ export default {
         this.$message.error('当前未选中任何报销数据！')
         return ;
       }
-
-
       this.$confirm('已选中'+this.deleteIds.length+'条报销数据,您确定删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -444,19 +442,9 @@ export default {
         this.$message.error('当前未选中任何报销数据！')
         return ;
       }
-      console.log(this.deleteIds)
       this.dataForm.ids = this.deleteIds
-      console.log(this.dataForm)
-
-
       this.$http.downloadPost(this.$http.adornUrl('/tripCost/export'), this.$http.adornParams(this.dataForm), this)
 
-
-
-      // this.$http.downloadPost(
-      //   this.$http.adornUrl('/tripCost/export'),
-      //   this.dataForm
-      // )
     },
     onSelect(selection){
       this.deleteIds = []
