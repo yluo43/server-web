@@ -27,8 +27,7 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <svg-icon :icon-class="'delete'" style="height:1.5em;width:1.5em; margin-right: 2em;"
-                      @click="deleteList(row)"/>
+<!--            <svg-icon :icon-class="'delete'" style="height:1.5em;width:1.5em; margin-right: 2em;" @click="deleteList(row)"/>-->
             <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
           </template>
         </template>
@@ -47,18 +46,18 @@
       >
         <el-form :inline="true"  :model="editDataForm" ref="editDataForm" class="editForm">
           <div>
-            <el-form-item label="部门ID" prop="id" >
+            <el-form-item label="部门ID" prop="id" :rules="[ { required: true, message: '部门ID不能为空'}]" >
               <el-input v-model="editDataForm.id"  clearable  maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="部门名称" prop="phone">
+            <el-form-item label="部门名称" prop="phone" :rules="[ { required: true, message: '部门名称不能为空'}]">
               <el-input v-model="editDataForm.deptName"  placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="部门经理" prop="managerId">
+            <el-form-item label="部门经理" prop="managerId" :rules="[ { required: true, message: '部门经理不能为空'}]">
               <el-select  v-model="editDataForm.managerId" placeholder="请选择部门负责人" >
                 <el-option      v-for="item in managerList"
-                                :key="item.empId"
+                                :key="item.id"
                                 :label="item.name"
-                                :value="item.empId">
+                                :value="item.id">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -66,9 +65,9 @@
             <el-form-item label="部门助理" prop="assistantId">
               <el-select  v-model="editDataForm.assistantId" placeholder="请选择部门负责人" >
                 <el-option      v-for="item in assistList"
-                                :key="item.empId"
+                                :key="item.id"
                                 :label="item.name"
-                                :value="item.empId">
+                                :value="item.id">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -119,10 +118,8 @@ export default {
         managerName:''
       },
       deptList:[],
-      managerList:[
-      ],
-      assistList:[
-      ],
+      managerList:[],
+      assistList:[],
       tableData: {
         theads: [
           {label: '部门序号', prop: 'id',width:'100px'},
@@ -161,6 +158,7 @@ export default {
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
+
         this.managerList = data.payload
       } else {
         this.$message.error(data.msg)
@@ -216,6 +214,16 @@ export default {
     },
     // 新增
     editSubmit() {
+      let go
+      this.$refs['editdataForm'].validate((valid) => {
+        go = valid
+      });
+
+      if(!go){
+        return ;
+      }
+
+
       let url
       if(this.op=='add'){
         url = '/deptInfo/add'

@@ -118,18 +118,18 @@
         size="25%"
       >
         <div style="padding-left: 20px">
-          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
-            <el-form-item label="团队名称:" prop="teamName">
+          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm" >
+            <el-form-item label="团队名称:" prop="teamName" :rules="[ { required: true, message: '团队不能为空'}]">
               <el-input v-model="editDataForm.teamName" clearable  maxlength="50"></el-input>
             </el-form-item>
 
-            <el-form-item label="团队级别:" prop="teamLevel" >
+            <el-form-item label="团队级别:" prop="teamLevel" :rules="[ { required: true, message: '团队级别不能为空'}]">
               <el-select  v-model="editDataForm.teamLevel" placeholder="请选择" @change="showParentStatus">
-                <el-option key="1" label="一级团队" value="1"></el-option>
-                <el-option key="2" label="二级团队" value="2"></el-option>
+                <el-option key="1" label="一集团队" :value="1"></el-option>
+                <el-option key="2" label="二级团队" :value='2'></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="父团队:" prop="parentId"  v-if="showParent">
+            <el-form-item label="父团队:" prop="parentId"  v-if="showParent" :rules="[ { required: this.showParentRule, message: '二级团队的父团队不能为空'}]">
               <el-select  v-model="editDataForm.parentId" placeholder="请选择" >
                 <el-option      v-for="team in parentTeam"
                                 :key="team.id"
@@ -141,7 +141,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="团队负责人:" prop="managerId" style="width: 240px !important;">
+            <el-form-item label="团队负责人:" prop="managerId" style="width: 240px !important;" :rules="[ { required: true, message: '团队负责人不能为空'}]">
               <el-select  v-model="editDataForm.managerId" placeholder="请选择" >
                 <el-option      v-for="manager in managerList"
                                 :key="manager.empId"
@@ -153,7 +153,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="归属部门:" prop="deptId">
+            <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '部署部门不能为空'}]">
               <el-select  v-model="editDataForm.deptId" placeholder="请选择" >
                 <el-option      v-for="dept in deptList"
                                 :key="dept.id"
@@ -209,8 +209,8 @@
 
             <el-form-item label="状态:" prop="state" v-if="departStatusNameShow">
               <el-select  v-model="editDataForm.state" placeholder="请选择">
-                <el-option key="正常" label="正常" value="正常"></el-option>
-                <el-option key="解散" label="解散" value="解散"></el-option>
+                <el-option key="0" label="正常" value="0"></el-option>
+                <el-option key="1" label="解散" value="1"></el-option>
               </el-select>
             </el-form-item>
 
@@ -236,6 +236,8 @@ import { getCName } from '@/utils/auth'
 export default {
   data() {
     return {
+
+      showParentRule:false,
       url:'',
       showParent:false,
       departStatusNameShow:false,
@@ -399,9 +401,20 @@ export default {
       })
     },
     editSubmit(){
+
+      let go
+      this.$refs['editdataForm'].validate((valid) => {
+        go = valid
+      });
+
+      if(!go){
+        return ;
+      }
       let user =getCName()
       this.editDataForm.createUser= user
-
+      if(this.editDataForm.departDate=='-'){
+        this.editDataForm.departDate = ''
+      }
       this.$http({
         url: this.$http.adornUrl(this.url),
         method: 'post',
@@ -591,13 +604,13 @@ export default {
 }
 
 ::v-deep .drawer .el-form--inline .el-form-item__label {
-  width: 78px !important;
+  width: 85px !important;
 }
 
 
 ::v-deep .drawer .el-form-item {
   margin-bottom: 2px !important;
-  width: 210px !important;
+  width: 230px !important;
 }
 
 
