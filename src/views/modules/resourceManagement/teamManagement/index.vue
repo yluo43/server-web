@@ -39,7 +39,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="创建时间:" prop="createTime" style="width: 280px !important;">
+            <el-form-item label="创建时间:" prop="createTime" style="width: 290px !important;">
               <el-date-picker
                 style="width: 220px;"
                 value-format="yyyy-MM-dd"
@@ -58,7 +58,7 @@
               </el-select>
             </el-form-item>
             <div style="display: contents;">
-              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
+              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px;margin-left: 100px">查询
               </el-button>
               <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
             </div>
@@ -115,7 +115,7 @@
         :title="title"
         :visible.sync="drawer"
         :direction="direction"
-        size="25%"
+        size="24%"
       >
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm" >
@@ -141,7 +141,7 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="团队负责人:" prop="managerId" style="width: 240px !important;" :rules="[ { required: true, message: '团队负责人不能为空'}]">
+            <el-form-item label="团队负责人:" prop="managerId"  :rules="[ { required: true, message: '团队负责人不能为空'}]">
               <el-select  v-model="editDataForm.managerId" placeholder="请选择" >
                 <el-option      v-for="manager in managerList"
                                 :key="manager.empId"
@@ -214,8 +214,9 @@
               </el-select>
             </el-form-item>
 
+          <br>
 
-            <div style="display: inline-block; margin-top: 60px">
+            <div style="display: inline-block; margin-top: 30px">
               <el-button type="primary"  icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
               <el-button type="primary"  icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
             </div>
@@ -437,12 +438,16 @@ export default {
       })
     },
     refresh() {
-      this.$refs.dataForm.validate((valid) => {
-        if (!valid) {
-          return false
-        }
-        this.$refs.table.refresh(this.dataForm)
-      })
+
+      this.$refs.table.refresh(this.dataForm)
+
+
+      // this.$refs.dataForm.validate((valid) => {
+      //   if (!valid) {
+      //     return false
+      //   }
+      //   this.$refs.table.refresh(this.dataForm)
+      // })
     },
     add() {
       this.freshMembers()
@@ -610,7 +615,6 @@ export default {
 
 ::v-deep .drawer .el-form-item {
   margin-bottom: 2px !important;
-  width: 230px !important;
 }
 
 
@@ -620,7 +624,6 @@ export default {
 
 
 ::v-deep .drawer .el-input__inner{
-  width: 170px !important;
 }
 
 </style>

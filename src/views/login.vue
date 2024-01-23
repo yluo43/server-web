@@ -165,7 +165,8 @@ export default {
             method: 'get',
           }).then(({data}) => {
             if (data && data.code === 200) {
-              fnAddDynamicMenuRoutes(data.payload)
+              localStorage.setItem('buttons', JSON.stringify(data.payload.permissions || '[]'))
+              fnAddDynamicMenuRoutes(data.payload.menuList)
               router.options.isAddDynamicMenuRoutes = true
               if(router.options.routes.length>5){
                 this.$router.push({name: router.options.routes[5].children[0].name})

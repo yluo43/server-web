@@ -10,8 +10,8 @@
             <el-form-item label="工号:" prop="empId">
               <el-input v-model="dataForm.empId" placeholder="输入关键字" clearable></el-input>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptNames">
-              <el-select  v-model="dataForm.deptNames" placeholder="请选择" >
+            <el-form-item label="归属部门:" prop="deptNames" >
+              <el-select  v-model="dataForm.deptNames" placeholder="请选择"  :multiple="true" :collapse-tags="true">
                 <el-option      v-for="dept in deptNames"
                                 :key="dept"
                                 :label="dept"
@@ -21,8 +21,8 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="归属团队:" prop="teamNames">
-              <el-select  v-model="dataForm.teamNames" placeholder="请选择" >
+            <el-form-item label="归属团队:" prop="teamNames" >
+              <el-select  v-model="dataForm.teamNames" placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option      v-for="team in teamNames"
                                 :key="team"
                                 :label="team"
@@ -32,8 +32,8 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="成本中心:" prop="costCenters">
-              <el-select  v-model="dataForm.costCenters" placeholder="请选择" >
+            <el-form-item label="成本中心:" prop="costCenters" >
+              <el-select  v-model="dataForm.costCenters" placeholder="请选择" :multiple="true" :collapse-tags="true" >
                 <el-option      v-for="costCenter in costCenters"
                                 :key="costCenter"
                                 :label="costCenter"
@@ -44,7 +44,18 @@
               </el-select>
             </el-form-item>
     <br/>
-            <el-form-item label="日期:" prop="createTime"  style="width: 280px !important;">
+            <el-form-item label="费用名称:" prop="costNames" >
+              <el-select  v-model="dataForm.costNames"  :multiple="true" :collapse-tags="true" style="width: 240px !important;">
+                <el-option      v-for="costName in costNames"
+                                :key="costName"
+                                :label="costName"
+                                :value="costName"
+                                multiple="true"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="日期:" prop="createTime"  >
               <el-date-picker
                 style="width: 220px;"
                 value-format="yyyy-MM-dd"
@@ -56,7 +67,7 @@
                 end-placeholder="年/月/日">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="导入日期:" prop="createTime"  style="width: 280px !important;">
+            <el-form-item label="导入日期:" prop="createTime"  >
               <el-date-picker
                 style="width: 220px;"
                 value-format="yyyy-MM-dd"
@@ -77,7 +88,9 @@
         </el-form>
 
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr"></span>  <span style="color:blue;margin-left: 100px" @click="batchDelete()"> 批量删除 </span><span style="color:blue;margin-left: 20px" @click="download()"> 批量下载 </span>
+          <span class="chooseResultStr" v-text="chooseStr"></span>
+          <span style="color:blue;margin-left: 100px" @click="batchDelete()" v-auth="'dailyCost:deletes'"> 批量删除 </span>
+          <span style="color:blue;margin-left: 20px" @click="download()" v-auth="'dailyCost:export'"> 批量下载 </span>
         </div>
 
       </el-header>
@@ -88,12 +101,10 @@
           <!--类型插槽-->
           <template>
             <svg-icon :icon-class="'delete'" style="height:1.5em;width:1.5em; margin-right: 2em;"
-                      @click="deleteList(row)"/>
-            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
+                      @click="deleteList(row)" v-auth="'dailyCost:delete'"/>
+            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)" v-auth="'dailyCost:update'"/>
           </template>
         </template>
-
-
       </baseTable>
 
 
@@ -165,7 +176,7 @@
             </el-form-item>
 
             <div style="display: inline-block; margin-top: 60px">
-              <el-button type="primary"  icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">保存</el-button>
+              <el-button type="primary"  icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()" >保存</el-button>
               <el-button type="primary"  icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
             </div>
           </el-form>
@@ -196,12 +207,13 @@ export default {
       costDate: ''|| undefined,
 
       dataForm: {
+        costNames:[]||undefined,
         account: ''|| undefined,
         empId: ''|| undefined,
-        deptNames: ''|| undefined,
-        teamNames: '' || undefined,
+        deptNames: []|| undefined,
+        teamNames: []|| undefined,
         reason: ''|| undefined,
-        costCenters: ''|| undefined,
+        costCenters: []|| undefined,
         costDateStart: ''|| undefined,
         costDateEnd: ''|| undefined,
         createTimeStart: ''|| undefined,
@@ -344,9 +356,11 @@ export default {
         if (!valid) {
           return false
         }
+
+        console.log(this.createTime)
         if(this.createTime!=null&&this.createTime!=""){
-          this.dataForm.createTimeStart = this.dataForm.createTime[0]
-          this.dataForm.createTimeEnd = this.dataForm.createTime[1]
+          this.dataForm.createTimeStart = this.createTime[0]
+          this.dataForm.createTimeEnd = this.createTime[1]
         }
 
         if(this.costDate!=null&&this.costDate!=""){
@@ -354,8 +368,24 @@ export default {
           this.dataForm.costDateEnd = this.costDate[1]
         }
 
+        //this.editDataForm ={...data}
 
-        this.$refs.table.refresh(this.dataForm)
+        let form ={...this.dataForm}
+
+        if(form.costNames.length>0){
+          form.costNames =form.costNames +''
+        }
+
+        if(form.deptNames.length>0){
+          form.deptNames =form.deptNames +''
+        }
+        if(form.costCenters.length>0){
+          form.costCenters =form.costCenters +''
+        }
+        if(form.teamNames.length>0){
+          form.teamNames =form.teamNames +''
+        }
+         this.$refs.table.refresh(form)
       })
     },
 
@@ -406,11 +436,10 @@ export default {
       let totalMoney = 0
       if(selection.length>0){
         selection.forEach(a =>{
-          console.log(a)
           this.deleteIds.push(a.id)
-          totalMoney += a.totalMoney
+          totalMoney  +=  parseFloat(a.totalMoney)
         })
-        this.chooseStr = '已选中'+this.deleteIds.length+'项，合计：'+totalMoney+'元'
+        this.chooseStr = '已选中'+this.deleteIds.length+'项，合计：'+totalMoney.toFixed(2)+'元'
       }else{
         this.chooseStr = '已选中 0 项'
       }
@@ -446,9 +475,11 @@ export default {
       });
     },
     resetForm() {
-      this.$refs.dataForm.resetFields()
+      this.clear(this.dataForm)
       this.costDate = ''
       this.createTime = ''
+    },clear(form){
+      Object.keys(form).forEach(key => (form[key] = ''));
     }
   }
 }

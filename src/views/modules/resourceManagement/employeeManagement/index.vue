@@ -106,16 +106,16 @@
       >
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
-            <el-form-item label="姓名:" prop="account" :rules="[ { required: true, message: '姓名不能为空'}]">
+            <el-form-item label="姓名:" prop="name" :rules="[ { required: true, message: '姓名不能为空'}]">
               <el-input v-model="editDataForm.name" clearable  maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="工号:" prop="empId" :rules="[ { required: true, message: '工号不能为空'}]">
-              <el-input v-model="editDataForm.empId" clearable  maxlength="50"></el-input>
+            <el-form-item label="工号:" prop="empId" :rules="[ { required: true, message: '工号不能为空'}]" >
+              <el-input v-model="editDataForm.empId" clearable  maxlength="50" :disabled= "disabled"></el-input>
             </el-form-item>
             <el-form-item label="邮箱:" prop="mailbox" :rules="[ { required: true, message: '邮箱不能为空'}]">
               <el-input v-model="editDataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="驻地:" prop="stationName">
+            <el-form-item label="驻地:" prop="stationId">
               <el-select v-model="editDataForm.stationId" filterable clearable placeholder="请选择">
                 <el-option v-for="location in empLocations"
                            :key="location.id"
@@ -125,7 +125,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptName" :rules="[ { required: true, message: '归属部门不能为空'}]">
+            <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '归属部门不能为空'}]">
               <el-select  v-model="editDataForm.deptId" placeholder="请选择" >
                 <el-option      v-for="dept in deptNames"
                                 :key="dept.id"
@@ -136,7 +136,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="归属团队:" prop="backCitys" >
+            <el-form-item label="归属团队:" prop="teamId" >
               <el-select  v-model="editDataForm.teamId" placeholder="请选择" >
                 <el-option      v-for="team in teamNames"
                                 :key="team.id"
@@ -147,7 +147,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="角色:" prop="roleName" :rules="[ { required: true, message: '角色不能为空'}]">
+            <el-form-item label="角色:" prop="roleId" :rules="[ { required: true, message: '角色不能为空'}]">
               <el-select  v-model="editDataForm.roleId" placeholder="请选择" >
                 <el-option      v-for="role in roleNames"
                                 :key="role.id"
@@ -204,8 +204,11 @@ import { getCName } from '@/utils/auth'
 
 
 export default {
+
+
   data() {
     return {
+      disabled:false,
       title:'',
       chooseStr:'已选择 0 项',
       deleteIds:[],
@@ -369,6 +372,7 @@ export default {
       this.title = '编辑'
       this.departStatusNameShow = true
       this.url = '/employee/updateEmployee'
+      this.disabled = true
 
     },
     showEntryDate(){
@@ -382,7 +386,8 @@ export default {
       this.drawer = true
       this.title = '新增'
       this.url = '/employee/insertEmployee'
-      this.clear(this.editDataForm);
+      this.clear(this.editDataForm)
+      this.disabled = false
 
 
     },

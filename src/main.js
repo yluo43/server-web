@@ -27,6 +27,11 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/axios
 
+
+import hasButton from '@/utils/hasButton'
+// 判断按钮权限
+Vue.directive('auth', hasButton)
+
 Vue.use(Vue2OrgTree)
 // Vue.use(VueCookie)
 

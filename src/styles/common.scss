@@ -431,16 +431,14 @@
 
 
 .el-form--inline .el-form-item{
-
   vertical-align: -webkit-baseline-middle;
 }
 .el-form-item{
   margin-bottom: 2px !important;
-  width: 200px !important;
-}
+  min-width: 200px !important;}
 
 .el-form-item__content{
-  width: 130px;
+  min-width: 130px;
 }
 .el-form-item__label{
   font-size: 12px !important;
@@ -469,4 +467,9 @@
 
 .el-form-item__error{
   top:32px !important;
+}
+
+
+.el-select{
+  width: 190px !important;
 }

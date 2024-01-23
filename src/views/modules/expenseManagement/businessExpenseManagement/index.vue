@@ -1,18 +1,16 @@
 <template>
   <div style="height: 100%;">
     <el-container >
-      <el-header style=" height: 130px">
+      <el-header style=" height: 160px">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist" >
-            <el-form-item label="用户姓名:" prop="account">
-              <el-input v-model="dataForm.account" placeholder="输入关键字" clearable  maxlength="50"></el-input>
-            </el-form-item>
-            <el-form-item label="工号:" prop="empId">
-              <el-input v-model="dataForm.empId" placeholder="输入关键字" clearable maxlength="50"></el-input>
+            <el-form-item label="用户姓名:" prop="account" class="name">
+              <el-input v-model="dataForm.account" placeholder="输入关键字" clearable  maxlength="50" ></el-input>
             </el-form-item>
 
+
             <el-form-item label="成本中心:" prop="costCenters">
-              <el-select  v-model="dataForm.costCenters" placeholder="请选择" >
+              <el-select  v-model="dataForm.costCenters" placeholder="请选择" :multiple="true" :collapse-tags="true" >
                 <el-option      v-for="costCenter in costCenters"
                                 :key="costCenter"
                                 :label="costCenter"
@@ -23,7 +21,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptNames">
-              <el-select  v-model="dataForm.deptNames" placeholder="请选择" >
+              <el-select  v-model="dataForm.deptNames" placeholder="请选择" :multiple="true" :collapse-tags="true">
               <el-option      v-for="dept in deptNames"
                               :key="dept"
                               :label="dept"
@@ -34,7 +32,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="事由:" prop="reason">
-              <el-select  v-model="dataForm.reason" placeholder="请选择" >
+              <el-select  v-model="dataForm.reason" placeholder="请选择" :multiple="true" :collapse-tags="true">
 
               <el-option      v-for="item in reason"
                               :key="item"
@@ -46,7 +44,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamNames">
-              <el-select  v-model="dataForm.teamNames" placeholder="请选择" >
+              <el-select  v-model="dataForm.teamNames" placeholder="请选择" :multiple="true" :collapse-tags="true">
               <el-option      v-for="team in teamNames"
                               :key="team"
                               :label="team"
@@ -57,12 +55,23 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="目的城市:" prop="backCitys">
-              <el-input v-model="dataForm.backCitys" placeholder="输入关键字" clearable maxlength="50"></el-input>
+            <el-form-item label="工号:" prop="empId" class="empId">
+              <el-input v-model="dataForm.empId" placeholder="输入关键字" clearable maxlength="50" ></el-input>
             </el-form-item>
-            <el-form-item label="出发日期:" prop="startDate" style="width: 280px !important;">
+
+            <el-form-item label="目的城市:" prop="backCitys">
+              <el-select v-model="editDataForm.backCitys" filterable clearable placeholder="请选择">
+                <el-option v-for="location in empLocations"
+                           :key="location.id"
+                           :label="location.name"
+                           :value="location.id"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="出发日期:" prop="startDate" >
               <el-date-picker
-                style="width: 220px;"
+                style="width: 200px;"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="dataForm.startDate"
@@ -72,9 +81,9 @@
                 end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="返回日期:" prop="backDate"  style="width: 280px !important;">
+            <el-form-item label="返回日期:" prop="backDate"  >
               <el-date-picker
-                style="width: 220px;"
+                style="width: 200px;"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="dataForm.backDate"
@@ -84,9 +93,9 @@
                 end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="导入日期:" prop="createTime"  style="width: 280px !important;">
+            <el-form-item label="导入日期:" prop="createTime"  >
               <el-date-picker
-                style="width: 220px;"
+                style="width: 200px;"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="dataForm.createTime"
@@ -105,7 +114,9 @@
         </el-form>
 
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr"></span>  <span style="color:blue;margin-left: 100px" @click="batchDelete()"> 批量删除 </span><span style="color:blue;margin-left: 20px" @click="download()"> 批量下载 </span>
+          <span class="chooseResultStr" v-text="chooseStr"></span>
+          <span style="color:blue;margin-left: 100px" @click="batchDelete()" v-auth="'tripCost:deletes'"> 批量删除 </span>
+          <span style="color:blue;margin-left: 20px" @click="download()" v-auth="'tripCost:export'"> 批量下载 </span>
         </div>
 
       </el-header>
@@ -116,8 +127,8 @@
           <!--类型插槽-->
           <template>
             <svg-icon :icon-class="'delete'" style="height:1.5em;width:1.5em; margin-right: 2em;"
-                      @click="deleteList(row)"/>
-            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
+                      @click="deleteList(row)" v-auth="'tripCost:delete'"/>
+            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"  v-auth="'tripCost:update'"/>
           </template>
         </template>
 
@@ -207,7 +218,7 @@
 
 
             <div style="display: inline-block; margin-top: 60px">
-              <el-button type="primary"  icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">保存</el-button>
+              <el-button type="primary"  icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()" >保存</el-button>
               <el-button type="primary"  icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
             </div>
           </el-form>
@@ -275,6 +286,7 @@ export default {
       costCenters:[],
       deptNames:[],
       teamNames:[],
+      empLocations:[],
       reason:[],
       tableData: {
         theads: [
@@ -332,6 +344,18 @@ export default {
     }).then(({data}) => {
       if (data && data.code === 200) {
         this.reason = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
+
+    //初始化驻地
+    this.$http({
+      url: this.$http.adornUrl('/common/getStation'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        this.empLocations = data.payload
       } else {
         this.$message.error(data.msg)
       }
@@ -451,11 +475,10 @@ export default {
       let totalMoney = 0
       if(selection.length>0){
         selection.forEach(a =>{
-          console.log(a)
           this.deleteIds.push(a.id)
-          totalMoney += a.totalMoney
+          totalMoney += parseFloat(a.totalMoney)
         })
-        this.chooseStr = '已选中'+this.deleteIds.length+'项，合计：'+totalMoney
+        this.chooseStr = '已选中'+this.deleteIds.length+'项，合计：'+totalMoney.toFixed(2)+'元'
       }else{
         this.chooseStr = '已选中 0 项'
       }
@@ -532,9 +555,11 @@ export default {
     height: 30px;
     line-height: 30px;
     margin: 0 auto;
+     margin-top: 10px;
     display: block;
     background: #E9F3FF;
     border-radius: 6px;
     padding-left: 20px;
   }
+
 </style>

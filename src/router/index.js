@@ -80,7 +80,8 @@ router.beforeEach((to, from, next) => {
       if (data && data.code === 200) {
           // if(!getMenu()) {
             fnAddDynamicMenuRoutes(data.payload)
-            // setMenu()
+        localStorage.setItem('buttons', JSON.stringify(data.payload.permissions || '[]'))
+        // setMenu()
           // }
           router.options.isAddDynamicMenuRoutes = true
 
