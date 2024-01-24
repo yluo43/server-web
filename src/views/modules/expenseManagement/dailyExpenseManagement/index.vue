@@ -357,10 +357,9 @@ export default {
           return false
         }
 
-        console.log(this.createTime)
         if(this.createTime!=null&&this.createTime!=""){
-          this.dataForm.createTimeStart = this.createTime[0]
-          this.dataForm.createTimeEnd = this.createTime[1]
+          this.dataForm.createTimeStart = this.createTime[0] +' 00:00:00'
+          this.dataForm.createTimeEnd = this.createTime[1]+' 23:59:59'
         }
 
         if(this.costDate!=null&&this.costDate!=""){
@@ -368,7 +367,6 @@ export default {
           this.dataForm.costDateEnd = this.costDate[1]
         }
 
-        //this.editDataForm ={...data}
 
         let form ={...this.dataForm}
 

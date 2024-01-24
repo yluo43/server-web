@@ -51,7 +51,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="入职时间:" prop="entryDate" style="width: 280px !important;">
+            <el-form-item label="入职时间:" prop="entryDate" >
               <el-date-picker
                 style="width: 220px;"
                 value-format="yyyy-MM-dd"
@@ -63,7 +63,7 @@
                 end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label="离职时间:" prop="departDate" style="width: 280px !important;">
+            <el-form-item label="离职时间:" prop="departDate" >
               <el-date-picker
                 style="width: 220px;"
                 value-format="yyyy-MM-dd"
@@ -158,6 +158,31 @@
                 </el-option>
               </el-select>
             </el-form-item>
+
+            <el-form-item label="岗位类型:" prop="positionType" :rules="[ { required: true, message: '岗位为空'}]">
+              <el-select  v-model="editDataForm.positionType" placeholder="请选择" >
+                <el-option key="1" label="岗位1" :value="1"></el-option>
+                <el-option key="2" label="岗位2" :value="2"></el-option>
+                <el-option key="3" label="岗位3" :value="3"></el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="技术级别:" prop="empLevel" >
+              <el-select  v-model="editDataForm.empLevel" placeholder="请选择" >
+                <el-option key="2" label="2" value="2"></el-option>
+                <el-option key="3" label="3" value="3"></el-option>
+                <el-option key="4" label="4" value="4"></el-option>
+                <el-option key="5" label="5" value="5"></el-option>
+                <el-option key="6-" label="6-" value="6-"></el-option>
+                <el-option key="6" label="6" value="6"></el-option>
+                <el-option key="6+" label="6+" value="6+"></el-option>
+                <el-option key="7" label="7" value="7"></el-option>
+                <el-option key="8" label="8" value="8"></el-option>
+                <el-option key="9" label="9" value="9"></el-option>
+              </el-select>
+            </el-form-item>
+
+
             <el-form-item label="入职时间:" prop="entryDate" >
               <el-date-picker
                 style="width: 130px"
@@ -244,7 +269,9 @@ export default {
         departStatusName:'',
         departDate:'',
         createUser:'',
-        updateUser:''
+        updateUser:'',
+        positionType:'',
+        empLevel:''
       },
       deptNames:[],
       empLocations:[],
@@ -259,6 +286,8 @@ export default {
           {label: '归属部门', prop: 'deptName'},
           {label: '归属团队', prop: 'teamName'},
           {label: '角色', prop: 'roleName'},
+          {label: '技术级别', prop: 'empLevel'},
+          {label: '岗位类型', prop: 'positionTypeName'},
           {label: '入职时间', prop: 'entryDate'},
           {label: '离职时间', prop: 'departDate'},
           {label: '状态', prop: 'departStatusName'},

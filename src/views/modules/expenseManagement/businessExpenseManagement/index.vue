@@ -60,7 +60,7 @@
             </el-form-item>
 
             <el-form-item label="目的城市:" prop="backCitys">
-              <el-select v-model="editDataForm.backCitys" filterable clearable placeholder="请选择">
+              <el-select v-model="editDataForm.backCitys" filterable clearable placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option v-for="location in empLocations"
                            :key="location.id"
                            :label="location.name"
@@ -74,7 +74,7 @@
                 style="width: 200px;"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
-                v-model="dataForm.startDate"
+                v-model="startDate"
                 type="daterange"
                 range-separator="~"
                 start-placeholder="开始日期"
@@ -86,7 +86,7 @@
                 style="width: 200px;"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
-                v-model="dataForm.backDate"
+                v-model="backDate"
                 type="daterange"
                 range-separator="~"
                 start-placeholder="开始日期"
@@ -98,7 +98,7 @@
                 style="width: 200px;"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
-                v-model="dataForm.createTime"
+                v-model="createTime"
                 type="daterange"
                 range-separator="~"
                 start-placeholder="开始日期"
@@ -140,12 +140,12 @@
               trigger="hover">
 <!--              :content='getHoverContent(row)'-->
               <div class="custom-content">
-                住宿费:{{row.item.hotelMoney}} <br/>
-                出租车费:{{row.item.taxiMoney}}<br/>
-                交通费:{{row.item.trafficMoney}}<br/>
-                夜间火车宾馆差额:{{row.item.marginMoney}}<br/>
-                日常补贴:{{row.item.dailySubsidyMoney}}<br/>
-                资金补贴:{{row.item.moneySubsidy}}
+                住宿费:{{row.item.hotelTotalMoney}}元 <br/>
+                出租车费:{{row.item.taxiMoney}}元<br/>
+                交通费:{{row.item.trafficTotalMoney}}元<br/>
+                夜间火车宾馆差额:{{row.item.marginMoney}}元<br/>
+                日常补贴:{{row.item.dailySubsidyMoney}}元<br/>
+                资金补贴:{{row.item.moneySubsidy}}元
               </div>
               <span slot="reference">{{row.item.totalMoney}}</span>
             </el-popover>
@@ -163,7 +163,7 @@
         title="编辑"
         :visible.sync="drawer"
         :direction="direction"
-        size="17%"
+        size="22%"
         >
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
@@ -253,19 +253,19 @@ export default {
         account: ''|| undefined,
         backDateStart: ''|| undefined,
         backDateEnd: ''|| undefined,
-        costCenters: ''|| undefined,
+        costCenters: []|| undefined,
         createTimeStart: ''|| undefined,
         createTimeEnd: ''|| undefined,
 
-        deptNames: ''|| undefined,
+        deptNames: []|| undefined,
         empId: ''|| undefined,
-        reason: ''|| undefined,
+        reason: []|| undefined,
         startDateStart: ''|| undefined,
         startDateEnd: ''|| undefined,
 
-        teamNames: '' || undefined,
+        teamNames: [] || undefined,
         ids:''|| undefined,
-        backCitys:''||undefined
+        backCitys:[]||undefined
       },
 
       editDataForm:{
@@ -300,7 +300,7 @@ export default {
           {label: '目的城市', prop: 'backCitys'},
           {label: '事由', prop: 'reason'},
           {label: '宾馆名称', prop: 'hotelName'},
-          {label: '出差合计', prop: 'totalMoney',slotName: 'totalMoney'},
+          {label: '出差合计(元)', prop: 'totalMoney',slotName: 'totalMoney'},
           {label: '导入时间', prop: 'createTime'},
           {label: '操作', prop: 'clientType', slotName: 'clientType'}
         ],
@@ -401,31 +401,40 @@ export default {
     },
     refresh() {
       this.$refs.dataForm.validate((valid) => {
-        if (!valid) {
-          return false
-        }
-        if(this.dataForm.startDate!=null&&this.dataForm.startDate!=""){
-          this.dataForm.startDateStart = this.dataForm.startDate[0]
-          this.dataForm.startDateEnd = this.dataForm.startDate[1]
-          this.dataForm.startDate = ''
-        }
 
-        if(this.dataForm.backDate!=null&&this.dataForm.backDate!=""){
-          this.dataForm.backDateStart = this.dataForm.backDate[0]
-          this.dataForm.backDateEnd = this.dataForm.backDate[1]
-          this.dataForm.backDate = ''
-
+        if(this.startDate!=null&&this.startDate!=""){
+          this.dataForm.startDateStart = this.startDate[0]
+          this.dataForm.startDateEnd = this.startDate[1]
         }
-
-        if(this.dataForm.createTime!=null&&this.dataForm.createTime!=""){
-          this.dataForm.createTimeStart = this.dataForm.createTime[0]
-          this.dataForm.createTimeEnd = this.dataForm.createTime[1]
-          this.dataForm.createTime = ''
+        if(this.backDate!=null&&this.backDate!=""){
+          this.dataForm.backDateStart = this.backDate[0]
+          this.dataForm.backDateEnd = this.backDate[1]
+        }
+        if(this.createTime!=null&&this.createTime!=""){
+          this.dataForm.createTimeStart = this.createTime[0] +' 00:00:00'
+          this.dataForm.createTimeEnd = this.createTime[1]+' 23:59:59'
 
         }
 
+        let form ={...this.dataForm}
+        if(form.costCenters.length>0){
+          form.costCenters =form.costCenters +''
+        }
 
-        this.$refs.table.refresh(this.dataForm)
+        if(form.deptNames.length>0){
+          form.deptNames =form.deptNames +''
+        }
+        if(form.teamNames.length>0){
+          form.teamNames =form.teamNames +''
+        }
+        if(form.backCitys.length>0){
+          form.backCitys =form.backCitys +''
+        }
+        if(form.reason.length>0){
+          form.reason =form.reason +''
+        }
+        this.$refs.table.refresh(form)
+
       })
     },
 

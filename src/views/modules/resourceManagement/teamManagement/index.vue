@@ -7,7 +7,7 @@
             <el-form-item label="团队名称:" prop="teamName">
               <el-input v-model="dataForm.teamName" placeholder="输入关键字" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="团队负责人:" prop="managerIds" style="width: 240px !important;">
+            <el-form-item label="团队负责人:" prop="managerIds" >
               <el-select  v-model="dataForm.managerIds" placeholder="请选择" >
                 <el-option      v-for="manager in managerList"
                                 :key="manager.empId"
@@ -39,6 +39,13 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="状态:" prop="state" >
+              <el-select  v-model="dataForm.state" placeholder="请选择">
+                <el-option key="正常" label="正常" value="正常"></el-option>
+                <el-option key="解散" label="解散" value="解散"></el-option>
+              </el-select>
+            </el-form-item>
+            <br/>
             <el-form-item label="创建时间:" prop="createTime" style="width: 290px !important;">
               <el-date-picker
                 style="width: 220px;"
@@ -50,12 +57,6 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期">
               </el-date-picker>
-            </el-form-item>
-            <el-form-item label="状态:" prop="state" >
-              <el-select  v-model="dataForm.state" placeholder="请选择">
-                <el-option key="正常" label="正常" value="正常"></el-option>
-                <el-option key="解散" label="解散" value="解散"></el-option>
-              </el-select>
             </el-form-item>
             <div style="display: contents;">
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px;margin-left: 100px">查询
@@ -125,11 +126,11 @@
 
             <el-form-item label="团队级别:" prop="teamLevel" :rules="[ { required: true, message: '团队级别不能为空'}]">
               <el-select  v-model="editDataForm.teamLevel" placeholder="请选择" @change="showParentStatus">
-                <el-option key="1" label="一集团队" :value="1"></el-option>
+                <el-option key="1" label="一级团队" :value="1"></el-option>
                 <el-option key="2" label="二级团队" :value='2'></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="父团队:" prop="parentId"  v-if="showParent" :rules="[ { required: this.showParentRule, message: '二级团队的父团队不能为空'}]">
+            <el-form-item label="上级团队:" prop="parentId"  v-if="showParent" :rules="[ { required: this.showParentRule, message: '二级团队的父团队不能为空'}]">
               <el-select  v-model="editDataForm.parentId" placeholder="请选择" >
                 <el-option      v-for="team in parentTeam"
                                 :key="team.id"
@@ -166,8 +167,8 @@
             </el-form-item>
 
 
-            <el-form-item label="团队驻地:" prop="stationId">
-              <el-select v-model="editDataForm.stationId" filterable clearable placeholder="请选择" @change="getTeamId">
+            <el-form-item label="团队驻地:" prop="stationId" :rules="[ { required: true, message: '驻地不能为空'}]">
+              <el-select v-model="editDataForm.stationId" filterable clearable  placeholder="请选择" @change="getTeamId" >
                 <el-option v-for="location in empLocations"
                            :key="location.id"
                            :label="location.name"
@@ -196,7 +197,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="创建时间:" prop="createTime" >
+            <el-form-item label="创建时间:" prop="createTime"  :rules="[ { required: true, message: '创建不能为空'}]">
               <el-date-picker
                 style="width: 130px"
                 value-format="yyyy-MM-dd"
@@ -254,28 +255,28 @@ export default {
       title: '',
       createTime:'',
       dataForm: {
-        managerIds: '',
-        teamName: '',
-        teamId:'',
-        stationIds:'',
-        createTimeEnd:'',
-        createTimeStart:'',
-        state:''
+        managerIds: ''||undefined,
+        teamName: ''||undefined,
+        teamId:''||undefined,
+        stationIds:''||undefined,
+        createTimeEnd:''||undefined,
+        createTimeStart:''||undefined,
+        state:''||undefined
       },
       editDataForm: {
-        id:'',
-        createTime:'',
-        createUser:'',
-        managerId: '',
-        state: '',
-        stationId:'',
-        teamId:'',
-        teamMembers:'',
-        teamName:'',
-        state:'',
-        deptId:'',
-        teamLevel:'',
-        parentId:'',
+        id:''||undefined,
+        createTime:""|| undefined,
+        createUser:''|| undefined,
+        managerId: ''|| undefined,
+        state: ''|| undefined,
+        stationId:''|| undefined,
+        teamId:''|| undefined,
+        teamMembers:''|| undefined,
+        teamName:''|| undefined,
+        state:''|| undefined,
+        deptId:''|| undefined,
+        teamLevel:''|| undefined,
+        parentId:''|| undefined
 
       },
 
@@ -286,7 +287,7 @@ export default {
           {label: '团队负责人', prop: 'managerName'},
           {label: '团队编码', prop: 'teamId'},
           {label: '团队级别', prop: 'teamLevelName'},
-          {label: '父级团队', prop: 'parentName'},
+          {label: '上级团队', prop: 'parentName'},
           {label: '驻地', prop: 'stationName'},
           {label: '归属部门', prop: 'deptName'},
           {label: '团队成员', prop: 'teamNum'},
@@ -416,11 +417,24 @@ export default {
       if(this.editDataForm.departDate=='-'){
         this.editDataForm.departDate = ''
       }
+
+
+      // 过滤空值参数
+      const params = Object.assign({}, this.editDataForm);
+      for (const key in params) {
+        if (!params[key]) {
+          delete params[key];
+        }
+      }
+
+
+      console.log(params)
+
       this.$http({
         url: this.$http.adornUrl(this.url),
         method: 'post',
         data: this.$http.adornData(
-          this.editDataForm
+          params
         )
       }).then(({ data }) => {
         if (data.success) {
@@ -456,6 +470,7 @@ export default {
       this.departStatusNameShow = false
       this.clear(this.editDataForm)
       this.url = '/team/add'
+      this.showParent = false
     },
     alter(row) {
       this.freshMembersWithEdit(row.item.id)
@@ -464,6 +479,12 @@ export default {
       this.drawer = true
       this.url = '/team/update'
       this.departStatusNameShow = true
+
+      if(row.item.teamLevel==1){
+        this.showParent = false
+      }else{
+        this.showParent = true
+      }
     },
     onSelect(selection){
       this.deleteIds = []
