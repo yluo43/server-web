@@ -62,9 +62,9 @@
             <el-form-item label="目的城市:" prop="backCitys">
               <el-select v-model="dataForm.backCitys" filterable clearable placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option v-for="location in empLocations"
-                           :key="location.id"
+                           :key="location.name"
                            :label="location.name"
-                           :value="location.id"
+                           :value="location.name"
                 >
                 </el-option>
               </el-select>
@@ -297,7 +297,7 @@ export default {
           {label: '成本中心', prop: 'costCenter'},
           {label: '出发日期', prop: 'startDate'},
           {label: '返回日期', prop: 'backDate'},
-          {label: '目的城市', prop: 'backCitys'},
+          {label: '目的城市', prop: 'backCity'},
           {label: '事由', prop: 'reason'},
           {label: '宾馆名称', prop: 'hotelName'},
           {label: '出差合计(元)', prop: 'totalMoney',slotName: 'totalMoney'},
@@ -475,8 +475,10 @@ export default {
         this.$message.error('当前未选中任何报销数据！')
         return ;
       }
-      this.dataForm.ids = this.deleteIds
-      this.$http.downloadPost(this.$http.adornUrl('/tripCost/export'), this.$http.adornParams(this.dataForm), this)
+
+      let form  = {...this.dataForm}
+      form.ids = this.deleteIds
+      this.$http.downloadPost(this.$http.adornUrl('/tripCost/export'), this.$http.adornParams(form), this)
 
     },
     onSelect(selection){
@@ -530,9 +532,9 @@ export default {
       this.startDate = ''
       this.dataForm.startDateStart = ''
       this.dataForm.startDateEnd = ''
-      this.endDate = ''
-      this.dataForm.endDateStart = ''
-      this.dataForm.endDateStart = ''
+      this.backDate = ''
+      this.dataForm.backDateStart = ''
+      this.dataForm.backDateStart = ''
 
     }
   }

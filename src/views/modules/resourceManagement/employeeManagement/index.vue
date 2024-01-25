@@ -212,6 +212,8 @@
 
             <el-form-item label="技术级别:" prop="empLevel" >
               <el-select  v-model="editDataForm.empLevel" placeholder="请选择" >
+                <el-option key="0" label="0" value="0"></el-option>
+                <el-option key="1" label="1" value="1"></el-option>
                 <el-option key="2" label="2" value="2"></el-option>
                 <el-option key="3" label="3" value="3"></el-option>
                 <el-option key="4" label="4" value="4"></el-option>
@@ -237,15 +239,15 @@
               </el-date-picker>
             </el-form-item>
 
-            <el-form-item label="状态:" prop="departStatusName" v-if="departStatusNameShow">
-              <el-select  v-model="editDataForm.departStatusName" placeholder="请选择" @change="showEntryDate">
-                <el-option key="在职" label="在职" value="在职"></el-option>
-                <el-option key="离职" label="离职" value="离职"></el-option>
+            <el-form-item label="状态:" prop="departStatus" v-if="departStatusNameShow">
+              <el-select  v-model="editDataForm.departStatus" placeholder="请选择" @change="showEntryDate">
+                <el-option key="1" label="在职" :value="'1'"></el-option>
+                <el-option key="0" label="离职" :value="'0'"></el-option>
               </el-select>
             </el-form-item>
 
 
-            <el-form-item label="离职时间:" prop="entryDate"  v-if="entryDateShow" >
+            <el-form-item label="离职时间:" prop="departDate"  v-if="entryDateShow" :rules="[ { required: entryDateInput, message: '岗位为空'}]">
               <el-date-picker
                 style="width: 130px"
                 value-format="yyyy-MM-dd"
@@ -276,6 +278,7 @@ export default {
 
   data() {
     return {
+      entryDateInput:false,
       disabled:false,
       title:'',
       chooseStr:'已选择 0 项',
@@ -312,12 +315,12 @@ export default {
         teamId:'',
         roleId:'',
         entryDate:'',
-        departStatusName:'',
         departDate:'',
         createUser:'',
         updateUser:'',
         positionType:'',
-        empLevel:''
+        empLevel:'',
+        departStatus:''
       },
       deptNames:[],
       empLocations:[],
@@ -429,7 +432,7 @@ export default {
         if (data.success) {
           this.refresh()
           this.$message({
-            message: '编辑成功！',
+            message: '操作成功！',
             type: 'success'
           });
           this.drawer = false
@@ -440,6 +443,10 @@ export default {
     },
     alter(row){
       this.editDataForm = {...row.item}
+      if(this.editDataForm.departDate=='-'){
+        this.editDataForm.departDate = ''
+      }
+
       this.drawer = true
       this.title = '编辑'
       this.departStatusNameShow = true
@@ -449,10 +456,12 @@ export default {
 
     },
     showEntryDate(){
-      if(this.editDataForm.departStatusName == '离职'){
+      if(this.editDataForm.departStatus == '0'){
         this.entryDateShow = true
+        this.entryDateInput = true
       }else{
         this.entryDateShow = false
+        this.entryDateInput = true
       }
     },
     add(){
@@ -461,7 +470,7 @@ export default {
       this.url = '/employee/insertEmployee'
       this.clear(this.editDataForm)
       this.disabled = false
-
+      this.departStatusNameShow = false
 
     },
 
@@ -556,7 +565,7 @@ export default {
         this.$message.error('当前未选中任何报销数据！')
         return ;
       }
-      this.$confirm('已选中'+this.deleteIds.length+'条报销数据,您确定删除吗?', '提示', {
+      this.$confirm('已选中'+this.deleteIds.length+'位成员,确认批量删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -589,8 +598,10 @@ export default {
         this.$message.error('当前未选中任何员工数据！')
         return ;
       }
-      this.dataForm.ids = this.deleteIds
-      this.$http.downloadPost(this.$http.adornUrl('/employee/export'), this.$http.adornParams(this.dataForm), this)
+
+      let form = {...this.dataForm}
+      form.ids = this.deleteIds
+      this.$http.downloadPost(this.$http.adornUrl('/employee/export'), this.$http.adornParams(form), this)
 
     },
 

@@ -86,8 +86,8 @@
             </el-form-item>
 
 
-            <el-form-item label="状态" prop="state">
-              <el-select  v-model="editDataForm.state" placeholder="请选择" >
+            <el-form-item label="状态" prop="state" v-if="showStatus">
+              <el-select  v-model="editDataForm.state" placeholder="请选择"  >
                 <el-option :key="1" label="解散" :value="1"></el-option>
                 <el-option :key="0" label="正常" :value="0"></el-option>
 
@@ -120,6 +120,7 @@ import baseDialog from '../../base/baseDialog'
 export default {
   data() {
     return {
+      showStatus:false,
       drawer:false,
       direction: 'rtl',
       title: '',
@@ -147,7 +148,7 @@ export default {
           // {label: '部门负责人', prop: 'managerId',width: "120px",slotName: 'managerSlot'},
           {label: '部门经理', prop: 'managerName'},
           {label: '部门助理', prop: 'assistantName'},
-          {label: '上级部门', prop: 'parentId',width: "120px",slotName:'parentId'},
+          {label: '上级部门', prop: 'parentName',width: "120px"},
           // {label: '上级部门', prop: 'pDeptName'},
           {label: '操作', prop: 'clientType', slotName: 'clientType'}
         ],
@@ -218,21 +219,14 @@ export default {
       return name;
     },
     refresh() {
-
       this.$refs.table.refresh(this.dataForm)
-
-      // this.$refs.dataForm.validate((valid) => {
-      //   if (!valid) {
-      //     return false
-      //   }
-      //   this.$refs.table.refresh(this.dataForm)
-      // })
     },
     add() {
       this.title = '部门添加'
       this.drawer = true
       this.op = 'add'
       this.clear(this.editDataForm)
+      this.showStatus = false
 
     },
     // 新增
@@ -246,7 +240,6 @@ export default {
         return ;
       }
 
-
       let url
       if(this.op=='add'){
         url = '/deptInfo/add'
@@ -255,13 +248,14 @@ export default {
       }
 
       this.managerList.forEach(manager =>{
-        if(manager.empId == this.editDataForm.managerId){
+        if(manager.id == this.editDataForm.managerId){
           this.editDataForm.managerName = manager.name
         }
       })
 
       if(this.editDataForm.parentId==''||this.editDataForm.parentId==null){
         this.editDataForm.parentId = 0
+        this.editDataForm.parentName = '新讯数字科技有限公司'
       }
 
       this.$http({
@@ -287,7 +281,7 @@ export default {
       this.title = '部门编辑'
       this.drawer = true
       this.op = 'alter'
-
+      this.showStatus = true
       this.editDataForm = {...row.item}
 
     },

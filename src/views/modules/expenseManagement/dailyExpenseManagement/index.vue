@@ -141,7 +141,7 @@
             <el-form-item label="日期:" prop="empId" disabled="disabled">
               <el-input v-model="editDataForm.costDate" clearable disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label="事由:" prop="reason" maxlength="50">
+            <el-form-item label="事由:" prop="reason" maxlength="50" >
               <el-input v-model="editDataForm.reason" clearable ></el-input>
 
               <!--              <el-select  v-model="editDataForm.reason"  >-->
@@ -426,8 +426,10 @@ export default {
         this.$message.error('当前未选中任何报销数据！')
         return ;
       }
-      this.dataForm.ids = this.deleteIds
-      this.$http.downloadPost(this.$http.adornUrl('/dailyCost/export'), this.$http.adornParams(this.dataForm), this)
+      let form = {...this.dataForm}
+
+      form.ids = this.deleteIds
+      this.$http.downloadPost(this.$http.adornUrl('/dailyCost/export'), this.$http.adornParams(form), this)
     },
     onSelect(selection){
       this.deleteIds = []
