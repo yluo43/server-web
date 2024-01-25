@@ -60,7 +60,7 @@
             </el-form-item>
 
             <el-form-item label="目的城市:" prop="backCitys">
-              <el-select v-model="editDataForm.backCitys" filterable clearable placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.backCitys" filterable clearable placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option v-for="location in empLocations"
                            :key="location.id"
                            :label="location.name"
@@ -525,8 +525,15 @@ export default {
     resetForm() {
       this.$refs.dataForm.resetFields()
       this.createTime =''
+      this.dataForm.createTimeStart = ''
+      this.dataForm.createTimeEnd = ''
       this.startDate = ''
+      this.dataForm.startDateStart = ''
+      this.dataForm.startDateEnd = ''
       this.endDate = ''
+      this.dataForm.endDateStart = ''
+      this.dataForm.endDateStart = ''
+
     }
   }
 }

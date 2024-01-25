@@ -7,9 +7,13 @@
             <el-form-item label="部门名称:" prop="account">
               <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
-<!--            <el-form-item label="部门负责人:" prop="phone">-->
-<!--              <el-input v-model="dataForm.managerName" placeholder="请输入部门负责人" clearable></el-input>-->
+
+<!--            <el-form-item label="部门名称:" prop="account">-->
+<!--              <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>-->
 <!--            </el-form-item>-->
+
+
+
             <div style="display: contents;">
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
               </el-button>
@@ -71,7 +75,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="上级部门" prop="parentId">
+            <el-form-item label="上级部门" prop="parentId" >
               <el-select  v-model="editDataForm.parentId" placeholder="请选择上级部门" >
                 <el-option      v-for="item in deptList"
                                 :key="item.id"
@@ -79,6 +83,20 @@
                                 :value="item.id">
                 </el-option>
               </el-select>
+            </el-form-item>
+
+
+            <el-form-item label="状态" prop="state">
+              <el-select  v-model="editDataForm.state" placeholder="请选择" >
+                <el-option :key="1" label="解散" :value="1"></el-option>
+                <el-option :key="0" label="正常" :value="0"></el-option>
+
+              </el-select>
+            </el-form-item>
+
+
+            <el-form-item label="说明" prop="remarks">
+              <el-input v-model="editDataForm.remarks"  placeholder="请输入部门说明" clearable maxlength="50"></el-input>
             </el-form-item>
 
 
@@ -115,7 +133,9 @@ export default {
         managerId:'',
         assistantId:'',
         parentId:'',
-        managerName:''
+        managerName:'',
+        status:'',
+        remarks:''
       },
       deptList:[],
       managerList:[],
@@ -239,6 +259,11 @@ export default {
           this.editDataForm.managerName = manager.name
         }
       })
+
+      if(this.editDataForm.parentId==''||this.editDataForm.parentId==null){
+        this.editDataForm.parentId = 0
+      }
+
       this.$http({
         url: this.$http.adornUrl(url),
         method: 'post',

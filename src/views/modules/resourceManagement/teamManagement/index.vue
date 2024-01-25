@@ -24,12 +24,12 @@
             </el-form-item>
 
             <el-form-item label="驻地:" prop="stationIds">
-              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择">
+              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptNames">
-              <el-select  v-model="dataForm.deptNames" placeholder="请选择" >
+            <el-form-item label="归属部门:" prop="deptIds">
+              <el-select  v-model="dataForm.deptIds" placeholder="请选择" :multiple="true" :collapse-tags="true"  >
                 <el-option      v-for="dept in deptList"
                                 :key="dept.id"
                                 :label="dept.name"
@@ -41,11 +41,10 @@
             </el-form-item>
             <el-form-item label="状态:" prop="state" >
               <el-select  v-model="dataForm.state" placeholder="请选择">
-                <el-option key="正常" label="正常" value="正常"></el-option>
-                <el-option key="解散" label="解散" value="解散"></el-option>
+                <el-option key="0" label="正常" value="0"></el-option>
+                <el-option key="1" label="解散" value="1"></el-option>
               </el-select>
             </el-form-item>
-            <br/>
             <el-form-item label="创建时间:" prop="createTime" style="width: 290px !important;">
               <el-date-picker
                 style="width: 220px;"
@@ -83,29 +82,6 @@
             <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
           </template>
         </template>
-
-
-
-<!--        <template v-slot:teamNum="row">-->
-<!--          <template >-->
-<!--            <el-popover-->
-<!--              placement="top-start"-->
-<!--              width="200"-->
-<!--              trigger="hover">-->
-<!--              <div class="custom-content">-->
-<!--                {{row.item.teamMembers}}-->
-<!--              </div>-->
-<!--              <span slot="reference">{{row.item.teamNum}}</span>-->
-<!--            </el-popover>-->
-
-<!--          </template>-->
-<!--        </template>-->
-
-
-
-
-
-
       </baseTable>
 
 
@@ -261,7 +237,8 @@ export default {
         stationIds:''||undefined,
         createTimeEnd:''||undefined,
         createTimeStart:''||undefined,
-        state:''||undefined
+        state:''||undefined,
+        deptIds:[]||undefined
       },
       editDataForm: {
         id:''||undefined,
@@ -417,8 +394,6 @@ export default {
       if(this.editDataForm.departDate=='-'){
         this.editDataForm.departDate = ''
       }
-
-
       // 过滤空值参数
       const params = Object.assign({}, this.editDataForm);
       for (const key in params) {
@@ -427,8 +402,6 @@ export default {
         }
       }
 
-
-      console.log(params)
 
       this.$http({
         url: this.$http.adornUrl(this.url),
@@ -452,16 +425,22 @@ export default {
       })
     },
     refresh() {
+      if(this.createTime!=null&&this.createTime!=""){
+        this.dataForm.createTimeStart = this.createTime[0]
+        this.dataForm.createTimeEnd = this.createTime[1]
 
-      this.$refs.table.refresh(this.dataForm)
+      }
 
+      let form ={...this.dataForm}
+      if(form.deptIds.length>0){
+        form.deptIds =form.deptIds +''
+      }
 
-      // this.$refs.dataForm.validate((valid) => {
-      //   if (!valid) {
-      //     return false
-      //   }
-      //   this.$refs.table.refresh(this.dataForm)
-      // })
+      if(form.stationIds.length>0){
+        form.stationIds =form.stationIds +''
+      }
+
+      this.$refs.table.refresh(form)
     },
     add() {
       this.freshMembers()
@@ -475,6 +454,10 @@ export default {
     alter(row) {
       this.freshMembersWithEdit(row.item.id)
       this.editDataForm = {...row.item}
+      if(row.item.parentId==0){
+        this.editDataForm.parentId=''
+
+      }
       this.title = '编辑团队'
       this.drawer = true
       this.url = '/team/update'
@@ -485,6 +468,9 @@ export default {
       }else{
         this.showParent = true
       }
+
+
+
     },
     onSelect(selection){
       this.deleteIds = []
@@ -540,8 +526,11 @@ export default {
         this.$message.error('当前未选中任何团队数据！')
         return ;
       }
-      this.dataForm.ids = this.deleteIds
-      this.$http.downloadPost(this.$http.adornUrl('/team/export'), this.$http.adornParams(this.dataForm), this)
+      let form = {...this.dataForm}
+      form.ids = this.deleteIds
+
+
+      this.$http.downloadPost(this.$http.adornUrl('/team/export'), this.$http.adornParams(form), this)
 
     },
 
@@ -580,6 +569,9 @@ export default {
     },
     resetForm() {
       this.$refs.dataForm.resetFields()
+      this.dataForm.createTimeStart =''
+      this.dataForm.createTimeEnd =''
+      this.createTime = ''
     },
     freshParentTeam(){
       //初始化parentTeam

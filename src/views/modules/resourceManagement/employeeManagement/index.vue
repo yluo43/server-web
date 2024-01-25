@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%;">
     <el-container >
-      <el-header style=" height: 130px">
+      <el-header style=" height: 165px">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist" >
             <el-form-item label="姓名:" prop="name">
@@ -13,13 +13,13 @@
             <el-form-item label="邮箱:" prop="mailbox">
               <el-input v-model="dataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="驻地:" prop="empLocation">
-              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择">
+            <el-form-item label="驻地:" prop="stationIds">
+              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptNames">
-              <el-select  v-model="dataForm.deptIds" placeholder="请选择" >
+            <el-form-item label="归属部门:" prop="deptIds">
+              <el-select  v-model="dataForm.deptIds" placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option      v-for="dept in deptNames"
                                 :key="dept.id"
                                 :label="dept.name"
@@ -29,8 +29,8 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="归属团队:" prop="teamNames">
-              <el-select  v-model="dataForm.teamIds" placeholder="请选择" >
+            <el-form-item label="归属团队:" prop="teamIds">
+              <el-select  v-model="dataForm.teamIds" placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option      v-for="team in teamNames"
                                 :key="team.id"
                                 :label="team.name"
@@ -40,8 +40,8 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="角色:" prop="roleName">
-              <el-select  v-model="dataForm.roleIds" placeholder="请选择" >
+            <el-form-item label="角色:" prop="roleIds">
+              <el-select  v-model="dataForm.roleIds" placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option      v-for="role in roleNames"
                                 :key="role.id"
                                 :label="role.name"
@@ -56,7 +56,7 @@
                 style="width: 220px;"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
-                v-model="dataForm.entryDate"
+                v-model="entryDate"
                 type="daterange"
                 range-separator="~"
                 start-placeholder="开始日期"
@@ -68,16 +68,55 @@
                 style="width: 220px;"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
-                v-model="dataForm.departDate"
+                v-model="departDate"
                 type="daterange"
                 range-separator="~"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
+
+            <el-form-item label="状态:" prop="departStatus" >
+              <el-select  v-model="dataForm.departStatus" placeholder="请选择" @change="showEntryDate">
+                <el-option key="1" label="在职" value="1"></el-option>
+                <el-option key="0" label="离职" value="0"></el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="岗位类型:" prop="positionTypes" >
+              <el-select  v-model="dataForm.positionTypes" placeholder="请选择" :multiple="true" :collapse-tags="true">
+                <el-option key="0" label="A岗" :value="0"></el-option>
+                <el-option key="1" label="B岗" :value="1"></el-option>
+                <el-option key="2" label="外包" :value="2"></el-option>
+                <el-option key="3" label="学生" :value="3"></el-option>
+                <el-option key="4" label="实习" :value="4"></el-option>
+                <el-option key="5" label="兼职" :value="5"></el-option>
+
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="技术级别:" prop="empLevels" >
+              <el-select  v-model="dataForm.empLevels" placeholder="请选择" :multiple="true" :collapse-tags="true">
+                <el-option key="2" label="2" value="2"></el-option>
+                <el-option key="3" label="3" value="3"></el-option>
+                <el-option key="4" label="4" value="4"></el-option>
+                <el-option key="5" label="5" value="5"></el-option>
+                <el-option key="6-" label="6-" value="6-"></el-option>
+                <el-option key="6" label="6" value="6"></el-option>
+                <el-option key="6+" label="6+" value="6+"></el-option>
+                <el-option key="7" label="7" value="7"></el-option>
+                <el-option key="8" label="8" value="8"></el-option>
+                <el-option key="9" label="9" value="9"></el-option>
+              </el-select>
+            </el-form-item>
+
+
+
+
             <div style="display: contents;">
-              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
-              </el-button>
+              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
+              <el-button type="primary" @click="resetForm()" icon="el-icon-search" style="margin-right: 20px">重置</el-button>
+
             </div>
           </div>
         </el-form>
@@ -102,7 +141,7 @@
         :title="title"
         :visible.sync="drawer"
         :direction="direction"
-        size="18%"
+        size="21%"
       >
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
@@ -161,9 +200,13 @@
 
             <el-form-item label="岗位类型:" prop="positionType" :rules="[ { required: true, message: '岗位为空'}]">
               <el-select  v-model="editDataForm.positionType" placeholder="请选择" >
-                <el-option key="1" label="岗位1" :value="1"></el-option>
-                <el-option key="2" label="岗位2" :value="2"></el-option>
-                <el-option key="3" label="岗位3" :value="3"></el-option>
+                <el-option key="0" label="A岗" :value="0"></el-option>
+                <el-option key="1" label="B岗" :value="1"></el-option>
+                <el-option key="2" label="外包" :value="2"></el-option>
+                <el-option key="3" label="学生" :value="3"></el-option>
+                <el-option key="4" label="实习" :value="4"></el-option>
+                <el-option key="5" label="兼职" :value="5"></el-option>
+
               </el-select>
             </el-form-item>
 
@@ -247,14 +290,17 @@ export default {
         name: '',
         empId: '',
         mailbox: '',
-        stationIds:'',
-        deptIds:'',
-        teamIds:'',
-        roleIds:'',
+        stationIds:[],
+        deptIds:[],
+        teamIds:[],
+        roleIds:[],
         entryDateStart:'',
         entryDateEnd:'',
         departDateStart:'',
-        departDateEnd:''
+        departDateEnd:'',
+        positionTypes:[],
+        empLevels:[],
+        departStatus:''
       },
       editDataForm: {
         id:'',
@@ -367,14 +413,11 @@ export default {
         return ;
       }
 
-
-
       let user =getCName()
       this.editDataForm.createUser= user
       if(this.editDataForm.departDate=='-'){
         this.editDataForm.departDate = undefined
       }
-
 
       this.$http({
         url: this.$http.adornUrl(this.url),
@@ -402,6 +445,7 @@ export default {
       this.departStatusNameShow = true
       this.url = '/employee/updateEmployee'
       this.disabled = true
+      this.showEntryDate()
 
     },
     showEntryDate(){
@@ -426,21 +470,56 @@ export default {
         if (!valid) {
           return false
         }
-        this.$refs.table.refresh(this.dataForm)
+
+        if(this.departDate!=null&&this.departDate!=""){
+          this.dataForm.departDateStart = this.departDate[0]
+          this.dataForm.departDateEnd = this.departDate[1]
+
+        }
+
+        if(this.entryDate!=null&&this.entryDate!=""){
+          this.dataForm.entryDateStart = this.entryDate[0]
+          this.dataForm.entryDateEnd = this.entryDate[1]
+
+        }
+
+
+
+
+        let form ={...this.dataForm}
+        if(form.positionTypes.length>0){
+          form.positionTypes =form.positionTypes +''
+        }
+
+        if(form.roleIds.length>0){
+          form.roleIds =form.roleIds +''
+        }
+        if(form.stationIds.length>0){
+          form.stationIds =form.stationIds +''
+        }
+        if(form.teamIds.length>0){
+          form.teamIds =form.teamIds +''
+        }
+        if(form.empLevels.length>0){
+          form.empLevels =form.empLevels +''
+        }
+
+        if(form.deptIds.length>0){
+          form.deptIds =form.deptIds +''
+        }
+
+        this.$refs.table.refresh(form)
       })
     },
     deleteList(row) {
-      this.deleteIds = []
-      this.deleteIds.push(row.item.id)
       this.$confirm('确定删除吗（'+row.item.name+'）吗', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/employee/deleteEmployee'),
-          method: 'post',
-          data: this.deleteIds
+          url: this.$http.adornUrl('/employee/deleteEmployee?id='+row.item.id),
+          method: 'get'
         }).then(({data}) => {
           if (data && data.code === 200) {
             this.$message({
@@ -483,7 +562,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$http({
-          url: this.$http.adornUrl('/employee/deleteEmployee'),
+          url: this.$http.adornUrl('/employee/deleteEmployees'),
           method: 'post',
           data: this.deleteIds
         }).then(({data}) => {
@@ -516,6 +595,13 @@ export default {
     },
 
     resetForm() {
+      this.departDate = ''
+      this.entryDate = ''
+      this.dataForm.departDateStart = ''
+      this.dataForm.departDateEnd = ''
+      this.dataForm.entryDateStart = ''
+      this.dataForm.entryDateEnd = ''
+
       this.$refs.dataForm.resetFields()
     },
     clear(form){
@@ -557,7 +643,7 @@ export default {
   width: 80px !important;
 }
 ::v-deep .editForm .el-form-item{
-  width: 100% !important;
+  width: 95% !important;
 }
 ::v-deep  .el-date-editor .el-input__inner{
     padding-left: 30px !important;

@@ -141,7 +141,7 @@
             <el-form-item label="日期:" prop="empId" disabled="disabled">
               <el-input v-model="editDataForm.costDate" clearable disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label="事由:" prop="reason">
+            <el-form-item label="事由:" prop="reason" maxlength="50">
               <el-input v-model="editDataForm.reason" clearable ></el-input>
 
               <!--              <el-select  v-model="editDataForm.reason"  >-->
