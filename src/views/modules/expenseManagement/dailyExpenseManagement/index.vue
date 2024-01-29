@@ -17,6 +17,7 @@
                                 :label="dept"
                                 :value="dept"
                                 multiple="true"
+                                :disabled='dept =="新讯数字科技有限公司"'
                 >
                 </el-option>
               </el-select>
@@ -39,6 +40,7 @@
                                 :label="costCenter"
                                 :value="costCenter"
                                 multiple="true"
+                                :disabled='costCenter =="新讯数字科技有限公司"'
                 >
                 </el-option>
               </el-select>
@@ -112,7 +114,7 @@
         title="编辑"
         :visible.sync="drawer"
         :direction="direction"
-        size="17%"
+        size="23%"
         >
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
@@ -122,10 +124,10 @@
             <el-form-item label="工号:" prop="empId">
               <el-input v-model="editDataForm.empId" clearable disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="backCitys">
+            <el-form-item label="归属部门:" prop="deptName">
               <el-input v-model="editDataForm.deptName" clearable disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label="归属团队:" prop="backCitys">
+            <el-form-item label="归属团队:" prop="teamName">
               <el-input v-model="editDataForm.teamName" clearable disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="成本中心:" prop="costCenters">
@@ -133,8 +135,8 @@
                 <el-option      v-for="costCenter in costCenters"
                                 :key="costCenter"
                                 :label="costCenter"
-                                :value="costCenter"
-                                multiple="true">
+                                :value="costCenter" :disabled='costCenter =="新讯数字科技有限公司"'
+                                multiple="true" >
                 </el-option>
               </el-select>
             </el-form-item>

@@ -8,31 +8,22 @@
               <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
 
-<!--            <el-form-item label="部门名称:" prop="account">-->
-<!--              <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>-->
-<!--            </el-form-item>-->
-
-
 
             <div style="display: contents;">
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
               </el-button>
-              <el-button class="el-button-func" type="primary" @click="add()">添加部门</el-button>
-
-              <!--              <el-button type="primary" @click="resetForm()" icon="el-icon-search">重置</el-button>-->
+              <el-button class="el-button-func" type="primary" @click="add()"  v-auth="'deptInfo:add'">添加部门</el-button>
             </div>
           </div>
         </el-form>
       </el-header>
-<!--      <div style="padding:0 0 10px 2px;">-->
-<!--        <el-button class="el-button-func" type="primary" @click="add()">添加部门</el-button>-->
-<!--      </div>-->
+
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" >
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
 <!--            <svg-icon :icon-class="'delete'" style="height:1.5em;width:1.5em; margin-right: 2em;" @click="deleteList(row)"/>-->
-            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
+            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"  v-auth="'deptInfo:update'"/>
           </template>
         </template>
         <template v-slot:parentId="row">
@@ -256,6 +247,14 @@ export default {
       if(this.editDataForm.parentId==''||this.editDataForm.parentId==null){
         this.editDataForm.parentId = 0
         this.editDataForm.parentName = '新讯数字科技有限公司'
+      }else{
+        this.deptList.forEach(dept=>{
+          if(dept.id==this.editDataForm.parentId){
+            this.editDataForm.parentName = dept.deptName
+          }
+        })
+
+
       }
 
       this.$http({

@@ -16,6 +16,7 @@
                                 :label="costCenter"
                                 :value="costCenter"
                                 multiple="true"
+                                :disabled='costCenter =="新讯数字科技有限公司"'
                 >
                 </el-option>
               </el-select>
@@ -27,6 +28,7 @@
                               :label="dept"
                               :value="dept"
                               multiple="true"
+                              :disabled='dept =="新讯数字科技有限公司"'
               >
               </el-option>
               </el-select>
@@ -173,11 +175,11 @@
             <el-form-item label="工号:" prop="empId">
               <el-input v-model="editDataForm.empId" clearable disabled="disabled" maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="backCitys">
+            <el-form-item label="归属部门:" prop="deptName">
               <el-input v-model="editDataForm.deptName" clearable disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label="归属团队:" prop="backCitys">
-              <el-input v-model="editDataForm.teamNames" clearable disabled="disabled"></el-input>
+            <el-form-item label="归属团队:" prop="teamName">
+              <el-input v-model="editDataForm.teamName" clearable disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="成本中心:" prop="costCenters">
               <el-select  v-model="editDataForm.costCenter"  >
@@ -185,7 +187,9 @@
                                 :key="costCenter"
                                 :label="costCenter"
                                 :value="costCenter"
-                                multiple="true">
+                                multiple="true"
+                                :disabled='costCenter =="新讯数字科技有限公司"'
+                >
                 </el-option>
               </el-select>
             </el-form-item>
@@ -195,8 +199,8 @@
             <el-form-item label="返回日期:" prop="empId">
               <el-input v-model="editDataForm.backDate" clearable disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label="目的城市:" prop="backCitys">
-              <el-input v-model="editDataForm.backCitys" clearable disabled="disabled"></el-input>
+            <el-form-item label="目的城市:" prop="backCity">
+              <el-input v-model="editDataForm.backCity" clearable disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="事由:" prop="reason">
               <el-select  v-model="editDataForm.reason"  >
@@ -281,7 +285,8 @@ export default {
         teamNames: '',
         hotelName:'',
         totalMoney:'',
-        updateUser:''
+        updateUser:'',
+        backCity:''
       },
       costCenters:[],
       deptNames:[],

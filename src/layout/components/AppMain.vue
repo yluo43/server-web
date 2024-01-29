@@ -27,7 +27,7 @@ export default {
     erd.listenTo(document.getElementById('left-tree'), function(element) {
       that.$nextTick(function() {
         // 重新加载水印
-        setWaterMark(getCName(), '')
+        //setWaterMark(getCName(), '')
       })
     })
   },

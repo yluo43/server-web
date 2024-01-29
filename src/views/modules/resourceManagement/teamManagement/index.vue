@@ -35,6 +35,7 @@
                                 :label="dept.name"
                                 :value="dept.id"
                                 multiple="true"
+                                :disabled='dept.name =="新讯数字科技有限公司"'
                 >
                 </el-option>
               </el-select>
@@ -66,9 +67,9 @@
         </el-form>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr"></span>
-          <span style="color:blue;margin-left: 100px" @click="batchDelete()"> 批量删除 </span>
-          <span style="color:blue;margin-left: 20px" @click="download()"> 批量下载 </span>
-          <span style="color:blue;margin-left: 20px" @click="add()"> 新建团队 </span>
+          <span style="color:blue;margin-left: 100px" @click="batchDelete()" v-auth="'team:deletes'"> 批量删除 </span>
+          <span style="color:blue;margin-left: 20px" @click="download()" v-auth="'team:export'"> 批量下载 </span>
+          <span style="color:blue;margin-left: 20px" @click="add()" v-auth="'team:add'"> 新建团队 </span>
 
         </div>
       </el-header>
@@ -78,8 +79,8 @@
           <!--类型插槽-->
           <template>
             <svg-icon :icon-class="'delete'" style="height:1.5em;width:1.5em; margin-right: 2em;"
-                      @click="deleteList(row)"/>
-            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
+                      @click="deleteList(row)" v-auth="'team:delete'"/>
+            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"  v-auth="'team:update'"/>
           </template>
         </template>
       </baseTable>
@@ -137,6 +138,7 @@
                                 :label="dept.name"
                                 :value="dept.id"
                                 multiple="true"
+                                :disabled='dept.name =="新讯数字科技有限公司"'
                 >
                 </el-option>
               </el-select>

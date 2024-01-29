@@ -25,6 +25,7 @@
                                 :label="dept.name"
                                 :value="dept.id"
                                 multiple="true"
+                                :disabled='dept.name =="新讯数字科技有限公司"'
                 >
                 </el-option>
               </el-select>
@@ -85,18 +86,20 @@
 
             <el-form-item label="岗位类型:" prop="positionTypes" >
               <el-select  v-model="dataForm.positionTypes" placeholder="请选择" :multiple="true" :collapse-tags="true">
-                <el-option key="0" label="A岗" :value="0"></el-option>
-                <el-option key="1" label="B岗" :value="1"></el-option>
-                <el-option key="2" label="外包" :value="2"></el-option>
-                <el-option key="3" label="学生" :value="3"></el-option>
-                <el-option key="4" label="实习" :value="4"></el-option>
-                <el-option key="5" label="兼职" :value="5"></el-option>
+                <el-option key="1" label="A岗" :value="1"></el-option>
+                <el-option key="2" label="B岗" :value="2"></el-option>
+                <el-option key="3" label="外包" :value="3"></el-option>
+                <el-option key="4" label="学生" :value="4"></el-option>
+                <el-option key="5" label="实习" :value="5"></el-option>
+                <el-option key="6" label="兼职" :value="6"></el-option>
 
               </el-select>
             </el-form-item>
 
             <el-form-item label="技术级别:" prop="empLevels" >
               <el-select  v-model="dataForm.empLevels" placeholder="请选择" :multiple="true" :collapse-tags="true">
+                <el-option key="0" label="0" value="0"></el-option>
+                <el-option key="1" label="1" value="1"></el-option>
                 <el-option key="2" label="2" value="2"></el-option>
                 <el-option key="3" label="3" value="3"></el-option>
                 <el-option key="4" label="4" value="4"></el-option>
@@ -122,9 +125,9 @@
         </el-form>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr"></span>
-          <span style="color:blue;margin-left: 100px;cursor: pointer" @click="batchDelete()"> 批量删除 </span>
-          <span style="color:blue;margin-left: 20px;cursor: pointer" @click="download()"> 批量下载 </span>
-          <span style="color:blue;margin-left: 20px;cursor: pointer" @click="add()"> 添加员工 </span>
+          <span style="color:blue;margin-left: 100px;cursor: pointer" @click="batchDelete()" v-auth="'employee:deleteEmployees'"> 批量删除 </span>
+          <span style="color:blue;margin-left: 20px;cursor: pointer" @click="download()" v-auth="'employee:export'"> 批量下载 </span>
+          <span style="color:blue;margin-left: 20px;cursor: pointer" @click="add()" v-auth="'employee:insertEmployee'"> 添加员工 </span>
         </div>
       </el-header>
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
@@ -132,8 +135,8 @@
           <!--类型插槽-->
           <template>
             <svg-icon :icon-class="'delete'" style="height:1.5em;width:1.5em; margin-right: 2em;"
-                      @click="deleteList(row)"/>
-            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
+                      @click="deleteList(row)" v-auth="'employee:deleteEmployee'"/>
+            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)" v-auth="'employee:updateEmployee'"/>
           </template>
         </template>
       </baseTable>
@@ -151,7 +154,7 @@
             <el-form-item label="工号:" prop="empId" :rules="[ { required: true, message: '工号不能为空'}]" >
               <el-input v-model="editDataForm.empId" clearable  maxlength="50" :disabled= "disabled"></el-input>
             </el-form-item>
-            <el-form-item label="邮箱:" prop="mailbox" :rules="[ { required: true, message: '邮箱不能为空'}]">
+            <el-form-item label="邮箱:" prop="mailbox" :rules="mailRule">
               <el-input v-model="editDataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="驻地:" prop="stationId">
@@ -171,6 +174,7 @@
                                 :label="dept.name"
                                 :value="dept.id"
                                 multiple="true"
+                                :disabled='dept.name =="新讯数字科技有限公司"'
                 >
                 </el-option>
               </el-select>
@@ -198,14 +202,14 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="岗位类型:" prop="positionType" :rules="[ { required: true, message: '岗位为空'}]">
+            <el-form-item label="岗位类型:" prop="positionType" :rules="[ { required: true, message: '岗位不能为空'}]">
               <el-select  v-model="editDataForm.positionType" placeholder="请选择" >
-                <el-option key="0" label="A岗" :value="0"></el-option>
-                <el-option key="1" label="B岗" :value="1"></el-option>
-                <el-option key="2" label="外包" :value="2"></el-option>
-                <el-option key="3" label="学生" :value="3"></el-option>
-                <el-option key="4" label="实习" :value="4"></el-option>
-                <el-option key="5" label="兼职" :value="5"></el-option>
+                <el-option key="1" label="A岗" :value="1"></el-option>
+                <el-option key="2" label="B岗" :value="2"></el-option>
+                <el-option key="3" label="外包" :value="3"></el-option>
+                <el-option key="4" label="学生" :value="4"></el-option>
+                <el-option key="5" label="实习" :value="5"></el-option>
+                <el-option key="6" label="兼职" :value="6"></el-option>
 
               </el-select>
             </el-form-item>
@@ -277,7 +281,25 @@ export default {
 
 
   data() {
+    var validEmail = (rule, value, callback) => {
+        let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})(,([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4}))*$/
+        if (value === '' || value === undefined || value === null) {
+          callback()
+        } else {
+          if (reg.test(value)) {
+            callback()
+          } else {
+            callback(new Error('邮箱格式错误'))
+          }
+        }
+      }
+
+
     return {
+      mailRule: [
+        { required: false, message: '邮箱不能为空', trigger: 'blur' },
+        { validator: validEmail, trigger: 'change' }]
+      ,
       entryDateInput:false,
       disabled:false,
       title:'',
@@ -315,7 +337,7 @@ export default {
         teamId:'',
         roleId:'',
         entryDate:'',
-        departDate:'',
+        departDate:''||undefined,
         createUser:'',
         updateUser:'',
         positionType:'',
@@ -422,6 +444,18 @@ export default {
         this.editDataForm.departDate = undefined
       }
 
+      // console.log(this.editDataForm)
+      // const params = Object.assign({}, this.editDataForm);
+      // for (const key in params) {
+      //   console.log(key)
+      //   console.log(params[key])
+      //
+      //   if (!params[key] && params[key]  =='' ) {
+      //     delete params[key];
+      //   }
+      // }
+      //
+      // console.log(params)
       this.$http({
         url: this.$http.adornUrl(this.url),
         method: 'post',
