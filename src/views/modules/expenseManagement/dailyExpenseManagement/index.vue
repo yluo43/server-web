@@ -169,6 +169,10 @@
               </el-select>
             </el-form-item>
 
+            <el-form-item label="成本项目:" prop="costItems">
+              <el-input v-model="editDataForm.costItems" clearable></el-input>
+            </el-form-item>
+
             <el-form-item label="单数张数:" prop="backCitys">
               <el-input v-model="editDataForm.documentNum" clearable disabled="disabled"></el-input>
             </el-form-item>
@@ -237,7 +241,8 @@ export default {
         createTime: '',
         totalMoney:'',
         documentNum:'',
-        updateUser:''
+        updateUser:'',
+        costItems:''
       },
       costCenters:[],
       costNames:[],
@@ -256,6 +261,7 @@ export default {
           {label: '费用名称', prop: 'costName'},
           {label: '单据张数', prop: 'documentNum'},
           {label: '报销金额（元）', prop: 'totalMoney'},
+          {label: '成本项目', prop: 'costItems'},
           {label: '导入时间', prop: 'createTime'},
           {label: '操作', prop: 'clientType', slotName: 'clientType'}
         ],
