@@ -425,8 +425,12 @@
 .el-input__inner{
   height: 28px !important;
   font-size: 12px !important;
-  padding: 0 5px !important;
+  padding: 0 5px;
 
+}
+
+.el-date-editor .el-range__icon ,.el-date-editor .el-range-separator{
+  line-height: 20px;
 }
 
 
