@@ -101,13 +101,13 @@
               <el-input v-model="editDataForm.teamName" clearable  maxlength="50"></el-input>
             </el-form-item>
 
-            <el-form-item label="团队级别:" prop="teamLevel" :rules="[ { required: true, message: '团队级别不能为空'}]">
-              <el-select  v-model="editDataForm.teamLevel" placeholder="请选择" @change="showParentStatus">
-                <el-option key="1" label="一级团队" :value="1"></el-option>
-                <el-option key="2" label="二级团队" :value='2'></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="上级团队:" prop="parentId"  v-if="showParent" :rules="[ { required: this.showParentRule, message: '二级团队的父团队不能为空'}]">
+<!--            <el-form-item label="团队级别:" prop="teamLevel" :rules="[ { required: true, message: '团队级别不能为空'}]">-->
+<!--              <el-select  v-model="editDataForm.teamLevel" placeholder="请选择" @change="showParentStatus">-->
+<!--                <el-option key="1" label="一级团队" :value="1"></el-option>-->
+<!--                <el-option key="2" label="二级团队" :value='2'></el-option>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+            <el-form-item label="父团队:" prop="parentId"  v-if="showParent" >
               <el-select  v-model="editDataForm.parentId" placeholder="请选择" >
                 <el-option      v-for="team in parentTeam"
                                 :key="team.id"
@@ -265,7 +265,7 @@ export default {
           {label: '团队名称', prop: 'teamName',width:'100px'},
           {label: '团队负责人', prop: 'managerName'},
           {label: '团队编码', prop: 'teamId'},
-          {label: '团队级别', prop: 'teamLevelName'},
+          // {label: '团队级别', prop: 'teamLevelName'},
           {label: '上级团队', prop: 'parentName'},
           {label: '驻地', prop: 'stationName'},
           {label: '归属部门', prop: 'deptName'},
@@ -578,7 +578,7 @@ export default {
     freshParentTeam(){
       //初始化parentTeam
       this.$http({
-        url: this.$http.adornUrl('/common/getTeamBylevel?teamLevel=1'),
+        url: this.$http.adornUrl('/common/getTeam'),
         method: 'get'
       }).then(({data}) => {
         if (data && data.code === 200) {

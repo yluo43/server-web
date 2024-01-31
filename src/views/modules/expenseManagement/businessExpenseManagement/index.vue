@@ -216,6 +216,11 @@
             <el-form-item label="宾馆名称:" prop="hotelName">
               <el-input v-model="editDataForm.hotelName" clearable disabled="disabled"></el-input>
             </el-form-item>
+
+            <el-form-item label="商旅100:" prop="hotelName">
+              <el-input v-model="editDataForm.hotelName" clearable disabled="disabled"></el-input>
+            </el-form-item>
+
             <el-form-item label="出差合计:" prop="totalMoney">
               <el-input v-model="editDataForm.totalMoney" clearable disabled="disabled"></el-input>
             </el-form-item>
@@ -286,7 +291,8 @@ export default {
         hotelName:'',
         totalMoney:'',
         updateUser:'',
-        backCity:''
+        backCity:'',
+        businesTravel:''
       },
       costCenters:[],
       deptNames:[],
@@ -304,6 +310,7 @@ export default {
           {label: '返回日期', prop: 'backDate'},
           {label: '目的城市', prop: 'backCity'},
           {label: '事由', prop: 'reason'},
+          {label: '商旅100', prop: 'businesTravel'},
           {label: '宾馆名称', prop: 'hotelName'},
           {label: '出差合计(元)', prop: 'totalMoney',slotName: 'totalMoney'},
           {label: '导入时间', prop: 'createTime'},
