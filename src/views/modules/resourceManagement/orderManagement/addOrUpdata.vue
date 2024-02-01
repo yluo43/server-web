@@ -13,11 +13,12 @@
         <el-descriptions-item label="计划交付时间">{{ order.deliveryDate }}</el-descriptions-item>
         <el-descriptions-item label="项目状态">
           <div style="width: 80%">
+            <!--            0交付中 1已交付 2关闭 3已回款-->
             <el-steps :active="order.state + 1">
               <el-step title="交付中"></el-step>
               <el-step title="已交付"></el-step>
-              <el-step title="已回款"></el-step>
               <el-step title="关闭"></el-step>
+              <el-step title="已回款"></el-step>
             </el-steps>
           </div>
         </el-descriptions-item>
@@ -43,26 +44,96 @@
               <i class="el-icon-info" style="color: #108ee9"></i>
               <span class="chooseResultStr" v-html="chooseStr"></span>
             </div>
-            <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect(index)" :hidePage="true">
-              <template v-slot:settlementDate="row">
+            <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect" :hidePage="true">
+              <template v-slot:settlementDate="scope">
                 <el-date-picker
-                  v-model="row.item.settlementDate"
+                  v-model="scope.item.row.settlementDate"
                   value-format="yyyy-MM-dd"
                   format="yyyy-MM-dd"
                   type="date"
                   style="width: 100%"
                   placeholder="选择日期"
+                  :disabled="scope.item.row.clientTypeShow"
                 ></el-date-picker>
               </template>
-              <template v-slot:clientType="row">
+              <template v-slot:settlementAcount="scope">
+                <el-input v-model="scope.item.row.settlementAcount" :disabled="scope.item.row.clientTypeShow" placeholder="请输入"></el-input>
+              </template>
+              <template v-slot:settlementFile="scope">
+                <el-upload
+                  class="upload-demo"
+                  action="#"
+                  :limit="1"
+                  :accept="'.pdf,.PDF'"
+                  :auto-upload="false"
+                  :on-change="
+                    (file, fileList) => {
+                      handleFileChange(file, fileList, scope, index)
+                    }
+                  "
+                  :file-list="scope.item.row.settlementFileList"
+                >
+                  <el-button icon="el-icon-upload2" :disabled="scope.item.row.clientTypeShow" style="width: 100px">上传文件</el-button>
+                  <div v-if="scope.item.row.settlementFileShow" slot="tip" class="el-upload__tip">支持扩展名：.pdf</div>
+                </el-upload>
+              </template>
+              <template v-slot:expectReturnDate="scope">
+                <el-date-picker
+                  v-model="scope.item.row.expectReturnDate"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  type="date"
+                  style="width: 100%"
+                  placeholder="选择日期"
+                  :disabled="scope.item.row.clientTypeShow"
+                ></el-date-picker>
+              </template>
+              <template v-slot:state="scope">
+                <el-select v-model="scope.item.row.state" placeholder="请选择" :disabled="scope.item.row.clientTypeShow">
+                  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </template>
+              <template v-slot:returnDate="scope">
+                <el-date-picker
+                  v-model="scope.item.row.returnDate"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  type="date"
+                  style="width: 100%"
+                  placeholder="选择日期"
+                  :disabled="scope.item.row.clientTypeShow"
+                ></el-date-picker>
+              </template>
+              <template v-slot:returnAcount="scope">
+                <el-input v-model="scope.item.row.returnAcount" placeholder="请输入" :disabled="scope.item.row.clientTypeShow"></el-input>
+              </template>
+              <template v-slot:returnFile="scope">
+                <el-upload
+                  class="upload-demo"
+                  action="#"
+                  :limit="1"
+                  :accept="'.pdf,.PDF'"
+                  :auto-upload="false"
+                  :on-change="
+                    (file, fileList) => {
+                      returnFileShowChange(file, fileList, scope, index)
+                    }
+                  "
+                  :file-list="scope.item.row.returnFileList"
+                >
+                  <el-button icon="el-icon-upload2" :disabled="scope.item.row.clientTypeShow" style="width: 100px">上传文件</el-button>
+                  <div v-if="scope.item.row.returnFileShow" slot="tip" class="el-upload__tip">支持扩展名：.pdf</div>
+                </el-upload>
+              </template>
+              <template v-slot:clientType="scope">
                 <!--类型插槽-->
-                <template v-if="clientTypeShow">
-                  <el-link type="primary" @click="editSettlement(row, index)">编辑 |</el-link>
-                  <el-link type="primary" @click="deleteSettlement(index)">删除</el-link>
+                <template v-if="scope.item.row.clientTypeShow">
+                  <el-link type="primary" @click="editSettlement(scope, index)">编辑 |</el-link>
+                  <el-link type="primary" @click="deleteSettlement(scope)">删除</el-link>
                 </template>
                 <template v-else>
-                  <el-link type="primary" @click="updteSettlement(index)">保存 |</el-link>
-                  <el-link type="primary" @click="cancelSettlement(index)">取消</el-link>
+                  <el-link type="primary" @click="updateSettlement(scope, item)">保存 |</el-link>
+                  <el-link type="primary" @click="cancelSettlement(scope, index)">取消</el-link>
                 </template>
               </template>
             </baseTable>
@@ -96,13 +167,12 @@
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import addOrder from './addOrder.vue'
 import viewOrder from './viewOrder.vue'
-import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableScope.vue'
 
 export default {
   components: { baseTable, addOrder, baseDialog, viewOrder },
   data() {
     return {
-      clientTypeShow: true,
       chooseStr: '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款 0.00',
       title: '',
       order: {
@@ -116,14 +186,14 @@ export default {
       orderData: { settlementDate: '' },
       tableData: {
         theads: [
-          { label: '结算时间', prop: 'settlementDate', slotName: 'settlementDate', width: '80px' },
-          { label: '结算金额', prop: 'settlementAcount', slotName: 'settlementAcount' },
-          { label: '结算单', prop: 'settlementFile', slotName: 'settlementFile' },
-          { label: '预计回款时间', prop: 'expectReturnDate', slotName: 'expectReturnDate' },
-          { label: '状态', prop: 'state', slotName: 'state' },
-          { label: '回款时间', prop: 'returnDate', slotName: 'returnDate' },
-          { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount' },
-          { label: '回款单', prop: 'returnFile', slotName: 'returnFile' },
+          { label: '结算时间', prop: 'settlementDate', slotName: 'settlementDate', width: '112px' },
+          { label: '结算金额', prop: 'settlementAcount', slotName: 'settlementAcount', width: '50px' },
+          { label: '结算单', prop: 'settlementFile', slotName: 'settlementFile', width: '80px' },
+          { label: '预计回款时间', prop: 'expectReturnDate', slotName: 'expectReturnDate', width: '112px' },
+          { label: '状态', prop: 'state', slotName: 'state', width: '80px' },
+          { label: '回款时间', prop: 'returnDate', slotName: 'returnDate', width: '112px' },
+          { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount', width: '50px' },
+          { label: '回款单', prop: 'returnFile', slotName: 'returnFile', width: '80px' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '80px' }
         ],
         height: '150px',
@@ -131,7 +201,26 @@ export default {
         maxHeight: '300px'
       },
       orderList: [],
-      activeNames: []
+      activeNames: [],
+      // 结算单状态 状态（0实施中、1 提交材料、2 提交开票、3 已收款）
+      options: [
+        {
+          value: 0,
+          label: '实施中'
+        },
+        {
+          value: 1,
+          label: '提交材料'
+        },
+        {
+          value: 2,
+          label: '提交开票'
+        },
+        {
+          value: 3,
+          label: '已收款'
+        }
+      ]
     }
   },
   methods: {
@@ -160,7 +249,14 @@ export default {
             for (let i = 0; i < this.orderList.length; i++) {
               this.activeNames.push(i)
               this.$nextTick(() => {
-                this.$refs.table[i].options.dataList = this.orderList[i].settlementDtos
+                let settlementDtos = this.orderList[i].settlementDtos
+                settlementDtos.forEach((item) => {
+                  item.clientTypeShow = true
+                  // [{ name: data.orderFilePath.match(/\/([^/]+)$/)[1] }]
+                  item.settlementFileList = [{ name: item.settlementFilePath.match(/\/([^/]+)$/)[1] }]
+                  item.returnFileList = [{ name: item.returnFilePath.match(/\/([^/]+)$/)[1] }]
+                })
+                this.$refs.table[i].options.dataList = settlementDtos
               })
             }
           }
@@ -216,9 +312,15 @@ export default {
     },
     onSelect(selection) {
       if (selection.length > 0) {
-        this.chooseStr = '已选中' + selection.length + '项'
+        let returnAcount = 0
+        let settlementAcount = 0
+        selection.forEach((a) => {
+          returnAcount += parseFloat(a.returnAcount)
+          settlementAcount += parseFloat(a.settlementAcount)
+        })
+        this.chooseStr = '已选中' + selection.length + '项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + settlementAcount.toFixed(2) + '，已回款：' + returnAcount.toFixed(2)
       } else {
-        this.chooseStr = '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款 0.00'
+        this.chooseStr = '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款：0.00'
       }
     },
     addCheck() {
@@ -255,16 +357,108 @@ export default {
       })
     },
     addSettlement(index) {
-      this.$refs.table[index].options.dataList.push({ settlementDate: '' })
+      this.$refs.table[index].options.dataList.push({
+        settlementDate: '',
+        settlementAcount: null,
+        settlementFileList: [],
+        settlementFile: null,
+        expectReturnDate: '',
+        state: null,
+        returnDate: '',
+        returnAcount: null,
+        returnFileList: [],
+        returnFile: null,
+        settlementFileShow: true,
+        returnFileShow: true,
+        clientTypeShow: true
+      })
     },
-    editSettlement(row, index) {
-      console.log(1123)
-      console.log(row.item, index)
-      this.clientTypeShow = !this.clientTypeShow
+    editSettlement(scope, index) {
+      scope.item.row.clientTypeShow = false
+      // 手动触发重新渲染
+      this.$nextTick(() => {
+        this.$refs.table[index].__rowClick(scope.item.row)
+      })
     },
-    deleteSettlement() {},
-    updteSettlement() {},
-    cancelSettlement() {},
+    handleFileChange(file, fileList, scope, index) {
+      if (file) {
+        scope.item.row.settlementFileShow = false
+        scope.item.row.settlementFile = file.raw
+      }
+      this.$refs.table[index].options.dataList[scope.item.$index] = scope.item.row
+    },
+    returnFileShowChange(file, fileList, scope, index) {
+      if (file) {
+        scope.item.row.returnFileShow = false
+        scope.item.row.returnFile = file.raw
+      }
+      this.$refs.table[index].options.dataList[scope.item.$index] = scope.item.row
+    },
+    deleteSettlement(scope) {
+      this.$confirm('确定删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/costItems/settlement/delete'),
+            method: 'delete',
+            params: { id: scope.item.row.id }
+          }).then(({ data }) => {
+            if (data && data.code === 200) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              this.refresh()
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+    updateSettlement(scope, item) {
+      let obj = scope.item.row
+      let formData = new FormData()
+      for (let key in obj) {
+        if (obj[key] || obj[key] === 0) {
+          formData.set(key, obj[key])
+        }
+      }
+      formData.set('orderId', item.id)
+      formData.set('projectId', this.order.id)
+      this.$http({
+        url: this.$http.adornUrl('/costItems/settlement/update'),
+        method: 'put',
+        data: formData
+      }).then(({ data }) => {
+        if (data.success) {
+          this.refresh()
+          this.$emit('refreshDataList')
+          this.$message({
+            message: '操作成功',
+            type: 'success'
+          })
+        } else {
+          this.dataForm.orderFile = data.orderFilePath
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    cancelSettlement(scope, index) {
+      scope.item.row.clientTypeShow = true
+      // 手动触发重新渲染
+      this.$nextTick(() => {
+        this.$refs.table[index].__rowClick(scope.item.row)
+      })
+    },
     // 取消
     cancel() {
       this.$parent.hide()
@@ -300,5 +494,9 @@ export default {
   display: flex;
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
+}
+
+.el-select {
+  width: 100px !important;
 }
 </style>
