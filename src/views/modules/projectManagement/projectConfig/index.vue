@@ -77,13 +77,24 @@
       <el-main>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr" />
-          <span style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span>
+          <span v-auth="'costItems:deletes'" style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span>
         </div>
 
         <!-- toolBar -->
         <div style="margin-bottom: 10px">
-          <el-button class="el-button-func" type="primary" icon="el-icon-download" style="margin-right: 10px" @click="batchDownload">批量下载</el-button>
-          <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">新建项目</el-button>
+          <el-button
+            v-auth="'costItems:export'"
+            class="el-button-func"
+            type="primary"
+            icon="el-icon-download"
+            style="margin-right: 10px"
+            @click="batchDownload"
+          >
+            批量下载
+          </el-button>
+          <el-button v-auth="'costItems:add'" class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">
+            新建项目
+          </el-button>
         </div>
 
         <baseTable ref="projectTable" :table-data="projectTableData" :multi-select="true" @select="onSelectTableItem">
@@ -113,9 +124,11 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-link type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item)">人员</el-link>
-              <el-link type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updateProjectInfo(row.item)">编辑</el-link>
-              <el-link type="primary" style="margin-left: 10px" @click="deleteProjectInfo(row.item)">删除</el-link>
+              <el-link v-auth="'costItems:member'" type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item)">人员</el-link>
+              <el-link v-auth="'costItems:update'" type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updateProjectInfo(row.item)">
+                编辑
+              </el-link>
+              <el-link v-auth="'costItems:delete'" type="primary" style="margin-left: 10px" @click="deleteProjectInfo(row.item)">删除</el-link>
             </template>
           </template>
         </baseTable>
