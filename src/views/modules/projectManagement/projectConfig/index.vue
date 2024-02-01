@@ -45,8 +45,8 @@
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="项目类型:" prop="projectType">
-            <el-select v-model="projectConfigFormData.projectType" multiple collapse-tags clearable>
+          <el-form-item label="项目类型:" prop="projectTypes">
+            <el-select v-model="projectConfigFormData.projectTypes" multiple collapse-tags clearable>
               <el-option v-for="item in projectTypeList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
@@ -163,7 +163,7 @@ export default {
         teamIds: [],
         psIds: [],
         deptIds: [],
-        projectType: '',
+        projectTypes: '',
         deliveryDate: '',
         deliveryDateStart: '',
         deliveryDateEnd: '',
@@ -234,7 +234,7 @@ export default {
         params: { curPage: -1 }
       }).then(({ data }) => {
         if (data.success) {
-          this.psList = [{ id: '', psName: '全部' }, ...data.payload.list]
+          this.psList = [...data.payload.list]
         } else {
           this.$message.error(data.msg)
         }

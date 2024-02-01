@@ -111,6 +111,16 @@ export default {
         callback()
       }
     }
+    const validateGeneralBudget = (rule, value, callback) => {
+      const regex = /^\d{1,13}(\.\d{1,2})?$/
+      if (!value) {
+        callback(new Error('请输入总预算'))
+      } else if (!regex.test(value)) {
+        callback(new Error('请输入一个最多带有两位小数的最大13位的正数'))
+      } else {
+        callback()
+      }
+    }
     return {
       editProjectInfoFormRules: {
         name: [{ required: true, message: '请输入项目名称', trigger: ['blur', 'change'] }],
@@ -121,7 +131,7 @@ export default {
         deliveryDate: [{ required: true, message: '请选择计划交付时间', trigger: 'change' }],
         contractType: [{ required: false, message: '请选择合同类型', trigger: 'change' }],
         contractAmount: [{ required: false, message: '请选择合同金额', trigger: ['blur', 'change'] }],
-        generalBudget: [{ required: true, message: '请输入总预算', trigger: ['blur', 'change'] }],
+        generalBudget: [{ required: true, validator: validateGeneralBudget, trigger: ['blur', 'change'] }],
         targetRate: [{ required: true, validator: validateTargetRate, trigger: ['blur', 'change'] }],
         settlementCycle: [{ required: true, message: '请输入结算周期', trigger: ['blur', 'change'] }]
       },
