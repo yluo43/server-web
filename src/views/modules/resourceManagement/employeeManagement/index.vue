@@ -88,6 +88,7 @@
               <el-select  v-model="dataForm.positionTypes" placeholder="请选择" :multiple="true" :collapse-tags="true">
                 <el-option key="1" label="A岗" :value="1"></el-option>
                 <el-option key="2" label="B岗" :value="2"></el-option>
+                <el-option key="7" label="C岗" :value="7"></el-option>
                 <el-option key="3" label="外包" :value="3"></el-option>
                 <el-option key="4" label="学生" :value="4"></el-option>
                 <el-option key="5" label="实习" :value="5"></el-option>
@@ -206,6 +207,7 @@
               <el-select  v-model="editDataForm.positionType" placeholder="请选择" >
                 <el-option key="1" label="A岗" :value="1"></el-option>
                 <el-option key="2" label="B岗" :value="2"></el-option>
+                <el-option key="7" label="C岗" :value="7"></el-option>
                 <el-option key="3" label="外包" :value="3"></el-option>
                 <el-option key="4" label="学生" :value="4"></el-option>
                 <el-option key="5" label="实习" :value="5"></el-option>
