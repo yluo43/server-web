@@ -77,7 +77,7 @@
       <el-main>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr" />
-          <span style="color: blue; margin-left: 50px" @click="deleteProjectInfo">批量删除</span>
+          <span style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span>
         </div>
 
         <!-- toolBar -->
@@ -113,7 +113,7 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-link type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item.id)">人员</el-link>
+              <el-link type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item)">人员</el-link>
               <el-link type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updateProjectInfo(row.item)">编辑</el-link>
               <el-link type="primary" style="margin-left: 10px" @click="deleteProjectInfo(row.item)">删除</el-link>
             </template>
@@ -180,7 +180,7 @@ export default {
       projectTableData: {
         theads: [
           { label: '项目名称', prop: 'name', slotName: 'name' },
-          { label: '项目经理', prop: 'mannagerName' },
+          { label: '项目经理', prop: 'managerName' },
           { label: '项目类型', prop: 'projectTypeName' },
           { label: '立项时间', prop: 'approvalDate' },
           { label: '计划交付时间', prop: 'deliveryDate' },
@@ -253,6 +253,11 @@ export default {
 
     // 查询项目列表
     queryProjectList() {
+      this.$refs.projectTable.refresh(this.translateQueryParams())
+    },
+
+    // 获取查询参数
+    translateQueryParams() {
       let params = JSON.parse(JSON.stringify(this.projectConfigFormData))
       if (ArrUtil.isNotEmpty(params.approvalDate)) {
         params.approvalDateStart = params.approvalDate[0]
@@ -263,7 +268,7 @@ export default {
         params.deliveryDateEnd = params.deliveryDate[1]
       }
       ArrUtil.changeDataAllArrEntriesToStr(params)
-      this.$refs.projectTable.refresh(this.projectConfigFormData)
+      return params
     },
 
     // 重置查询条件
@@ -311,10 +316,10 @@ export default {
     },
 
     // 编辑人员信息
-    editPersonnelInfo(id) {
+    editPersonnelInfo(row) {
       this.$refs.personnelManagementDialog.show()
       this.$nextTick(() => {
-        this.$refs.personnelManagement.initPersonnelList({ projectId: id })
+        this.$refs.personnelManagement.initPersonnelList(row)
       })
     },
 
@@ -374,7 +379,7 @@ export default {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        message = '已选中' + list.length + '个项目集，确认批量删除吗？'
+        message = '已选中' + list.length + '个项目，确认批量删除吗？'
         data = list.map((item) => item.id)
       }
 

@@ -5,7 +5,7 @@
         <el-form-item label="项目类型:" prop="projectType">
           <el-radio-group v-model="editProjectInfoFormData.projectType" :disabled="operateType !== 'add'" @input="changeProjectType">
             <el-radio :label="0">合同立项</el-radio>
-            <el-radio :label="1">研发立研</el-radio>
+            <el-radio :label="1">研发立项</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="项目名称:" prop="name">
@@ -84,7 +84,7 @@
           <el-radio-group v-model="editProjectInfoFormData.state">
             <el-radio :label="0">交付中</el-radio>
             <el-radio :label="1">已交付</el-radio>
-            <el-radio :label="3">已回款</el-radio>
+            <el-radio v-if="editProjectInfoFormData.projectType === 0" :label="3">已回款</el-radio>
             <el-radio :label="2">关闭</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -204,6 +204,7 @@ export default {
 
     // 保存
     save() {
+      console.log(this.editProjectInfoFormData)
       let url = '/costItems/add'
       let method = 'post'
       if (this.operateType === 'update') {
