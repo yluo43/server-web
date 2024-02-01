@@ -33,3 +33,38 @@ export const projectType = [
   { id: 0, name: '合同立项' },
   { id: 1, name: '研发立研' }
 ]
+
+/**
+ * 人员状态枚举
+ */
+export const personnelState = [
+  { id: 1, name: '支撑中' },
+  { id: 2, name: '待开始' },
+  { id: 3, name: '已结束' }
+]
+
+/**
+ * 技术级别枚举
+ */
+export const empLevel = [
+  { id: 1, name: '1' },
+  { id: 2, name: '2' },
+  { id: 3, name: '3' },
+  { id: 4, name: '4' },
+  { id: 5, name: '5' },
+  { id: 6, name: '6-' },
+  { id: 7, name: '6' },
+  { id: 8, name: '6+' }
+]
+/**
+ * 岗位类型枚举
+ * 1 A岗、2 B岗、3 外包、4 学生、5 实习、6 兼职
+ */
+export const positionType = [
+  { id: 1, name: 'A岗' },
+  { id: 2, name: 'B岗' },
+  { id: 3, name: '外包' },
+  { id: 4, name: '学生' },
+  { id: 5, name: '实习' },
+  { id: 6, name: '兼职' }
+]

@@ -10,7 +10,7 @@
             <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" style="width: 150px" clearable />
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerIds">
-            <el-select v-model="projectConfigFormData.managerIds" clearable>
+            <el-select v-model="projectConfigFormData.managerIds" multiple collapse-tags clearable>
               <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
@@ -26,27 +26,27 @@
             />
           </el-form-item>
           <el-form-item label="合同类型:" prop="contractTypes">
-            <el-select v-model="projectConfigFormData.contractTypes" clearable>
+            <el-select v-model="projectConfigFormData.contractTypes" multiple collapse-tags clearable>
               <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamIds">
-            <el-select v-model="projectConfigFormData.teamIds" clearable>
+            <el-select v-model="projectConfigFormData.teamIds" multiple collapse-tags clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="归属项目集:" prop="psIds">
-            <el-select v-model="projectConfigFormData.psIds" clearable>
+            <el-select v-model="projectConfigFormData.psIds" multiple collapse-tags clearable>
               <el-option v-for="item in psList" :key="item.id" :label="item.psName" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="归属部门:" prop="deptIds">
-            <el-select v-model="projectConfigFormData.deptIds" clearable>
+            <el-select v-model="projectConfigFormData.deptIds" multiple collapse-tags clearable>
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="项目类型:" prop="projectType">
-            <el-select v-model="projectConfigFormData.projectType" clearable>
+            <el-select v-model="projectConfigFormData.projectType" multiple collapse-tags clearable>
               <el-option v-for="item in projectTypeList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
@@ -62,7 +62,7 @@
             />
           </el-form-item>
           <el-form-item label="结算周期:" prop="settlementCycles">
-            <el-select v-model="projectConfigFormData.settlementCycles" clearable>
+            <el-select v-model="projectConfigFormData.settlementCycles" multiple collapse-tags clearable>
               <el-option v-for="item in settlementCycleList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
@@ -88,7 +88,8 @@
 
         <baseTable ref="projectTable" :table-data="projectTableData" :multi-select="true" @select="onSelectTableItem">
           <template v-slot:settlementCycle="row">
-            <div>{{ row.item.settlementCycle }}个月</div>
+            <div v-if="row.item.settlementCycle">{{ row.item.settlementCycle }}个月</div>
+            <div v-else>{{ row.item.settlementCycle }}</div>
           </template>
           <template v-slot:name="row">
             <el-tooltip class="item" effect="dark" placement="bottom">
@@ -124,21 +125,30 @@
     <!-- 编辑项目信息 -->
     <base-drawer ref="editProjectInfoDrawer" :title="editDrawertitle" :handle-close="beforeCloseEditProjectDrawer">
       <template>
-        <editProjectInfo ref="editProjectInfo" :close-drawer="closeEditProjectInfoDrawer" />
+        <editProjectInfo ref="editProjectInfo" @closeDrawer="closeEditProjectInfoDrawer" />
       </template>
     </base-drawer>
+
+    <!-- 编辑人员信息 -->
+    <base-dialog ref="personnelManagementDialog" title="人员信息">
+      <template>
+        <personnel-management ref="personnelManagement"></personnel-management>
+      </template>
+    </base-dialog>
   </div>
 </template>
 
 <script>
 import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDrawer from '@/views/modules/base/baseDrawer.vue'
+import baseDialog from '@/views/modules/base/baseDialog.vue'
 import editProjectInfo from '@/views/modules/projectManagement/projectConfig/editProjectInfo.vue'
+import personnelManagement from '@/views/modules/projectManagement/projectConfig/personnelManagement.vue'
 import * as ArrUtil from '@/views/modules/common/arrUtil'
 import * as ProjectConstants from '@/views/modules/projectManagement/projectConstants'
 
 export default {
-  components: { baseDrawer, baseTable, editProjectInfo },
+  components: { baseDrawer, baseTable, baseDialog, editProjectInfo, personnelManagement },
   props: {},
   data() {
     return {
@@ -160,12 +170,12 @@ export default {
         settlementCycles: []
       },
       managerList: [],
-      contractTypeList: [{ id: '', name: '全部' }, ...ProjectConstants.contractType],
+      contractTypeList: [...ProjectConstants.contractType],
       teamList: [],
       psList: [],
       deptList: [],
-      projectTypeList: [{ id: '', name: '全部' }, ...ProjectConstants.projectType],
-      settlementCycleList: [{ id: '', name: '全部' }, ...ProjectConstants.settlementCycle],
+      projectTypeList: [...ProjectConstants.projectType],
+      settlementCycleList: [...ProjectConstants.settlementCycle],
       chooseStr: '已选择 0 项',
       projectTableData: {
         theads: [
@@ -181,7 +191,7 @@ export default {
           { label: '结算单金额(元)', prop: 'settlementAmount', width: '100px' },
           { label: '回款金额(元)', prop: 'returnAmount', width: '100px' },
           { label: '状态', prop: 'stateName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '130px', fixed: 'right ' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '130px', fixed: 'right' }
         ],
         url: '/costItems/list'
       },
@@ -203,7 +213,7 @@ export default {
         method: 'get'
       }).then(({ data }) => {
         if (data.success) {
-          this.managerList = [{ id: '', name: '全部' }, ...data.payload]
+          this.managerList = [...data.payload]
         } else {
           this.$message.error(data.msg)
         }
@@ -213,7 +223,7 @@ export default {
         method: 'get'
       }).then(({ data }) => {
         if (data.success) {
-          this.teamList = [{ id: '', name: '全部' }, ...data.payload]
+          this.teamList = [...data.payload]
         } else {
           this.$message.error(data.msg)
         }
@@ -234,7 +244,7 @@ export default {
         method: 'get'
       }).then(({ data }) => {
         if (data.success) {
-          this.deptList = [{ id: '', name: '全部' }, ...data.payload]
+          this.deptList = [...data.payload]
         } else {
           this.$message.error(data.msg)
         }
@@ -301,7 +311,12 @@ export default {
     },
 
     // 编辑人员信息
-    editPersonnelInfo(id) {},
+    editPersonnelInfo(id) {
+      this.$refs.personnelManagementDialog.show()
+      this.$nextTick(() => {
+        this.$refs.personnelManagement.initPersonnelList({ projectId: id })
+      })
+    },
 
     // 修改项目信息
     updateProjectInfo(row) {

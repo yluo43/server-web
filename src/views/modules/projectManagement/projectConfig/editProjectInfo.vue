@@ -99,12 +99,7 @@
 </template>
 <script>
 export default {
-  props: {
-    closeDrawer: {
-      type: Function,
-      default: function () {}
-    }
-  },
+  props: {},
   data() {
     const validateTargetRate = (rule, value, callback) => {
       const regex = /^100(\.0{1,2})?$|^\d{1,2}(\.\d{1,2})?$/
@@ -220,7 +215,7 @@ export default {
         data: this.$http.adornData(this.editProjectInfoFormData)
       }).then(({ data }) => {
         if (data.success) {
-          this.closeDrawer()
+          this.cancel()
           this.$message.success('操作成功')
         } else {
           this.$message.error(data.msg)
@@ -230,7 +225,7 @@ export default {
 
     // 取消
     cancel() {
-      this.closeDrawer()
+      this.$emit('closeDrawer')
     }
   }
 }

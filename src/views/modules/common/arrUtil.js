@@ -49,6 +49,6 @@ export const changeDataArrListToStr = (data, arrNameList = [], delimiter = ',') 
  */
 export const changeDataAllArrEntriesToStr = (data, delimiter = ',') => {
   Object.entries(data)
-    .filter(([value]) => Array.isArray(value))
-    .forEach(([key]) => changeDataArrToStr(data, key, delimiter))
+    .filter(([key, value]) => Array.isArray(value))
+    .forEach(([key, value]) => changeDataArrToStr(data, key, delimiter))
 }

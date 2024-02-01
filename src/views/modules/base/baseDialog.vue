@@ -12,7 +12,7 @@
       @close="__dialogClose"
     >
       <transition name="el-fade-in-linear">
-        <div v-if="this.visible" class="el-card__mdgView" style="overflow-x: hidden;max-height: 600px" >
+        <div v-if="this.visible" class="el-card__mdgView" style="overflow-x: hidden; max-height: 600px">
           <slot></slot>
         </div>
       </transition>
@@ -41,13 +41,13 @@ export default {
       default: true
     },
     width: {
-      type: String,
+      type: String
       // default: this.__reCalcWidth
     },
     height: {
-      type: String,
+      type: String
       // default: this.__reCalcHeight
-    },
+    }
     // top: {
     //   type: String,
     //   default: this.__reCalcTop
@@ -57,9 +57,6 @@ export default {
     __reCalcWidth() {
       if (this.width) {
         return this.width
-      }
-      if (window.innerWidth >= 1300) {
-        return '1100px'
       }
       return '80%'
     },
@@ -73,7 +70,7 @@ export default {
       if (this.top) {
         return this.top
       }
-      return window.innerHeight * 0.10 + 'px'
+      return window.innerHeight * 0.1 + 'px'
     },
     __dialogClose() {
       if (this.$listeners['dialogClose']) {
@@ -93,21 +90,21 @@ export default {
 }
 </script>
 <style scoped>
-  .el-dialog__body{
+.el-dialog__body {
   padding-left: 50px;
   padding-right: 40px;
 }
-.el-dialog__header{
+.el-dialog__header {
   height: 50px;
   line-height: 30px;
   background: #5eafff;
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 10px 10px 0 0;
 }
-.el-dialog__title{
+.el-dialog__title {
   font-size: 18px !important;
   color: #fff;
 }
-.el-form-item__label{
+.el-form-item__label {
   padding-right: 20px;
   width: 110px;
 }
