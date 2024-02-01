@@ -63,6 +63,7 @@ export const empLevel = [
 export const positionType = [
   { id: 1, name: 'A岗' },
   { id: 2, name: 'B岗' },
+  { id: 7, name: 'C岗' },
   { id: 3, name: '外包' },
   { id: 4, name: '学生' },
   { id: 5, name: '实习' },
