@@ -107,8 +107,8 @@
 <!--                <el-option key="2" label="二级团队" :value='2'></el-option>-->
 <!--              </el-select>-->
 <!--            </el-form-item>-->
-            <el-form-item label="父团队:" prop="parentId"  v-if="showParent" >
-              <el-select  v-model="editDataForm.parentId" placeholder="请选择" >
+            <el-form-item label="父团队:" prop="parentId"  v-if="showParent"  >
+              <el-select  v-model="editDataForm.parentId" placeholder="请选择"  clearable>
                 <el-option      v-for="team in parentTeam"
                                 :key="team.id"
                                 :label="team.name"
@@ -219,7 +219,7 @@ export default {
 
       showParentRule:false,
       url:'',
-      showParent:false,
+      showParent:true,
       departStatusNameShow:false,
       chooseStr:'已选择 0 项',
       deleteIds:[],
@@ -451,7 +451,6 @@ export default {
       this.departStatusNameShow = false
       this.clear(this.editDataForm)
       this.url = '/team/add'
-      this.showParent = false
     },
     alter(row) {
       this.freshMembersWithEdit(row.item.id)

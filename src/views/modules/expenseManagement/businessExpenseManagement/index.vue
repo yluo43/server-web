@@ -217,8 +217,8 @@
               <el-input v-model="editDataForm.hotelName" clearable disabled="disabled"></el-input>
             </el-form-item>
 
-            <el-form-item label="商旅100:" prop="hotelName">
-              <el-input v-model="editDataForm.hotelName" clearable disabled="disabled"></el-input>
+            <el-form-item label="商旅100:" prop="businesTravel">
+              <el-input v-model="editDataForm.businesTravel" clearable disabled="disabled"></el-input>
             </el-form-item>
 
             <el-form-item label="出差合计:" prop="totalMoney">
