@@ -28,6 +28,7 @@
         style="width: 500px; background-color: #f5fbff; margin: 30px auto; border: solid 1px #008aff"
         @click="addOrder()"
         icon="el-icon-circle-plus-outline"
+        :disabled="viewDisabled"
       >
         添加订单
       </el-button>
@@ -35,8 +36,8 @@
         <template v-for="(item, index) in orderList">
           <div style="display: flex; justify-content: right">
             <el-link type="primary" @click="viewOrder(item)">查看详情 |</el-link>
-            <el-link type="primary" @click="updateOrder(item)">编辑 |</el-link>
-            <el-link type="primary" @click="deleteOrder(item)" style="margin-right: 30px">删除</el-link>
+            <el-link type="primary" @click="updateOrder(item)" :disabled="viewDisabled">编辑 |</el-link>
+            <el-link type="primary" @click="deleteOrder(item)" :disabled="viewDisabled" style="margin-right: 30px">删除</el-link>
           </div>
           <el-collapse-item :title="item.orderName" :name="index">
             <span style="font-weight: bold; font-size: medium">结算回款</span>
@@ -128,12 +129,12 @@
               <template v-slot:clientType="scope">
                 <!--类型插槽-->
                 <template v-if="scope.item.row.clientTypeShow">
-                  <el-link type="primary" @click="editSettlement(scope, index)">编辑 |</el-link>
-                  <el-link type="primary" @click="deleteSettlement(scope, index)">删除</el-link>
+                  <el-link type="primary" @click="editSettlement(scope, index)" :disabled="viewDisabled">编辑 |</el-link>
+                  <el-link type="primary" @click="deleteSettlement(scope, index)" :disabled="viewDisabled">删除</el-link>
                 </template>
                 <template v-else>
-                  <el-link type="primary" @click="updateSettlement(scope, item)">保存 |</el-link>
-                  <el-link type="primary" @click="cancelSettlement(scope, index)">取消</el-link>
+                  <el-link type="primary" @click="updateSettlement(scope, item, index)" :disabled="viewDisabled">保存 |</el-link>
+                  <el-link type="primary" @click="cancelSettlement(scope, index)" :disabled="viewDisabled">取消</el-link>
                 </template>
               </template>
             </baseTable>
@@ -144,6 +145,7 @@
               style="width: 500px; background-color: #f5fbff; border: solid 1px #008aff"
               @click="addSettlement(index)"
               icon="el-icon-circle-plus-outline"
+              :disabled="viewDisabled"
             >
               添加结算回款
             </el-button>
@@ -220,13 +222,17 @@ export default {
           value: 3,
           label: '已收款'
         }
-      ]
+      ],
+      viewDisabled: false
     }
   },
   methods: {
     init(data) {
       if (data) {
         Object.assign(this.order, data)
+      }
+      if (this.order.state === 2 || this.order.state === 3) {
+        this.viewDisabled = true
       }
       this.refresh()
     },
@@ -398,10 +404,10 @@ export default {
           })
         })
     },
-    updateSettlement(scope, item) {
+    updateSettlement(scope, item, index) {
       let obj = scope.item.row
       if (obj.state === 3) {
-        if (!obj.returnDate || !obj.returnAcount || !obj.returnFile) {
+        if (!obj.returnDate || !obj.returnAcount || (!obj.returnFile && !obj.returnFilePath)) {
           this.$message.warning('当状态为“已收款”时，列表中回款时间、回款金额、回款单信息必须填写上传！')
           return
         }
@@ -425,12 +431,12 @@ export default {
         data: formData
       }).then(({ data }) => {
         if (data.success) {
-          this.refresh()
           this.$emit('refreshDataList')
           this.$message({
             message: '操作成功',
             type: 'success'
           })
+          this.cancelSettlement(scope, index)
         } else {
           this.dataForm.orderFile = data.orderFilePath
           this.$message.error(data.msg)
@@ -443,6 +449,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.table[index].__rowClick(scope.item.row)
       })
+      this.refresh()
     },
     // 取消
     cancel() {

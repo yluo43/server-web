@@ -74,7 +74,7 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom" v-auth="'costItems:order'" >
+              <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom" v-auth="'costItems:order'">
                 <i class="el-icon-document" style="font-size: 1.5em; margin-right: 1em" @click="add(row)"></i>
               </el-tooltip>
             </template>
@@ -120,7 +120,8 @@ export default {
         approvalDateEnd: '',
         deliveryDateStart: '',
         deliveryDateEnd: '',
-        states: ''
+        states: '',
+        projectTypes: 0
       },
       tableData: {
         theads: [
@@ -162,7 +163,8 @@ export default {
       stateOptions: [
         { value: 0, label: '交付中' },
         { value: 1, label: '已交付' },
-        { value: 2, label: '关闭' }
+        { value: 2, label: '关闭' },
+        { value: 3, label: '已回款' }
       ]
     }
   },
