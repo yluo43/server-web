@@ -343,7 +343,7 @@ export default {
         settlementFileList: [],
         settlementFile: null,
         expectReturnDate: '',
-        state: null,
+        state: 0,
         returnDate: '',
         returnAcount: null,
         returnFileList: [],
