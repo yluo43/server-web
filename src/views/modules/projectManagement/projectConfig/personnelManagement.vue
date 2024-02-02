@@ -14,7 +14,7 @@
           <el-descriptions-item label="计划交付时间">{{ projectInfo.deliveryDate }}</el-descriptions-item>
           <el-descriptions-item label="项目状态">
             <div style="width: 80%">
-              <el-steps :active="projectInfo.state">
+              <el-steps :active="activeIndex" finish-status="success">
                 <el-step v-for="item in stepTitleList" :key="item.id" :title="item.name"></el-step>
               </el-steps>
             </div>
@@ -96,13 +96,7 @@
           <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addPersonnelInfo">添加人员</el-button>
         </div>
 
-        <baseTable
-          ref="personnelManagementTable"
-          :table-data="personnelManagementTableData"
-          :multi-select="true"
-          @select="onSelectTableItem"
-          @afterQuery="getTableTotalCount"
-        >
+        <baseTable ref="personnelManagementTable" :table-data="personnelManagementTableData" :multi-select="true" @select="onSelectTableItem">
           <template v-slot:clientType1="row">
             <!--类型插槽-->
             <template>
@@ -141,12 +135,14 @@ export default {
         name: '',
         projectId: '',
         projectType: '',
+        state: '',
         mannagerName: '',
         approvalDate: '',
         contractTypeName: '',
         personnelCount: '',
         deliveryDate: ''
       },
+      activeIndex: null,
       stepTitleList: [],
       personnelManagementFormData: {
         projectId: '',
@@ -195,6 +191,8 @@ export default {
       if (this.projectInfo.projectType === 1) {
         this.stepTitleList.splice(2, 1)
       }
+      this.activeIndex = this.stepTitleList.findIndex((item) => item.id === Number(this.projectInfo.state))
+      console.log('stepTitleList', this.stepTitleList)
       this.queryEnumList()
       this.queryPersonnelList()
     },
@@ -236,6 +234,7 @@ export default {
       }
       ArrUtil.changeDataAllArrEntriesToStr(params)
       this.$refs.personnelManagementTable.refresh(params)
+      this.getTableTotalCount()
     },
 
     // 重置查询条件
@@ -275,7 +274,17 @@ export default {
 
     // 查询总数
     getTableTotalCount() {
-      this.projectInfo.personnelCount = this.$refs.personnelManagementTable.options.count
+      this.$http({
+        url: this.$http.adornUrl('/costItems/member/page'),
+        method: 'get',
+        params: this.$http.adornParams({ projectId: this.personnelManagementFormData.projectId })
+      }).then(({ data }) => {
+        if (data.success) {
+          this.projectInfo.personnelCount = data.payload.totalCount
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
 
     // 修改人员信息
@@ -299,6 +308,7 @@ export default {
     closeEditPersonnelInfoDialog() {
       this.$refs.editPersonnelInfoDialog.hide()
       this.queryPersonnelList()
+      this.getTableTotalCount()
     },
 
     // 删除所选人员-单条/批量
@@ -335,6 +345,7 @@ export default {
             if (data.success) {
               this.$message.success('删除成功')
               this.queryPersonnelList()
+              this.getTableTotalCount()
             } else {
               this.$message.error(data.msg)
             }
@@ -350,8 +361,14 @@ export default {
 
 <style scoped>
 .title {
-  color: #008aff; /* 设置标题字体颜色为红色 */
+  color: #008aff; /* 设置标题字体颜色为蓝色 */
   font-size: 20px;
+}
+
+::v-deep .el-step__title.is-success,
+::v-deep .el-step__head.is-success {
+  color: #008aff;
+  border-color: #008aff;
 }
 
 ::v-deep .el-descriptions-item__label {

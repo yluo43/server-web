@@ -9,7 +9,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="项目名称:" prop="name">
-          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入项目名称" style="width: 80%" clearable></el-input>
+          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入项目名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
         </el-form-item>
         <el-form-item label="归属部门:" prop="deptId">
           <el-select v-model="editProjectInfoFormData.deptId" style="width: 80% !important" placeholder="请选择归属部门">
@@ -101,6 +101,28 @@
 export default {
   props: {},
   data() {
+    const validateApprovalDate = (rule, value, callback) => {
+      const approvalDate = this.editProjectInfoFormData.approvalDate
+      const deliveryDate = this.editProjectInfoFormData.deliveryDate
+      if (!value) {
+        callback(new Error('请选择立项时间'))
+      } else if (approvalDate && deliveryDate && approvalDate > deliveryDate) {
+        callback(new Error('立项时间不得大于计划交付时间'))
+      } else {
+        callback()
+      }
+    }
+    const validateDeliveryDate = (rule, value, callback) => {
+      const approvalDate = this.editProjectInfoFormData.approvalDate
+      const deliveryDate = this.editProjectInfoFormData.deliveryDate
+      if (!value) {
+        callback(new Error('请选择计划交付时间'))
+      } else if (approvalDate && deliveryDate && approvalDate > deliveryDate) {
+        callback(new Error('计划交付时间不得小于立项时间'))
+      } else {
+        callback()
+      }
+    }
     const validateTargetRate = (rule, value, callback) => {
       const regex = /^100(\.0{1,2})?$|^\d{1,2}(\.\d{1,2})?$/
       if (!value) {
@@ -127,10 +149,10 @@ export default {
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
         teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
-        approvalDate: [{ required: true, message: '请选择立项时间', trigger: 'change' }],
-        deliveryDate: [{ required: true, message: '请选择计划交付时间', trigger: 'change' }],
-        contractType: [{ required: false, message: '请选择合同类型', trigger: 'change' }],
-        contractAmount: [{ required: false, message: '请选择合同金额', trigger: ['blur', 'change'] }],
+        approvalDate: [{ required: true, validator: validateApprovalDate, trigger: ['blur', 'change'] }],
+        deliveryDate: [{ required: true, validator: validateDeliveryDate, trigger: ['blur', 'change'] }],
+        contractType: [{ required: true, message: '请选择合同类型', trigger: 'change' }],
+        contractAmount: [{ required: true, message: '请选择合同金额', trigger: ['blur', 'change'] }],
         generalBudget: [{ required: true, validator: validateGeneralBudget, trigger: ['blur', 'change'] }],
         targetRate: [{ required: true, validator: validateTargetRate, trigger: ['blur', 'change'] }],
         settlementCycle: [{ required: true, message: '请输入结算周期', trigger: ['blur', 'change'] }]
@@ -196,7 +218,7 @@ export default {
         contractAmount: '',
         generalBudget: '',
         targetRate: '',
-        settlementCycle: 1,
+        settlementCycle: projectType === 0 ? 1 : '',
         projectId: '',
         state: ''
       }

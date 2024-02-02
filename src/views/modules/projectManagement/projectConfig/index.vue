@@ -98,9 +98,17 @@
         </div>
 
         <baseTable ref="projectTable" :table-data="projectTableData" :multi-select="true" @select="onSelectTableItem">
+          <template v-slot:contractTypeName="row">
+            <div v-if="row.item.contractTypeName">{{ row.item.contractTypeName }}</div>
+            <div v-else>--</div>
+          </template>
+          <template v-slot:contractAmount="row">
+            <div v-if="row.item.contractAmount">{{ row.item.contractAmount }}</div>
+            <div v-else>--</div>
+          </template>
           <template v-slot:settlementCycle="row">
             <div v-if="row.item.settlementCycle">{{ row.item.settlementCycle }}个月</div>
-            <div v-else>{{ row.item.settlementCycle }}</div>
+            <div v-else>--</div>
           </template>
           <template v-slot:name="row">
             <el-tooltip class="item" effect="dark" placement="bottom">
@@ -197,11 +205,11 @@ export default {
           { label: '项目类型', prop: 'projectTypeName' },
           { label: '立项时间', prop: 'approvalDate' },
           { label: '计划交付时间', prop: 'deliveryDate' },
-          { label: '合同类型', prop: 'contractTypeName' },
+          { label: '合同类型', prop: 'contractTypeName', slotName: 'contractTypeName' },
           { label: '结算周期', prop: 'settlementCycle', slotName: 'settlementCycle' },
-          { label: '合同金额(元)', prop: 'contractAmount', width: '100px' },
+          { label: '合同金额(元)', prop: 'contractAmount', slotName: 'contractAmount', width: '100px' },
           { label: '订单金额(元)', prop: 'orderAmount', width: '100px' },
-          { label: '结算单金额(元)', prop: 'settlementAmount', width: '100px' },
+          { label: '结算单金额(元)', prop: 'settlementAmount', width: '120px' },
           { label: '回款金额(元)', prop: 'returnAmount', width: '100px' },
           { label: '状态', prop: 'stateName' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '130px', fixed: 'right' }
@@ -388,6 +396,9 @@ export default {
             break
           case 2:
             message = '该项目已关闭,您确定删除吗?'
+            break
+          case 3:
+            message = '该项目已回款,您确定删除吗?'
             break
           default:
             message = '您确定删除该项目吗?'
