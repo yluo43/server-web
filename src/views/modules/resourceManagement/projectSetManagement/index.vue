@@ -10,7 +10,7 @@
             <el-input v-model="dataForm.psId" placeholder="请输入编码" clearable></el-input>
           </el-form-item>
           <el-form-item label="负责人:">
-            <el-select v-model="managerIdList" placeholder="请选择">
+            <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -24,7 +24,7 @@
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="启动时间:" prop="account">
+          <el-form-item label="启动时间:">
             <el-date-picker
               v-model="startDate"
               value-format="yyyy-MM-dd"
@@ -35,7 +35,7 @@
               end-placeholder="年/月/日"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="结束时间:" prop="account">
+          <el-form-item label="结束时间:">
             <el-date-picker
               v-model="endDate"
               value-format="yyyy-MM-dd"
@@ -139,6 +139,7 @@ export default {
           { label: '项目集ID', prop: 'psId' },
           { label: '负责人', prop: 'managerName' },
           { label: '归属部门', prop: 'deptName' },
+          { label: '归属团队', prop: 'teamName' },
           { label: '项目数量', prop: 'projectNum' },
           { label: '已完成项目数', prop: 'completeNum' },
           { label: '简介', prop: 'remarks' },
@@ -173,7 +174,9 @@ export default {
       }
     },
     managerIdList(newName, oldName) {
-      if (newName) {
+      if (typeof newName === 'number') {
+        this.dataForm.managerIds = newName.toString()
+      } else if (newName) {
         this.dataForm.managerIds = newName.join(',')
       }
     },
@@ -194,7 +197,7 @@ export default {
   mounted() {
     this.$refs.table.refresh(this.dataForm)
     this.$http({
-      url: this.$http.adornUrl('/common/getManager'),
+      url: this.$http.adornUrl('/common/getManagerUp'),
       params: { pid: 3 },
       method: 'get'
     }).then(({ data }) => {
@@ -235,22 +238,13 @@ export default {
       })
     },
     download() {
-      let data = {
-        ...this.dataForm
+      const list = this.$refs.table.getSelectRow()
+      if (list.length === 0) {
+        this.$message.warning('请至少选择一条数据！')
+        return
       }
-      data.managerIds = this.managerIdList
-      data.deptIds = this.deptIdList
-      data.teamIds = this.teamIdList
-      if (!this.dataForm.managerIds) {
-        data.managerIds = []
-      }
-      if (!this.dataForm.deptIds) {
-        data.deptIds = []
-      }
-      if (!this.dataForm.teamIds) {
-        data.teamIds = []
-      }
-      this.$http.downloadPost(this.$http.adornUrl('/projectSet/export'), data, this)
+      let data = list.map((obj) => obj.id)
+      this.$http.downloadPost(this.$http.adornUrl('/projectSet/export'), { ids: data }, this)
     },
     add() {
       this.title = '新建项目集'
@@ -358,6 +352,11 @@ export default {
     },
     resetForm() {
       this.$refs.dataForm.resetFields()
+      this.managerIdList = []
+      this.deptIdList = []
+      this.teamIdList = []
+      this.startDate = []
+      this.endDate = []
     }
   }
 }
