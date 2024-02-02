@@ -400,6 +400,17 @@ export default {
     },
     updateSettlement(scope, item) {
       let obj = scope.item.row
+      if (obj.state === 3) {
+        if (!obj.returnDate || !obj.returnAcount || !obj.returnFile) {
+          this.$message.warning('当状态为“已收款”时，列表中回款时间、回款金额、回款单信息必须填写上传！')
+          return
+        }
+      } else {
+        if (obj.returnDate || (obj.returnAcount && obj.returnAcount !== '0.00') || obj.returnFile) {
+          this.$message.warning('当状态为“实施中、提交材料、提交开票”时，列表中回款时间、回款金额、回款单信息无需填写上传！')
+          return
+        }
+      }
       let formData = new FormData()
       for (let key in obj) {
         if (obj[key] || obj[key] === 0) {
