@@ -60,24 +60,26 @@
       <el-main>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr"></span>
-          <span style="color: blue; margin-left: 50px" @click="deleteList()">批量删除</span>
+          <span style="color: blue; margin-left: 50px" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</span>
         </div>
-        <el-button class="el-button-func" type="primary" @click="download()" icon="el-icon-download" style="margin-right: 10px">批量下载</el-button>
-        <el-button class="el-button-func" type="primary" @click="add()" icon="el-icon-circle-plus-outline">新建项目集</el-button>
+        <el-button class="el-button-func" type="primary" @click="download()" icon="el-icon-download" style="margin-right: 10px" v-auth="'projectSet:export'">
+          批量下载
+        </el-button>
+        <el-button class="el-button-func" type="primary" @click="add()" icon="el-icon-circle-plus-outline" v-auth="'projectSet:add'">新建项目集</el-button>
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-tooltip class="item" effect="dark" content="查看项目" placement="bottom">
+              <el-tooltip class="item" effect="dark" content="查看项目" placement="bottom" v-auth="'projectSet:showProject'">
                 <i class="el-icon-document" style="font-size: 1.5em; margin-right: 1em" @click="view(row)"></i>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="添加项目" placement="bottom">
+              <el-tooltip class="item" effect="dark" content="添加项目" placement="bottom" v-auth="'projectSet:addProject'">
                 <i class="el-icon-circle-plus" style="font-size: 1.5em; margin-right: 1em" @click="addProject(row)"></i>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+              <el-tooltip class="item" effect="dark" content="删除" placement="bottom" v-auth="'projectSet:delete'">
                 <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 1em" @click="deleteList(row)" />
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <el-tooltip class="item" effect="dark" content="编辑" placement="bottom" v-auth="'projectSet:update'">
                 <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em; margin-right: 1em" @click="update(row)" />
               </el-tooltip>
             </template>

@@ -74,7 +74,7 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom">
+              <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom" v-auth="'costItems:order'" >
                 <i class="el-icon-document" style="font-size: 1.5em; margin-right: 1em" @click="add(row)"></i>
               </el-tooltip>
             </template>
