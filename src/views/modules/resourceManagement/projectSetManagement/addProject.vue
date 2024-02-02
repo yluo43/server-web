@@ -66,13 +66,29 @@
               <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="项目编码:" prop="vo.projectId">
+          <el-form-item label="项目编码:" prop="vo.projectId" v-if="false">
             <el-input v-model="dataForm.vo.projectId" disabled></el-input>
           </el-form-item>
+          <el-form-item label="合同金额:" prop="vo.contractAmount" v-if="dataForm.vo.projectType === 0">
+            <el-input v-model="dataForm.vo.contractAmount" placeholder="请输入合同金额" clearable>
+              <template slot="append">元</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="总预算:" prop="vo.generalBudget">
+            <el-input v-model="dataForm.vo.generalBudget" placeholder="请输入总预算" clearable>
+              <template slot="append">元</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="目标利润率:" prop="vo.targetRate">
+            <el-input v-model="dataForm.vo.targetRate" placeholder="请输入目标利润率" clearable>
+              <template slot="append">%</template>
+            </el-input>
+          </el-form-item>
           <el-form-item label="结算周期:" prop="vo.settlementCycle" v-if="dataForm.vo.projectType === 0">
-            <el-select v-model="dataForm.vo.settlementCycle" placeholder="请选择">
-              <el-option v-for="item in settlementCycleList" :key="item" :label="item" :value="item"></el-option>
-            </el-select>
+            <div style="display: flex; width: 80%">
+              <el-input-number v-model="dataForm.vo.settlementCycle" :min="1" :max="12"></el-input-number>
+              <div style="margin-left: 10px">个月/次</div>
+            </div>
           </el-form-item>
         </template>
         <el-row style="display: flex; justify-content: right; margin-top: 20px">
@@ -96,6 +112,9 @@ export default {
         'vo.approvalDate': [{ required: true, message: '请选择立项时间', trigger: 'change' }],
         'vo.deliveryDate': [{ required: true, message: '请选择计划交付时间', trigger: 'change' }],
         'vo.contractType': [{ required: true, message: '请选择合同类型', trigger: 'change' }],
+        'vo.contractAmount': [{ required: true, message: '请输入合同金额', trigger: 'blur' }],
+        'vo.generalBudget': [{ required: true, message: '请输入总预算', trigger: 'blur' }],
+        'vo.targetRate': [{ required: true, message: '请输入目标利润率', trigger: 'change' }],
         'vo.settlementCycle': [{ required: true, message: '请选择结算周期', trigger: 'change' }]
       },
       dataForm: {
@@ -153,30 +172,30 @@ export default {
     },
     'dataForm.vo.projectType'(newName, oldName) {
       this.$refs.dataFormRef.clearValidate()
-    },
-    values: {
-      deep: true,
-      handler: function (newValues, oldValues) {
-        if (newValues.approvalDate !== null && newValues.contractType !== null) {
-          let obj = this.contractTypeList.find((item) => item.id === newValues.contractType)
-          this.$http({
-            url: this.$http.adornUrl('/costItems/getProjectId'),
-            method: 'get',
-            params: {
-              approvalDate: this.dataForm.vo.approvalDate,
-              contractType: this.dataForm.vo.contractType,
-              contractTypeName: obj.name
-            }
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.dataForm.vo.projectId = data.payload
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        }
-      }
     }
+    // values: {
+    //   deep: true,
+    //   handler: function (newValues, oldValues) {
+    //     if (newValues.approvalDate !== null && newValues.contractType !== null) {
+    //       let obj = this.contractTypeList.find((item) => item.id === newValues.contractType)
+    //       this.$http({
+    //         url: this.$http.adornUrl('/costItems/getProjectId'),
+    //         method: 'get',
+    //         params: {
+    //           approvalDate: this.dataForm.vo.approvalDate,
+    //           contractType: this.dataForm.vo.contractType,
+    //           contractTypeName: obj.name
+    //         }
+    //       }).then(({ data }) => {
+    //         if (data && data.code === 200) {
+    //           this.dataForm.vo.projectId = data.payload
+    //         } else {
+    //           this.$message.error(data.msg)
+    //         }
+    //       })
+    //     }
+    //   }
+    // }
   },
   computed: {
     values: function () {
