@@ -236,7 +236,6 @@ export default {
 
     // 保存
     save() {
-      console.log(this.editProjectInfoFormData)
       let url = '/costItems/add'
       let method = 'post'
       if (this.operateType === 'update') {

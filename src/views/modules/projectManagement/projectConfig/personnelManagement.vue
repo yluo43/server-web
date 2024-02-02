@@ -192,7 +192,6 @@ export default {
         this.stepTitleList.splice(2, 1)
       }
       this.activeIndex = this.stepTitleList.findIndex((item) => item.id === Number(this.projectInfo.state))
-      console.log('stepTitleList', this.stepTitleList)
       this.queryEnumList()
       this.queryPersonnelList()
     },
