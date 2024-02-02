@@ -129,7 +129,7 @@
                 <!--类型插槽-->
                 <template v-if="scope.item.row.clientTypeShow">
                   <el-link type="primary" @click="editSettlement(scope, index)">编辑 |</el-link>
-                  <el-link type="primary" @click="deleteSettlement(scope)">删除</el-link>
+                  <el-link type="primary" @click="deleteSettlement(scope, index)">删除</el-link>
                 </template>
                 <template v-else>
                   <el-link type="primary" @click="updateSettlement(scope, item)">保存 |</el-link>
@@ -252,9 +252,12 @@ export default {
                 let settlementDtos = this.orderList[i].settlementDtos
                 settlementDtos.forEach((item) => {
                   item.clientTypeShow = true
-                  // [{ name: data.orderFilePath.match(/\/([^/]+)$/)[1] }]
-                  item.settlementFileList = [{ name: item.settlementFilePath.match(/\/([^/]+)$/)[1] }]
-                  item.returnFileList = [{ name: item.returnFilePath.match(/\/([^/]+)$/)[1] }]
+                  if (item.settlementFilePath) {
+                    item.settlementFileList = [{ name: item.settlementFilePath.match(/\/([^/]+)$/)[1] }]
+                  }
+                  if (item.returnFilePath) {
+                    item.returnFileList = [{ name: item.returnFilePath.match(/\/([^/]+)$/)[1] }]
+                  }
                 })
                 this.$refs.table[i].options.dataList = settlementDtos
               })
@@ -361,28 +364,32 @@ export default {
       }
       this.$refs.table[index].options.dataList[scope.item.$index] = scope.item.row
     },
-    deleteSettlement(scope) {
+    deleteSettlement(scope, index) {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/costItems/settlement/delete'),
-            method: 'delete',
-            params: { id: scope.item.row.id }
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-              this.refresh()
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
+          if (scope.item.row.id) {
+            this.$http({
+              url: this.$http.adornUrl('/costItems/settlement/delete'),
+              method: 'delete',
+              params: { id: scope.item.row.id }
+            }).then(({ data }) => {
+              if (data && data.code === 200) {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+                this.refresh()
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+          } else {
+            this.$refs.table[index].options.dataList.splice(scope.item.$index, 1)
+          }
         })
         .catch(() => {
           this.$message({
