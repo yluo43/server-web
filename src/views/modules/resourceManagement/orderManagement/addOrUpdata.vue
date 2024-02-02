@@ -324,8 +324,12 @@ export default {
         let returnAcount = 0
         let settlementAcount = 0
         selection.forEach((a) => {
-          returnAcount += parseFloat(a.returnAcount)
-          settlementAcount += parseFloat(a.settlementAcount)
+          if (a.returnAcount) {
+            returnAcount += parseFloat(a.returnAcount)
+          }
+          if (a.settlementAcount) {
+            settlementAcount += parseFloat(a.settlementAcount)
+          }
         })
         this.chooseStr = '已选中' + selection.length + '项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + settlementAcount.toFixed(2) + '，已回款：' + returnAcount.toFixed(2)
       } else {
