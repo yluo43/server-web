@@ -107,15 +107,15 @@
               <div slot="content">
                 项目编码：{{ row.item.projectId }}
                 <br />
-                项目类型：{{ row.item.projectTypeName }}
+                归属部门：{{ row.item.deptName }}
                 <br />
-                <div v-if="row.item.contractType === 0">
-                  合同类型：{{ row.item.contractTypeName }}
-                  <br />
-                  结算周期：{{ row.item.settlementCycle }}个月
-                  <br />
-                </div>
-                状态：{{ row.item.stateName }}
+                归属项目集：{{ row.item.psName }}
+                <br />
+                归属团队：{{ row.item.teamName }}
+                <br />
+                总预算：{{ row.item.generalBudget }} 元
+                <br />
+                目标利润率：{{ row.item.targetRate }} %
                 <br />
               </div>
               <div>{{ row.item.name }}</div>
@@ -222,7 +222,7 @@ export default {
     queryEnumList() {
       this.$http({
         url: this.$http.adornUrl('/common/getManager'),
-        params: { pid: 3 },
+        params: { pid: 4 },
         method: 'get'
       }).then(({ data }) => {
         if (data.success) {
@@ -300,7 +300,14 @@ export default {
         params.deliveryDateStart = params.deliveryDate[0]
         params.deliveryDateEnd = params.deliveryDate[1]
       }
-      this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), params, this)
+      let data = []
+      const list = this.$refs.projectTable.getSelectRow()
+      if (list.length === 0) {
+        this.$message.warning('请至少选择一条数据！')
+        return
+      }
+      data = list.map((item) => item.id)
+      this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), { ids: data }, this)
     },
 
     // 新建项目
