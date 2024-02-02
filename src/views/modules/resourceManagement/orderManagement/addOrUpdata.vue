@@ -323,39 +323,6 @@ export default {
         this.chooseStr = '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款：0.00'
       }
     },
-    addCheck() {
-      this.$refs.dataFormRef.validate((valid) => {
-        if (!valid) {
-          return false
-        }
-        this.addOrUpdateHandle()
-      })
-    },
-    // 新增
-    addOrUpdateHandle() {
-      let url = '/projectSet/add'
-      let method = 'post'
-      if (this.operateType === 'update') {
-        url = '/projectSet/update'
-        method = 'put'
-      }
-      this.$http({
-        url: this.$http.adornUrl(url),
-        method: method,
-        data: this.$http.adornData(this.dataForm)
-      }).then(({ data }) => {
-        if (data.success) {
-          this.$emit('refreshDataList')
-          this.$parent.hide()
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          })
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
     addSettlement(index) {
       this.$refs.table[index].options.dataList.push({
         settlementDate: '',
