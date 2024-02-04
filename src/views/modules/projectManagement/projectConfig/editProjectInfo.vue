@@ -72,7 +72,7 @@
           </el-input>
         </el-form-item>
         <el-form-item v-if="projectContractFlag" label="结算周期:" prop="settlementCycle">
-          <div style="display: flex; width: 80%">
+          <div style="display: flex; align-items: center; width: 80%">
             <el-input-number v-model="editProjectInfoFormData.settlementCycle" :min="1" :max="12"></el-input-number>
             <div style="margin-left: 10px">个月/次</div>
           </div>
@@ -266,5 +266,9 @@ export default {
 <style scoped>
 .el-form-item__content .el-input-group {
   vertical-align: middle;
+}
+
+.el-input-number {
+  line-height: 26px;
 }
 </style>

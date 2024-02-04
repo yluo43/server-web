@@ -142,7 +142,7 @@ export default {
         personnelCount: '',
         deliveryDate: ''
       },
-      activeIndex: null,
+      activeIndex: 0,
       stepTitleList: [],
       personnelManagementFormData: {
         projectId: '',
@@ -191,7 +191,11 @@ export default {
       if (this.projectInfo.projectType === 1) {
         this.stepTitleList.splice(2, 1)
       }
-      this.activeIndex = this.stepTitleList.findIndex((item) => item.id === Number(this.projectInfo.state))
+      if (this.projectInfo.state === 2) {
+        this.activeIndex = this.stepTitleList.length
+      } else {
+        this.activeIndex = this.stepTitleList.findIndex((item) => item.id === Number(this.projectInfo.state))
+      }
       this.queryEnumList()
       this.queryPersonnelList()
     },
@@ -281,7 +285,7 @@ export default {
         if (data.success) {
           this.projectInfo.personnelCount = data.payload.totalCount
         } else {
-          this.$message.error(data.msg)
+          this.$message.error('获取项目参与人数失败，请刷新后重试')
         }
       })
     },
@@ -360,18 +364,31 @@ export default {
 
 <style scoped>
 .title {
-  color: #008aff; /* 设置标题字体颜色为蓝色 */
+  color: #409eff; /* 设置标题字体颜色为蓝色 */
   font-size: 20px;
 }
 
-::v-deep .el-step__title.is-success,
+::v-deep .el-step__title.is-success {
+  color: #909399;
+}
+
 ::v-deep .el-step__head.is-success {
-  color: #008aff;
-  border-color: #008aff;
+  color: #409eff;
+  border-color: #409eff;
 }
 
 ::v-deep .el-descriptions-item__label {
-  color: #008aff; /* 设置描述项label字体颜色为绿色 */
+  color: #409eff; /* 设置描述项label字体颜色为绿色 */
+}
+
+::v-deep .el-select .el-tag {
+  max-width: 70% !important;
+}
+
+::v-deep .el-step__head.is-process .el-step__icon.is-text {
+  border-color: #409eff;
+  background: #409eff;
+  color: white;
 }
 
 .chooseResult {

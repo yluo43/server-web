@@ -4,10 +4,10 @@
       <el-header style="height: auto">
         <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData" label-width="77px">
           <el-form-item label="项目名称:" prop="name">
-            <el-input v-model="projectConfigFormData.name" placeholder="请输入关键字" style="width: 150px" clearable />
+            <el-input v-model="projectConfigFormData.name" placeholder="请输入关键字" style="width: 200px" clearable />
           </el-form-item>
           <el-form-item label="项目编码:" prop="projectId">
-            <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" style="width: 150px" clearable />
+            <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" style="width: 200px" clearable />
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerIds">
             <el-select v-model="projectConfigFormData.managerIds" multiple collapse-tags clearable>
@@ -444,7 +444,11 @@ export default {
 
 <style scoped>
 .el-select {
-  width: 150px !important;
+  width: 200px !important;
+}
+
+::v-deep .el-select .el-tag {
+  max-width: 70% !important;
 }
 
 .chooseResult {
