@@ -31,7 +31,7 @@ export const settlementCycle = [
  */
 export const projectType = [
   { id: 0, name: '合同立项' },
-  { id: 1, name: '研发立研' }
+  { id: 1, name: '研发立项' }
 ]
 
 /**
@@ -63,8 +63,21 @@ export const empLevel = [
 export const positionType = [
   { id: 1, name: 'A岗' },
   { id: 2, name: 'B岗' },
+  { id: 7, name: 'C岗' },
   { id: 3, name: '外包' },
   { id: 4, name: '学生' },
   { id: 5, name: '实习' },
   { id: 6, name: '兼职' }
+]
+
+/**
+ * 项目状态枚举
+ * 0 交付中  1 已交付  3 已回款  2 关闭
+ * @type {[{name, id: number}]}
+ */
+export const stateName = [
+  { id: 0, name: '交付中' },
+  { id: 1, name: '已交付' },
+  { id: 3, name: '已回款' },
+  { id: 2, name: '关闭' }
 ]

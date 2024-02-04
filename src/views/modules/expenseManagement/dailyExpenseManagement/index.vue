@@ -170,7 +170,18 @@
             </el-form-item>
 
             <el-form-item label="成本项目:" prop="costItems">
-              <el-input v-model="editDataForm.costItems" clearable></el-input>
+<!--              <el-input v-model="editDataForm.costItems" clearable></el-input>-->
+
+                            <el-select  v-model="editDataForm.costItems"  >
+                              <el-option      v-for="item in reason"
+                                              :key="item"
+                                              :label="item"
+                                              :value="item"
+                                              multiple="true"
+                              >
+                              </el-option>
+                            </el-select>
+
             </el-form-item>
 
             <el-form-item label="单数张数:" prop="backCitys">

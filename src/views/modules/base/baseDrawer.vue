@@ -18,7 +18,9 @@ export default {
     },
     handleClose: {
       type: Function,
-      default: function () {}
+      default: function (done) {
+        done()
+      }
     }
   },
   data() {

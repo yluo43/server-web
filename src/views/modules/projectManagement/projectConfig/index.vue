@@ -4,10 +4,10 @@
       <el-header style="height: auto">
         <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData" label-width="77px">
           <el-form-item label="项目名称:" prop="name">
-            <el-input v-model="projectConfigFormData.name" placeholder="请输入关键字" style="width: 150px" clearable />
+            <el-input v-model="projectConfigFormData.name" placeholder="请输入关键字" style="width: 200px" clearable />
           </el-form-item>
           <el-form-item label="项目编码:" prop="projectId">
-            <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" style="width: 150px" clearable />
+            <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" style="width: 200px" clearable />
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerIds">
             <el-select v-model="projectConfigFormData.managerIds" multiple collapse-tags clearable>
@@ -45,11 +45,6 @@
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="项目类型:" prop="projectType">
-            <el-select v-model="projectConfigFormData.projectType" multiple collapse-tags clearable>
-              <el-option v-for="item in projectTypeList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
           <el-form-item label="交付时间:" prop="deliveryDate">
             <el-date-picker
               v-model="projectConfigFormData.deliveryDate"
@@ -60,6 +55,11 @@
               start-placeholder="年/月/日"
               end-placeholder="年/月/日"
             />
+          </el-form-item>
+          <el-form-item label="项目类型:" prop="projectTypes">
+            <el-select v-model="projectConfigFormData.projectTypes" multiple collapse-tags clearable>
+              <el-option v-for="item in projectTypeList" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
           </el-form-item>
           <el-form-item label="结算周期:" prop="settlementCycles">
             <el-select v-model="projectConfigFormData.settlementCycles" multiple collapse-tags clearable>
@@ -77,34 +77,53 @@
       <el-main>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr" />
-          <span style="color: blue; margin-left: 50px" @click="deleteProjectInfo">批量删除</span>
+          <span v-auth="'costItems:deletes'" style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span>
         </div>
 
         <!-- toolBar -->
         <div style="margin-bottom: 10px">
-          <el-button class="el-button-func" type="primary" icon="el-icon-download" style="margin-right: 10px" @click="batchDownload">批量下载</el-button>
-          <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">新建项目</el-button>
+          <el-button
+            v-auth="'costItems:export'"
+            class="el-button-func"
+            type="primary"
+            icon="el-icon-download"
+            style="margin-right: 10px"
+            @click="batchDownload"
+          >
+            批量下载
+          </el-button>
+          <el-button v-auth="'costItems:add'" class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">
+            新建项目
+          </el-button>
         </div>
 
         <baseTable ref="projectTable" :table-data="projectTableData" :multi-select="true" @select="onSelectTableItem">
+          <template v-slot:contractTypeName="row">
+            <div v-if="row.item.contractTypeName">{{ row.item.contractTypeName }}</div>
+            <div v-else>--</div>
+          </template>
+          <template v-slot:contractAmount="row">
+            <div v-if="row.item.contractAmount">{{ row.item.contractAmount }}</div>
+            <div v-else>--</div>
+          </template>
           <template v-slot:settlementCycle="row">
             <div v-if="row.item.settlementCycle">{{ row.item.settlementCycle }}个月</div>
-            <div v-else>{{ row.item.settlementCycle }}</div>
+            <div v-else>--</div>
           </template>
           <template v-slot:name="row">
             <el-tooltip class="item" effect="dark" placement="bottom">
               <div slot="content">
                 项目编码：{{ row.item.projectId }}
                 <br />
-                项目类型：{{ row.item.projectTypeName }}
+                归属部门：{{ row.item.deptName }}
                 <br />
-                <div v-if="row.item.contractType === 0">
-                  合同类型：{{ row.item.contractTypeName }}
-                  <br />
-                  结算周期：{{ row.item.settlementCycle }}个月
-                  <br />
-                </div>
-                状态：{{ row.item.stateName }}
+                归属项目集：{{ row.item.psName }}
+                <br />
+                归属团队：{{ row.item.teamName }}
+                <br />
+                总预算：{{ row.item.generalBudget }} 元
+                <br />
+                目标利润率：{{ row.item.targetRate }} %
                 <br />
               </div>
               <div>{{ row.item.name }}</div>
@@ -113,9 +132,11 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-link type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item.id)">人员</el-link>
-              <el-link type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updateProjectInfo(row.item)">编辑</el-link>
-              <el-link type="primary" style="margin-left: 10px" @click="deleteProjectInfo(row.item)">删除</el-link>
+              <el-link v-auth="'costItems:member'" type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item)">人员</el-link>
+              <el-link v-auth="'costItems:update'" type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updateProjectInfo(row.item)">
+                编辑
+              </el-link>
+              <el-link v-auth="'costItems:delete'" type="primary" style="margin-left: 10px" @click="deleteProjectInfo(row.item)">删除</el-link>
             </template>
           </template>
         </baseTable>
@@ -163,7 +184,7 @@ export default {
         teamIds: [],
         psIds: [],
         deptIds: [],
-        projectType: '',
+        projectTypes: '',
         deliveryDate: '',
         deliveryDateStart: '',
         deliveryDateEnd: '',
@@ -180,15 +201,15 @@ export default {
       projectTableData: {
         theads: [
           { label: '项目名称', prop: 'name', slotName: 'name' },
-          { label: '项目经理', prop: 'mannagerName' },
+          { label: '项目经理', prop: 'managerName' },
           { label: '项目类型', prop: 'projectTypeName' },
           { label: '立项时间', prop: 'approvalDate' },
           { label: '计划交付时间', prop: 'deliveryDate' },
-          { label: '合同类型', prop: 'contractTypeName' },
+          { label: '合同类型', prop: 'contractTypeName', slotName: 'contractTypeName' },
           { label: '结算周期', prop: 'settlementCycle', slotName: 'settlementCycle' },
-          { label: '合同金额(元)', prop: 'contractAmount', width: '100px' },
+          { label: '合同金额(元)', prop: 'contractAmount', slotName: 'contractAmount', width: '100px' },
           { label: '订单金额(元)', prop: 'orderAmount', width: '100px' },
-          { label: '结算单金额(元)', prop: 'settlementAmount', width: '100px' },
+          { label: '结算单金额(元)', prop: 'settlementAmount', width: '120px' },
           { label: '回款金额(元)', prop: 'returnAmount', width: '100px' },
           { label: '状态', prop: 'stateName' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '130px', fixed: 'right' }
@@ -209,7 +230,7 @@ export default {
     queryEnumList() {
       this.$http({
         url: this.$http.adornUrl('/common/getManager'),
-        params: { pid: 3 },
+        params: { pid: 4 },
         method: 'get'
       }).then(({ data }) => {
         if (data.success) {
@@ -234,7 +255,7 @@ export default {
         params: { curPage: -1 }
       }).then(({ data }) => {
         if (data.success) {
-          this.psList = [{ id: '', psName: '全部' }, ...data.payload.list]
+          this.psList = [...data.payload.list]
         } else {
           this.$message.error(data.msg)
         }
@@ -253,6 +274,11 @@ export default {
 
     // 查询项目列表
     queryProjectList() {
+      this.$refs.projectTable.refresh(this.translateQueryParams())
+    },
+
+    // 获取查询参数
+    translateQueryParams() {
       let params = JSON.parse(JSON.stringify(this.projectConfigFormData))
       if (ArrUtil.isNotEmpty(params.approvalDate)) {
         params.approvalDateStart = params.approvalDate[0]
@@ -263,7 +289,7 @@ export default {
         params.deliveryDateEnd = params.deliveryDate[1]
       }
       ArrUtil.changeDataAllArrEntriesToStr(params)
-      this.$refs.projectTable.refresh(this.projectConfigFormData)
+      return params
     },
 
     // 重置查询条件
@@ -282,7 +308,14 @@ export default {
         params.deliveryDateStart = params.deliveryDate[0]
         params.deliveryDateEnd = params.deliveryDate[1]
       }
-      this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), params, this)
+      let data = []
+      const list = this.$refs.projectTable.getSelectRow()
+      if (list.length === 0) {
+        this.$message.warning('请至少选择一条数据！')
+        return
+      }
+      data = list.map((item) => item.id)
+      this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), { ids: data }, this)
     },
 
     // 新建项目
@@ -311,10 +344,10 @@ export default {
     },
 
     // 编辑人员信息
-    editPersonnelInfo(id) {
+    editPersonnelInfo(row) {
       this.$refs.personnelManagementDialog.show()
       this.$nextTick(() => {
-        this.$refs.personnelManagement.initPersonnelList({ projectId: id })
+        this.$refs.personnelManagement.initPersonnelList(row)
       })
     },
 
@@ -364,6 +397,9 @@ export default {
           case 2:
             message = '该项目已关闭,您确定删除吗?'
             break
+          case 3:
+            message = '该项目已回款,您确定删除吗?'
+            break
           default:
             message = '您确定删除该项目吗?'
         }
@@ -374,7 +410,7 @@ export default {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        message = '已选中' + list.length + '个项目集，确认批量删除吗？'
+        message = '已选中' + list.length + '个项目，确认批量删除吗？'
         data = list.map((item) => item.id)
       }
 
@@ -408,7 +444,11 @@ export default {
 
 <style scoped>
 .el-select {
-  width: 150px !important;
+  width: 200px !important;
+}
+
+::v-deep .el-select .el-tag {
+  max-width: 70% !important;
 }
 
 .chooseResult {

@@ -1,13 +1,31 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
-      <el-header style="height: auto">
+      <el-header style="height: auto; margin: 10px 10px 0 10px">
+        <el-descriptions>
+          <template v-slot:title>
+            <span class="title">● {{ projectInfo.name }}</span>
+          </template>
+          <el-descriptions-item label="项目编码">{{ projectInfo.projectId }}</el-descriptions-item>
+          <el-descriptions-item label="项目经理">{{ projectInfo.managerName }}</el-descriptions-item>
+          <el-descriptions-item label="立项时间">{{ projectInfo.approvalDate }}</el-descriptions-item>
+          <el-descriptions-item label="合同类型">{{ projectInfo.contractTypeName }}</el-descriptions-item>
+          <el-descriptions-item label="参与人数">{{ projectInfo.personnelCount }}</el-descriptions-item>
+          <el-descriptions-item label="计划交付时间">{{ projectInfo.deliveryDate }}</el-descriptions-item>
+          <el-descriptions-item label="项目状态">
+            <div style="width: 80%">
+              <el-steps :active="activeIndex" finish-status="success">
+                <el-step v-for="item in stepTitleList" :key="item.id" :title="item.name"></el-step>
+              </el-steps>
+            </div>
+          </el-descriptions-item>
+        </el-descriptions>
         <el-form ref="personnelManagementForm" :inline="true" :model="personnelManagementFormData" label-width="auto">
           <el-form-item label="姓名:" prop="name">
-            <el-input v-model="personnelManagementFormData.name" placeholder="请输入关键字" style="width: 150px" clearable />
+            <el-input v-model="personnelManagementFormData.name" placeholder="请输入关键字" style="width: 190px" clearable />
           </el-form-item>
           <el-form-item label="工号:" prop="empId">
-            <el-input v-model="personnelManagementFormData.empId" placeholder="请输入工号" style="width: 150px" clearable />
+            <el-input v-model="personnelManagementFormData.empId" placeholder="请输入工号" style="width: 190px" clearable />
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamIds">
             <el-select v-model="personnelManagementFormData.teamIds" multiple collapse-tags clearable>
@@ -17,6 +35,21 @@
           <el-form-item label="驻地:" prop="stationIds">
             <el-select v-model="personnelManagementFormData.stationIds" multiple collapse-tags clearable>
               <el-option v-for="item in stationList" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="状态:" prop="states">
+            <el-select v-model="personnelManagementFormData.states" multiple collapse-tags clearable>
+              <el-option v-for="item in stateList" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="技术级别:" prop="empLevels">
+            <el-select v-model="personnelManagementFormData.empLevels" multiple collapse-tags clearable>
+              <el-option v-for="item in empLevelList" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="岗位类型:" prop="positionTypes">
+            <el-select v-model="personnelManagementFormData.positionTypes" multiple collapse-tags clearable>
+              <el-option v-for="item in positionTypeList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="开始支撑时间:" prop="supportDate">
@@ -43,21 +76,6 @@
               clearable
             />
           </el-form-item>
-          <el-form-item label="状态:" prop="states">
-            <el-select v-model="personnelManagementFormData.states" multiple collapse-tags clearable>
-              <el-option v-for="item in stateList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="技术级别:" prop="empLevels">
-            <el-select v-model="personnelManagementFormData.empLevels" multiple collapse-tags clearable>
-              <el-option v-for="item in empLevelList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="岗位类型:" prop="positionTypes">
-            <el-select v-model="personnelManagementFormData.positionTypes" multiple collapse-tags clearable>
-              <el-option v-for="item in positionTypeList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
 
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="queryPersonnelList">查询</el-button>
@@ -69,7 +87,7 @@
       <el-main>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr" />
-          <span style="color: blue; margin-left: 50px" @click="deletePersonnelInfo">批量删除</span>
+          <span style="color: blue; margin-left: 50px" @click="deletePersonnelInfo()">批量删除</span>
         </div>
 
         <!-- toolBar -->
@@ -113,6 +131,19 @@ export default {
       operateType: 'add',
       personnelInfoDialogTitle: '',
       chooseStr: '',
+      projectInfo: {
+        name: '',
+        projectId: '',
+        projectType: '',
+        state: '',
+        mannagerName: '',
+        approvalDate: '',
+        contractTypeName: '',
+        personnelCount: '',
+        deliveryDate: ''
+      },
+      activeIndex: 0,
+      stepTitleList: [],
       personnelManagementFormData: {
         projectId: '',
         name: '',
@@ -148,12 +179,23 @@ export default {
       }
     }
   },
+  computed: {},
   mounted() {},
   created() {},
   methods: {
     // 初始化
     initPersonnelList(initData) {
-      this.personnelManagementFormData.projectId = initData.projectId
+      this.personnelManagementFormData.projectId = initData.id
+      Object.assign(this.projectInfo, initData)
+      this.stepTitleList = JSON.parse(JSON.stringify(ProjectConstants.stateName))
+      if (this.projectInfo.projectType === 1) {
+        this.stepTitleList.splice(2, 1)
+      }
+      if (this.projectInfo.state === 2) {
+        this.activeIndex = this.stepTitleList.length
+      } else {
+        this.activeIndex = this.stepTitleList.findIndex((item) => item.id === Number(this.projectInfo.state))
+      }
       this.queryEnumList()
       this.queryPersonnelList()
     },
@@ -194,8 +236,8 @@ export default {
         params.endSupportDateEnd = params.endSupportDate[1]
       }
       ArrUtil.changeDataAllArrEntriesToStr(params)
-      console.log(params)
       this.$refs.personnelManagementTable.refresh(params)
+      this.getTableTotalCount()
     },
 
     // 重置查询条件
@@ -221,7 +263,14 @@ export default {
         params.endSupportDateStart = params.endSupportDate[0]
         params.endSupportDateEnd = params.endSupportDate[1]
       }
-      this.$http.downloadPost(this.$http.adornUrl('/costItems/member/export'), params, this)
+      let data = []
+      const list = this.$refs.personnelManagementTable.getSelectRow()
+      if (list.length === 0) {
+        this.$message.warning('请至少选择一条数据！')
+        return
+      }
+      data = list.map((item) => item.id)
+      this.$http.downloadPost(this.$http.adornUrl('/costItems/member/export'), { ids: data }, this)
     },
 
     // 表格勾选时
@@ -231,6 +280,21 @@ export default {
       } else {
         this.chooseStr = '已选中 0 项'
       }
+    },
+
+    // 查询总数
+    getTableTotalCount() {
+      this.$http({
+        url: this.$http.adornUrl('/costItems/member/page'),
+        method: 'get',
+        params: this.$http.adornParams({ projectId: this.personnelManagementFormData.projectId })
+      }).then(({ data }) => {
+        if (data.success) {
+          this.projectInfo.personnelCount = data.payload.totalCount
+        } else {
+          this.$message.error('获取项目参与人数失败，请刷新后重试')
+        }
+      })
     },
 
     // 修改人员信息
@@ -252,9 +316,9 @@ export default {
 
     // 关闭编辑人员弹窗
     closeEditPersonnelInfoDialog() {
-      console.log('调用关闭弹窗接口')
       this.$refs.editPersonnelInfoDialog.hide()
       this.queryPersonnelList()
+      this.getTableTotalCount()
     },
 
     // 删除所选人员-单条/批量
@@ -267,12 +331,12 @@ export default {
         message = '确定删除吗？'
       } else {
         // 批量删除时
-        const list = this.$refs.projectTable.getSelectRow()
+        const list = this.$refs.personnelManagementTable.getSelectRow()
         if (list.length === 0) {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        message = '已选中' + list.length + '个项目集，确认批量删除吗？'
+        message = '已选中' + list.length + '个人员，确认批量删除吗？'
         data = list.map((item) => item.id)
       }
 
@@ -291,6 +355,7 @@ export default {
             if (data.success) {
               this.$message.success('删除成功')
               this.queryPersonnelList()
+              this.getTableTotalCount()
             } else {
               this.$message.error(data.msg)
             }
@@ -305,6 +370,34 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  color: #409eff; /* 设置标题字体颜色为蓝色 */
+  font-size: 20px;
+}
+
+::v-deep .el-step__title.is-success {
+  color: #909399;
+}
+
+::v-deep .el-step__head.is-success {
+  color: #409eff;
+  border-color: #409eff;
+}
+
+::v-deep .el-descriptions-item__label {
+  color: #409eff; /* 设置描述项label字体颜色为绿色 */
+}
+
+::v-deep .el-select .el-tag {
+  max-width: 70% !important;
+}
+
+::v-deep .el-step__head.is-process .el-step__icon.is-text {
+  border-color: #409eff;
+  background: #409eff;
+  color: white;
+}
+
 .chooseResult {
   height: 30px;
   line-height: 30px;

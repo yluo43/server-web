@@ -10,13 +10,11 @@
         <el-descriptions-item label="订单描述">{{ dataForm.remarks }}</el-descriptions-item>
         <el-descriptions-item label="上传订单">{{ dataForm.fileName }}</el-descriptions-item>
       </el-descriptions>
-      <el-row style=" display: flex; justify-content: right;margin: 20px auto">
+      <el-row style="display: flex; justify-content: right; margin: 20px auto">
         <el-button @click="cancel()">取消</el-button>
       </el-row>
     </el-container>
-
   </div>
-
 </template>
 <script>
 export default {
@@ -32,8 +30,8 @@ export default {
         orderMember: null,
         remarks: '',
         orderFile: '',
-        fileName: '',
-      },
+        fileName: ''
+      }
     }
   },
   methods: {
@@ -49,6 +47,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

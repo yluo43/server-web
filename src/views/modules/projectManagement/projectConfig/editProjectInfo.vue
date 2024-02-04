@@ -5,11 +5,11 @@
         <el-form-item label="项目类型:" prop="projectType">
           <el-radio-group v-model="editProjectInfoFormData.projectType" :disabled="operateType !== 'add'" @input="changeProjectType">
             <el-radio :label="0">合同立项</el-radio>
-            <el-radio :label="1">研发立研</el-radio>
+            <el-radio :label="1">研发立项</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="项目名称:" prop="name">
-          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入项目名称" style="width: 80%" clearable></el-input>
+          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入项目名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
         </el-form-item>
         <el-form-item label="归属部门:" prop="deptId">
           <el-select v-model="editProjectInfoFormData.deptId" style="width: 80% !important" placeholder="请选择归属部门">
@@ -72,7 +72,7 @@
           </el-input>
         </el-form-item>
         <el-form-item v-if="projectContractFlag" label="结算周期:" prop="settlementCycle">
-          <div style="display: flex; width: 80%">
+          <div style="display: flex; align-items: center; width: 80%">
             <el-input-number v-model="editProjectInfoFormData.settlementCycle" :min="1" :max="12"></el-input-number>
             <div style="margin-left: 10px">个月/次</div>
           </div>
@@ -84,7 +84,7 @@
           <el-radio-group v-model="editProjectInfoFormData.state">
             <el-radio :label="0">交付中</el-radio>
             <el-radio :label="1">已交付</el-radio>
-            <el-radio :label="3">已回款</el-radio>
+            <el-radio v-if="editProjectInfoFormData.projectType === 0" :label="3">已回款</el-radio>
             <el-radio :label="2">关闭</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -101,6 +101,28 @@
 export default {
   props: {},
   data() {
+    const validateApprovalDate = (rule, value, callback) => {
+      const approvalDate = this.editProjectInfoFormData.approvalDate
+      const deliveryDate = this.editProjectInfoFormData.deliveryDate
+      if (!value) {
+        callback(new Error('请选择立项时间'))
+      } else if (approvalDate && deliveryDate && approvalDate > deliveryDate) {
+        callback(new Error('立项时间不得大于计划交付时间'))
+      } else {
+        callback()
+      }
+    }
+    const validateDeliveryDate = (rule, value, callback) => {
+      const approvalDate = this.editProjectInfoFormData.approvalDate
+      const deliveryDate = this.editProjectInfoFormData.deliveryDate
+      if (!value) {
+        callback(new Error('请选择计划交付时间'))
+      } else if (approvalDate && deliveryDate && approvalDate > deliveryDate) {
+        callback(new Error('计划交付时间不得小于立项时间'))
+      } else {
+        callback()
+      }
+    }
     const validateTargetRate = (rule, value, callback) => {
       const regex = /^100(\.0{1,2})?$|^\d{1,2}(\.\d{1,2})?$/
       if (!value) {
@@ -111,17 +133,27 @@ export default {
         callback()
       }
     }
+    const validateGeneralBudget = (rule, value, callback) => {
+      const regex = /^\d{1,13}(\.\d{1,2})?$/
+      if (!value) {
+        callback(new Error('请输入总预算'))
+      } else if (!regex.test(value)) {
+        callback(new Error('请输入一个最多带有两位小数的最大13位的正数'))
+      } else {
+        callback()
+      }
+    }
     return {
       editProjectInfoFormRules: {
         name: [{ required: true, message: '请输入项目名称', trigger: ['blur', 'change'] }],
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
         teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
-        approvalDate: [{ required: true, message: '请选择立项时间', trigger: 'change' }],
-        deliveryDate: [{ required: true, message: '请选择计划交付时间', trigger: 'change' }],
-        contractType: [{ required: false, message: '请选择合同类型', trigger: 'change' }],
-        contractAmount: [{ required: false, message: '请选择合同金额', trigger: ['blur', 'change'] }],
-        generalBudget: [{ required: true, message: '请输入总预算', trigger: ['blur', 'change'] }],
+        approvalDate: [{ required: true, validator: validateApprovalDate, trigger: ['blur', 'change'] }],
+        deliveryDate: [{ required: true, validator: validateDeliveryDate, trigger: ['blur', 'change'] }],
+        contractType: [{ required: true, message: '请选择合同类型', trigger: 'change' }],
+        contractAmount: [{ required: true, message: '请选择合同金额', trigger: ['blur', 'change'] }],
+        generalBudget: [{ required: true, validator: validateGeneralBudget, trigger: ['blur', 'change'] }],
         targetRate: [{ required: true, validator: validateTargetRate, trigger: ['blur', 'change'] }],
         settlementCycle: [{ required: true, message: '请输入结算周期', trigger: ['blur', 'change'] }]
       },
@@ -186,7 +218,7 @@ export default {
         contractAmount: '',
         generalBudget: '',
         targetRate: '',
-        settlementCycle: 1,
+        settlementCycle: projectType === 0 ? 1 : '',
         projectId: '',
         state: ''
       }
@@ -234,5 +266,9 @@ export default {
 <style scoped>
 .el-form-item__content .el-input-group {
   vertical-align: middle;
+}
+
+.el-input-number {
+  line-height: 26px;
 }
 </style>
