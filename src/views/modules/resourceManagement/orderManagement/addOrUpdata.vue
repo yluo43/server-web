@@ -420,6 +420,10 @@ export default {
           this.$message.warning('当状态为“实施中、提交材料、提交开票”时，列表中回款时间、回款金额、回款单信息无需填写上传！')
           return
         }
+        if (!obj.settlementFile && !obj.settlementFilePath) {
+          this.$message.warning('当状态为"实施中、提交材料、提交开票”时，结算单为必填项!')
+          return
+        }
       }
       let formData = new FormData()
       for (let key in obj) {
