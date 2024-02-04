@@ -263,7 +263,14 @@ export default {
         params.endSupportDateStart = params.endSupportDate[0]
         params.endSupportDateEnd = params.endSupportDate[1]
       }
-      this.$http.downloadPost(this.$http.adornUrl('/costItems/member/export'), params, this)
+      let data = []
+      const list = this.$refs.personnelManagementTable.getSelectRow()
+      if (list.length === 0) {
+        this.$message.warning('请至少选择一条数据！')
+        return
+      }
+      data = list.map((item) => item.id)
+      this.$http.downloadPost(this.$http.adornUrl('/costItems/member/export'), { ids: data }, this)
     },
 
     // 表格勾选时
