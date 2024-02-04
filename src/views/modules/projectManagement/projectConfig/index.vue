@@ -45,11 +45,6 @@
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="项目类型:" prop="projectTypes">
-            <el-select v-model="projectConfigFormData.projectTypes" multiple collapse-tags clearable>
-              <el-option v-for="item in projectTypeList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
           <el-form-item label="交付时间:" prop="deliveryDate">
             <el-date-picker
               v-model="projectConfigFormData.deliveryDate"
@@ -60,6 +55,11 @@
               start-placeholder="年/月/日"
               end-placeholder="年/月/日"
             />
+          </el-form-item>
+          <el-form-item label="项目类型:" prop="projectTypes">
+            <el-select v-model="projectConfigFormData.projectTypes" multiple collapse-tags clearable>
+              <el-option v-for="item in projectTypeList" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
           </el-form-item>
           <el-form-item label="结算周期:" prop="settlementCycles">
             <el-select v-model="projectConfigFormData.settlementCycles" multiple collapse-tags clearable>
