@@ -90,7 +90,7 @@
                 ></el-date-picker>
               </template>
               <template v-slot:state="scope">
-                <el-select v-model="scope.item.row.state" placeholder="请选择" :disabled="scope.item.row.clientTypeShow">
+                <el-select v-model="scope.item.row.state" placeholder="请选择" :disabled="scope.item.row.clientTypeShow" @change="stateChange(scope)">
                   <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </template>
@@ -102,11 +102,15 @@
                   type="date"
                   style="width: 100%"
                   placeholder="选择日期"
-                  :disabled="scope.item.row.clientTypeShow"
+                  :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
                 ></el-date-picker>
               </template>
               <template v-slot:returnAcount="scope">
-                <el-input v-model="scope.item.row.returnAcount" placeholder="请输入" :disabled="scope.item.row.clientTypeShow"></el-input>
+                <el-input
+                  v-model="scope.item.row.returnAcount"
+                  placeholder="请输入"
+                  :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
+                ></el-input>
               </template>
               <template v-slot:returnFile="scope">
                 <el-upload
@@ -122,7 +126,9 @@
                   "
                   :file-list="scope.item.row.returnFileList"
                 >
-                  <el-button icon="el-icon-upload2" :disabled="scope.item.row.clientTypeShow" style="width: 100px">上传文件</el-button>
+                  <el-button icon="el-icon-upload2" :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow" style="width: 100px">
+                    上传文件
+                  </el-button>
                   <div v-if="scope.item.row.returnFileShow" slot="tip" class="el-upload__tip">支持扩展名：.pdf</div>
                 </el-upload>
               </template>
@@ -258,11 +264,21 @@ export default {
                 let settlementDtos = this.orderList[i].settlementDtos
                 settlementDtos.forEach((item) => {
                   item.clientTypeShow = true
+                  item.settlementFileShow = true
+                  item.returnFileShow = true
+                  item.returnShow = true
+                  item.settlementFileList = []
+                  item.returnFileList = []
                   if (item.settlementFilePath) {
                     item.settlementFileList = [{ name: item.settlementFilePath.match(/\/([^/]+)$/)[1] }]
+                    item.settlementFileShow = false
                   }
                   if (item.returnFilePath) {
                     item.returnFileList = [{ name: item.returnFilePath.match(/\/([^/]+)$/)[1] }]
+                    item.returnFileShow = false
+                  }
+                  if (item.state === 3) {
+                    item.returnShow = false
                   }
                 })
                 this.$refs.table[i].options.dataList = settlementDtos
@@ -350,8 +366,16 @@ export default {
         returnFile: null,
         settlementFileShow: true,
         returnFileShow: true,
-        clientTypeShow: true
+        clientTypeShow: true,
+        returnShow: true
       })
+    },
+    stateChange(scope) {
+      if (scope.item.row.state === 3) {
+        scope.item.row.returnShow = false
+      } else {
+        scope.item.row.returnShow = true
+      }
     },
     editSettlement(scope, index) {
       scope.item.row.clientTypeShow = false
