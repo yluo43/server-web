@@ -1,0 +1,271 @@
+<template>
+  <div style="height: 100%">
+    <el-container style="height: 100%; width: 100%" direction="vertical">
+      <el-header style="padding: 0 10px 0 16px">
+        <el-tabs v-model="activeName" type="border-card">
+          <el-tab-pane label="填报任务管理" name="first"></el-tab-pane>
+          <el-tab-pane label="工作量归档" name="second"></el-tab-pane>
+          <el-tab-pane label="归档任务详情" name="third"></el-tab-pane>
+        </el-tabs>
+      </el-header>
+      <el-main style="width: 100%" class="main" v-if="activeName === 'first'">
+        <div class="management-header">
+          <div class="management-item">
+            <p>我的待办</p>
+            <p class="font-bold">
+              <span>8</span>
+              个任务
+            </p>
+          </div>
+          <div class="management-item">
+            <p>本月完成任务数</p>
+            <p class="font-bold">
+              <span>8</span>
+              个任务
+            </p>
+          </div>
+          <div class="management-item border-none">
+            <p>本年完成任务数</p>
+            <p class="font-bold">
+              <span>8</span>
+              个任务
+            </p>
+          </div>
+        </div>
+        <div class="table">
+          <el-row style="display: flex; align-items: center">
+            <el-col :span="10">
+              <div style="display: flex; align-items: center">
+                <p style="font-size: 16px; font-weight: 600; margin-left: 10px">任务列表</p>
+                <el-button style="margin-left: 10px; width: 130px" type="primary" icon="el-icon-plus" @click="addReportTask">下发填报任务</el-button>
+                <el-button type="text" @click="goToTaskDetails(row)">任务详情</el-button>
+                <el-button type="text" @click="goToArchive(row)">>>去归档</el-button>
+                <el-button type="text" @click="goToArchiveDetails(row)">>>归档详情</el-button>
+              </div>
+            </el-col>
+            <el-col :span="14">
+              <el-row style="display: flex; align-items: center">
+                <el-col :span="18">
+                  <el-radio-group v-model="radio" @change="handlerRadio">
+                    <el-radio-button label="1">全部</el-radio-button>
+                    <el-radio-button label="2">待开始</el-radio-button>
+                    <el-radio-button label="3">填报中</el-radio-button>
+                    <el-radio-button label="4">确认中</el-radio-button>
+                    <el-radio-button label="5">待归档</el-radio-button>
+                    <el-radio-button label="6">已归档</el-radio-button>
+                  </el-radio-group>
+                </el-col>
+                <el-col :span="6">
+                  <el-input v-model="keyword" placeholder="请输入搜索关键字" @change="search" prefix-icon="el-icon-search" clearable></el-input>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+          <div>
+            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px">
+              <!-- 操作 -->
+              <template v-slot:clientType="row">
+                <template>
+                  <el-button type="text" @click="goToArchiveDetails(row)">>>归档详情</el-button>
+                  <el-button type="text" @click="goToArchive(row)">>>去归档</el-button>
+                  <el-button type="text" @click="goToTaskDetails(row)">任务详情</el-button>
+                  <el-button type="text" @click="editReportTask(row)">编辑</el-button>
+                  <el-button type="text" @click="goToDelete(row)">删除</el-button>
+                </template>
+              </template>
+            </baseTable>
+          </div>
+        </div>
+      </el-main>
+      <!-- 工作量归档 -->
+      <div v-if="activeName === 'second'">
+        <workloadArchiving></workloadArchiving>
+      </div>
+      <!-- 归档任务详情 -->
+      <div v-if="activeName === 'third'">
+        <archiveDetails ref="archiveDetails"></archiveDetails>
+      </div>
+    </el-container>
+    <!-- 下发填报任务或编辑 -->
+    <base-dialog ref="addOrUpdateReportTaskDialog" :title="reportTaskTitle" :width="'500px'">
+      <template>
+        <addOrUpdateReportTask ref="addOrUpdateReportTask" :cancelDialog="closeDialog"></addOrUpdateReportTask>
+      </template>
+    </base-dialog>
+    <!-- 任务详情 -->
+    <base-dialog ref="taskDetailsDialog" title="任务详情" :width="'1200px'">
+      <template>
+        <taskDetails :cancelDialog="closeDialog"></taskDetails>
+      </template>
+    </base-dialog>
+  </div>
+</template>
+
+<script>
+import baseTable from '@/views/modules/base/baseTable.vue'
+import baseDialog from '@/views/modules/base/baseDialog.vue'
+import addOrUpdateReportTask from '@/views/modules/workloadManagement/reportTaskManagement/addOrUpdateReportTask.vue'
+import workloadArchiving from '@/views/modules/workloadManagement/reportTaskManagement/workloadArchiving.vue'
+import archiveDetails from '@/views/modules/workloadManagement/reportTaskManagement/archiveDetails.vue'
+import taskDetails from '@/views/modules/workloadManagement/reportTaskManagement/taskDetails.vue'
+export default {
+  components: { baseTable, baseDialog, addOrUpdateReportTask, workloadArchiving, archiveDetails, taskDetails },
+  props: {},
+  data() {
+    return {
+      activeName: 'first',
+      radio: '1',
+      keyword: '',
+      reportTaskTitle: '',
+      taskList: {
+        theads: [
+          { label: '任务名称', prop: 'orderCode' },
+          { label: '简介', prop: 'orderName' },
+          { label: '创建时间', prop: 'orderPrice' },
+          { label: '开始填报时间', prop: 'projectName' },
+          { label: '填报天数', prop: 'firstReviewer' },
+          { label: '提醒频率', prop: 'secondReviewer' },
+          { label: '任务状态', prop: 'thirdReviewer' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType' }
+        ],
+        url: ''
+      }
+    }
+  },
+  mounted() {
+    this.selectTaskList()
+  },
+  created() {},
+  methods: {
+    //搜索
+    search() {
+      this.$refs.taskListTable.refresh({ keyword: this.keyword })
+    },
+    //查询
+    selectTaskList() {
+      this.$refs.taskListTable.refresh({ status: this.radio })
+    },
+    //切换radio
+    handlerRadio() {
+      this.selectTaskList()
+    },
+    //下发填报任务
+    addReportTask() {
+      this.reportTaskTitle = '下发填报任务'
+      this.$refs.addOrUpdateReportTaskDialog.show()
+      this.$nextTick(() => {
+        this.$refs.addOrUpdateReportTask.init({ operate: 'add' })
+      })
+    },
+    //编辑填报任务
+    editReportTask(row) {
+      this.reportTaskTitle = '编辑'
+      this.$refs.addOrUpdateReportTaskDialog.show()
+      this.$nextTick(() => {
+        this.$refs.addOrUpdateReportTask.init({ operate: 'edit', data: row })
+      })
+    },
+    //任务详情
+    goToTaskDetails() {
+      this.$refs.taskDetailsDialog.show()
+    },
+    //去归档
+    goToArchive() {
+      this.activeName = 'second'
+    },
+    //归档详情
+    goToArchiveDetails(row) {
+      this.activeName = 'third'
+      this.$nextTick(() => {
+        this.$refs.archiveDetails.init(row)
+      })
+    },
+    //删除
+    goToDelete(row) {
+      if (row) {
+        let message = ''
+        let data = { id: row.item.id }
+        switch (row.item.state) {
+          case 0:
+            message = '该任务待开始,您确定删除吗?'
+            break
+          case 1:
+            message = '该任务填报中,您确定删除吗?'
+            break
+          case 2:
+            message = '该任务确认中,您确定删除吗?'
+            break
+          case 3:
+            message = '该任务待归档,您确定删除吗?'
+            break
+          case 4:
+            message = '该任务已归档,您确定删除吗?'
+            break
+        }
+        this.$confirm(message, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.$http({
+              url: this.$http.adornUrl('/projectSet/delete'),
+              method: 'post',
+              data: data
+            }).then(({ data }) => {
+              if (data && data.code === 200) {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+                this.refresh()
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+      }
+    },
+    //关闭弹窗
+    closeDialog() {
+      this.$refs.addOrUpdateReportTaskDialog.hide()
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+::v-deep .el-radio-button__inner {
+  padding: 6px 15px;
+}
+.management-header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: white;
+  .management-item {
+    width: 100%;
+    border-right: 1px solid lightgray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .font-bold {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+  .border-none {
+    border-right: 0;
+  }
+}
+.table {
+  background-color: white;
+  margin-top: 10px;
+}
+</style>
