@@ -219,8 +219,8 @@ export default {
   mounted() {
     this.$refs.table.refresh(this.dataForm)
     this.$http({
-      url: this.$http.adornUrl('/common/getManager'),
-      params: { pid: 3 },
+      url: this.$http.adornUrl('/common/getManagerUp'),
+      params: { pid: 4 },
       method: 'get'
     }).then(({ data }) => {
       if (data && data.code === 200) {
