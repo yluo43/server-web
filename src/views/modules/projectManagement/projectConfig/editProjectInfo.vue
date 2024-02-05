@@ -133,12 +133,22 @@ export default {
         callback()
       }
     }
+    const validateContractAmount = (rule, value, callback) => {
+      const regex = /^\d{1,13}(\.\d{1,2})?$/
+      if (!value) {
+        callback(new Error('请输入合同金额'))
+      } else if (!regex.test(value)) {
+        callback(new Error('请输入一个最大13位整数部分2位小数部分的正数'))
+      } else {
+        callback()
+      }
+    }
     const validateGeneralBudget = (rule, value, callback) => {
       const regex = /^\d{1,13}(\.\d{1,2})?$/
       if (!value) {
         callback(new Error('请输入总预算'))
       } else if (!regex.test(value)) {
-        callback(new Error('请输入一个最多带有两位小数的最大13位的正数'))
+        callback(new Error('请输入一个最大13位整数部分2位小数部分的正数'))
       } else {
         callback()
       }
@@ -152,7 +162,7 @@ export default {
         approvalDate: [{ required: true, validator: validateApprovalDate, trigger: ['blur', 'change'] }],
         deliveryDate: [{ required: true, validator: validateDeliveryDate, trigger: ['blur', 'change'] }],
         contractType: [{ required: true, message: '请选择合同类型', trigger: 'change' }],
-        contractAmount: [{ required: true, message: '请选择合同金额', trigger: ['blur', 'change'] }],
+        contractAmount: [{ required: true, validator: validateContractAmount, trigger: ['blur', 'change'] }],
         generalBudget: [{ required: true, validator: validateGeneralBudget, trigger: ['blur', 'change'] }],
         targetRate: [{ required: true, validator: validateTargetRate, trigger: ['blur', 'change'] }],
         settlementCycle: [{ required: true, message: '请输入结算周期', trigger: ['blur', 'change'] }]
