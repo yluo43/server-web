@@ -3,16 +3,16 @@
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-main style="width: 100%" class="main">
         <div class="top">
-          <div class="header-title">工作量统计：2024-1-1至2024-1-31</div>
-          <div>简介简介</div>
+          <div class="header-title">工作量统计：{{ taskInfo.reportWorkName }}</div>
+          <div>{{ taskInfo.intro }}</div>
           <div class="row-box">
             <div>
               <span>部门:</span>
-              <span>产品拓展部</span>
+              <span>{{ taskInfo.deptNames }}</span>
             </div>
             <div>
               <span>统计团队:</span>
-              <span>23</span>
+              <span>{{ teamCount }}</span>
             </div>
             <div>
               <span>统计成员:</span>
@@ -20,19 +20,19 @@
             </div>
             <div>
               <span>填报天数:</span>
-              <span>2</span>
+              <span>{{ taskInfo.reportDay }}</span>
             </div>
             <div>
               <span>确定天数:</span>
-              <span>2</span>
+              <span>{{ taskInfo.affirmDay }}</span>
             </div>
             <div>
               <span>归档天数:</span>
-              <span>2</span>
+              <span>{{ taskInfo.pigeonholeDay }}</span>
             </div>
             <div>
               <span>提醒频率:</span>
-              <span>2小时(9:00-18:00)</span>
+              <span>{{ taskInfo.frequency }}小时(9:00-18:00)</span>
             </div>
           </div>
           <div class="status">
@@ -52,7 +52,7 @@
         <div class="table">
           <div class="table-title">填报团队</div>
           <div>
-            <baseTable ref="taskDetialTable" :table-data="taskDetial" :type="null" style="margin-top: 10px"></baseTable>
+            <baseTable ref="taskDetialTable" :table-data="taskDetial" :type="null" @afterQuery="afterTeamListQuery" style="margin-top: 10px"></baseTable>
           </div>
         </div>
       </el-main>
@@ -62,29 +62,46 @@
 
 <script>
 import baseTable from '@/views/modules/base/baseTable.vue'
-import baseDialog from '@/views/modules/base/baseDialog.vue'
-
 export default {
-  components: { baseTable, baseDialog },
+  components: { baseTable },
   props: {},
   data() {
     return {
+      active: 1,
+      taskInfo: {},
+      teamCount: 0,
+      userCount: 0,
       taskDetial: {
         theads: [
-          { label: '团队名称', prop: 'orderCode' },
-          { label: '团队负责人', prop: 'orderName' },
-          { label: '团队编码', prop: 'orderPrce' },
-          { label: '驻地', prop: 'projectName' },
-          { label: '归属部门', prop: 'firstReviewer' },
-          { label: '团队成员', prop: 'secondReviewer' }
+          { label: '团队名称', prop: 'teamName' },
+          { label: '团队负责人', prop: 'managerName' },
+          { label: '团队编码', prop: 'teamId' },
+          { label: '驻地', prop: 'stationName' },
+          { label: '归属部门', prop: 'deptName' },
+          { label: '团队成员', prop: 'teamNum' }
         ],
-        url: ''
+        url: '/team/selectTeamPage'
       }
     }
   },
   mounted() {},
   created() {},
-  methods: {}
+  methods: {
+    //初始化数据
+    init(initData) {
+      this.active = initData.taskStatus
+      Object.assign(this.taskInfo, initData)
+      this.selectTableData()
+    },
+    //查询表格数据
+    selectTableData() {
+      this.$refs.taskDetialTable.refresh({ deptIds: this.taskInfo.deptIds })
+    },
+    afterTeamListQuery() {
+      let data = this.$refs.taskDetialTable.options.data.payload
+      this.teamCount = data.totalCount
+    }
+  }
 }
 </script>
 

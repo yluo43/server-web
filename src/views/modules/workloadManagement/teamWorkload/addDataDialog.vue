@@ -3,21 +3,22 @@
     <el-container style="height: 100%; width: 100%">
       <div style="width: 100%">
         <el-form ref="formData" label-width="110px" :rules="rules" :model="formData">
-          <el-form-item label="姓名:" prop="userName">
-            <el-select v-model="formData.userName" clearable>
-              <el-option v-for="item in users" :key="item.id" :label="item.name" :value="item.id" />
+          <el-form-item label="姓名:" prop="empId">
+            <el-select v-model="formData.empId" placeholder="请选择成员" clearable>
+              <el-option v-for="item in users" :key="item.empId" :label="item.name" :value="item.empId" />
             </el-select>
           </el-form-item>
-          <el-form-item label="成本项目:" prop="costItem">
-            <el-select v-model="formData.costItem" placeholder="请选择" clearable>
+          <el-form-item label="成本项目:" prop="projectId">
+            <el-select v-model="formData.projectId" placeholder="请选择成本项目" clearable>
               <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
+          <el-form-item label="实际投入:" prop="realityRate" style="margin-top: 10px">
+            <el-input v-model="formData.realityRate" placeholder="请输入" clearable style="width: 192px">
+              <template slot="append">%</template>
+            </el-input>
+          </el-form-item>
         </el-form>
-        <el-form-item label="实际投入:" prop="actualInvestment">
-          <el-input v-model="formData.actualInvestment" placeholder="请输入" clearable />
-          %
-        </el-form-item>
         <div class="btn-group">
           <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
           <el-button type="primary" @click="confirm('formData')">确认</el-button>
@@ -38,42 +39,92 @@ export default {
     return {
       formData: {
         //姓名
-        userName: '张三',
+        empId: '',
         //成本项目
-        costItem: '',
+        projectId: '',
         //实际投入
-        actualInvestment: ''
+        realityRate: ''
       },
+      dataList: [],
+      data: {},
       users: [],
-      costItems: [
-        {
-          id: 1,
-          name: '哈哈哈'
-        },
-        {
-          id: 2,
-          name: '嘻嘻嘻'
-        }
-      ],
-
+      costItems: [],
+      name: '',
+      projectName: '',
       rules: {
-        rejectReason: [{ required: true, message: '请填写驳回理由', trigger: 'blur' }]
+        name: [{ required: true, message: '请选择一个成员', trigger: 'change' }]
       }
     }
   },
-  mounted() {},
+  mounted() {
+    this.getProject()
+  },
   created() {},
   methods: {
+    //初始化数据
     init(initData) {
-      Object.assign(this.formData, initData)
+      this.dataList = initData.pmsWorkloadVoList
+      this.data = initData
+      initData.pmsWorkloadVoList.map((item) => {
+        this.users.push({ empId: item.empId, name: item.name })
+      })
+      console.log(this.data)
     },
     //确认
     confirm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          this.users.forEach((item) => {
+            if (item.empId === this.formData.empId) {
+              this.name = item.name
+            }
+          })
+          this.costItems.forEach((item) => {
+            if (item.id === this.formData.projectId) {
+              this.projectName = item.name
+            }
+          })
           //发起请求
+          let data = {
+            id: '',
+            name: this.name,
+            empId: this.formData.empId,
+            teamId: this.dataList[0].teamId,
+            taskId: this.dataList[0].taskId,
+            projectId: this.formData.projectId,
+            projectName: this.projectName,
+            realityRate: this.formData.realityRate,
+            planRate: '',
+            managerName: '',
+            startTime: '',
+            overTime: '',
+            workStatus: '1',
+            deptId: this.dataList[0].deptId,
+            deptName: this.dataList[0].deptName,
+            teamName: this.data.teamName,
+            commitTime: '',
+            approveTime: '',
+            isEdit: false,
+            isSelect: false,
+            teamManagerName: this.data.manageName
+          }
+          this.$emit('addData', data)
+          this.cancelDialog()
         } else {
           return false
+        }
+      })
+    },
+    //获取成本项目
+    getProject() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getProject'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.costItems = data.payload
+        } else {
+          this.$message.error(data.msg)
         }
       })
     }
@@ -84,13 +135,9 @@ export default {
 <style scoped>
 .el-dialog__body {
   padding: 25px 0 2px 0;
-}
-.el-date-editor.el-input {
-  width: 190px;
-}
-.el-dialog__body {
   width: 50%;
 }
+
 .btn-group {
   width: 100%;
   height: 50px;

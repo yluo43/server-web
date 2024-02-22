@@ -17,7 +17,7 @@
             />
           </el-form-item>
           <el-form-item label="统计部门:" prop="department">
-            <el-select v-model="formData.department" multiple clearable @remove-tag="removeTag">
+            <el-select v-model="formData.department" multiple clearable @remove-tag="removeTag" collapse-tags>
               <el-option disabled v-for="item in departments" :key="item.id" :label="item.name" :value="item.id">
                 <el-checkbox v-model="item.check" @change="isCheck(item)">
                   {{ item.name }}
@@ -26,35 +26,35 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="开始填报时间:" prop="startTime">
-            <el-date-picker v-model="formData.startTime" type="date" value-format="yyyy-MM-dd" placeholder="开始填报时间" clearable />
+          <el-form-item label="开始填报时间:" prop="reportStartTime">
+            <el-date-picker v-model="formData.reportStartTime" type="date" value-format="yyyy-MM-dd" placeholder="开始填报时间" clearable />
           </el-form-item>
-          <el-form-item label="填报天数:" prop="reportingDays">
-            <el-select v-model="formData.reportingDays" clearable>
-              <el-option v-for="item in reportingDays" :key="item.id" :label="item.name" :value="item.id" />
+          <el-form-item label="填报天数:" prop="reportDay">
+            <el-select v-model="formData.reportDay" clearable>
+              <el-option v-for="item in days" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             天
           </el-form-item>
-          <el-form-item label="确认天数:" prop="confirmDays">
-            <el-select v-model="formData.confirmDays" clearable>
-              <el-option v-for="item in confirmDays" :key="item.id" :label="item.name" :value="item.id" />
+          <el-form-item label="确认天数:" prop="affirmDay">
+            <el-select v-model="formData.affirmDay" clearable>
+              <el-option v-for="item in days" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             天
           </el-form-item>
-          <el-form-item label="归档天数:" prop="archiveDays">
-            <el-select v-model="formData.archiveDays" clearable>
-              <el-option v-for="item in archiveDays" :key="item.id" :label="item.name" :value="item.id" />
+          <el-form-item label="归档天数:" prop="pigeonholeDay">
+            <el-select v-model="formData.pigeonholeDay" clearable>
+              <el-option v-for="item in days" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             天
           </el-form-item>
-          <el-form-item label="提醒频率:" prop="reminderFrequency">
-            <el-select v-model="formData.reminderFrequency" clearable>
+          <el-form-item label="提醒频率:" prop="frequency">
+            <el-select v-model="formData.frequency" clearable>
               <el-option v-for="item in reminderFrequency" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             小时(9:00-18:00)
           </el-form-item>
-          <el-form-item label="描述:" prop="desc" style="margin-top: 10px">
-            <el-input type="textarea" v-model="formData.desc" placeholder="请输入项目集简介，不超过50字"></el-input>
+          <el-form-item label="描述:" prop="intro" style="margin-top: 10px">
+            <el-input type="textarea" v-model="formData.intro" placeholder="请输入项目集简介，不超过50字"></el-input>
           </el-form-item>
           <el-form-item style="display: flex; justify-content: right">
             <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { getCName } from '@/utils/auth'
 export default {
   props: {
     cancelDialog: {
@@ -74,52 +75,101 @@ export default {
     }
   },
   data() {
+    const validateReportStartDate = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择开始填报时间'))
+      } else if (
+        this.formData.reportStartTime &&
+        this.formData.timePeriod[1] &&
+        new Date(Date.parse(this.formData.timePeriod[1])) > new Date(Date.parse(this.formData.reportStartTime))
+      ) {
+        callback(new Error('开始填报时间应大于统计时间段截止时间'))
+      } else {
+        callback()
+      }
+    }
     return {
       //add 添加 edit编辑
       flag: '',
+      managerName: '王瑢',
       formData: {
-        //统计时间段
+        //统计时间段department
         timePeriod: [],
         //统计部门
         department: [],
         //开始填报时间
-        startTime: '',
+        reportStartTime: '',
         //填报天数
-        reportingDays: '',
+        reportDay: '',
         //确认天数
-        confirmDays: '',
+        affirmDay: '',
         //归档天数
-        archiveDays: '',
+        pigeonholeDay: '',
         //提醒频率
-        reminderFrequency: '',
+        frequency: '',
         //简介
-        desc: ''
+        intro: ''
       },
-      reportingDays: [
+      days: [
         {
           id: 1,
+          name: 1
+        },
+        {
+          id: 2,
           name: 2
         },
         {
-          id: 2,
+          id: 3,
           name: 3
+        },
+        {
+          id: 4,
+          name: 4
+        },
+        {
+          id: 5,
+          name: 5
+        },
+        {
+          id: 6,
+          name: 6
+        },
+        {
+          id: 7,
+          name: 7
         }
       ],
-      confirmDays: [],
-      archiveDays: [],
-      reminderFrequency: [],
-      departments: [
+      //提醒频率
+      reminderFrequency: [
         {
           id: 1,
-          name: 2,
-          check: false
+          name: 1
         },
         {
           id: 2,
-          name: 3,
-          check: false
+          name: 2
+        },
+        {
+          id: 3,
+          name: 3
+        },
+        {
+          id: 4,
+          name: 4
+        },
+        {
+          id: 5,
+          name: 5
+        },
+        {
+          id: 6,
+          name: 6
         }
       ],
+      //部门
+      departments: [],
+      empId: '1260',
       rules: {
         timePeriod: [
           {
@@ -139,33 +189,121 @@ export default {
             message: '请选择要统计的部门'
           }
         ],
-        startTime: [
+        reportStartTime: [
           {
             type: 'string',
             required: true,
-            message: '请选择开始填报时间',
+            validator: validateReportStartDate,
             trigger: 'change'
           }
         ],
-        reportingDays: [{ required: true, message: '请选择填报天数', trigger: 'change' }],
-        confirmDays: [{ required: true, message: '请选择确认天数', trigger: 'change' }],
-        archiveDays: [{ required: true, message: '请选择归档天数', trigger: 'change' }],
-        reminderFrequency: [{ required: true, message: '请选择提醒频率', trigger: 'change' }]
+        reportDay: [{ required: true, message: '请选择填报天数', trigger: 'change' }],
+        affirmDay: [{ required: true, message: '请选择确认天数', trigger: 'change' }],
+        pigeonholeDay: [{ required: true, message: '请选择归档天数', trigger: 'change' }],
+        frequency: [{ required: true, message: '请选择提醒频率', trigger: 'change' }]
       }
     }
   },
-  mounted() {},
+  mounted() {
+    this.managerName = getCName()
+  },
   created() {},
   methods: {
     //初始化数据
-    init(flag, initData) {
-      this.flag = flag
-      Object.assign(this.formData, initData)
+    async init(flag, initData) {
+      console.log(initData)
+      this.flag = flag.operate
+      await this.getDept()
+      if (this.flag == 'edit') {
+        this.$set(this.formData, 'timePeriod', [initData.startTime, initData.overTime])
+        this.formData.department = initData.deptNames.split(',')
+        Object.assign(this.formData, initData)
+        console.log(this.departments)
+        this.departments.map((item) => {
+          this.formData.department.forEach((ele) => {
+            if (item.name === ele) {
+              item.check = true
+            }
+          })
+        })
+      }
+    },
+    //获取部门
+    async getDept() {
+      const result = await this.$http({
+        url: this.$http.adornUrl('/common/getDept'),
+        method: 'get'
+      })
+      if (result.data && result.data.code === 200) {
+        result.data.payload.map((item) => {
+          item.check = false
+        })
+        this.departments = result.data.payload
+      } else {
+        this.$message.error(result.data.msg)
+      }
+      // console.log(result)
+      // this.$http({
+      //   url: this.$http.adornUrl('/common/getDept'),
+      //   method: 'get'
+      // }).then(({ data }) => {
+      //   if (data && data.code === 200) {
+      //     data.payload.map((item) => {
+      //       item.check = false
+      //     })
+      //     this.departments = data.payload
+      //   } else {
+      //     this.$message.error(data.msg)
+      //   }
+      // })
     },
     //确认
     confirm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          let data = { ...this.formData }
+          data.startTime = this.formData.timePeriod[0]
+          data.overTime = this.formData.timePeriod[1]
+          let ids = []
+          this.departments.forEach((ele) => {
+            if (this.formData.department.includes(ele.name)) {
+              ids.push(ele.id)
+            }
+          })
+          data.deptIds = ids.toString()
+          data.deptNames = this.formData.department.toString()
+          data.managerId = this.empId
+          data.managerName = this.managerName
+          if (this.flag == 'add') {
+            this.$http({
+              url: this.$http.adornUrl('/workload/reportAdd'),
+              method: 'post',
+              data: data
+            }).then(({ data }) => {
+              if (data && data.code === 200 && data.success) {
+                this.$message.success(data.msg)
+                this.cancelDialog()
+                this.$emit('selectTableData')
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+          } else {
+            //编辑
+            this.$http({
+              url: this.$http.adornUrl('workload/updateReport'),
+              method: 'post',
+              data: data
+            }).then(({ data }) => {
+              if (data && data.code === 200 && data.success) {
+                this.$message.success(data.msg)
+                this.cancelDialog()
+                this.$emit('selectTableData')
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+          }
         } else {
           return false
         }
@@ -173,11 +311,11 @@ export default {
     },
     //选择框多选
     isCheck(item) {
-      if (item.check && this.formData.department.indexOf(item.id) == -1) {
-        this.formData.department.push(item.id)
+      if (item.check && this.formData.department.indexOf(item.name) == -1) {
+        this.formData.department.push(item.name)
       } else if (!item.check) {
         this.formData.department.forEach((elm, idx) => {
-          if (elm == item.id) {
+          if (elm == item.name) {
             this.formData.department.splice(idx, 1)
           }
         })
@@ -197,18 +335,6 @@ export default {
 <style scoped>
 .el-date-editor.el-input {
   width: 190px;
-}
-.chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 10px auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-}
-
-.chooseResultStr {
-  margin-left: 10px;
 }
 
 .el-button {

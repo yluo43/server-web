@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-header style="padding: 0 10px 0 16px">
-        <el-tabs v-model="activeName" type="border-card">
+        <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick">
           <el-tab-pane label="任务填报" name="first"></el-tab-pane>
           <el-tab-pane label="任务跟踪" name="second"></el-tab-pane>
           <el-tab-pane label="任务详情" name="third"></el-tab-pane>
@@ -13,21 +13,21 @@
           <div class="management-item">
             <p>我的待办</p>
             <p class="font-bold">
-              <span>8</span>
+              <span>{{ waitCount }}</span>
               个任务
             </p>
           </div>
           <div class="management-item">
             <p>本月完成任务数</p>
             <p class="font-bold">
-              <span>8</span>
+              <span>{{ monthCount }}</span>
               个任务
             </p>
           </div>
           <div class="management-item border-none">
             <p>本年完成任务数</p>
             <p class="font-bold">
-              <span>8</span>
+              <span>{{ yearCount }}</span>
               个任务
             </p>
           </div>
@@ -37,9 +37,6 @@
             <el-col :span="10">
               <div style="display: flex; align-items: center">
                 <p style="font-size: 16px; font-weight: 600; margin-left: 10px">任务列表</p>
-                <el-button type="text" @click="goToReportingWorkload(row)">>>填报工作量</el-button>
-                <el-button type="text" @click="goToTrack(row)">>>去跟踪</el-button>
-                <el-button type="text" @click="goToShowDetails(row)">查看详情</el-button>
               </div>
             </el-col>
             <el-col :span="14">
@@ -62,12 +59,38 @@
           </el-row>
           <div>
             <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px">
+              <!-- <template v-slot:reportWorkName="row">
+                <div v-if="row.item.taskStatus == 3">
+                  {{ row.item.reportWorkName }}
+                  <el-tag type="danger" effect="dark">待归档</el-tag>
+                </div>
+                <div v-else>{{ row.item.reportWorkName }}</div>
+              </template> -->
+              <template v-slot:taskStatus="row">
+                <template v-if="row.item.taskStatus == 0">
+                  <span>待开始</span>
+                </template>
+                <template v-if="row.item.taskStatus == 1">
+                  <span>填报中</span>
+                </template>
+                <template v-if="row.item.taskStatus == 2">
+                  <span>确认中</span>
+                </template>
+                <template v-if="row.item.taskStatus == 3">
+                  <span>待归档</span>
+                </template>
+                <template v-if="row.item.taskStatus == 4">
+                  <span>已归档</span>
+                </template>
+              </template>
               <!-- 操作 -->
               <template v-slot:clientType="row">
                 <template>
-                  <el-button type="text" @click="goToReportingWorkload(row)">>>填报工作量</el-button>
-                  <el-button type="text" @click="goToTrack(row)">>>去跟踪</el-button>
-                  <el-button type="text" @click="goToShowDetails(row)">查看详情</el-button>
+                  <el-button :disabled="row.item.taskStatus != 1" type="text" @click="goToReportingWorkload(row)">填报工作量</el-button>
+                  <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 4" type="text" @click="goToTrack(row)">
+                    去跟踪
+                  </el-button>
+                  <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1" type="text" @click="goToShowDetails(row)">查看详情</el-button>
                 </template>
               </template>
             </baseTable>
@@ -76,17 +99,17 @@
       </el-main>
       <!-- 任务跟踪 -->
       <div v-if="activeName === 'second'">
-        <taskTracking></taskTracking>
+        <taskTracking ref="taskTracking"></taskTracking>
       </div>
       <!-- 任务详情 -->
       <div v-if="activeName === 'third'">
-        <taskDetails></taskDetails>
+        <taskDetails ref="taskDetails"></taskDetails>
       </div>
     </el-container>
     <!-- 工作量填报 -->
     <base-dialog ref="reportingWorkloadDialog" title="工作量填报" :width="'1200px'">
       <template>
-        <reportingWorkload ref="reportingWorkload" :cancelDialog="closeDialog"></reportingWorkload>
+        <reportingWorkload ref="reportingWorkload" :cancelDialog="closeDialog" @track="goTrack"></reportingWorkload>
       </template>
     </base-dialog>
   </div>
@@ -106,45 +129,106 @@ export default {
       activeName: 'first',
       radio: '1',
       keyword: '',
+      waitCount: '',
+      monthCount: '',
+      yearCount: '',
       taskList: {
         theads: [
-          { label: '任务名称', prop: 'orderCode' },
-          { label: '简介', prop: 'orderName' },
-          { label: '开始填报时间', prop: 'projectName' },
-          { label: '填报天数', prop: 'firstReviewer' },
-          { label: '任务状态', prop: 'thirdReviewer' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType' }
+          { label: '任务名称', prop: 'reportWorkName' },
+          { label: '简介', prop: 'intro' },
+          { label: '创建人', prop: 'managerName' },
+          { label: '开始填报时间', prop: 'reportStartTime' },
+          { label: '填报天数', prop: 'reportDay' },
+          { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
-        url: ''
+        url: '/teamWork/teamTaskList'
       }
     }
   },
   mounted() {
     this.selectTaskList()
+    this.getMyTaskCount()
   },
   created() {},
   methods: {
-    //搜索
-    search() {},
-    //查询
-    selectTaskList() {
-      this.$refs.taskListTable.refresh({ status: this.radio })
+    //搜索框搜索
+    search() {
+      this.selectTaskList({ reportWorkName: this.keyword })
+    },
+    //查询表格
+    selectTaskList(params) {
+      this.$refs.taskListTable.refresh(params)
+    },
+    //获取代办信息
+    getMyTaskCount() {
+      this.$http({
+        url: this.$http.adornUrl('/teamWork/getMyTaskCount'),
+        method: 'get',
+        params: { type: 0 }
+      }).then(({ data }) => {
+        if (data && data.code == 200) {
+          this.waitCount = data.payload.waitCount
+          this.monthCount = data.payload.monthCount
+          this.yearCount = data.payload.yearCount
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    goTrack(params) {
+      this.activeName = 'second'
+      this.$nextTick(() => {
+        this.$refs.taskTracking.init(params)
+      })
+    },
+    //切换tab
+    tabClick(params) {
+      if (this.activeName === 'first') {
+        this.$nextTick(() => {
+          this.selectTaskList()
+        })
+      }
+      if (this.activeName === 'second') {
+        this.$nextTick(() => {
+          this.$refs.taskTracking.initTable()
+        })
+      }
+      if (this.activeName === 'third') {
+        this.$nextTick(() => {
+          this.$refs.taskDetails.initTable()
+        })
+      }
     },
     //切换radio
     handlerRadio() {
-      this.selectTaskList()
+      if (this.radio == 1) {
+        this.selectTaskList('')
+      } else {
+        this.selectTaskList({ taskStatus: this.radio - 2 })
+      }
     },
     //填报工作量
     goToReportingWorkload(row) {
       this.$refs.reportingWorkloadDialog.show()
       this.$nextTick(() => {
-        this.$refs.reportingWorkload.init(row)
+        this.$refs.reportingWorkload.init(row.item)
       })
     },
     //去跟踪
-    goToTrack() {},
+    goToTrack(row) {
+      this.activeName = 'second'
+      this.$nextTick(() => {
+        this.$refs.taskTracking.init(row.item)
+      })
+    },
     //查看详情
-    goToShowDetails() {},
+    goToShowDetails(row) {
+      this.activeName = 'third'
+      this.$nextTick(() => {
+        this.$refs.taskDetails.init(row.item)
+      })
+    },
     //关闭弹窗
     closeDialog() {
       this.$refs.reportingWorkloadDialog.hide()

@@ -3,12 +3,10 @@
     <el-container style="height: 100%; width: 100%">
       <div style="width: 100%">
         <el-form ref="formData" label-width="110px" :rules="rules" :model="formData">
-          <el-form-item label="用户姓名:" prop="userName">
-            {{ formData.userName }}
+          <el-form-item label="用户姓名:" prop="name">
+            {{ formData.name }}
           </el-form-item>
-          <el-form-item label="驳回工作量:" prop="rejectWorkload">
-            {{ formData.rejectWorkload }}
-          </el-form-item>
+          <el-form-item label="驳回工作量:" prop="realityRate">{{ formData.realityRate }}%</el-form-item>
           <el-form-item label="驳回理由:" prop="rejectReason">
             <el-input type="textarea" v-model="formData.rejectReason" placeholder="请输入至少5个字符" minlength="5" show-word-limit></el-input>
           </el-form-item>
@@ -33,9 +31,9 @@ export default {
     return {
       formData: {
         //姓名
-        userName: '张三',
+        name: '',
         //驳回工作量
-        rejectWorkload: '50%',
+        realityRate: '',
         //驳回理由
         rejectReason: ''
       },
@@ -49,11 +47,26 @@ export default {
   methods: {
     init(initData) {
       Object.assign(this.formData, initData)
+      console.log(this.formData)
     },
     //确认
     confirm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          let data = { ids: this.formData.id, rejectReason: this.formData.rejectReason, status: 3 }
+          this.$http({
+            url: this.$http.adornUrl('/workload/updateStatus'),
+            method: 'get',
+            params: data
+          }).then((result) => {
+            if (result.data.success) {
+              this.cancelDialog()
+              this.$message.success('驳回成功')
+              this.$emit('selectTableData')
+            } else {
+              this.$message.error('驳回失败：' + result.data.msg)
+            }
+          })
           //发起请求
         } else {
           return false

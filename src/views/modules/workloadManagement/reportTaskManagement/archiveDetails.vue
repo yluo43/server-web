@@ -6,41 +6,41 @@
           <div style="display: flex; align-items: center; margin: 0 0 10px 30px; font-weight: 600">
             <div>工作量统计:</div>
             <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="workLoad" clearable style="font-weight: 600px" @change="changeSelect">
-                <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.name" :value="item.id" />
+              <el-select v-model="reportWorkName" clearable style="font-weight: 600px" @change="changeSelect">
+                <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>
             </div>
           </div>
           <div>
             <el-form ref="formData" :inline="true" label-width="110px" :label-position="labelposition" :model="formData">
-              <el-form-item label="用户姓名:" prop="userName">
-                <el-input v-model="formData.userName" placeholder="请输入用户姓名" clearable />
+              <el-form-item label="用户姓名:" prop="name">
+                <el-input v-model="formData.name" placeholder="请输入用户姓名" clearable />
               </el-form-item>
-              <el-form-item label="工号:" prop="jobNumber">
-                <el-input v-model="formData.jobNumber" placeholder="请输入工号" clearable />
+              <el-form-item label="工号:" prop="empId">
+                <el-input v-model="formData.empId" placeholder="请输入工号" clearable />
               </el-form-item>
-              <el-form-item label="归属部门:" prop="belongingDepartment">
-                <el-select v-model="formData.belongingDepartment" placeholder="请选择" clearable>
+              <el-form-item label="归属部门:" prop="deptIds">
+                <el-select v-model="formData.deptIds" placeholder="请选择" multiple collapse-tags clearable>
                   <el-option v-for="item in belongingDepartments" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="归属团队:" prop="team">
-                <el-select v-model="formData.team" placeholder="请选择" clearable>
+              <el-form-item label="归属团队:" prop="teamIds">
+                <el-select v-model="formData.teamIds" placeholder="请选择" multiple collapse-tags clearable>
                   <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="团队负责人:" prop="teamLeader">
-                <el-select v-model="formData.teamLeader" placeholder="请选择" clearable>
+                <el-select v-model="formData.teamLeader" placeholder="请选择" multiple collapse-tags clearable>
                   <el-option v-for="item in teamLeaders" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="成本项目:" prop="costItem">
-                <el-select v-model="formData.costItem" placeholder="请选择" clearable>
+                <el-select v-model="formData.costItem" placeholder="请选择" multiple collapse-tags clearable>
                   <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="项目经理:" prop="projectManager">
-                <el-select v-model="formData.projectManager" placeholder="请选择" clearable>
+                <el-select v-model="formData.projectManager" placeholder="请选择" multiple collapse-tags clearable>
                   <el-option v-for="item in projectManagers" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -60,10 +60,9 @@
             </div>
           </div>
         </div>
-
         <div class="table">
           <div>
-            <baseTable ref="taskListTable" :multi-select="true" @select="onSelect" :table-data="taskList" style="margin-top: 10px"></baseTable>
+            <baseTable ref="taskDetialTable" :multi-select="true" @select="onSelect" :table-data="taskDetial" style="margin-top: 10px"></baseTable>
           </div>
         </div>
       </el-main>
@@ -79,96 +78,168 @@ export default {
   props: {},
   data() {
     return {
+      taskId: '',
       count: 0,
+      empId: '1260',
       //工作量统计
-      workLoad: '',
-      workLoadStatistics: [
-        {
-          id: 1,
-          name: '2021-1-31至2024-2-2'
-        }
-      ],
+      reportWorkName: '',
+      workLoadStatistics: [],
       // form表单右对齐
       labelposition: 'right',
       formData: {
         //用户姓名
-        userName: '',
+        name: '',
         //工号
-        jobNumber: '',
+        empId: '',
         //归属部门
-        belongingDepartment: '',
+        deptIds: [],
         //归属团队
-        team: '',
+        teamIds: [],
         //团队负责人
-        teamLeader: '',
+        teamLeader: [],
         //成本项目
-        costItem: '',
+        costItem: [],
         //项目经理
-        projectManager: '',
-        //审批状态
-        status: ''
+        projectManager: []
       },
+      //部门
       belongingDepartments: [],
-      jobNumbers: [],
+      //项目经理
       projectManagers: [],
+      //团队
       teams: [],
+      //团队负责人
       teamLeaders: [],
-      status: [],
-      costItems: [
-        {
-          id: 1,
-          name: '哈哈哈'
-        },
-        {
-          id: 2,
-          name: '嘻嘻嘻'
-        }
-      ],
-      taskList: {
+      //成本项目
+      costItems: [],
+      taskDetial: {
         theads: [
-          { label: '团队成员', prop: 'orderCode' },
-          { label: '工号', prop: 'orderName' },
-          { label: '归属部门', prop: 'orderPrice' },
-          { label: '归属团队', prop: 'projectName' },
-          { label: '团队负责人', prop: 'firstReviewer' },
-          { label: '开始时间', prop: 'secondReviewer' },
-          { label: '结束时间', prop: 'secondReviewer' },
-          { label: '成本项目', prop: 'thirdReviewer' },
-          { label: '项目经理', prop: 'thirdReviewer' },
-          { label: '计划投入(%)', prop: 'thirdReviewer' },
-          { label: '实际投入(%)', prop: 'thirdReviewer' },
-          { label: '提交人', prop: 'thirdReviewer' },
-          { label: '提交时间', prop: 'thirdReviewer' },
-          { label: '审批时间', prop: 'thirdReviewer' },
-          { label: '归档时间', prop: 'thirdReviewer' }
+          { label: '团队成员', prop: 'name' },
+          { label: '工号', prop: 'empId' },
+          { label: '归属部门', prop: 'deptName' },
+          { label: '归属团队', prop: 'teamName' },
+          { label: '开始时间', prop: 'entryDate' },
+          { label: '结束时间', prop: 'departDate' },
+          { label: '成本项目', prop: 'projectName' },
+          { label: '项目经理', prop: 'managerName' },
+          { label: '计划投入(%)', prop: 'investRate' },
+          { label: '实际投入(%)', prop: 'realityRate' },
+          { label: '提交时间', prop: 'commitTime' },
+          { label: '审批时间', prop: 'approveTime' },
+          { label: '归档时间', prop: 'updateTime' }
         ],
-        url: ''
+        url: '/workload/pigeonholeTaskList'
       }
     }
   },
   mounted() {
+    this.empId = this.$store.state.user.empId
     this.getManager()
     this.getDept()
     this.getTeam()
+    this.getTeamLeaders()
+    this.getProject()
   },
   created() {},
   methods: {
-    init(initData) {
-      this.workLoad = initData.workLoad
+    async init(initData) {
+      await this.selectTaskList()
+      this.reportWorkName = initData.reportWorkName
+      this.taskId = initData.taskId
+      this.selectTaskDetial({ taskId: this.taskId })
+    },
+    async initTable() {
+      await this.selectTaskList()
+      this.selectTaskDetial({ taskId: this.taskId })
     },
     //统计工作量下拉框改变
-    changeSelect() {},
-    //查询
-    selectData() {},
-    //获取负责人
-    getManager() {
+    changeSelect(params) {
+      this.taskId = params
+      this.selectTaskDetial({ taskId: this.taskId })
+    },
+    //查询工作量
+    selectTaskDetial(params) {
+      this.$refs.taskDetialTable.refresh(params)
+    },
+    //输入框输入查询
+    selectData() {
+      let data = {
+        taskId: this.taskId,
+        name: this.formData.name,
+        empId: this.formData.empId,
+        deptIds: this.formData.deptIds.toString(),
+        teamIds: this.formData.teamIds.toString(),
+        teamPersonIds: this.formData.teamLeader.toString(),
+        projectIds: this.formData.costItem.toString(),
+        managerIds: this.formData.projectManager.toString()
+      }
+      this.selectTaskDetial(data)
+    },
+    //查询任务列表
+    async selectTaskList() {
+      let params = { empId: this.empId }
+      const result = await this.$http({
+        url: this.$http.adornUrl('/workload/selectTasks'),
+        method: 'get',
+        params: params
+      })
+      if (result.data && result.data.code === 200) {
+        this.workLoadStatistics = result.data.payload
+        if (result.data.payload.length != 0) {
+          this.reportWorkName = result.data.payload.slice(-1)[0].reportWorkName
+          this.taskId = result.data.payload.slice(-1)[0].taskId
+        }
+      } else {
+        this.$message.error(result.data.msg)
+      }
+    },
+
+    //获取团队负责人
+    getTeamLeaders() {
       this.$http({
-        url: this.$http.adornUrl('/common/getManager'),
-        params: { pid: 3 },
+        url: this.$http.adornUrl('/employee/selectEmployeeList'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          this.teamLeaders = data.payload
+          data.payload.forEach((data) => {
+            if (
+              data.empLevel == '6-' ||
+              data.empLevel == '6' ||
+              data.empLevel == '7' ||
+              data.empLevel == '8' ||
+              data.empLevel == '9' ||
+              data.empLevel == '6+'
+            ) {
+              this.teamLeaders.push(data)
+            }
+          })
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    //获取项目
+    getProject() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getProject'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.costItems = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    //获取项目经理
+    getManager() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getManager'),
+        params: { pid: 4 },
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.projectManagers = data.payload
         } else {
           this.$message.error(data.msg)
         }
@@ -200,7 +271,6 @@ export default {
         }
       })
     },
-
     //选中项数
     onSelect(selection) {
       if (selection.length > 0) {
@@ -209,14 +279,16 @@ export default {
         this.count = 0
       }
     },
-    //查询工作量
-    selectTaskList() {
-      this.$refs.taskListTable.refresh()
-    },
     //批量下载
     batchDownLoad() {
-      let params = JSON.parse(JSON.stringify(this.formData))
-      this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), params, this)
+      const list = this.$refs.taskDetialTable.getSelectRow()
+      if (list.length === 0) {
+        this.$message.warning('请至少选择一条数据！')
+        return
+      }
+      let ids = list.map((item) => item.id)
+      console.log(ids)
+      this.$http.downloadPost(this.$http.adornUrl('/workload/export'), { ids: ids }, this)
     },
     //重置
     resetForm() {
@@ -233,6 +305,9 @@ export default {
 ::v-deep .el-form-item__content {
   width: 190px;
 }
+::v-deep .el-input__icon {
+  line-height: 0;
+}
 .main {
   .top {
     background: white;
@@ -241,9 +316,6 @@ export default {
   .header-title {
     font-size: 16px;
     font-weight: 600;
-  }
-  .status {
-    padding: 20px 0;
   }
   .row-box {
     display: flex;
