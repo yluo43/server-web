@@ -345,7 +345,7 @@ export default {
         })
       })
       data.ids = ids
-      this.$http.downloadPost(this.$http.adornUrl('/teamWork/export'), { data: data }, this)
+      this.$http.downloadPost(this.$http.adornUrl('/teamWork/export'), data, this)
     },
     //重置
     resetForm() {
