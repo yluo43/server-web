@@ -11,7 +11,7 @@
               <el-input v-model="dataForm.phone" placeholder="请输入用户手机号" clearable></el-input>
             </el-form-item>
             <el-form-item label="角色类型:" prop="roleId">
-              <el-select v-model="dataForm.roleId" placeholder="请选择角色类型">
+              <el-select v-model="dataForm.roleId"  clearable placeholder="请选择角色类型">
                 <el-option label="全部" value=""></el-option>
                 <el-option      v-for="item in roleList"
                                 :key="item.roleId"

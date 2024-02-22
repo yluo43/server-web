@@ -26,7 +26,15 @@
         @select="__select"
         @select-all="__selectAll"
       >
-        <el-table-column :key="9999" :type="type" header-align="center" align="center" width="50" :reserve-selection="memberTypeFlag"></el-table-column>
+        <el-table-column
+          :key="9999"
+          :type="type"
+          v-if="type != null"
+          header-align="center"
+          align="center"
+          width="50"
+          :reserve-selection="memberTypeFlag"
+        ></el-table-column>
         <template v-for="(item, index) in options.theads">
           <template v-if="item.slotName != null">
             <el-table-column

@@ -54,7 +54,7 @@
 
 
           <el-form-item label="部门" prop="deptId">
-            <el-select  v-model="dataForm.deptId" placeholder="请选择所属部门" >
+            <el-select   clearable v-model="dataForm.deptId" placeholder="请选择所属部门" >
               <el-option      v-for="item in deptList"
                               :key="item.id"
                               :label="item.deptName"
@@ -65,7 +65,7 @@
 
 
           <el-form-item label="是否管理员" prop="admin">
-            <el-select  v-model="dataForm.admin" placeholder="是否为管理员" >
+            <el-select  clearable  v-model="dataForm.admin" placeholder="是否为管理员" >
               <el-option key="0" label="不是" value="0"></el-option>
               <el-option key="1" label="是" value="1"></el-option>
             </el-select>
@@ -74,7 +74,7 @@
 
 
           <el-form-item label="状态" prop="state">
-            <el-select  v-model="dataForm.state" placeholder="请选择员工状态" >
+            <el-select   clearable v-model="dataForm.state" placeholder="请选择员工状态" >
               <el-option key="0" label="正式" value="0"></el-option>
               <el-option key="1" label="试用" value="1"></el-option>
               <el-option key="2" label="临时" value="2"></el-option>
@@ -83,7 +83,7 @@
 
 
           <el-form-item label="员工类型" prop="empType">
-            <el-select  v-model="dataForm.empType" placeholder="请选择员工类型" >
+            <el-select  clearable  v-model="dataForm.empType" placeholder="请选择员工类型" >
               <el-option key="0" label="总公司员工" value="0"></el-option>
               <el-option key="1" label="子公司员工" value="1"></el-option>
               <el-option key="2" label="专项员工" value="2"></el-option>
@@ -95,7 +95,7 @@
 
 
           <el-form-item label="级别" prop="empLevel">
-            <el-select  v-model="dataForm.empLevel" placeholder="请选择员工级别" >
+            <el-select  clearable  v-model="dataForm.empLevel" placeholder="请选择员工级别" >
               <el-option key="3" label="3" value="3"></el-option>
               <el-option key="4" label="4" value="4"></el-option>
               <el-option key="5" label="5" value="5"></el-option>

@@ -229,7 +229,7 @@ export default {
     // 查询枚举列表
     queryEnumList() {
       this.$http({
-        url: this.$http.adornUrl('/common/getManager'),
+        url: this.$http.adornUrl('/common/getManagerUp'),
         params: { pid: 4 },
         method: 'get'
       }).then(({ data }) => {

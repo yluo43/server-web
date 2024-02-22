@@ -47,8 +47,8 @@
             <el-form-item label="部门名称" prop="deptName" :rules="[ { required: true, message: '部门名称不能为空'}]">
               <el-input v-model="editDataForm.deptName"  placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="部门经理" prop="managerId" :rules="[ { required: true, message: '部门经理不能为空'}]">
-              <el-select  v-model="editDataForm.managerId" placeholder="请选择部门负责人" >
+            <el-form-item label="部门经理" prop="managerId" :rules="[ { required: managerRequired, message: '部门经理不能为空'}]">
+              <el-select   clearable v-model="editDataForm.managerId" placeholder="请选择部门负责人" >
                 <el-option      v-for="item in managerList"
                                 :key="item.id"
                                 :label="item.name"
@@ -58,7 +58,7 @@
             </el-form-item>
 
             <el-form-item label="部门助理" prop="assistantId">
-              <el-select  v-model="editDataForm.assistantId" placeholder="请选择部门负责人" >
+              <el-select  clearable  v-model="editDataForm.assistantId" placeholder="请选择部门负责人" >
                 <el-option      v-for="item in assistList"
                                 :key="item.id"
                                 :label="item.name"
@@ -67,7 +67,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="上级部门" prop="parentId" >
-              <el-select  v-model="editDataForm.parentId" placeholder="请选择上级部门" >
+              <el-select   clearable v-model="editDataForm.parentId" placeholder="请选择上级部门" >
                 <el-option      v-for="item in deptList"
                                 :key="item.id"
                                 :label="item.deptName"
@@ -78,7 +78,7 @@
 
 
             <el-form-item label="状态" prop="state" v-if="showStatus">
-              <el-select  v-model="editDataForm.state" placeholder="请选择"  >
+              <el-select  clearable  v-model="editDataForm.state" placeholder="请选择"  >
                 <el-option :key="1" label="解散" :value="1"></el-option>
                 <el-option :key="0" label="正常" :value="0"></el-option>
 
@@ -111,6 +111,7 @@ import baseDialog from '../../base/baseDialog'
 export default {
   data() {
     return {
+      managerRequired:false,
       showStatus:false,
       drawer:false,
       direction: 'rtl',
@@ -164,18 +165,7 @@ export default {
       }
     })
 
-    //初始化managerList
-    this.$http({
-      url: this.$http.adornUrl('/common/getManager?pid=1'),
-      method: 'get'
-    }).then(({data}) => {
-      if (data && data.code === 200) {
 
-        this.managerList = data.payload
-      } else {
-        this.$message.error(data.msg)
-      }
-    })
     //初始化部门助理
     this.$http({
       url: this.$http.adornUrl('/common/getManager?pid=2'),
@@ -218,6 +208,23 @@ export default {
       this.op = 'add'
       this.clear(this.editDataForm)
       this.showStatus = false
+      this.managerRequired  = false
+
+
+      //初始化managerList
+      this.$http({
+        url: this.$http.adornUrl('/common/getManager?pid=1'),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+
+          this.managerList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+
+
 
     },
     // 新增
@@ -277,6 +284,22 @@ export default {
       })
     },
     alter(row) {
+      this.managerRequired  = true
+
+      //初始化managerList
+      this.$http({
+        url: this.$http.adornUrl('/common/getDeptManager?pid=1&deptId='+row.item.id),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+
+          this.managerList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+
+
       this.title = '部门编辑'
       this.drawer = true
       this.op = 'alter'
