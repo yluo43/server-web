@@ -8,12 +8,11 @@
               <el-input v-model="dataForm.teamName" placeholder="输入关键字" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="团队负责人:" prop="managerIds" >
-              <el-select  clearable  v-model="dataForm.managerIds" placeholder="请选择" >
+              <el-select    v-model="dataForm.managerIds" placeholder="请选择"  multiple>
                 <el-option      v-for="manager in managerList"
                                 :key="manager.empId"
                                 :label="manager.name"
                                 :value="manager.empId"
-                                multiple="true"
                 >
                 </el-option>
               </el-select>
@@ -24,17 +23,17 @@
             </el-form-item>
 
             <el-form-item label="驻地:" prop="stationIds">
-              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择" multiple :collapse-tags="true">
                 <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptIds">
-              <el-select  v-model="dataForm.deptIds" placeholder="请选择" :multiple="true" :collapse-tags="true"  >
+              <el-select  v-model="dataForm.deptIds" placeholder="请选择" multiple :collapse-tags="true"  >
                 <el-option      v-for="dept in deptList"
                                 :key="dept.id"
                                 :label="dept.name"
                                 :value="dept.id"
-                                multiple="true"
+                                multiple
                                 :disabled='dept.name =="新讯数字科技有限公司"'
                 >
                 </el-option>
@@ -113,37 +112,34 @@
                                 :key="team.id"
                                 :label="team.name"
                                 :value="team.id"
-                                multiple="true"
                 >
                 </el-option>
               </el-select>
             </el-form-item>
 
-            <el-form-item label="团队负责人:" prop="managerId"  :rules="[ { required: true, message: '团队负责人不能为空'}]">
-              <el-select  clearable  v-model="editDataForm.managerId" placeholder="请选择" >
-                <el-option      v-for="manager in managerList"
-                                :key="manager.empId"
-                                :label="manager.name"
-                                :value="manager.empId"
-                                multiple="true"
-                >
-                </el-option>
-              </el-select>
-            </el-form-item>
 
-            <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '部署部门不能为空'}]">
-              <el-select   clearable v-model="editDataForm.deptId" placeholder="请选择" >
+            <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '归属部门不能为空'}]">
+              <el-select   clearable v-model="editDataForm.deptId" placeholder="请选择"   @change="changeManagerList">
                 <el-option      v-for="dept in deptList"
                                 :key="dept.id"
                                 :label="dept.name"
                                 :value="dept.id"
-                                multiple="true"
                                 :disabled='dept.name =="新讯数字科技有限公司"'
                 >
                 </el-option>
               </el-select>
             </el-form-item>
 
+            <el-form-item label="团队负责人:" prop="managerId"  :rules="[ { required: true, message: '不能为空，请先选择归属部门'}]" >
+              <el-select  clearable  v-model="editDataForm.managerId" placeholder="请先选择归属部门" >
+                <el-option      v-for="manager in teamManagerList"
+                                :key="manager.empId"
+                                :label="manager.name"
+                                :value="manager.empId"
+                >
+                </el-option>
+              </el-select>
+            </el-form-item>
 
             <el-form-item label="团队驻地:" prop="stationId" :rules="[ { required: true, message: '驻地不能为空'}]">
               <el-select v-model="editDataForm.stationId" filterable clearable  placeholder="请选择" @change="getTeamId" >
@@ -163,8 +159,7 @@
             <el-form-item label="团队成员:" prop="teamMembers" >
               <el-select  clearable v-model="editDataForm.teamMembers"
                          filterable
-                         placeholder="请选择"
-                         :multiple= true
+                         placeholder="请选择" multiple
                          :collapse-tags="true"
               >
                 <el-option
@@ -225,6 +220,8 @@ export default {
       deleteIds:[],
       empLocations:[],
       managerList:[],
+      teamManagerList:[],
+
       deptList:[],
       parentTeam:[],
       members:[],
@@ -309,15 +306,11 @@ export default {
     })
     //初始化managerList
     this.$http({
-      url: this.$http.adornUrl('/employee/selectEmployeeList'),
+      url: this.$http.adornUrl('/common/getManagerUp?pid=3'),
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
-        data.payload.forEach(data=>{
-          if(data.empLevel=='6-'||data.empLevel=='6'||data.empLevel=='7'||data.empLevel=='8'||data.empLevel=='9'||data.empLevel=='6+'){
-            this.managerList.push(data)
-          }
-        })
+        this.managerList = data.payload
       } else {
         this.$message.error(data.msg)
       }
@@ -325,6 +318,28 @@ export default {
 
   },
   methods: {
+    changeManagerList(){
+
+      if(this.editDataForm.deptId==""||this.editDataForm.deptId==null){
+        alert("请先选择部门，再选择团队负责人")
+        return false
+      }
+      let deptId = this.editDataForm.deptId
+
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamManagerUp?pid=3&deptId='+deptId),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.teamManagerList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+
+
+
     showParentStatus(){
       if(this.editDataForm.teamLevel == '2'){
         this.showParent = true
