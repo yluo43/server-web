@@ -131,7 +131,7 @@
               <el-input v-model="editDataForm.teamName" clearable disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="成本中心:" prop="costCenters">
-              <el-select  v-model="editDataForm.costCenter"  >
+              <el-select  clearable  v-model="editDataForm.costCenter"  >
                 <el-option      v-for="costCenter in costCenters"
                                 :key="costCenter"
                                 :label="costCenter"
@@ -158,7 +158,7 @@
             </el-form-item>
 
             <el-form-item label="费用名称:" prop="backCitys">
-              <el-select  v-model="editDataForm.costName"  >
+              <el-select  clearable  v-model="editDataForm.costName"  >
                 <el-option      v-for="costName in costNames"
                                 :key="costName"
                                 :label="costName"
@@ -172,7 +172,7 @@
             <el-form-item label="成本项目:" prop="costItems">
 <!--              <el-input v-model="editDataForm.costItems" clearable></el-input>-->
 
-                            <el-select  v-model="editDataForm.costItems"  >
+                            <el-select  clearable  v-model="editDataForm.costItems"  >
                               <el-option      v-for="item in reason"
                                               :key="item"
                                               :label="item"

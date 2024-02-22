@@ -12,17 +12,17 @@
           <el-date-picker v-model="dataForm.startDate" value-format="yyyy-MM-dd" format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="归属部门:" prop="deptId">
-          <el-select v-model="dataForm.deptId" placeholder="请选择">
+          <el-select  clearable v-model="dataForm.deptId" placeholder="请选择">
             <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="归属团队:" prop="teamId">
-          <el-select v-model="dataForm.teamId" placeholder="请选择">
+          <el-select  clearable v-model="dataForm.teamId" placeholder="请选择">
             <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="负责人:" prop="managerId">
-          <el-select v-model="dataForm.managerId" placeholder="请选择">
+          <el-select  clearable v-model="dataForm.managerId" placeholder="请选择">
             <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>

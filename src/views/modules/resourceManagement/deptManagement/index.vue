@@ -48,7 +48,7 @@
               <el-input v-model="editDataForm.deptName"  placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="部门经理" prop="managerId" :rules="[ { required: true, message: '部门经理不能为空'}]">
-              <el-select  v-model="editDataForm.managerId" placeholder="请选择部门负责人" >
+              <el-select   clearable v-model="editDataForm.managerId" placeholder="请选择部门负责人" >
                 <el-option      v-for="item in managerList"
                                 :key="item.id"
                                 :label="item.name"
@@ -58,7 +58,7 @@
             </el-form-item>
 
             <el-form-item label="部门助理" prop="assistantId">
-              <el-select  v-model="editDataForm.assistantId" placeholder="请选择部门负责人" >
+              <el-select  clearable  v-model="editDataForm.assistantId" placeholder="请选择部门负责人" >
                 <el-option      v-for="item in assistList"
                                 :key="item.id"
                                 :label="item.name"
@@ -67,7 +67,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="上级部门" prop="parentId" >
-              <el-select  v-model="editDataForm.parentId" placeholder="请选择上级部门" >
+              <el-select   clearable v-model="editDataForm.parentId" placeholder="请选择上级部门" >
                 <el-option      v-for="item in deptList"
                                 :key="item.id"
                                 :label="item.deptName"
@@ -78,7 +78,7 @@
 
 
             <el-form-item label="状态" prop="state" v-if="showStatus">
-              <el-select  v-model="editDataForm.state" placeholder="请选择"  >
+              <el-select  clearable  v-model="editDataForm.state" placeholder="请选择"  >
                 <el-option :key="1" label="解散" :value="1"></el-option>
                 <el-option :key="0" label="正常" :value="0"></el-option>
 

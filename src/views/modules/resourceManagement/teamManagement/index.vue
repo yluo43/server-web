@@ -8,7 +8,7 @@
               <el-input v-model="dataForm.teamName" placeholder="输入关键字" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="团队负责人:" prop="managerIds" >
-              <el-select  v-model="dataForm.managerIds" placeholder="请选择" >
+              <el-select  clearable  v-model="dataForm.managerIds" placeholder="请选择" >
                 <el-option      v-for="manager in managerList"
                                 :key="manager.empId"
                                 :label="manager.name"
@@ -41,7 +41,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="状态:" prop="state" >
-              <el-select  v-model="dataForm.state" placeholder="请选择">
+              <el-select  clearable  v-model="dataForm.state" placeholder="请选择">
                 <el-option key="0" label="正常" value="0"></el-option>
                 <el-option key="1" label="解散" value="1"></el-option>
               </el-select>
@@ -120,7 +120,7 @@
             </el-form-item>
 
             <el-form-item label="团队负责人:" prop="managerId"  :rules="[ { required: true, message: '团队负责人不能为空'}]">
-              <el-select  v-model="editDataForm.managerId" placeholder="请选择" >
+              <el-select  clearable  v-model="editDataForm.managerId" placeholder="请选择" >
                 <el-option      v-for="manager in managerList"
                                 :key="manager.empId"
                                 :label="manager.name"
@@ -132,7 +132,7 @@
             </el-form-item>
 
             <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '部署部门不能为空'}]">
-              <el-select  v-model="editDataForm.deptId" placeholder="请选择" >
+              <el-select   clearable v-model="editDataForm.deptId" placeholder="请选择" >
                 <el-option      v-for="dept in deptList"
                                 :key="dept.id"
                                 :label="dept.name"
@@ -161,7 +161,7 @@
             </el-form-item>
 
             <el-form-item label="团队成员:" prop="teamMembers" >
-              <el-select v-model="editDataForm.teamMembers"
+              <el-select  clearable v-model="editDataForm.teamMembers"
                          filterable
                          placeholder="请选择"
                          :multiple= true
@@ -187,7 +187,7 @@
             </el-form-item>
 
             <el-form-item label="状态:" prop="state" v-if="departStatusNameShow">
-              <el-select  v-model="editDataForm.state" placeholder="请选择">
+              <el-select  clearable  v-model="editDataForm.state" placeholder="请选择">
                 <el-option key="0" label="正常" value="0"></el-option>
                 <el-option key="1" label="解散" value="1"></el-option>
               </el-select>

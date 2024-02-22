@@ -47,7 +47,7 @@
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="状态:" prop="state" style="margin-left: 60px">
-            <el-select v-model="dataForm.state" placeholder="请选择">
+            <el-select  clearable v-model="dataForm.state" placeholder="请选择">
               <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
