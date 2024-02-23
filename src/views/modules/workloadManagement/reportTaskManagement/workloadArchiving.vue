@@ -251,30 +251,6 @@ export default {
     //关闭驳回弹窗
     closeDialog() {
       this.$refs.rejectDialog.hide()
-    },
-    //树选中
-    handleNodeClick(data, self, child) {
-      let datalist = this.$refs.tree.getCheckedNodes()
-      this.selectTree = [] //置空
-      this.selectData = []
-      datalist.forEach((item) => {
-        this.selectTree.push({ id: item.id, label: item.label })
-        this.selectData.push(item.label)
-      })
-    },
-    removetag() {
-      this.selectTree.splice(0, 1)
-      let setlist = this.$refs.tree.getCheckedNodes()
-      setlist.splice(0, 1)
-      this.$nextTick(() => {
-        this.$refs.tree.setCheckedNodes(setlist)
-      })
-    },
-    clearall() {
-      this.selectTree = []
-      this.$nextTick(() => {
-        this.$refs.tree.setCheckedNodes([])
-      })
     }
   }
 }

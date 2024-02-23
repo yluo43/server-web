@@ -308,11 +308,11 @@ export default {
     getManager() {
       this.$http({
         url: this.$http.adornUrl('/common/getManager'),
-        params: { pid: 3 },
+        params: { pid: 4 },
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          this.teamLeaders = data.payload
+          this.projectManagers = data.payload
         } else {
           this.$message.error(data.msg)
         }
@@ -344,7 +344,7 @@ export default {
           }
         })
       })
-      data.ids = ids
+      params.ids = ids
       this.$http.downloadPost(this.$http.adornUrl('/teamWork/export'), data, this)
     },
     //重置
