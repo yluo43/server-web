@@ -9,7 +9,7 @@
           <el-form-item label="工作量:">
             <div style="display: flex; align-items: center; justify-content: center" v-for="(item, index) in formData.workLoad" :key="index">
               <el-form-item :prop="'workLoad.' + index + '.projectName'">
-                <el-select v-model="item.projectName" placeholder="请选择成本项目" clearable>
+                <el-select v-model="item.projectName" placeholder="请选择成本项目" @change="selectChange(item)" clearable>
                   <el-option v-for="ele in costItems" :key="ele.id" :label="ele.name" :value="ele.name" />
                 </el-select>
               </el-form-item>
@@ -82,6 +82,14 @@ export default {
     init(initData) {
       Object.assign(this.formData, initData)
       console.log(this.formData)
+    },
+    selectChange(params) {
+      this.costItems.forEach((item) => {
+        if (item.name == params.projectName) {
+          params.projectId = item.id
+          params.managerName = item.managerName
+        }
+      })
     },
     //删除
     deleteRow(params) {
