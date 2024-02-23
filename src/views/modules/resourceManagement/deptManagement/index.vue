@@ -51,7 +51,7 @@
               <el-select   clearable v-model="editDataForm.managerId" placeholder="请选择部门负责人" >
                 <el-option      v-for="item in managerList"
                                 :key="item.id"
-                                :label="item.name"
+                                :label='item.name+"("+item.id+")"'
                                 :value="item.id">
                 </el-option>
               </el-select>
@@ -61,7 +61,7 @@
               <el-select  clearable  v-model="editDataForm.assistantId" placeholder="请选择部门负责人" >
                 <el-option      v-for="item in assistList"
                                 :key="item.id"
-                                :label="item.name"
+                                :label='item.name+"("+item.id+")"'
                                 :value="item.id">
                 </el-option>
               </el-select>

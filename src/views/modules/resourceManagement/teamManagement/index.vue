@@ -92,7 +92,7 @@
         :title="title"
         :visible.sync="drawer"
         :direction="direction"
-        size="24%"
+        size="26%"
       >
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm" >
@@ -133,9 +133,9 @@
             <el-form-item label="团队负责人:" prop="managerId"  :rules="[ { required: true, message: '不能为空，请先选择归属部门'}]" >
               <el-select  clearable  v-model="editDataForm.managerId" placeholder="请先选择归属部门" >
                 <el-option      v-for="manager in teamManagerList"
-                                :key="manager.empId"
-                                :label="manager.name"
-                                :value="manager.empId"
+                                :key="manager.id"
+                                :label='manager.name+"("+manager.id+")"'
+                                :value="manager.id"
                 >
                 </el-option>
               </el-select>
@@ -165,7 +165,7 @@
                 <el-option
                   v-for="item in members"
                   :key="item.id"
-                  :label="item.name"
+                  :label='item.name+""+item.id+""'
                   :value="item.id">
                 </el-option>
               </el-select>
@@ -466,27 +466,40 @@ export default {
       this.departStatusNameShow = false
       this.clear(this.editDataForm)
       this.url = '/team/add'
+      this.teamManagerList = {}
     },
     alter(row) {
-      this.freshMembersWithEdit(row.item.id)
-      this.editDataForm = {...row.item}
-      if(row.item.parentId==0){
-        this.editDataForm.parentId=''
-
-      }
-      this.title = '编辑团队'
-      this.drawer = true
-      this.url = '/team/update'
-      this.departStatusNameShow = true
-
-      if(row.item.teamLevel==1){
-        this.showParent = false
-      }else{
-        this.showParent = true
-      }
 
 
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamManagerUp?pid=3&deptId='+row.item.deptId),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.teamManagerList = data.payload
+          this.freshMembersWithEdit(row.item.id)
+          this.editDataForm = {...row.item}
+          if(row.item.parentId==0){
+            this.editDataForm.parentId=''
 
+          }
+          this.title = '编辑团队'
+          this.drawer = true
+          this.url = '/team/update'
+          this.departStatusNameShow = true
+
+          if(row.item.teamLevel==1){
+            this.showParent = false
+          }else{
+            this.showParent = true
+          }
+
+
+
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
     onSelect(selection){
       this.deleteIds = []
@@ -654,5 +667,6 @@ export default {
 
 ::v-deep .drawer .el-input__inner{
 }
+
 
 </style>

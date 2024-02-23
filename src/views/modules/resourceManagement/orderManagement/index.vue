@@ -13,7 +13,12 @@
           </el-form-item>
           <el-form-item label="项目经理:">
             <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
-              <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              <el-option v-for="item in managerList"
+                         :key="item.id"
+                         :label='item.name+"("+item.id+")"'
+                         :value="item.id">
+
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="立项时间:">
