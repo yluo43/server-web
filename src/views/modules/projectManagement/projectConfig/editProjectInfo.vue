@@ -28,7 +28,9 @@
         </el-form-item>
         <el-form-item label="项目经理:" prop="managerId">
           <el-select  clearable v-model="editProjectInfoFormData.managerId" style="width: 80% !important" placeholder="请选择项目经理">
-            <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            <el-option v-for="item in managerList" :key="item.id"
+                       :label='item.name+"("+item.id+")"'
+                       :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="立项时间:" prop="approvalDate">

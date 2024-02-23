@@ -11,7 +11,9 @@
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerIds">
             <el-select v-model="projectConfigFormData.managerIds" multiple collapse-tags clearable>
-              <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id" />
+              <el-option v-for="item in managerList" :key="item.id"
+                         :label='item.name+"("+item.id+")"'
+                         :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="立项时间:" prop="approvalDate">
@@ -212,7 +214,7 @@ export default {
           { label: '结算单金额(元)', prop: 'settlementAmount', width: '120px' },
           { label: '回款金额(元)', prop: 'returnAmount', width: '100px' },
           { label: '状态', prop: 'stateName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '130px', fixed: 'right' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '180px' }
         ],
         url: '/costItems/list'
       },
