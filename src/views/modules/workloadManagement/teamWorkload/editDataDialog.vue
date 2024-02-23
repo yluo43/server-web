@@ -93,7 +93,7 @@ export default {
     //获取成本项目
     getProject() {
       this.$http({
-        url: this.$http.adornUrl('/common/getProject'),
+        url: this.$http.adornUrl('/costItems/listNoPage'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {

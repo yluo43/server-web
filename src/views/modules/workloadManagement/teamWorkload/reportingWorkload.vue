@@ -121,6 +121,7 @@ export default {
   },
   mounted() {
     this.getProject()
+    this.getListNoPage()
   },
   created() {},
   methods: {
@@ -133,7 +134,7 @@ export default {
     //获取成本项目
     getProject() {
       this.$http({
-        url: this.$http.adornUrl('/common/getProject'),
+        url: this.$http.adornUrl('/costItems/listNoPage'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -174,6 +175,7 @@ export default {
           })
           this.tableData = [...data.payload.pmsWorkloadVoList]
           this.tableData.sort(this.compare('empId'))
+          this.spanArr = []
           this.getSpanArr(this.tableData)
         } else {
           this.$message.error(data.msg)
@@ -297,7 +299,12 @@ export default {
     },
     //下拉框数据改变
     handlerSel(row, column, sel) {
-      console.log(row, column, sel)
+      this.costItems.forEach((item) => {
+        if (item.name == row.projectName) {
+          row.projectId = item.id
+          row.managerName = item.managerName
+        }
+      })
       this.$nextTick(() => {
         row.isSelect = false
         this.$refs[column.property].blur()
