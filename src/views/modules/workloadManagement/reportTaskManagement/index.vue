@@ -177,7 +177,7 @@ export default {
 
   mounted() {
     // console.log(this.$store.state.user.empId)
-    //this.empId = this.$store.state.user.empId
+    this.empId = this.$store.state.user.empId
     this.selectTaskList({ empId: this.empId })
     this.selectTaskAmount()
   },
