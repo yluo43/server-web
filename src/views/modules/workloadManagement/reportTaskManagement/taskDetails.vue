@@ -16,7 +16,7 @@
             </div>
             <div>
               <span>统计成员:</span>
-              <span>500</span>
+              <span>{{ totalCount }}</span>
             </div>
             <div>
               <span>填报天数:</span>
@@ -70,7 +70,7 @@ export default {
       active: 1,
       taskInfo: {},
       teamCount: 0,
-      userCount: 0,
+      totalCount: 0,
       taskDetial: {
         theads: [
           { label: '团队名称', prop: 'teamName' },
@@ -91,11 +91,26 @@ export default {
     init(initData) {
       this.active = initData.taskStatus
       Object.assign(this.taskInfo, initData)
+      this.selectPersonCount({ deptIds: this.taskInfo.deptIds, curPage: 1, pageSize: 10 })
       this.selectTableData()
     },
     //查询表格数据
     selectTableData() {
       this.$refs.taskDetialTable.refresh({ deptIds: this.taskInfo.deptIds })
+    },
+    //查询部门下的总人数
+    selectPersonCount(params) {
+      this.$http({
+        url: this.$http.adornUrl('/employee/selectEmployeeListWithPage'),
+        method: 'get',
+        params: params
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.totalCount = data.payload.totalCount
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
     afterTeamListQuery() {
       let data = this.$refs.taskDetialTable.options.data.payload
