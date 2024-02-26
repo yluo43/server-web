@@ -11,7 +11,7 @@
               <el-select    v-model="dataForm.managerIds" placeholder="请选择"  multiple>
                 <el-option      v-for="manager in managerList"
                                 :key="manager.empId"
-                                :label="manager.name"
+                                :label='manager.name+"("+manager.id+")"'
                                 :value="manager.empId"
                 >
                 </el-option>
