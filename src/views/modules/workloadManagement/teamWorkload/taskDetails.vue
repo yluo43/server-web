@@ -7,7 +7,7 @@
             <div>工作量统计:</div>
             <div style="margin-left: 10px; font-weight: 600">
               <el-select v-model="reportWorkName" clearable style="font-weight: 600px" @change="changeSelect">
-                <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
+                <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
           </div>
@@ -19,14 +19,14 @@
               <el-form-item label="工号:" prop="empId">
                 <el-input v-model="formData.empId" placeholder="请输入工号" clearable />
               </el-form-item>
-              <el-form-item label="成本项目:" prop="projectId">
-                <el-select v-model="formData.projectId" placeholder="请选择" clearable>
+              <el-form-item label="成本项目:" prop="projectIds">
+                <el-select v-model="formData.projectIds" multiple collapse-tags placeholder="请选择" clearable>
                   <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="项目经理:" prop="projectManager">
-                <el-select v-model="formData.projectManager" placeholder="请选择" clearable>
-                  <el-option v-for="item in projectManagers" :key="item.id" :label="item.name" :value="item.name" />
+              <el-form-item label="项目经理:" prop="managerIds">
+                <el-select v-model="formData.managerIds" multiple collapse-tags placeholder="请选择" clearable>
+                  <el-option v-for="item in projectManagers" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
 
@@ -125,9 +125,9 @@ export default {
         //工号
         empId: '',
         //成本项目
-        projectId: '',
+        projectIds: [],
         //项目经理
-        projectManager: ''
+        managerIds: []
       },
       belongingDepartments: [],
       projectManagers: [],
@@ -161,17 +161,15 @@ export default {
     },
     //查询任务列表
     async selectTaskList() {
-      let params = { empId: this.empId }
       const result = await this.$http({
-        url: this.$http.adornUrl('/workload/selectTasks'),
-        method: 'get',
-        params: params
+        url: this.$http.adornUrl('/teamWork/teamTaskListNoPage'),
+        method: 'get'
       })
       if (result.data && result.data.code === 200) {
         this.workLoadStatistics = result.data.payload
         if (result.data.payload.length != 0) {
-          this.reportWorkName = result.data.payload.slice(-1)[0].reportWorkName
-          this.taskId = result.data.payload.slice(-1)[0].taskId
+          this.reportWorkName = result.data.payload[0].reportWorkName
+          this.taskId = result.data.payload[0].id
         }
       } else {
         this.$message.error(result.data.msg)
@@ -244,10 +242,10 @@ export default {
         currentPage: this.currentPage,
         pagesize: this.pagesize,
         taskId: this.taskId,
-        empName: this.formData.empName,
+        empName: this.formData.userName,
         empId: this.formData.empId,
-        managerName: this.formData.projectManager,
-        projectId: this.formData.projectId
+        managerIds: this.formData.managerIds.toString(),
+        projectIds: this.formData.projectIds.toString()
       }
       this.selectTaskDetial(data)
     },
@@ -261,6 +259,7 @@ export default {
         if (data && data.code == 200) {
           this.tableData = data.payload.list
           this.total = data.payload.totalCount
+          this.spanArr = []
           this.getSpanArr(this.tableData)
         } else {
           this.$message.error(data.msg)
@@ -270,12 +269,14 @@ export default {
     // 分页自带的函数，当pageSize变化时会触发此函数
     handleSizeChange(val) {
       this.pagesize = val
-      this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId })
+      this.selectData()
+      //this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId })
     },
     // 分页自带函数，当currentPage变化时会触发此函数
     handleCurrentChange(val) {
       this.currentPage = val
-      this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId })
+      this.selectData()
+      //this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId })
     },
     getSpanArr(data) {
       // 遍历数据

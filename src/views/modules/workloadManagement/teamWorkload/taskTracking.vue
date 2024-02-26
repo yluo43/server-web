@@ -7,7 +7,7 @@
             <div>工作量统计:</div>
             <div style="margin-left: 10px; font-weight: 600">
               <el-select v-model="reportWorkName" clearable style="font-weight: 600px" @change="changeSelect">
-                <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
+                <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
           </div>
@@ -122,7 +122,7 @@ export default {
     }
   },
   mounted() {
-    this.empId = this.$store.state.user.empId
+    // this.empId = this.$store.state.user.empId
     this.getTeam()
   },
   created() {},
@@ -144,17 +144,15 @@ export default {
     },
     //查询任务列表
     async selectTaskList() {
-      let params = { empId: this.empId }
       const result = await this.$http({
-        url: this.$http.adornUrl('/workload/selectTasks'),
-        method: 'get',
-        params: params
+        url: this.$http.adornUrl('/teamWork/teamTaskListNoPage'),
+        method: 'get'
       })
       if (result.data && result.data.code === 200) {
         this.workLoadStatistics = result.data.payload
         if (result.data.payload.length != 0) {
-          this.reportWorkName = result.data.payload.slice(-1)[0].reportWorkName
-          this.taskId = result.data.payload.slice(-1)[0].taskId
+          this.reportWorkName = result.data.payload[0].reportWorkName
+          this.taskId = result.data.payload[0].id
         }
       } else {
         this.$message.error(result.data.msg)

@@ -51,6 +51,7 @@ export default {
       costItems: [],
       name: '',
       projectName: '',
+      managerName: '',
       rules: {
         name: [{ required: true, message: '请选择一个成员', trigger: 'change' }]
       }
@@ -82,6 +83,7 @@ export default {
           this.costItems.forEach((item) => {
             if (item.id === this.formData.projectId) {
               this.projectName = item.name
+              this.managerName = item.managerName
             }
           })
           //发起请求
@@ -95,7 +97,7 @@ export default {
             projectName: this.projectName,
             realityRate: this.formData.realityRate,
             planRate: '',
-            managerName: '',
+            managerName: this.managerName,
             startTime: '',
             overTime: '',
             workStatus: '1',
@@ -118,7 +120,7 @@ export default {
     //获取成本项目
     getProject() {
       this.$http({
-        url: this.$http.adornUrl('/common/getProject'),
+        url: this.$http.adornUrl('/costItems/listNoPage'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
