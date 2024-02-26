@@ -1,6 +1,6 @@
 <template>
   <div style="height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center">
-    <div>提交成功</div>
+    <div style="font-weight: 600">提交成功</div>
     <p>{{ reportWorkName }}{{ teamName }}工作量提交成功！</p>
     <p>
       请于“团队工作量”中跟踪项目经理对团队成员的审批情况。
