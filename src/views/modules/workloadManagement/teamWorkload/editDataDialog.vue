@@ -88,7 +88,7 @@ export default {
         if (item.name == params.projectName) {
           params.projectId = item.id
           params.managerName = item.managerName
-          //   params.deptId=item.deptId
+          // params.deptId = item.deptId
         }
       })
     },
@@ -149,7 +149,7 @@ export default {
       }
       this.formData.workLoad.map((item) => {
         item.taskId = this.formData.taskId
-        item.deptId = this.costItem[0].deptId
+        item.deptId = this.costItems[0].deptId
       })
       let data = {
         pmsWorkloadVoList: this.formData.workLoad,

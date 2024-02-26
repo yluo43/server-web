@@ -59,7 +59,8 @@
             </el-col>
           </el-row>
           <div>
-            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px" @afterQuery="afterTaskListQuery">
+            <!-- @afterQuery="afterTaskListQuery" -->
+            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px">
               <template v-slot:reportWorkName="row">
                 <div v-if="row.item.taskStatus == 3">
                   {{ row.item.reportWorkName }}
@@ -174,6 +175,7 @@ export default {
     // console.log(this.$store.state.user.empId)
     this.empId = this.$store.state.user.empId
     this.selectTaskList({ empId: this.empId })
+    this.selectTaskAmount()
   },
   created() {},
   methods: {
@@ -185,13 +187,28 @@ export default {
     selectTaskList(params) {
       this.$refs.taskListTable.refresh(params)
     },
-    //获取接口数据
-    afterTaskListQuery() {
-      let data = this.$refs.taskListTable.options.data.payload
-      this.commissionTask = data.commissionTask
-      this.monthTask = data.monthTask
-      this.yearTask = data.yearTask
+    selectTaskAmount() {
+      this.$http({
+        url: this.$http.adornUrl('/workload/selectTaskAmount'),
+        method: 'get',
+        params: { empId: this.empId }
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.commissionTask = data.payload.commissionTask
+          this.monthTask = data.payload.monthTask
+          this.yearTask = data.payload.yearTask
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
+    //获取接口数据
+    // afterTaskListQuery() {
+    //   let data = this.$refs.taskListTable.options.data.payload
+    //   this.commissionTask = data.commissionTask
+    //   this.monthTask = data.monthTask
+    //   this.yearTask = data.yearTask
+    // },
     //table切换
     tabChange() {
       if (this.activeName === 'first') {
