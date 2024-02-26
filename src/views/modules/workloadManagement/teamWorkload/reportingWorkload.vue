@@ -43,7 +43,7 @@
               <el-table-column prop="overTime" label="结束时间"></el-table-column>
               <el-table-column prop="projectName" label="成本项目">
                 <template slot-scope="scope">
-                  <div @dblclick="handlerSelect(scope.row, scope.column)" style="height: 50px">
+                  <div @dblclick="handlerSelect(scope.row, scope.column)" style="height: 50px; line-height: 50px">
                     <el-select v-if="scope.row.isSelect" v-model="scope.row.projectName" @change="handlerSel(scope.row, scope.column)" ref="projectName">
                       <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name"></el-option>
                     </el-select>
@@ -54,7 +54,7 @@
               <el-table-column prop="managerName" label="项目经理"></el-table-column>
               <el-table-column prop="realityRate" label="实际投入">
                 <template slot-scope="scope">
-                  <div @dblclick="handler(scope.row, scope.column)" style="height: 50px">
+                  <div @dblclick="handler(scope.row, scope.column)" style="height: 50px; line-height: 50px">
                     <el-input
                       v-if="scope.row.isEdit"
                       ref="realityRate"
@@ -204,7 +204,6 @@ export default {
       })
         .then(() => {
           let index = this.tableData.indexOf(row)
-          console.log(index)
           if (index != -1) {
             this.tableData.splice(index, 1)
             // this.save()
