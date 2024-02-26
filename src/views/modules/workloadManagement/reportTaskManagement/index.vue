@@ -94,11 +94,15 @@
               <!-- 操作 -->
               <template v-slot:clientType="row">
                 <template>
-                  <el-button v-if="row.item.taskStatus == 4" type="text" @click="goToArchiveDetails(row)">>>归档详情</el-button>
-                  <el-button v-if="row.item.taskStatus == 3" type="text" @click="goToArchive(row)">>>去归档</el-button>
-                  <el-button type="text" @click="goToTaskDetails(row)">任务详情</el-button>
-                  <el-button :disabled="row.item.taskStatus !== 0" type="text" @click="editReportTask(row)">编辑</el-button>
-                  <el-button type="text" @click="goToDelete(row)">删除</el-button>
+                  <el-row>
+                    <el-col :span="8">
+                      <el-button v-show="row.item.taskStatus == 4" type="text" @click="goToArchiveDetails(row)">>>归档详情</el-button>
+                      <el-button v-show="row.item.taskStatus == 3" type="text" @click="goToArchive(row)">>>去归档</el-button>
+                    </el-col>
+                    <el-col :span="6"><el-button type="text" @click="goToTaskDetails(row)">任务详情</el-button></el-col>
+                    <el-col :span="4"><el-button :disabled="row.item.taskStatus !== 0" type="text" @click="editReportTask(row)">编辑</el-button></el-col>
+                    <el-col :span="4"><el-button type="text" @click="goToDelete(row)">删除</el-button></el-col>
+                  </el-row>
                 </template>
               </template>
             </baseTable>
@@ -156,7 +160,7 @@ export default {
       reportTaskTitle: '',
       taskList: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '180px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName' },
           { label: '创建时间', prop: 'createTime', slotName: 'createTime' },
@@ -164,7 +168,7 @@ export default {
           { label: '填报天数', prop: 'reportDay' },
           { label: '提醒频率', prop: 'frequency' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '280px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
         url: '/workload/selectReportPage'
       }
@@ -173,7 +177,7 @@ export default {
 
   mounted() {
     // console.log(this.$store.state.user.empId)
-    this.empId = this.$store.state.user.empId
+    //this.empId = this.$store.state.user.empId
     this.selectTaskList({ empId: this.empId })
     this.selectTaskAmount()
   },

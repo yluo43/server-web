@@ -59,13 +59,13 @@
           </el-row>
           <div>
             <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px">
-              <!-- <template v-slot:reportWorkName="row">
-                <div v-if="row.item.taskStatus == 3">
+              <template v-slot:reportWorkName="row">
+                <div v-if="row.item.taskStatus == 1">
                   {{ row.item.reportWorkName }}
-                  <el-tag type="danger" effect="dark">待归档</el-tag>
+                  <el-tag type="danger" effect="dark">待填报</el-tag>
                 </div>
                 <div v-else>{{ row.item.reportWorkName }}</div>
-              </template> -->
+              </template>
               <template v-slot:taskStatus="row">
                 <template v-if="row.item.taskStatus == 0">
                   <span>待开始</span>
@@ -134,13 +134,13 @@ export default {
       yearCount: '',
       taskList: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '180px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName' },
           { label: '开始填报时间', prop: 'reportStartTime' },
           { label: '填报天数', prop: 'reportDay' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '180px' }
         ],
         url: '/teamWork/teamTaskList'
       }
@@ -240,6 +240,10 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
+}
+::v-deep .el-tag {
+  height: 20px;
+  line-height: 20px;
 }
 .management-header {
   display: flex;

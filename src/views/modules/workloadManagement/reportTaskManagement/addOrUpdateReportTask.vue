@@ -54,7 +54,7 @@
             小时(9:00-18:00)
           </el-form-item>
           <el-form-item label="描述:" prop="intro" style="margin-top: 10px">
-            <el-input type="textarea" v-model="formData.intro" placeholder="请输入项目集简介，不超过50字"></el-input>
+            <el-input type="textarea" show-word-limit maxlength="50" v-model="formData.intro" placeholder="请输入任务描述，不超过50字"></el-input>
           </el-form-item>
           <el-form-item style="display: flex; justify-content: right">
             <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
@@ -78,14 +78,17 @@ export default {
     const validateReportStartDate = (rule, value, callback) => {
       if (!value) {
         callback(new Error('请选择开始填报时间'))
-      } else if (
+        return
+      }
+      if (this.formData.reportStartTime && new Date(Date.parse(this.format())) > new Date(Date.parse(this.formData.reportStartTime))) {
+        callback(new Error('开始填报时间应大于等于当前时间'))
+      }
+      if (
         this.formData.reportStartTime &&
         this.formData.timePeriod[1] &&
         new Date(Date.parse(this.formData.timePeriod[1])) > new Date(Date.parse(this.formData.reportStartTime))
       ) {
-        callback(new Error('开始填报时间应大于统计时间段截止时间'))
-      } else {
-        callback()
+        callback(new Error('开始填报时间应大于等于统计时间段截止时间'))
       }
     }
     return {
@@ -206,19 +209,20 @@ export default {
   },
   mounted() {
     this.managerName = getCName()
+    this.empId = this.$store.state.user.empId
+
+    let data = new Date()
   },
   created() {},
   methods: {
     //初始化数据
     async init(flag, initData) {
-      console.log(initData)
       this.flag = flag.operate
       await this.getDept()
       if (this.flag == 'edit') {
         this.$set(this.formData, 'timePeriod', [initData.startTime, initData.overTime])
         this.formData.department = initData.deptNames.split(',')
         Object.assign(this.formData, initData)
-        console.log(this.departments)
         this.departments.map((item) => {
           this.formData.department.forEach((ele) => {
             if (item.name === ele) {
@@ -227,6 +231,15 @@ export default {
           })
         })
       }
+    },
+    format() {
+      var date = new Date()
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      month = (month < 10 ? '0' : '') + month
+      var datee = date.getDate()
+      datee = (datee < 10 ? '0' : '') + datee
+      return year + '-' + month + '-' + datee
     },
     //获取部门
     async getDept() {
@@ -242,20 +255,6 @@ export default {
       } else {
         this.$message.error(result.data.msg)
       }
-      // console.log(result)
-      // this.$http({
-      //   url: this.$http.adornUrl('/common/getDept'),
-      //   method: 'get'
-      // }).then(({ data }) => {
-      //   if (data && data.code === 200) {
-      //     data.payload.map((item) => {
-      //       item.check = false
-      //     })
-      //     this.departments = data.payload
-      //   } else {
-      //     this.$message.error(data.msg)
-      //   }
-      // })
     },
     //确认
     confirm(formName) {
