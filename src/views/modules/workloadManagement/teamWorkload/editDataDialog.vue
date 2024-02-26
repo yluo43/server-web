@@ -149,7 +149,11 @@ export default {
       }
       this.formData.workLoad.map((item) => {
         item.taskId = this.formData.taskId
-        item.deptId = this.costItems[0].deptId
+        this.costItems.map((ele) => {
+          if (item.projectId === ele.id) {
+            item.deptId = ele.deptId
+          }
+        })
       })
       let data = {
         pmsWorkloadVoList: this.formData.workLoad,
