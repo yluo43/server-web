@@ -145,7 +145,7 @@ export default {
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
           { label: '归属项目集', prop: 'psName' },
-          { label: '项目经理', prop: 'mannagerName' },
+          { label: '项目经理', prop: 'managerName' },
           { label: '合同类型', prop: 'contractTypeName' },
           { label: '结算周期', prop: 'settlementCycle' },
           { label: '合同金额（元）', prop: 'contractAmount' },
