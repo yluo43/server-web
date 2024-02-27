@@ -49,7 +49,7 @@
           </template>
           <template v-slot:managerName="scope">
             <el-select v-model="scope.item.row.managerName" placeholder="请选择" :disabled="scope.item.row.clientTypeShow" @change="stateChange(scope)">
-              <el-option v-for="item in memberList" :key="item.id" :label="item.name" :value="item.name"></el-option>
+              <el-option v-for="item in memberList" :key="item.empId" :label="item.name" :value="item.name"></el-option>
             </el-select>
           </template>
           <template v-slot:actualPaymentDate="scope">
@@ -268,8 +268,8 @@ export default {
         }
       }
       if (obj.managerName) {
-        const member = this.memberList.find((item) => item.managerName === obj.managerName)
-        obj.managerId = member.id
+        const member = this.memberList.find((item) => item.name === obj.managerName)
+        obj.managerId = member.empId
       } else {
         this.$message.warning('请选择负责人！')
         return
