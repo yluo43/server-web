@@ -14,7 +14,7 @@
         <el-descriptions-item label="项目状态">
           <div style="width: 80%">
             <!--            0交付中 1已交付 2关闭 3已回款-->
-            <el-steps :active="order.state + 1">
+            <el-steps :active="order.state">
               <el-step title="交付中"></el-step>
               <el-step title="已交付"></el-step>
               <el-step title="关闭"></el-step>
@@ -90,7 +90,7 @@
                 ></el-date-picker>
               </template>
               <template v-slot:state="scope">
-                <el-select  clearable v-model="scope.item.row.state" placeholder="请选择" :disabled="scope.item.row.clientTypeShow" @change="stateChange(scope)">
+                <el-select clearable v-model="scope.item.row.state" placeholder="请选择" :disabled="scope.item.row.clientTypeShow" @change="stateChange(scope)">
                   <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </template>
