@@ -6,7 +6,7 @@
           <span class="title">● {{ order.name }}</span>
         </template>
         <el-descriptions-item label="项目编码">{{ order.projectId }}</el-descriptions-item>
-        <el-descriptions-item label="项目经理">{{ order.mannagerName }}</el-descriptions-item>
+        <el-descriptions-item label="项目经理">{{ order.managerName }}</el-descriptions-item>
         <el-descriptions-item label="立项时间">{{ order.approvalDate }}</el-descriptions-item>
         <el-descriptions-item label="合同类型">{{ order.contractTypeName }}</el-descriptions-item>
         <el-descriptions-item label="结算周期">{{ order.settlementCycle }}</el-descriptions-item>
