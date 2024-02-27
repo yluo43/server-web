@@ -121,11 +121,7 @@
     <!-- 下发填报任务或编辑 -->
     <base-dialog ref="addOrUpdateReportTaskDialog" :title="reportTaskTitle" :width="'500px'">
       <template>
-        <addOrUpdateReportTask
-          @selectTableData="selectTaskList({ empId: empId })"
-          ref="addOrUpdateReportTask"
-          :cancelDialog="closeDialog"
-        ></addOrUpdateReportTask>
+        <addOrUpdateReportTask @selectTableData="selectTable" ref="addOrUpdateReportTask" :cancelDialog="closeDialog"></addOrUpdateReportTask>
       </template>
     </base-dialog>
     <!-- 任务详情 -->
@@ -183,6 +179,10 @@ export default {
   },
   created() {},
   methods: {
+    selectTable() {
+      this.handlerRadio()
+      this.selectTaskAmount()
+    },
     //搜索框搜索
     search() {
       this.selectTaskList({ empId: this.empId, search: this.keyword })
@@ -191,6 +191,7 @@ export default {
     selectTaskList(params) {
       this.$refs.taskListTable.refresh(params)
     },
+    //统计任务数
     selectTaskAmount() {
       this.$http({
         url: this.$http.adornUrl('/workload/selectTaskAmount'),
@@ -324,7 +325,9 @@ export default {
                   message: '删除成功',
                   type: 'success'
                 })
-                this.selectTaskList({ empId: this.empId })
+                this.handlerRadio()
+                // this.selectTaskList({ empId: this.empId })
+                this.selectTaskAmount()
               } else {
                 this.$message.error(data.msg)
               }

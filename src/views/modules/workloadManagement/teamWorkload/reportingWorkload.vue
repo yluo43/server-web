@@ -131,6 +131,16 @@ export default {
       this.taskId = initData.id
       this.selectWorkload()
     },
+    //日期格式化
+    format(date) {
+      var date = new Date(date)
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      month = (month < 10 ? '0' : '') + month
+      var datee = date.getDate()
+      datee = (datee < 10 ? '0' : '') + datee
+      return year + '-' + month + '-' + datee
+    },
     //获取成本项目
     getProject() {
       this.$http({
@@ -169,6 +179,7 @@ export default {
       }).then(({ data }) => {
         if (data && data.code == 200) {
           this.taskInfo = data.payload
+          this.taskInfo.reportStartTime = this.format(this.taskInfo.reportStartTime)
           data.payload.pmsWorkloadVoList.map((item) => {
             this.$set(item, 'isEdit', false)
             this.$set(item, 'isSelect', false)
@@ -230,7 +241,7 @@ export default {
         data: data
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          // this.$message.success('保存成功')
+          this.$message.success('保存成功')
           this.selectWorkload()
         } else {
           this.$message.error(data.msg)
