@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%; width: 100%; background: white">
+  <div style="height: 100vh; width: 100%; background: white">
     <el-container>
       <div style="height: 100%; width: 50%">
         <div style="display: flex; padding: 10px 10px; justify-content: space-between">
@@ -77,7 +77,7 @@
             </el-form-item>
           </div>
         </el-form>
-        <div style="display: flex; justify-content: flex-end; margin-top: 30px">
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px; margin-right: 10px">
           <el-button @click="drawer = false">取消</el-button>
           <el-button v-if="!isDisabled" type="primary" style="margin-right: 20px" @click="editSubmit()">确认</el-button>
         </div>
@@ -97,58 +97,7 @@ export default {
       activeName: 'first',
       keyword: '',
       isDisabled: false,
-      data: [
-        {
-          id: '1',
-          parentId: '0',
-          name: '张少杰团队',
-          op: '',
-          children: [
-            {
-              id: '2',
-              parentId: '1',
-              name: '郝荟枫团队'
-            },
-            {
-              id: '3',
-              parentId: '1',
-              name: '刘同存团队'
-            },
-            {
-              id: '4',
-              parentId: '1',
-              name: '马帅团队'
-            },
-            {
-              id: '5',
-              parentId: '1',
-              name: '王少华团队'
-            },
-            {
-              id: '6',
-              parentId: '1',
-              name: '王彦青团队'
-            },
-            {
-              id: '7',
-              parentId: '1',
-              name: '赵海秀团队'
-            },
-            {
-              id: '8',
-              parentId: '1',
-              name: '祝勇团队',
-              children: [
-                {
-                  id: '9',
-                  parentId: '8',
-                  name: '褚庆团队'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      data: [],
 
       defaultProps: {
         children: 'children',
@@ -242,9 +191,6 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.editDataForm = { ...data.payload }
-          if (data.payload.parentId == 0) {
-            this.editDataForm.parentId = 1
-          }
         } else {
           this.$message.error(data.msg)
         }
