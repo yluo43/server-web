@@ -27,7 +27,7 @@
         </div>
       </div>
       <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="20%">
-        <el-form :inline="true" :model="editDataForm" ref="editDataForm" class="editForm">
+        <el-form :inline="true" :disabled="isDisabled" :model="editDataForm" ref="editDataForm" class="editForm">
           <div>
             <!--            <el-form-item label="部门ID" prop="id" :rules="[ { required: true, message: '部门ID不能为空'}]" >-->
             <!--              <el-input v-model="editDataForm.id"  clearable  maxlength="50"></el-input>-->
@@ -75,13 +75,12 @@
                 maxlength="50"
               ></el-input>
             </el-form-item>
-
-            <div style="display: flex; justify-content: flex-end; margin-top: 30px">
-              <el-button @click="drawer = false">取消</el-button>
-              <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">确认</el-button>
-            </div>
           </div>
         </el-form>
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px">
+          <el-button @click="drawer = false">取消</el-button>
+          <el-button v-if="!isDisabled" type="primary" style="margin-right: 20px" @click="editSubmit()">确认</el-button>
+        </div>
       </el-drawer>
     </el-container>
   </div>
@@ -97,6 +96,7 @@ export default {
     return {
       activeName: 'first',
       keyword: '',
+      isDisabled: false,
       data: [
         {
           id: '1',
@@ -282,6 +282,7 @@ export default {
     add() {
       this.title = '部门添加'
       this.drawer = true
+      this.isDisabled = false
       this.op = 'add'
       this.clear(this.editDataForm)
       delete this.editDataForm['deptTeam']
@@ -369,6 +370,7 @@ export default {
       this.op = 'alter'
       this.showStatus = true
       this.getDeptDetial({ id: params.id })
+      this.checkDept({ id: params.id })
       //初始化managerList
       this.$http({
         url: this.$http.adornUrl('/common/getDeptManager?pid=1&deptId=' + params.id),
@@ -376,6 +378,20 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.managerList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    //校验是否有编辑权限
+    checkDept(params) {
+      this.$http({
+        url: this.$http.adornUrl('/deptInfo/checkDept'),
+        method: 'get',
+        params: params
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.isDisabled = !data.payload
         } else {
           this.$message.error(data.msg)
         }
