@@ -7,8 +7,6 @@
             <el-form-item label="部门名称:" prop="account">
               <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
-
-
             <div style="display: contents;">
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
               </el-button>
@@ -22,8 +20,7 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-<!--            <svg-icon :icon-class="'delete'" style="height:1.5em;width:1.5em; margin-right: 2em;" @click="deleteList(row)"/>-->
-            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"  v-auth="'deptInfo:update'"/>
+            <svg-icon  :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"  v-auth="'deptInfo:update'"/>
           </template>
         </template>
         <template v-slot:parentId="row">
@@ -41,9 +38,6 @@
       >
         <el-form :inline="true"  :model="editDataForm" ref="editDataForm" class="editForm">
           <div>
-<!--            <el-form-item label="部门ID" prop="id" :rules="[ { required: true, message: '部门ID不能为空'}]" >-->
-<!--              <el-input v-model="editDataForm.id"  clearable  maxlength="50"></el-input>-->
-<!--            </el-form-item>-->
             <el-form-item label="部门名称" prop="deptName" :rules="[ { required: true, message: '部门名称不能为空'}]">
               <el-input v-model="editDataForm.deptName"  placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
@@ -288,7 +282,7 @@ export default {
 
       //初始化managerList
       this.$http({
-        url: this.$http.adornUrl('/common/getDeptManager?pid=1&deptId='+row.item.id),
+        url: this.$http.adornUrl('/common/getManager?pid=1'),
         method: 'get'
       }).then(({data}) => {
         if (data && data.code === 200) {

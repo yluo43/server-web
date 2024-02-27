@@ -47,7 +47,6 @@
                                 :key="role.id"
                                 :label="role.name"
                                 :value="role.id"
-                                multiple="true"
                 >
                 </el-option>
               </el-select>
@@ -191,13 +190,12 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="角色:" prop="roleId" :rules="[ { required: true, message: '角色不能为空'}]">
-              <el-select  clearable  v-model="editDataForm.roleId" placeholder="请选择" >
+            <el-form-item label="角色:" prop="roleIds" :rules="[ { required: true, message: '角色不能为空'}]">
+              <el-select  clearable  v-model="editDataForm.roleIds" placeholder="请选择"  multiple>
                 <el-option      v-for="role in roleNames"
                                 :key="role.id"
                                 :label="role.name"
                                 :value="role.id"
-                                multiple="true"
                 >
                 </el-option>
               </el-select>
@@ -337,7 +335,7 @@ export default {
         stationId:'',
         deptId:'',
         teamId:'',
-        roleId:'',
+        roleIds:[],
         entryDate:'',
         departDate:''||undefined,
         createUser:'',
@@ -446,18 +444,11 @@ export default {
         this.editDataForm.departDate = undefined
       }
 
-      // console.log(this.editDataForm)
-      // const params = Object.assign({}, this.editDataForm);
-      // for (const key in params) {
-      //   console.log(key)
-      //   console.log(params[key])
-      //
-      //   if (!params[key] && params[key]  =='' ) {
-      //     delete params[key];
-      //   }
+
+      // if(this.editDataForm.roleIds.length>0){
+      //   this.editDataForm.roleIds =this.editDataForm.roleIds
       // }
-      //
-      // console.log(params)
+
       this.$http({
         url: this.$http.adornUrl(this.url),
         method: 'post',
