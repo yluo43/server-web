@@ -315,7 +315,7 @@ export default {
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl('workload/updateReport'),
+              url: this.$http.adornUrl('/workload/updateReport'),
               method: 'post',
               data: data
             }).then(({ data }) => {
