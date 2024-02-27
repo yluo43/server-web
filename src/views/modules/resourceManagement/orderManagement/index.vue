@@ -83,6 +83,11 @@
                 <i class="el-icon-document" style="font-size: 1.5em; margin-right: 1em" @click="add(row)"></i>
               </el-tooltip>
             </template>
+            <template>
+              <el-tooltip class="item" effect="dark" content="支出" placement="bottom" v-auth="'costItems:expenditure'">
+                <i class="el-icon-edit-outline" style="font-size: 1.5em; margin-right: 1em" @click="expenditureAdd(row)"></i>
+              </el-tooltip>
+            </template>
           </template>
         </baseTable>
       </el-main>
@@ -92,12 +97,18 @@
         <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate"></addOrUpdate>
       </template>
     </base-dialog>
+    <base-dialog :title="title" ref="expenditureDrawer">
+      <template>
+        <expenditure @refreshDataList="refresh" ref="expenditure"></expenditure>
+      </template>
+    </base-dialog>
   </div>
 </template>
 <script>
 import baseTable from '../../base/baseTable.vue'
 import baseDialog from '../../base/baseDialog.vue'
 import addOrUpdate from './addOrUpdata.vue'
+import expenditure from '@/views/modules/resourceManagement/orderManagement/expenditure.vue'
 
 export default {
   data() {
@@ -141,8 +152,9 @@ export default {
           { label: '订单金额（元）', prop: 'orderAmount' },
           { label: '结算金额（元）', prop: 'settlementAmount' },
           { label: '回款金额（元）', prop: 'returnAmount' },
+          { label: '支出合计（元）', prop: 'expenditureAmount' },
           { label: '状态', prop: 'stateName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '80px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
         ],
         url: '/costItems/list'
       },
@@ -176,6 +188,7 @@ export default {
   components: {
     baseTable,
     addOrUpdate,
+    expenditure,
     baseDialog
   },
   watch: {
@@ -279,6 +292,13 @@ export default {
       this.$refs.addOrUpdateDrawer.show()
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(row.item)
+      })
+    },
+    expenditureAdd(row) {
+      this.title = '项目支出'
+      this.$refs.expenditureDrawer.show()
+      this.$nextTick(() => {
+        this.$refs.expenditure.init(row.item)
       })
     },
     resetForm() {
