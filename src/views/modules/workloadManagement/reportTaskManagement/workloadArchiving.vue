@@ -112,7 +112,7 @@ export default {
           { label: '开始时间', prop: 'startTime' },
           { label: '结束时间', prop: 'overTime' },
           { label: '成本项目', prop: 'projectName' },
-          { label: '项目经理', prop: 'managerName' },
+          { label: '项目经理', prop: 'projectManagerName' },
           { label: '计划投入(%)', prop: 'investRate' },
           { label: '实际投入(%)', prop: 'realityRate' },
           { label: '提交时间', prop: 'commitTime' },
@@ -157,11 +157,13 @@ export default {
     //统计工作量下拉框改变
     changeSelect(params) {
       this.taskId = params
-      this.selectWorkload({ taskId: params })
+      this.handlerRadio()
+      //this.selectWorkload({ taskId: params })
     },
     //团队下拉框值改变
     search() {
-      this.selectWorkload({ taskId: this.taskId, teamIds: this.teamIds.toString() })
+      this.handlerRadio()
+      // this.selectWorkload({ taskId: this.taskId, teamIds: this.teamIds.toString() })
     },
     //查询任务列表
     async selectTaskList() {
@@ -188,9 +190,9 @@ export default {
     //切换ridio
     handlerRadio() {
       if (this.radio == 1) {
-        this.selectWorkload({ taskId: this.taskId })
+        this.selectWorkload({ taskId: this.taskId, teamIds: this.teamIds.toString() })
       } else {
-        this.selectWorkload({ taskId: this.taskId, status: this.radio })
+        this.selectWorkload({ taskId: this.taskId, status: this.radio, teamIds: this.teamIds.toString() })
       }
     },
     //选中项数

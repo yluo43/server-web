@@ -57,13 +57,15 @@
                   <div @dblclick="handler(scope.row, scope.column)" style="height: 50px; line-height: 50px">
                     <el-input
                       v-if="scope.row.isEdit"
+                      oninput="if(value > 100) value = 100; "
                       ref="realityRate"
                       clearable
-                      v-model="scope.row.realityRate"
+                      v-model.number="scope.row.realityRate"
                       @blur="onBlur(scope.row)"
                       @keyup.enter.native="onBlur(scope.row)"
                     ></el-input>
-                    <span v-else>{{ scope.row.realityRate }}</span>
+
+                    <span v-else>{{ scope.row.realityRate || 0 }}%</span>
                   </div>
                 </template>
               </el-table-column>
@@ -110,6 +112,7 @@ export default {
   components: { baseDialog, addDataDialog, successDialog },
   data() {
     return {
+      number: '',
       taskId: '',
       taskInfo: [],
       newCostItem: '',
@@ -121,7 +124,6 @@ export default {
   },
   mounted() {
     this.getProject()
-    this.getListNoPage()
   },
   created() {},
   methods: {
@@ -280,7 +282,7 @@ export default {
           }
         })
       } else {
-        this.$message.error('成员投入占比未满100%，请填报后再提交！')
+        this.$message.error('成员投入占比不为100%，请填报后再提交！')
       }
     },
     sortClass(sortData) {

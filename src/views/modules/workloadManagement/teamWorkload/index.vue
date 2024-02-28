@@ -154,7 +154,8 @@ export default {
   methods: {
     //搜索框搜索
     search() {
-      this.selectTaskList({ reportWorkName: this.keyword })
+      this.handlerRadio()
+      //this.selectTaskList({ reportWorkName: this.keyword })
     },
     //查询表格
     selectTaskList(params) {
@@ -186,7 +187,7 @@ export default {
     tabClick(params) {
       if (this.activeName === 'first') {
         this.$nextTick(() => {
-          this.selectTaskList()
+          this.handlerRadio()
         })
       }
       if (this.activeName === 'second') {
@@ -203,9 +204,9 @@ export default {
     //切换radio
     handlerRadio() {
       if (this.radio == 1) {
-        this.selectTaskList('')
+        this.selectTaskList({ reportWorkName: this.keyword })
       } else {
-        this.selectTaskList({ taskStatus: this.radio - 2 })
+        this.selectTaskList({ taskStatus: this.radio - 2, reportWorkName: this.keyword })
       }
     },
     //填报工作量

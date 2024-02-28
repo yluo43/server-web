@@ -185,7 +185,7 @@ export default {
     },
     //搜索框搜索
     search() {
-      this.selectTaskList({ empId: this.empId, search: this.keyword })
+      this.handlerRadio()
     },
     //查询列表
     selectTaskList(params) {
@@ -218,7 +218,8 @@ export default {
     tabChange() {
       if (this.activeName === 'first') {
         this.$nextTick(() => {
-          this.selectTaskList({ empId: this.empId })
+          this.handlerRadio()
+          // this.selectTaskList({ empId: this.empId })
         })
       }
       if (this.activeName === 'second') {
@@ -235,9 +236,9 @@ export default {
     //切换radio查询
     handlerRadio() {
       if (this.radio == 1) {
-        this.selectTaskList({ empId: this.empId })
+        this.selectTaskList({ empId: this.empId, search: this.keyword })
       } else {
-        this.selectTaskList({ empId: this.empId, status: this.radio - 2 })
+        this.selectTaskList({ empId: this.empId, status: this.radio - 2, search: this.keyword })
       }
     },
     //下发填报任务

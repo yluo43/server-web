@@ -14,7 +14,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="实际投入:" prop="realityRate" style="margin-top: 10px">
-            <el-input v-model="formData.realityRate" placeholder="请输入" clearable style="width: 192px">
+            <el-input v-model.number="formData.realityRate" placeholder="请输入" clearable style="width: 192px">
               <template slot="append">%</template>
             </el-input>
           </el-form-item>
@@ -36,6 +36,12 @@ export default {
     }
   },
   data() {
+    var checkRealityRate = (rule, value, callback) => {
+      if (value > 100) {
+        callback(new Error('最大值为100'))
+      }
+      callback()
+    }
     return {
       formData: {
         //姓名
@@ -53,12 +59,14 @@ export default {
       projectName: '',
       managerName: '',
       rules: {
-        name: [{ required: true, message: '请选择一个成员', trigger: 'change' }]
+        empId: [{ required: true, message: '请选择一个成员', trigger: 'change' }],
+        realityRate: [{ validator: checkRealityRate, trigger: 'blur' }]
       }
     }
   },
   mounted() {
     this.getProject()
+    this.getTeamManager()
   },
   created() {},
   methods: {
@@ -66,10 +74,30 @@ export default {
     init(initData) {
       this.dataList = initData.pmsWorkloadVoList
       this.data = initData
-      initData.pmsWorkloadVoList.map((item) => {
-        this.users.push({ empId: item.empId, name: item.name })
+      console.log(this.dataList)
+      // let newArrId = []
+      // initData.pmsWorkloadVoList.map((item) => {
+      //   if (newArrId.indexOf(item.empId) === -1) {
+      //     newArrId.push(item.empId)
+      //     this.users.push({ empId: item.empId, name: item.name })
+      //   }
+      // })
+    },
+    //获取成员
+
+    getTeamManager() {
+      this.$http({
+        url: this.$http.adornUrl('/teamWork/employeeListByTeamManager'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          data.payload.map((item) => {
+            this.users.push({ empId: item.empId, name: item.name })
+          })
+        } else {
+          this.$message.error(data.msg)
+        }
       })
-      console.log(this.data)
     },
     //确认
     confirm(formName) {

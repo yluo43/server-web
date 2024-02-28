@@ -121,7 +121,7 @@ export default {
           { label: '开始时间', prop: 'startTime' },
           { label: '结束时间', prop: 'overTime' },
           { label: '成本项目', prop: 'projectName' },
-          { label: '项目经理', prop: 'managerName' },
+          { label: '项目经理', prop: 'projectManagerName' },
           { label: '计划投入(%)', prop: 'investRate' },
           { label: '实际投入(%)', prop: 'realityRate' },
           { label: '提交时间', prop: 'commitTime' },
@@ -146,16 +146,17 @@ export default {
       await this.selectTaskList()
       this.reportWorkName = initData.reportWorkName
       this.taskId = initData.taskId
-      this.selectTaskDetial({ taskId: this.taskId })
+      this.selectTaskDetial({ taskId: this.taskId, status: 4 })
     },
     async initTable() {
       await this.selectTaskList()
-      this.selectTaskDetial({ taskId: this.taskId })
+      this.selectTaskDetial({ taskId: this.taskId, status: 4 })
     },
     //统计工作量下拉框改变
     changeSelect(params) {
       this.taskId = params
-      this.selectTaskDetial({ taskId: this.taskId })
+      this.selectData()
+      //this.selectTaskDetial({ taskId: this.taskId, status: 4 })
     },
     //查询工作量
     selectTaskDetial(params) {
@@ -165,6 +166,7 @@ export default {
     selectData() {
       let data = {
         taskId: this.taskId,
+        status: 4,
         name: this.formData.name,
         empId: this.formData.empId,
         deptIds: this.formData.deptIds.toString(),

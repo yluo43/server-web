@@ -14,7 +14,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item :prop="'workLoad.' + index + '.realityRate'">
-                <el-input style="width: 100px" v-model="item.realityRate" clearable />
+                <el-input style="width: 100px" v-model.number="item.realityRate" clearable />
                 %
               </el-form-item>
               <i class="el-icon-delete" @click="deleteRow(item)"></i>
@@ -143,8 +143,12 @@ export default {
       this.formData.workLoad.forEach((item) => {
         total += Number(item.realityRate)
       })
-      if (total !== 100) {
+      if (total < 100) {
         this.$message.error('成员投入占比未满100%，请填报后再提交！')
+        return false
+      }
+      if (total > 100) {
+        this.$message.error('成员投入占比超过100%，请填报后再提交！')
         return false
       }
       this.formData.workLoad.map((item) => {

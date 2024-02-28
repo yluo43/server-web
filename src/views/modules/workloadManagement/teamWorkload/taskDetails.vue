@@ -57,7 +57,13 @@
 
         <div class="table">
           <div>
-            <el-table :data="tableData" border style="width: 100%" @selection-change="selChange" :span-method="objectSpanMethod">
+            <el-table
+              :data="tableData"
+              border
+              style="width: 100%; max-height: 425px; overflow-y: scroll"
+              @selection-change="selChange"
+              :span-method="objectSpanMethod"
+            >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column prop="name" label="团队成员"></el-table-column>
               <el-table-column prop="empId" label="工号"></el-table-column>
@@ -85,8 +91,8 @@
           <div style="display: flex; justify-content: center">
             <el-pagination
               :page-sizes="[10, 50, 100, 500]"
-              :page-size="pagesize"
-              :current-page="currentPage"
+              :page-size="pageSize"
+              :current-page="curPage"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
               @current-change="handleCurrentChange"
@@ -110,8 +116,8 @@ export default {
       //总条数
       total: 10,
       taskId: '',
-      currentPage: 1,
-      pagesize: 10,
+      curPage: 1,
+      pageSize: 10,
       count: 0,
       empId: '1260',
       //工作量统计
@@ -153,11 +159,11 @@ export default {
       await this.selectTaskList()
       this.reportWorkName = initData.reportWorkName
       this.taskId = initData.id
-      this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId })
+      this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 2 })
     },
     async initTable() {
       await this.selectTaskList()
-      this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId })
+      this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 2 })
     },
     //查询任务列表
     async selectTaskList() {
@@ -215,7 +221,8 @@ export default {
           }
         })
       }
-      this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
+      this.selectData()
+      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
     },
     removeTag(id) {
       this.teams.forEach((elm, idx) => {
@@ -224,7 +231,8 @@ export default {
           this.checkTeam.splice(idx, 1)
         }
       })
-      this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
+      this.selectData()
+      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
     },
     //数据选择框改变
     selChange(sel) {
@@ -234,14 +242,16 @@ export default {
     //统计工作量下拉框改变
     changeSelect(params) {
       this.taskId = params
-      this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId })
+      this.selectData()
+      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
     //查询
     selectData() {
       let data = {
-        currentPage: this.currentPage,
-        pagesize: this.pagesize,
+        curPage: this.curPage,
+        pageSize: this.pageSize,
         taskId: this.taskId,
+        type: 2,
         empName: this.formData.userName,
         empId: this.formData.empId,
         managerIds: this.formData.managerIds.toString(),
@@ -268,15 +278,15 @@ export default {
     },
     // 分页自带的函数，当pageSize变化时会触发此函数
     handleSizeChange(val) {
-      this.pagesize = val
+      this.pageSize = val
       this.selectData()
-      //this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId })
+      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
-    // 分页自带函数，当currentPage变化时会触发此函数
+    // 分页自带函数，当curPage变化时会触发此函数
     handleCurrentChange(val) {
-      this.currentPage = val
+      this.curPage = val
       this.selectData()
-      //this.selectTaskDetial({ currentPage: this.currentPage, pagesize: this.pagesize, taskId: this.taskId })
+      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
     getSpanArr(data) {
       // 遍历数据
@@ -323,13 +333,14 @@ export default {
     //批量下载
     batchDownLoad() {
       let data = {
-        taskId: '',
+        taskId: this.taskId,
         teamIdList: [],
         workStatus: '',
         empName: '',
         empId: '',
         managerName: '',
-        projectId: ''
+        projectId: [],
+        type: 2
       }
       if (this.count === 0) {
         this.$message.warning('请至少选择一条数据！')
