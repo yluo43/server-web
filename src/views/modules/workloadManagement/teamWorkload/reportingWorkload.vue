@@ -219,6 +219,8 @@ export default {
           let index = this.tableData.indexOf(row)
           if (index != -1) {
             this.tableData.splice(index, 1)
+            this.spanArr = []
+            this.getSpanArr(this.tableData)
             // this.save()
           }
         })
