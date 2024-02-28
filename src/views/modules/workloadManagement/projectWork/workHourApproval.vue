@@ -43,10 +43,10 @@
               <!-- 操作 -->
               <template v-slot:clientType="row">
                 <template>
-                  <el-tooltip class="item" effect="dark" content="确认" placement="bottom" v-auth="'projectSet:showProject'">
+                  <el-tooltip class="item" effect="dark" content="确认" placement="bottom">
                     <i class="el-icon-circle-check" style="font-size: 1.5em; margin-right: 1em" @click="projectWorkOperate(row, 1)"></i>
                   </el-tooltip>
-                  <el-tooltip class="item" effect="dark" content="驳回" placement="bottom" v-auth="'projectSet:showProject'">
+                  <el-tooltip class="item" effect="dark" content="驳回" placement="bottom">
                     <i class="el-icon-circle-close" style="font-size: 1.5em; margin-right: 1em" @click="projectWorkOperateTwo(row, 2)"></i>
                   </el-tooltip>
                 </template>
