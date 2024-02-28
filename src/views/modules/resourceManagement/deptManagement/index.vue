@@ -302,7 +302,7 @@ export default {
             message: '操作成功',
             type: 'success'
           })
-          this.getDeptInfoTree()
+          this.tabChange()
           this.drawer = false
         } else {
           this.$message.error(data.msg)
