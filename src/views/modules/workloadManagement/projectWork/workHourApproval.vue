@@ -94,7 +94,7 @@ export default {
           { label: '结束时间', prop: 'overTime' },
           { label: '计划投入（%）', prop: 'planRate', width: '120px' },
           { label: '实际投入（%）', prop: 'realityRate', width: '120px' },
-          { label: '确认状态', prop: 'workStatus' },
+          { label: '确认状态', prop: 'workStatusName' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
         ],
         url: '/projectWork/projectWorkList'
