@@ -81,7 +81,8 @@ export default {
       dataForm: {
         workStatus: null,
         projectId: null,
-        taskId: null
+        taskId: null,
+        type: '1'
       },
       taskList: {
         theads: [
