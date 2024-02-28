@@ -113,7 +113,8 @@ export default {
         projectId: '',
         empName: '',
         empId: '',
-        taskId: ''
+        taskId: '',
+        type: '2'
       },
       commandList: []
     }
