@@ -4,7 +4,7 @@
       <el-header style="padding: 0">
         <el-tabs v-model="activeName" type="border-card" @tab-click="activeNameChange">
           <el-tab-pane label="我的项目" name="first"></el-tab-pane>
-          <el-tab-pane label="工时审批" name="second"></el-tab-pane>
+          <el-tab-pane label="工时确认" name="second"></el-tab-pane>
           <el-tab-pane label="任务详情" name="third"></el-tab-pane>
         </el-tabs>
       </el-header>
