@@ -233,13 +233,14 @@ export default {
     // 分页自带函数，当curPage变化时会触发此函数
     handleCurrentChange(val) {
       this.curPage = val
-      this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
+      this.handlerRadio()
+      // this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
 
     //切换ridio
     handlerRadio() {
       if (this.radio == 0) {
-        this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, type: 1, taskId: this.taskIdz, teamIdList: this.checkTeam.toString() })
+        this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, type: 1, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
       } else {
         this.selectWorkload({
           curPage: this.curPage,
