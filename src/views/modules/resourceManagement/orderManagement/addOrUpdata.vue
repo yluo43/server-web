@@ -144,18 +144,18 @@
                 </template>
               </template>
             </baseTable>
+            <div class="center-button-container">
+              <el-button
+                class="el-button-func"
+                style="width: 500px; background-color: #f5fbff; border: solid 1px #008aff"
+                @click="addSettlement(index)"
+                icon="el-icon-circle-plus-outline"
+                :disabled="viewDisabled"
+              >
+                添加结算回款
+              </el-button>
+            </div>
           </el-collapse-item>
-          <div class="center-button-container">
-            <el-button
-              class="el-button-func"
-              style="width: 500px; background-color: #f5fbff; border: solid 1px #008aff"
-              @click="addSettlement(index)"
-              icon="el-icon-circle-plus-outline"
-              :disabled="viewDisabled"
-            >
-              添加结算回款
-            </el-button>
-          </div>
         </template>
       </el-collapse>
     </el-container>

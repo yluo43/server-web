@@ -355,7 +355,7 @@ export default {
 
     // 修改项目信息
     updateProjectInfo(row) {
-      this.editDrawertitle = '新建项目'
+      this.editDrawertitle = '编辑项目'
       this.operateType = 'update'
       this.editProjectInfo({ rowData: row })
     },
