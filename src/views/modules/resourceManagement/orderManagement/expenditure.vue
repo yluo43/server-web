@@ -9,7 +9,7 @@
         <el-descriptions-item label="项目经理">{{ order.managerName }}</el-descriptions-item>
         <el-descriptions-item label="立项时间">{{ order.approvalDate }}</el-descriptions-item>
         <el-descriptions-item label="合同类型">{{ order.contractTypeName }}</el-descriptions-item>
-        <el-descriptions-item label="支付合计">{{ order.expenditureAmount }}元</el-descriptions-item>
+        <el-descriptions-item label="支出合计">{{ order.expenditureAmount }}元</el-descriptions-item>
         <el-descriptions-item label="计划交付时间">{{ order.deliveryDate }}</el-descriptions-item>
         <el-descriptions-item label="项目状态">
           <div style="width: 80%">
