@@ -114,6 +114,7 @@ export default {
     return {
       number: '',
       taskId: '',
+      teamId: '',
       taskInfo: [],
       newCostItem: '',
       tableData: [],
@@ -131,6 +132,7 @@ export default {
     init(initData) {
       console.log(initData)
       this.taskId = initData.id
+      this.teamId = initData.teamId
       this.selectWorkload()
     },
     //日期格式化
@@ -169,11 +171,11 @@ export default {
     },
     goTrack() {
       this.cancelDialog()
-      this.$emit('track', { reportWorkName: this.taskInfo.reportWorkName, id: this.taskId })
+      this.$emit('track', { reportWorkName: this.taskInfo.reportWorkName, id: this.taskId, teamId: this.teamId })
     },
     //查询
     selectWorkload() {
-      let params = { taskId: this.taskId }
+      let params = { taskId: this.taskId, teamId: this.teamId }
       this.$http({
         url: this.$http.adornUrl('/teamWork/teamWorkList'),
         method: 'get',
@@ -255,6 +257,7 @@ export default {
     //提交
     submitData() {
       let arr = this.sortClass(this.tableData)
+      console.log(arr)
       let flag = arr.every((item) => {
         let total = 0
         for (let i = 0; i < item.length; i++) {

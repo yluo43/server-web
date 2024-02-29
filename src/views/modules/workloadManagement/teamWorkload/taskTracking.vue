@@ -108,6 +108,7 @@ export default {
       pageSize: 10,
       //任务Id
       taskId: '',
+      teamId: '',
       //工作量统计
       reportWorkName: '',
       workLoadStatistics: [],
@@ -132,15 +133,16 @@ export default {
       await this.selectTaskList()
       this.reportWorkName = initData.reportWorkName
       this.taskId = initData.id
-      this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 1 })
+      this.teamId = initData.teamId
+      this.selectWorkload({ teamId: this.teamId })
       console.log(initData)
     },
     async initTable() {
       await this.selectTaskList()
-      this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 1 })
+      this.selectWorkload()
     },
     select() {
-      this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 1 })
+      this.selectWorkload()
     },
     //查询任务列表
     async selectTaskList() {
@@ -187,7 +189,6 @@ export default {
         })
       }
       this.handlerRadio()
-      // this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
     },
 
     removeTag(id) {
@@ -198,14 +199,20 @@ export default {
         }
       })
       this.handlerRadio()
-      // this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
     },
     //查询表格数据
     selectWorkload(params) {
+      let data = {
+        curPage: this.curPage,
+        pageSize: this.pageSize,
+        taskId: this.taskId,
+        type: 1
+      }
+      data = { ...data, ...params }
       this.$http({
         url: this.$http.adornUrl('/teamWork/viewTeamWorkList'),
         method: 'get',
-        params: params
+        params: data
       }).then(({ data }) => {
         if (data && data.code == 200) {
           this.tableData = data.payload.list
@@ -221,32 +228,25 @@ export default {
     changeSelect(params) {
       this.taskId = params
       this.handlerRadio()
-      // this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
 
     // 分页自带的函数，当pageSize变化时会触发此函数
     handleSizeChange(val) {
       this.pageSize = val
       this.handlerRadio()
-      // this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
     // 分页自带函数，当curPage变化时会触发此函数
     handleCurrentChange(val) {
       this.curPage = val
       this.handlerRadio()
-      // this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
 
     //切换ridio
     handlerRadio() {
       if (this.radio == 0) {
-        this.selectWorkload({ curPage: this.curPage, pageSize: this.pageSize, type: 1, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
+        this.selectWorkload({ teamIdList: this.checkTeam.toString() })
       } else {
         this.selectWorkload({
-          curPage: this.curPage,
-          pageSize: this.pageSize,
-          type: 1,
-          taskId: this.taskId,
           workStatus: this.radio,
           teamIdList: this.checkTeam.toString()
         })

@@ -116,6 +116,7 @@ export default {
       //总条数
       total: 10,
       taskId: '',
+      teamId: '',
       curPage: 1,
       pageSize: 10,
       count: 0,
@@ -159,11 +160,12 @@ export default {
       await this.selectTaskList()
       this.reportWorkName = initData.reportWorkName
       this.taskId = initData.id
-      this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 2 })
+      this.teamId = initData.teamId
+      this.selectTaskDetial({ teamId: this.teamId })
     },
     async initTable() {
       await this.selectTaskList()
-      this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 2 })
+      this.selectTaskDetial()
     },
     //查询任务列表
     async selectTaskList() {
@@ -222,7 +224,6 @@ export default {
         })
       }
       this.selectData()
-      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
     },
     removeTag(id) {
       this.teams.forEach((elm, idx) => {
@@ -232,7 +233,6 @@ export default {
         }
       })
       this.selectData()
-      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, teamIdList: this.checkTeam.toString() })
     },
     //数据选择框改变
     selChange(sel) {
@@ -243,15 +243,10 @@ export default {
     changeSelect(params) {
       this.taskId = params
       this.selectData()
-      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
     //查询
     selectData() {
       let data = {
-        curPage: this.curPage,
-        pageSize: this.pageSize,
-        taskId: this.taskId,
-        type: 2,
         empName: this.formData.userName,
         empId: this.formData.empId,
         managerIds: this.formData.managerIds.toString(),
@@ -261,10 +256,12 @@ export default {
     },
     //查询详情
     selectTaskDetial(params) {
+      let data = { curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 2 }
+      data = { ...data, ...params }
       this.$http({
         url: this.$http.adornUrl('/teamWork/viewTeamWorkList'),
         method: 'get',
-        params: params
+        params: data
       }).then(({ data }) => {
         if (data && data.code == 200) {
           this.tableData = data.payload.list
@@ -280,13 +277,11 @@ export default {
     handleSizeChange(val) {
       this.pageSize = val
       this.selectData()
-      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
     // 分页自带函数，当curPage变化时会触发此函数
     handleCurrentChange(val) {
       this.curPage = val
       this.selectData()
-      //this.selectTaskDetial({ curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId })
     },
     getSpanArr(data) {
       // 遍历数据

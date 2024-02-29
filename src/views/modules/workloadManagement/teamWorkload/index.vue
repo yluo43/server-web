@@ -137,6 +137,7 @@ export default {
           { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '180px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName' },
+          { label: '填报团队', prop: 'teamName' },
           { label: '开始填报时间', prop: 'reportStartTime' },
           { label: '填报天数', prop: 'reportDay' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },

@@ -60,7 +60,8 @@ export default {
       managerName: '',
       rules: {
         empId: [{ required: true, message: '请选择一个成员', trigger: 'change' }],
-        realityRate: [{ validator: checkRealityRate, trigger: 'blur' }]
+        projectId: [{ required: true, message: '请选择一个成本项目', trigger: 'change' }],
+        realityRate: [{ required: true, validator: checkRealityRate, trigger: 'blur' }]
       }
     }
   },
