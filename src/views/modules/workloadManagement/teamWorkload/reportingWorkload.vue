@@ -201,7 +201,7 @@ export default {
     add() {
       this.$refs.addDataDialog.show()
       this.$nextTick(() => {
-        this.$refs.addData.init(this.taskInfo)
+        this.$refs.addData.init(this.taskInfo, this.teamId)
       })
     },
     //关闭弹窗
@@ -239,7 +239,8 @@ export default {
       let data = {
         pmsWorkloadVoList: this.tableData,
         operate: 1,
-        taskId: this.taskId
+        taskId: this.taskId,
+        teamId: this.teamId
       }
       this.$http({
         url: this.$http.adornUrl('/teamWork/saveTeamWork'),
@@ -257,7 +258,20 @@ export default {
     //提交
     submitData() {
       let arr = this.sortClass(this.tableData)
-      console.log(arr)
+      let projectNameFlag = this.tableData.every((item) => {
+        return item.projectName
+      })
+      let realityRateFlag = this.tableData.every((item) => {
+        return item.realityRate > 0
+      })
+      if (!projectNameFlag) {
+        this.$message.error('成本项目不能为空')
+        return false
+      }
+      if (!realityRateFlag) {
+        this.$message.error('实际投入须大于0')
+        return false
+      }
       let flag = arr.every((item) => {
         let total = 0
         for (let i = 0; i < item.length; i++) {
@@ -270,7 +284,8 @@ export default {
         let data = {
           pmsWorkloadVoList: this.tableData,
           operate: 2,
-          taskId: this.taskId
+          taskId: this.taskId,
+          teamId: this.teamId
         }
         this.$http({
           url: this.$http.adornUrl('/teamWork/saveTeamWork'),

@@ -264,51 +264,69 @@ export default {
     confirm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let data = { ...this.formData }
-          data.startTime = this.formData.timePeriod[0]
-          data.overTime = this.formData.timePeriod[1]
+          let dataList = { ...this.formData }
+          dataList.startTime = this.formData.timePeriod[0]
+          dataList.overTime = this.formData.timePeriod[1]
           let ids = []
           this.departments.forEach((ele) => {
             if (this.formData.department.includes(ele.name)) {
               ids.push(ele.id)
             }
           })
-          data.deptIds = ids.toString()
-          data.deptNames = this.formData.department.toString()
-          data.managerId = this.empId
-          data.managerName = this.managerName
-          if (this.flag == 'add') {
-            this.$http({
-              url: this.$http.adornUrl('/workload/reportAdd'),
-              method: 'post',
-              data: data
-            }).then(({ data }) => {
-              if (data && data.code === 200 && data.success) {
-                this.$message.success(data.msg)
-                this.cancelDialog()
-                this.$emit('selectTableData')
-              } else {
-                this.$message.error(data.msg)
-                this.cancelDialog()
-              }
-            })
-          } else {
-            //编辑
-            this.$http({
-              url: this.$http.adornUrl('/workload/updateReport'),
-              method: 'post',
-              data: data
-            }).then(({ data }) => {
-              if (data && data.code === 200 && data.success) {
-                this.$message.success(data.msg)
-                this.cancelDialog()
-                this.$emit('selectTableData')
-              } else {
-                this.$message.error(data.msg)
-              }
-            })
+          dataList.deptIds = ids.toString()
+          dataList.deptNames = this.formData.department.toString()
+          dataList.managerId = this.empId
+          dataList.managerName = this.managerName
+          let params = {
+            startTime: this.formData.timePeriod[0],
+            overTime: this.formData.timePeriod[1],
+            deptIds: ids.toString()
           }
+
+          this.$http({
+            url: this.$http.adornUrl('/workload/reportSelectTimeline'),
+            method: 'post',
+            data: params
+          }).then(({ data }) => {
+            if (data.code === 200 && data.success) {
+              this.$message.error(data.msg)
+              return false
+            } else {
+              if (this.flag == 'add') {
+                this.$http({
+                  url: this.$http.adornUrl('/workload/reportAdd'),
+                  method: 'post',
+                  data: dataList
+                }).then(({ data }) => {
+                  if (data && data.code === 200 && data.success) {
+                    this.$message.success(data.msg)
+                    this.cancelDialog()
+                    this.$emit('selectTableData')
+                  } else {
+                    this.$message.error(data.msg)
+                    this.cancelDialog()
+                  }
+                })
+              } else {
+                //编辑
+                this.$http({
+                  url: this.$http.adornUrl('/workload/updateReport'),
+                  method: 'post',
+                  data: data
+                }).then(({ data }) => {
+                  if (data && data.code === 200 && data.success) {
+                    this.$message.success(data.msg)
+                    this.cancelDialog()
+                    this.$emit('selectTableData')
+                  } else {
+                    this.$message.error(data.msg)
+                  }
+                })
+              }
+            }
+          })
         } else {
+          console.log(1111)
           return false
         }
       })

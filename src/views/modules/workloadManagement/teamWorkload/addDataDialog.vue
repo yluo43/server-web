@@ -37,12 +37,18 @@ export default {
   },
   data() {
     var checkRealityRate = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('实际投入须大于0'))
+        return
+      }
+
       if (value > 100) {
         callback(new Error('最大值为100'))
       }
       callback()
     }
     return {
+      teamId: '',
       formData: {
         //姓名
         empId: '',
@@ -61,21 +67,22 @@ export default {
       rules: {
         empId: [{ required: true, message: '请选择一个成员', trigger: 'change' }],
         projectId: [{ required: true, message: '请选择一个成本项目', trigger: 'change' }],
-        realityRate: [{ required: true, validator: checkRealityRate, trigger: 'blur' }]
+        realityRate: [{ required: true, validator: checkRealityRate, trigger: 'change' }]
       }
     }
   },
   mounted() {
     this.getProject()
-    this.getTeamManager()
   },
   created() {},
   methods: {
     //初始化数据
-    init(initData) {
+    init(initData, teamId) {
       this.dataList = initData.pmsWorkloadVoList
       this.data = initData
-      console.log(this.dataList)
+      this.teamId = teamId
+      this.getTeamManager()
+      console.log(teamId)
       // let newArrId = []
       // initData.pmsWorkloadVoList.map((item) => {
       //   if (newArrId.indexOf(item.empId) === -1) {
@@ -89,7 +96,8 @@ export default {
     getTeamManager() {
       this.$http({
         url: this.$http.adornUrl('/teamWork/employeeListByTeamManager'),
-        method: 'get'
+        method: 'get',
+        params: { teamId: this.teamId }
       }).then(({ data }) => {
         if (data && data.code === 200) {
           data.payload.map((item) => {
@@ -120,7 +128,7 @@ export default {
             id: '',
             name: this.name,
             empId: this.formData.empId,
-            teamId: this.dataList[0].teamId,
+            teamId: this.teamId,
             taskId: this.dataList[0].taskId,
             projectId: this.formData.projectId,
             projectName: this.projectName,
