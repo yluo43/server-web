@@ -1,157 +1,142 @@
 <template>
-  <div style="height: 100%;">
-    <el-container >
-      <el-header >
-        <el-form :inline="true" :model="dataForm" ref="dataForm">
-          <div class="inputlist" >
-            <el-form-item label="部门名称:" prop="account">
-              <el-input v-model="dataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>
-            </el-form-item>
-            <div style="display: contents;">
-              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
-              </el-button>
-              <el-button class="el-button-func" type="primary" @click="add()"  v-auth="'deptInfo:add'">添加部门</el-button>
+  <div style="height: 100vh; width: 100%; background: white">
+    <el-container>
+      <div style="height: 100%; width: 50%">
+        <div style="display: flex; padding: 10px 10px; justify-content: space-between">
+          <div>
+            <el-tabs v-model="activeName" type="border-card" @tab-click="tabChange">
+              <el-tab-pane label="活跃部门" name="first"></el-tab-pane>
+              <el-tab-pane label="所有部门" name="second"></el-tab-pane>
+            </el-tabs>
+            <div style="height: 100%">
+              <el-input style="width: 200px" placeholder="请输入" v-model="keyword"></el-input>
+              <el-tree
+                class="filter-tree"
+                :data="data"
+                :props="defaultProps"
+                default-expand-all
+                :filter-node-method="filterNode"
+                @node-click="alter"
+                ref="tree"
+              ></el-tree>
             </div>
           </div>
-        </el-form>
-      </el-header>
-
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" >
-        <template v-slot:clientType="row">
-          <!--类型插槽-->
-          <template>
-            <svg-icon  :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"  v-auth="'deptInfo:update'"/>
-          </template>
-        </template>
-        <template v-slot:parentId="row">
-          <template >
-            {{changeParentId(row)}}
-          </template>
-        </template>
-      </baseTable>
-
-      <el-drawer
-        :title="title"
-        :visible.sync="drawer"
-        :direction="direction"
-        size="17%"
-      >
-        <el-form :inline="true"  :model="editDataForm" ref="editDataForm" class="editForm">
           <div>
-            <el-form-item label="部门名称" prop="deptName" :rules="[ { required: true, message: '部门名称不能为空'}]">
-              <el-input v-model="editDataForm.deptName"  placeholder="请输入部门名称" clearable maxlength="50"></el-input>
+            <el-button class="el-button-func" type="primary" @click="add()" v-auth="'deptInfo:add'">添加部门</el-button>
+          </div>
+        </div>
+      </div>
+      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="20%">
+        <el-form :inline="true" :disabled="isDisabled" :model="editDataForm" ref="editDataForm" class="editForm">
+          <div>
+            <!--            <el-form-item label="部门ID" prop="id" :rules="[ { required: true, message: '部门ID不能为空'}]" >-->
+            <!--              <el-input v-model="editDataForm.id"  clearable  maxlength="50"></el-input>-->
+            <!--            </el-form-item>-->
+            <el-form-item label="部门名称" prop="deptName" :rules="[{ required: true, message: '部门名称不能为空' }]">
+              <el-input v-model="editDataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="部门经理" prop="managerId" :rules="[ { required: managerRequired, message: '部门经理不能为空'}]">
-              <el-select   clearable v-model="editDataForm.managerId" placeholder="请选择部门负责人" >
-                <el-option      v-for="item in managerList"
-                                :key="item.id"
-                                :label='item.name+"("+item.id+")"'
-                                :value="item.id">
-                </el-option>
+            <el-form-item label="部门经理" prop="managerId" :rules="[{ required: managerRequired, message: '部门经理不能为空' }]">
+              <el-select clearable v-model="editDataForm.managerId" placeholder="请选择部门负责人">
+                <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
 
             <el-form-item label="部门助理" prop="assistantId">
-              <el-select  clearable  v-model="editDataForm.assistantId" placeholder="请选择部门负责人" >
-                <el-option      v-for="item in assistList"
-                                :key="item.id"
-                                :label='item.name+"("+item.id+")"'
-                                :value="item.id">
-                </el-option>
+              <el-select clearable v-model="editDataForm.assistantId" placeholder="请选择部门负责人">
+                <el-option v-for="item in assistList" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="上级部门" prop="parentId" >
-              <el-select   clearable v-model="editDataForm.parentId" placeholder="请选择上级部门" >
-                <el-option      v-for="item in deptList"
-                                :key="item.id"
-                                :label="item.deptName"
-                                :value="item.id">
-                </el-option>
+            <el-form-item label="上级部门" prop="parentId">
+              <el-select clearable v-model="editDataForm.parentId" placeholder="请选择上级部门">
+                <el-option v-for="item in deptList" :key="item.id" :label="item.deptName" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-
+            <el-form-item label="团队" v-if="op == 'alter'">
+              <div style="border: 1px solid lightgray; width: 190px; max-height: 200px; overflow-y: auto">
+                <el-tree :data="editDataForm.deptTeam" :props="defaultProps" default-expand-all ref="deptTeam"></el-tree>
+              </div>
+            </el-form-item>
 
             <el-form-item label="状态" prop="state" v-if="showStatus">
-              <el-select  clearable  v-model="editDataForm.state" placeholder="请选择"  >
-                <el-option :key="1" label="解散" :value="1"></el-option>
-                <el-option :key="0" label="正常" :value="0"></el-option>
-
-              </el-select>
+              <el-radio-group v-model="editDataForm.state">
+                <el-radio :label="0">正常</el-radio>
+                <el-radio :label="1">解散</el-radio>
+              </el-radio-group>
             </el-form-item>
-
 
             <el-form-item label="说明" prop="remarks">
-              <el-input v-model="editDataForm.remarks"  placeholder="请输入部门说明" clearable maxlength="50"></el-input>
+              <el-input
+                type="textarea"
+                show-word-limit
+                :maxlength="50"
+                v-model="editDataForm.remarks"
+                placeholder="请输入部门说明"
+                clearable
+                maxlength="50"
+              ></el-input>
             </el-form-item>
-
-
-            <div style="display: inline-block; margin-top: 30px;margin-left: 30px">
-              <el-button type="primary"  icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">保存</el-button>
-              <el-button   icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
-            </div>
           </div>
         </el-form>
-
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px; margin-right: 10px">
+          <el-button @click="drawer = false">取消</el-button>
+          <el-button v-if="!isDisabled" type="primary" style="margin-right: 20px" @click="editSubmit()">确认</el-button>
+        </div>
       </el-drawer>
-
     </el-container>
-
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
-import baseDialog from '../../base/baseDialog'
-
 export default {
+  watch: {
+    keyword(val) {
+      this.$refs.tree.filter(val)
+    }
+  },
   data() {
     return {
-      managerRequired:false,
-      showStatus:false,
-      drawer:false,
+      activeName: 'first',
+      keyword: '',
+      isDisabled: false,
+      data: [],
+
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      managerRequired: false,
+      showStatus: false,
+      drawer: false,
       direction: 'rtl',
       title: '',
       dataForm: {
         deptName: '',
         managerName: ''
       },
-      editDataForm:{
-        deptName:'',
-        id:'',
-        managerId:'',
-        assistantId:'',
-        parentId:'',
-        managerName:'',
-        status:'',
-        remarks:''
+      editDataForm: {
+        deptName: '',
+        id: '',
+        managerId: '',
+        assistantId: '',
+        parentId: '',
+        parentName: '',
+        managerName: '',
+        status: '',
+        remarks: '',
+        deptTeam: []
       },
-      deptList:[],
-      managerList:[],
-      assistList:[],
-      tableData: {
-        theads: [
-          {label: '部门序号', prop: 'id',width:'100px'},
-          {label: '部门名称', prop: 'deptName'},
-          // {label: '部门负责人', prop: 'managerId',width: "120px",slotName: 'managerSlot'},
-          {label: '部门经理', prop: 'managerName'},
-          {label: '部门助理', prop: 'assistantName'},
-          {label: '上级部门', prop: 'parentName',width: "120px"},
-          // {label: '上级部门', prop: 'pDeptName'},
-          {label: '操作', prop: 'clientType', slotName: 'clientType'}
-        ],
-        url: '/deptInfo/list'
-      }
+      deptList: [],
+      managerList: [],
+      assistList: []
     }
   },
-  components: {
-    baseTable, baseDialog
-  },
+
   mounted() {
-    this.$refs.table.refresh(this.dataForm)
+    this.getDeptInfoTree({ state: 0 })
     //初始化deptList
     this.$http({
       url: this.$http.adornUrl('/deptInfo/listAll'),
       method: 'get'
-    }).then(({data}) => {
+    }).then(({ data }) => {
       if (data && data.code === 200) {
         this.deptList = data.payload.list
       } else {
@@ -159,150 +144,207 @@ export default {
       }
     })
 
-
     //初始化部门助理
     this.$http({
       url: this.$http.adornUrl('/common/getManager?pid=2'),
       method: 'get'
-    }).then(({data}) => {
+    }).then(({ data }) => {
       if (data && data.code === 200) {
         this.assistList = data.payload
       } else {
         this.$message.error(data.msg)
       }
     })
-
   },
   methods: {
-    changeParentId(row){
-      let name
-      this.deptList.forEach(dept =>{
-        if(dept.id === row.item.parentId){
-          name =  dept.deptName
-        }
-      });
-      return name;
+    tabChange() {
+      if (this.activeName === 'first') {
+        this.getDeptInfoTree({ state: 0 })
+      } else {
+        this.getDeptInfoTree()
+      }
     },
-    changeManagerId(row){
-      let name
-      this.managerList.forEach(manager =>{
-        if(manager.managerId === row.item.managerId){
-          name =  manager.managerName
+    filterNode(value, data) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
+    //获取部门树
+    getDeptInfoTree(params) {
+      this.$http({
+        url: this.$http.adornUrl('/deptInfo/tree'),
+        method: 'get',
+        params: params
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.data = data.payload
+        } else {
+          this.$message.error(data.msg)
         }
-      });
+      })
+    },
+    //获取部门详情
+    getDeptDetial(params) {
+      this.$http({
+        url: this.$http.adornUrl('/deptInfo/detail'),
+        method: 'get',
+        params: params
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.editDataForm = { ...data.payload }
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
 
-      return name;
+    //树数据转换
+    treeChange(treeData) {
+      treeData.map((ele) => {
+        ele.label = ele.name
+        if (ele.children && ele.children.length != 0) this.treeChange(ele.children)
+      })
+      return treeData
     },
-    refresh() {
-      this.$refs.table.refresh(this.dataForm)
+    changeParentId(row) {
+      let name
+      this.deptList.forEach((dept) => {
+        if (dept.id === row.item.parentId) {
+          name = dept.deptName
+        }
+      })
+      return name
     },
+    changeManagerId(row) {
+      let name
+      this.managerList.forEach((manager) => {
+        if (manager.managerId === row.item.managerId) {
+          name = manager.managerName
+        }
+      })
+
+      return name
+    },
+
     add() {
       this.title = '部门添加'
       this.drawer = true
+      this.isDisabled = false
       this.op = 'add'
       this.clear(this.editDataForm)
+      delete this.editDataForm['deptTeam']
       this.showStatus = false
-      this.managerRequired  = false
-
+      this.managerRequired = false
 
       //初始化managerList
       this.$http({
         url: this.$http.adornUrl('/common/getManager?pid=1'),
         method: 'get'
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
-
           this.managerList = data.payload
         } else {
           this.$message.error(data.msg)
         }
       })
-
-
-
     },
     // 新增
     editSubmit() {
       let go
       this.$refs['editDataForm'].validate((valid) => {
         go = valid
-      });
+      })
 
-      if(!go){
-        return ;
+      if (!go) {
+        return
       }
 
       let url
-      if(this.op=='add'){
+      if (this.op == 'add') {
         url = '/deptInfo/add'
-      }else{
+      } else {
         url = '/deptInfo/update'
       }
 
-      this.managerList.forEach(manager =>{
-        if(manager.id == this.editDataForm.managerId){
+      this.managerList.forEach((manager) => {
+        if (manager.id == this.editDataForm.managerId) {
           this.editDataForm.managerName = manager.name
         }
       })
+      this.assistList.forEach((item) => {
+        if (item.id == this.editDataForm.assistantId) {
+          this.editDataForm.assistantName = item.name
+        }
+      })
+      if (this.editDataForm.state == 0) {
+        this.editDataForm.stateName = '正常'
+      } else {
+        this.editDataForm.stateName = '解散'
+      }
 
-      if(this.editDataForm.parentId==''||this.editDataForm.parentId==null){
+      if (this.editDataForm.parentId == '' || this.editDataForm.parentId == null) {
         this.editDataForm.parentId = 0
         this.editDataForm.parentName = '新讯数字科技有限公司'
-      }else{
-        this.deptList.forEach(dept=>{
-          if(dept.id==this.editDataForm.parentId){
+      } else {
+        this.deptList.forEach((dept) => {
+          if (dept.id == this.editDataForm.parentId) {
             this.editDataForm.parentName = dept.deptName
           }
         })
-
-
       }
 
       this.$http({
         url: this.$http.adornUrl(url),
         method: 'post',
-        data: this.$http.adornData(
-          this.editDataForm
-        )
+        data: this.$http.adornData(this.editDataForm)
       }).then(({ data }) => {
         if (data.success) {
           this.$message({
             message: '操作成功',
             type: 'success'
           })
-          this.refresh()
+          this.tabChange()
           this.drawer = false
         } else {
           this.$message.error(data.msg)
         }
       })
     },
-    alter(row) {
-      this.managerRequired  = true
-
+    alter(params) {
+      this.managerRequired = true
+      this.drawer = true
+      this.title = '部门详情'
+      this.op = 'alter'
+      this.showStatus = true
+      this.getDeptDetial({ id: params.id })
+      this.checkDept({ id: params.id })
       //初始化managerList
       this.$http({
-        url: this.$http.adornUrl('/common/getManager?pid=1'),
+        url: this.$http.adornUrl('/common/getDeptManager?pid=1&deptId=' + params.id),
         method: 'get'
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
-
           this.managerList = data.payload
         } else {
           this.$message.error(data.msg)
         }
       })
-
-
-      this.title = '部门编辑'
-      this.drawer = true
-      this.op = 'alter'
-      this.showStatus = true
-      this.editDataForm = {...row.item}
-
     },
-    clear(form){
-      Object.keys(form).forEach(key => (form[key] = ''));
+    //校验是否有编辑权限
+    checkDept(params) {
+      this.$http({
+        url: this.$http.adornUrl('/deptInfo/checkDept'),
+        method: 'get',
+        params: params
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.isDisabled = !data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    clear(form) {
+      Object.keys(form).forEach((key) => (form[key] = ''))
     },
     deleteList(row) {
       let id = ''
@@ -312,27 +354,29 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/deptInfo/delete?id='+id),
-          method: 'post',
-        }).then(({data}) => {
-          if (data && data.code === 200) {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-            location.reload()
-          } else {
-            this.$message.error(data.msg)
-          }
+      })
+        .then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/deptInfo/delete?id=' + id),
+            method: 'post'
+          }).then(({ data }) => {
+            if (data && data.code === 200) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              location.reload()
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
         })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     resetForm() {
       this.$refs.dataForm.resetFields()
@@ -357,16 +401,14 @@ export default {
   height: 30px;
   text-align: center;
 }
-::v-deep .el-table__cell{
+::v-deep .el-table__cell {
   text-align: center;
 }
 
-
-::v-deep .editForm .el-form-item__label{
+::v-deep .editForm .el-form-item__label {
   width: 80px !important;
 }
-::v-deep .editForm .el-form-item{
+::v-deep .editForm .el-form-item {
   width: 100% !important;
 }
-
 </style>
