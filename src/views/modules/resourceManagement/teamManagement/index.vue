@@ -10,9 +10,9 @@
             <el-form-item label="团队负责人:" prop="managerIds" >
               <el-select    v-model="dataForm.managerIds" placeholder="请选择"  multiple>
                 <el-option      v-for="manager in managerList"
-                                :key="manager.empId"
+                                :key="manager.id"
                                 :label='manager.name+"("+manager.id+")"'
-                                :value="manager.empId"
+                                :value="manager.id"
                 >
                 </el-option>
               </el-select>
@@ -119,7 +119,7 @@
 
 
             <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '归属部门不能为空'}]">
-              <el-select   clearable v-model="editDataForm.deptId" placeholder="请选择"   @change="changeManagerList">
+              <el-select   clearable v-model="editDataForm.deptId" placeholder="请选择"   >
                 <el-option      v-for="dept in deptList"
                                 :key="dept.id"
                                 :label="dept.name"
@@ -132,7 +132,7 @@
 
             <el-form-item label="团队负责人:" prop="managerId"  :rules="[ { required: true, message: '不能为空，请先选择归属部门'}]" >
               <el-select  clearable  v-model="editDataForm.managerId" placeholder="请先选择归属部门" >
-                <el-option      v-for="manager in teamManagerList"
+                <el-option      v-for="manager in managerList"
                                 :key="manager.id"
                                 :label='manager.name+"("+manager.id+")"'
                                 :value="manager.id"
@@ -306,7 +306,7 @@ export default {
     })
     //初始化managerList
     this.$http({
-      url: this.$http.adornUrl('/common/getManagerUp?pid=3'),
+      url: this.$http.adornUrl('/common/getManager?pid=3'),
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
@@ -457,6 +457,10 @@ export default {
         form.stationIds =form.stationIds +''
       }
 
+
+      if(form.managerIds.length>0){
+        form.managerIds =form.managerIds +''
+      }
       this.$refs.table.refresh(form)
     },
     add() {

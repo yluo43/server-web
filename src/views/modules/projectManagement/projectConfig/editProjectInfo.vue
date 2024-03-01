@@ -12,15 +12,15 @@
           <el-input v-model="editProjectInfoFormData.name" placeholder="请输入项目名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
         </el-form-item>
         <el-form-item label="归属部门:" prop="deptId">
-          <el-select  clearable v-model="editProjectInfoFormData.deptId" style="width: 80% !important" placeholder="请选择归属部门">
+          <el-select  clearable v-model="editProjectInfoFormData.deptId" style="width: 80% !important" placeholder="请选择归属部门" @change="changeManagerList">
             <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="归属团队:" prop="teamId">
-          <el-select  clearable v-model="editProjectInfoFormData.teamId" style="width: 80% !important" placeholder="请选择归属团队">
-            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="归属团队:" prop="teamId">-->
+<!--          <el-select  clearable v-model="editProjectInfoFormData.teamId" style="width: 80% !important" placeholder="请选择归属团队">-->
+<!--            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="归属项目集:" prop="psId">
           <el-select  clearable v-model="editProjectInfoFormData.psId" style="width: 80% !important" placeholder="请选择归属项目集">
             <el-option v-for="item in psList" :key="item.id" :label="item.psName" :value="item.id"></el-option>
@@ -159,7 +159,7 @@ export default {
       editProjectInfoFormRules: {
         name: [{ required: true, message: '请输入项目名称', trigger: ['blur', 'change'] }],
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
-        teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
+        // teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
         approvalDate: [{ required: true, validator: validateApprovalDate, trigger: ['blur', 'change'] }],
         deliveryDate: [{ required: true, validator: validateDeliveryDate, trigger: ['blur', 'change'] }],
@@ -173,7 +173,7 @@ export default {
         projectType: 0,
         name: '',
         deptId: '',
-        teamId: '',
+        // teamId: '',
         psId: '',
         managerId: '',
         approvalDate: '',
@@ -200,17 +200,54 @@ export default {
     }
   },
   methods: {
+
+    changeManagerList(){
+
+      if(this.editProjectInfoFormData.deptId==""||this.editProjectInfoFormData.deptId==null){
+        return false
+      }
+      let deptId = this.editProjectInfoFormData.deptId
+
+      this.$http({
+        url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId='+deptId),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.managerList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
     // 初始化
     init(initData) {
       this.operateType = initData.operateType
       this.deptList = initData.deptList
       this.teamList = initData.teamList
       this.psList = initData.psList
-      this.managerList = initData.managerList
+      //this.managerList = initData.managerList
       this.contractTypeList = initData.contractTypeList
       if (initData.rowData) {
         Object.assign(this.editProjectInfoFormData, initData.rowData)
       }
+
+      if( initData.operateType =='update'){
+        let deptId = this.editProjectInfoFormData.deptId
+
+        this.$http({
+          url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId='+deptId),
+          method: 'get'
+        }).then(({data}) => {
+          if (data && data.code === 200) {
+            this.managerList = data.payload
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+
+      }
+
+
     },
 
     // 项目类型变更时
@@ -221,7 +258,7 @@ export default {
         projectType: projectType,
         name: '',
         deptId: '',
-        teamId: '',
+        // teamId: '',
         psId: '',
         managerId: '',
         approvalDate: '',

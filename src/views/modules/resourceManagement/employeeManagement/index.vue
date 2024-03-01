@@ -144,7 +144,7 @@
         :title="title"
         :visible.sync="drawer"
         :direction="direction"
-        size="21%"
+        size="25%"
       >
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
@@ -191,7 +191,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="角色:" prop="roleIds" :rules="[ { required: true, message: '角色不能为空'}]">
-              <el-select  clearable  v-model="editDataForm.roleIds" placeholder="请选择"  multiple>
+              <el-select  clearable  v-model="editDataForm.roleIds" placeholder="请选择"  multiple :collapse-tags="true">
                 <el-option      v-for="role in roleNames"
                                 :key="role.id"
                                 :label="role.name"
@@ -683,6 +683,16 @@ export default {
 ::v-deep .editForm .el-form-item{
   width: 95% !important;
 }
+
+::v-deep .editForm .el-form-item__content{
+  width: 190px !important;
+}
+
+::v-deep .editForm .el-select__tags{
+  width: 190px !important;
+  max-width: 210px !important;
+}
+
 ::v-deep  .el-date-editor .el-input__inner{
     padding-left: 30px !important;
   }

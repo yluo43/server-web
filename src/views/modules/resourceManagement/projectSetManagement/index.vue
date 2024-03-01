@@ -21,11 +21,11 @@
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="归属团队:">
-            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
+<!--          <el-form-item label="归属团队:">-->
+<!--            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">-->
+<!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
           <el-form-item label="启动时间:">
             <el-date-picker
               v-model="startDate"
@@ -141,7 +141,7 @@ export default {
           { label: '项目集ID', prop: 'psId' },
           { label: '负责人', prop: 'managerName' },
           { label: '归属部门', prop: 'deptName' },
-          { label: '归属团队', prop: 'teamName' },
+          // { label: '归属团队', prop: 'teamName' },
           { label: '项目数量', prop: 'projectNum' },
           { label: '已完成项目数', prop: 'completeNum' },
           { label: '简介', prop: 'remarks' },

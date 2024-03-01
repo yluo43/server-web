@@ -12,16 +12,16 @@
           <el-date-picker v-model="dataForm.startDate" value-format="yyyy-MM-dd" format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="归属部门:" prop="deptId">
-          <el-select  clearable v-model="dataForm.deptId" placeholder="请选择">
+          <el-select  clearable v-model="dataForm.deptId" placeholder="请选择" @change="changeManagerList">
             <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="归属团队:" prop="teamId">
-          <el-select  clearable v-model="dataForm.teamId" placeholder="请选择">
-            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="负责人:" prop="managerId">
+<!--        <el-form-item label="归属团队:" prop="teamId">-->
+<!--          <el-select  clearable v-model="dataForm.teamId" placeholder="请选择">-->
+<!--            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+        <el-form-item label="负责人:" prop="managerId" >
           <el-select  clearable v-model="dataForm.managerId" placeholder="请选择">
             <el-option v-for="item in managerList" :key="item.id"
                        :label='item.name+"("+item.id+")"'
@@ -65,15 +65,15 @@ export default {
         psName: [{ required: true, message: '请输入项目集名称', trigger: 'blur' }],
         startDate: [{ required: true, message: '请选择启动时间', trigger: 'change' }],
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
-        teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
-        managerId: [{ required: true, message: '请选择负责人', trigger: 'change' }]
+        // teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
+        managerId: [{ required: true, message: '请先选择归属部门，再选择负责人', trigger: 'change' }]
       },
       dataForm: {
         psName: '',
         psId: '',
         startDate: '',
         deptId: '',
-        teamId: '',
+        // teamId: '',
         managerId: '',
         state: null,
         endDate: '',
@@ -87,10 +87,29 @@ export default {
     }
   },
   methods: {
+
+    changeManagerList(){
+
+      if(this.dataForm.deptId==""||this.dataForm.deptId==null){
+        return false
+      }
+      let deptId = this.dataForm.deptId
+
+      this.$http({
+        url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId='+deptId),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.managerList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
     init(operateType, placeholderFlag, data) {
       this.operateType = operateType
       this.placeholderFlag = placeholderFlag
-      this.managerList = data.managerList
+      //this.managerList = data.managerList
       this.deptList = data.deptList
       this.teamList = data.teamList
       if (data.dataRow) {
@@ -108,6 +127,22 @@ export default {
             this.$message.error(data.msg)
           }
         })
+      }else{
+        let deptId = this.dataForm.deptId
+
+        this.$http({
+          url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId='+deptId),
+          method: 'get'
+        }).then(({data}) => {
+          if (data && data.code === 200) {
+            this.managerList = data.payload
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+
+
+
       }
     },
     addCheck() {

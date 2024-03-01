@@ -32,11 +32,11 @@
               <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="归属团队:" prop="teamIds">
-            <el-select v-model="projectConfigFormData.teamIds" multiple collapse-tags clearable>
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
+<!--          <el-form-item label="归属团队:" prop="teamIds">-->
+<!--            <el-select v-model="projectConfigFormData.teamIds" multiple collapse-tags clearable>-->
+<!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
           <el-form-item label="归属项目集:" prop="psIds">
             <el-select v-model="projectConfigFormData.psIds" multiple collapse-tags clearable>
               <el-option v-for="item in psList" :key="item.id" :label="item.psName" :value="item.id" />
