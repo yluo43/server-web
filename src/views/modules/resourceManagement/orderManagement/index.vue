@@ -49,7 +49,7 @@
           </el-form-item>
           <el-form-item label="归属部门:">
             <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择">
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled='item.name =="新讯数字科技有限公司"'></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="结算周期:">

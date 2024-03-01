@@ -27,14 +27,14 @@
           </el-form-item>
           <el-form-item label="归属部门:" prop="vo.deptId">
             <el-select v-model="dataForm.vo.deptId" placeholder="请选择">
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"  :disabled='item.name =="新讯数字科技有限公司"'></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="归属团队:" prop="vo.teamId">
-            <el-select v-model="dataForm.vo.teamId" placeholder="请选择">
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
+<!--          <el-form-item label="归属团队:" prop="vo.teamId">-->
+<!--            <el-select v-model="dataForm.vo.teamId" placeholder="请选择">-->
+<!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
           <el-form-item label="归属项目集:" prop="vo.psName">
             <el-input v-model="dataForm.vo.psName" disabled></el-input>
           </el-form-item>
@@ -107,7 +107,7 @@ export default {
         projectId: [{ required: true, message: '请选择项目名称', trigger: 'change' }],
         'vo.name': [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
         'vo.deptId': [{ required: true, message: '请选择归属部门', trigger: 'change' }],
-        'vo.teamId': [{ required: true, message: '请选择归属团队', trigger: 'change' }],
+        // 'vo.teamId': [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         'vo.managerId': [{ required: true, message: '请选择项目经理', trigger: 'change' }],
         'vo.approvalDate': [{ required: true, message: '请选择立项时间', trigger: 'change' }],
         'vo.deliveryDate': [{ required: true, message: '请选择计划交付时间', trigger: 'change' }],

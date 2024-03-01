@@ -169,7 +169,7 @@
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '归属部门不能为空'}]">
               <el-select  clearable  v-model="editDataForm.deptId" placeholder="请选择" >
-                <el-option      v-for="dept in deptNames"
+                <el-option      v-for="dept in onwerDeptNames"
                                 :key="dept.id"
                                 :label="dept.name"
                                 :value="dept.id"
@@ -345,6 +345,7 @@ export default {
         departStatus:''
       },
       deptNames:[],
+      onwerDeptNames:[],
       empLocations:[],
       teamNames:[],
       roleNames:[],
@@ -381,6 +382,17 @@ export default {
     }).then(({data}) => {
       if (data && data.code === 200) {
         this.deptNames = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
+
+    this.$http({
+      url: this.$http.adornUrl('/common/getDeptByRole'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        this.onwerDeptNames = data.payload
       } else {
         this.$message.error(data.msg)
       }

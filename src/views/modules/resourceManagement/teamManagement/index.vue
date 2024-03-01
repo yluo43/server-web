@@ -120,7 +120,7 @@
 
             <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '归属部门不能为空'}]">
               <el-select   clearable v-model="editDataForm.deptId" placeholder="请选择"   >
-                <el-option      v-for="dept in deptList"
+                <el-option      v-for="dept in onwerDeptList"
                                 :key="dept.id"
                                 :label="dept.name"
                                 :value="dept.id"
@@ -221,7 +221,7 @@ export default {
       empLocations:[],
       managerList:[],
       teamManagerList:[],
-
+      onwerDeptList:[],
       deptList:[],
       parentTeam:[],
       members:[],
@@ -304,6 +304,19 @@ export default {
         this.$message.error(data.msg)
       }
     })
+
+    this.$http({
+      url: this.$http.adornUrl('/common/getDeptByRole'),
+      method: 'get'
+    }).then(({data}) => {
+      if (data && data.code === 200) {
+        this.onwerDeptList = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
+
+
     //初始化managerList
     this.$http({
       url: this.$http.adornUrl('/common/getManager?pid=3'),

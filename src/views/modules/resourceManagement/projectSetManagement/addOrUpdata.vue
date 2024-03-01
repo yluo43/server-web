@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item label="归属部门:" prop="deptId">
           <el-select  clearable v-model="dataForm.deptId" placeholder="请选择" @change="changeManagerList">
-            <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled='item.name =="新讯数字科技有限公司"'></el-option>
           </el-select>
         </el-form-item>
 <!--        <el-form-item label="归属团队:" prop="teamId">-->
