@@ -37,13 +37,13 @@
             </el-form-item>
             <el-form-item label="部门经理" prop="managerId" :rules="[{ required: managerRequired, message: '部门经理不能为空' }]">
               <el-select clearable v-model="editDataForm.managerId" placeholder="请选择部门负责人">
-                <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
 
             <el-form-item label="部门助理" prop="assistantId">
               <el-select clearable v-model="editDataForm.assistantId" placeholder="请选择部门负责人">
-                <el-option v-for="item in assistList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                <el-option v-for="item in assistList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="上级部门" prop="parentId">

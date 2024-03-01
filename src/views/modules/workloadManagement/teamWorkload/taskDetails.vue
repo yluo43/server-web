@@ -161,7 +161,7 @@ export default {
       this.reportWorkName = initData.reportWorkName
       this.taskId = initData.id
       this.teamId = initData.teamId
-      this.selectTaskDetial({ teamId: this.teamId })
+      this.selectTaskDetial({ teamIdList: this.teamId })
     },
     async initTable() {
       await this.selectTaskList()

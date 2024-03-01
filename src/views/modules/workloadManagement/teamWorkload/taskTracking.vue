@@ -140,8 +140,8 @@ export default {
       this.reportWorkName = initData.reportWorkName
       this.taskId = initData.id
       this.teamId = initData.teamId
-      this.selectWorkload({ teamId: this.teamId })
-      console.log(initData)
+      this.selectWorkload({ teamIdList: this.teamId })
+      // console.log(initData)
     },
     async initTable() {
       await this.selectTaskList()
