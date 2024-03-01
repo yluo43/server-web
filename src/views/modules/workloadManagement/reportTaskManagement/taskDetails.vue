@@ -89,7 +89,11 @@ export default {
   methods: {
     //初始化数据
     init(initData) {
-      this.active = initData.taskStatus
+      if (initData.taskStatus == 4) {
+        this.active = initData.taskStatus + 1
+      } else {
+        this.active = initData.taskStatus
+      }
       Object.assign(this.taskInfo, initData)
       this.selectPersonCount({ deptIds: this.taskInfo.deptIds, curPage: 1, pageSize: 10 })
       this.selectTableData()

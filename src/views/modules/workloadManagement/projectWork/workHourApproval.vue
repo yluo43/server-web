@@ -43,12 +43,22 @@
               <!-- 操作 -->
               <template v-slot:clientType="row">
                 <template>
-                  <el-tooltip class="item" effect="dark" content="确认" placement="bottom">
-                    <i class="el-icon-circle-check" style="font-size: 1.5em; margin-right: 1em" @click="projectWorkOperate(row, 1)"></i>
+                  <el-button :disabled="row.item.workStatusName != '待确认'" type="text" @click="projectWorkOperate(row, 1)">确认</el-button>
+                  <el-button :disabled="row.item.workStatusName != '待确认'" type="text" @click="projectWorkOperateTwo(row, 2)">驳回</el-button>
+                  <!-- <el-tooltip class="item" effect="dark" content="确认" placement="bottom">
+                    <i
+                      class="el-icon-circle-check"
+                      style="font-size: 1.5em; margin-right: 1em"
+                      @click="row.item.workStatusName == '待确认' ? projectWorkOperate(row, 1) : ''"
+                    ></i>
                   </el-tooltip>
                   <el-tooltip class="item" effect="dark" content="驳回" placement="bottom">
-                    <i class="el-icon-circle-close" style="font-size: 1.5em; margin-right: 1em" @click="projectWorkOperateTwo(row, 2)"></i>
-                  </el-tooltip>
+                    <i
+                      class="el-icon-circle-close"
+                      style="font-size: 1.5em; margin-right: 1em"
+                      @click="row.item.workStatusName == '待确认' ? projectWorkOperateTwo(row, 2) : ''"
+                    ></i>
+                  </el-tooltip> -->
                 </template>
               </template>
             </baseTable>
@@ -96,7 +106,7 @@ export default {
           { label: '计划投入（%）', prop: 'planRate', width: '120px' },
           { label: '实际投入（%）', prop: 'realityRate', width: '120px' },
           { label: '确认状态', prop: 'workStatusName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
         url: '/projectWork/projectWorkList'
       },

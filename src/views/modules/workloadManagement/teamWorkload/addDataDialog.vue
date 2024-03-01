@@ -14,7 +14,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="实际投入:" prop="realityRate" style="margin-top: 10px">
-            <el-input v-model.number="formData.realityRate" placeholder="请输入" clearable style="width: 192px">
+            <el-input
+              oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+              v-model.number="formData.realityRate"
+              placeholder="请输入"
+              clearable
+              style="width: 192px"
+            >
               <template slot="append">%</template>
             </el-input>
           </el-form-item>

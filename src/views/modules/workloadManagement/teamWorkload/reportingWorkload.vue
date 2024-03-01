@@ -57,7 +57,7 @@
                   <div @dblclick="handler(scope.row, scope.column)" style="height: 50px; line-height: 50px">
                     <el-input
                       v-if="scope.row.isEdit"
-                      oninput="if(value > 100) value = 100; "
+                      oninput="this.value = this.value.replace(/[^0-9]/g, '');if(value > 100) value = 100; "
                       ref="realityRate"
                       clearable
                       v-model.number="scope.row.realityRate"

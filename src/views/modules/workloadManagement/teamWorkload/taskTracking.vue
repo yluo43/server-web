@@ -45,6 +45,9 @@
               <el-table-column prop="commitTime" label="提交时间"></el-table-column>
               <el-table-column prop="workStatus" label="确认状态">
                 <template slot-scope="scope">
+                  <template v-if="scope.row.workStatus == 0">
+                    <span>填报中</span>
+                  </template>
                   <template v-if="scope.row.workStatus == 1">
                     <span>待确认</span>
                   </template>
@@ -60,6 +63,9 @@
                   </template>
                   <template v-if="scope.row.workStatus == 2">
                     <span>已确认</span>
+                  </template>
+                  <template v-if="scope.row.workStatus == 4">
+                    <span>已归档</span>
                   </template>
                 </template>
               </el-table-column>
@@ -134,8 +140,8 @@ export default {
       this.reportWorkName = initData.reportWorkName
       this.taskId = initData.id
       this.teamId = initData.teamId
-      this.selectWorkload({ teamId: this.teamId })
-      console.log(initData)
+      this.selectWorkload({ teamIdList: this.teamId })
+      // console.log(initData)
     },
     async initTable() {
       await this.selectTaskList()
