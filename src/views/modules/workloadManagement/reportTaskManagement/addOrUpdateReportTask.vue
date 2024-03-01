@@ -19,7 +19,7 @@
           <el-form-item label="统计部门:" prop="department">
             <el-select v-model="formData.department" multiple clearable @remove-tag="removeTag" collapse-tags>
               <el-option disabled v-for="item in departments" :key="item.id" :label="item.name" :value="item.id">
-                <el-checkbox v-model="item.check" @change="isCheck(item)">
+                <el-checkbox :disabled="item.id === 0" v-model="item.check" @change="isCheck(item)">
                   {{ item.name }}
                 </el-checkbox>
               </el-option>
@@ -214,8 +214,6 @@ export default {
   mounted() {
     this.managerName = getCName()
     this.empId = this.$store.state.user.empId
-
-    let data = new Date()
   },
   created() {},
   methods: {
@@ -326,7 +324,6 @@ export default {
             }
           })
         } else {
-          console.log(1111)
           return false
         }
       })
