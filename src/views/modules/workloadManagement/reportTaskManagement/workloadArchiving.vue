@@ -33,7 +33,7 @@
               <span>{{ count }}</span>
               项
             </div>
-            <div>
+            <div v-if="this.radio == 2 || this.radio == 1">
               <el-button type="text" @click="batchArchiving">批量归档</el-button>
             </div>
           </div>

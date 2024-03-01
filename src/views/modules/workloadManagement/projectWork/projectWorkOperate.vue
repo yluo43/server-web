@@ -7,7 +7,7 @@
             <span>{{ formData.name }}</span>
           </el-form-item>
           <el-form-item label="驳回工作量:">
-            <span>{{ formData.planRate }}</span>
+            <span>{{ formData.realityRate }}</span>
           </el-form-item>
           <el-form-item label="驳回理由:" prop="rejectReason">
             <el-input
@@ -36,7 +36,8 @@ export default {
     return {
       formData: {
         name: '',
-        planRate: '',
+        realityRate: '',
+        // planRate: '',
         rejectReason: '',
         operateType: ''
       },

@@ -73,8 +73,8 @@
               <el-table-column prop="managerName" label="项目经理"></el-table-column>
               <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
               <el-table-column prop="commitTime" label="提交时间"></el-table-column>
-              <el-table-column prop="workStatus" label="确认状态">
-                <template slot-scope="scope">
+              <el-table-column prop="workStatusName" label="确认状态">
+                <!-- <template slot-scope="scope">
                   <template v-if="scope.row.workStatus == 1">
                     <span>待确认</span>
                   </template>
@@ -84,7 +84,7 @@
                   <template v-if="scope.row.workStatus == 2">
                     <span>已确认</span>
                   </template>
-                </template>
+                </template> -->
               </el-table-column>
             </el-table>
           </div>
@@ -351,7 +351,7 @@ export default {
           }
         })
       })
-      params.ids = ids
+      data.ids = ids
       this.$http.downloadPost(this.$http.adornUrl('/teamWork/export'), data, this)
     },
     //重置
