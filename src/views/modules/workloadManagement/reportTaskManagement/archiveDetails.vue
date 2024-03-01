@@ -6,7 +6,7 @@
           <div style="display: flex; align-items: center; margin: 0 0 10px 30px; font-weight: 600">
             <div>工作量统计:</div>
             <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="reportWorkName" clearable style="font-weight: 600px" @change="changeSelect">
+              <el-select v-model="reportWorkName" style="font-weight: 600px" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>
             </div>
