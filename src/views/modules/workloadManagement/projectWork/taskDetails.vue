@@ -172,7 +172,8 @@ export default {
     })
   },
   methods: {
-    init(data) {
+    async init(data) {
+      await this.projectTaskListNoPage()
       if (data) {
         Object.assign(this.dataForm, data)
         if (data.reportWorkName) {
@@ -180,7 +181,12 @@ export default {
         }
       }
       this.selectTaskList()
-      this.projectTaskListNoPage()
+    },
+    initData(params) {
+      if (params) {
+        Object.assign(this.dataForm, params)
+      }
+      this.selectTaskList()
     },
     handleCommand(command) {
       this.command = command
@@ -215,8 +221,8 @@ export default {
     selectTaskList() {
       this.$refs.table.refresh(this.dataForm)
     },
-    projectTaskListNoPage() {
-      this.$http({
+    async projectTaskListNoPage() {
+      const result = await this.$http({
         url: this.$http.adornUrl('/projectWork/projectTaskListNoPage'),
         method: 'get',
         params: {
@@ -224,14 +230,32 @@ export default {
           projectId: this.dataForm.projectId,
           taskId: this.dataForm.taskId
         }
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.commandList = data.payload
-        } else {
-          this.$message.error(data.msg)
-        }
       })
+      if (result.data && result.data.code === 200) {
+        this.commandList = result.data.payload
+        this.command = result.data.payload[0].reportWorkName
+        this.dataForm.taskId = result.data.payload[0].id
+      } else {
+        this.$message.error(data.msg)
+      }
     },
+    // projectTaskListNoPage() {
+    //   this.$http({
+    //     url: this.$http.adornUrl('/projectWork/projectTaskListNoPage'),
+    //     method: 'get',
+    //     params: {
+    //       workStatus: this.dataForm.workStatus,
+    //       projectId: this.dataForm.projectId,
+    //       taskId: this.dataForm.taskId
+    //     }
+    //   }).then(({ data }) => {
+    //     if (data && data.code === 200) {
+    //       this.commandList = data.payload
+    //     } else {
+    //       this.$message.error(data.msg)
+    //     }
+    //   })
+    // },
     download() {
       const list = this.$refs.table.getSelectRow()
       if (list.length === 0) {

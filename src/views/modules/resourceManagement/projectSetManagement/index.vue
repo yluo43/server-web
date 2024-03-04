@@ -11,23 +11,25 @@
           </el-form-item>
           <el-form-item label="负责人:">
             <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
-              <el-option v-for="item in managerList" :key="item.id"
-                         :label='item.name+"("+item.id+")"'
-                         :value="item.id"></el-option>
+              <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="归属部门:">
             <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择">
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"
-                         :disabled='item.name =="新讯数字科技有限公司"'
+              <el-option
+                v-for="item in deptList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+                :disabled="item.name == '新讯数字科技有限公司'"
               ></el-option>
             </el-select>
           </el-form-item>
-<!--          <el-form-item label="归属团队:">-->
-<!--            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">-->
-<!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
+          <!--          <el-form-item label="归属团队:">-->
+          <!--            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">-->
+          <!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
           <el-form-item label="启动时间:">
             <el-date-picker
               v-model="startDate"
@@ -51,7 +53,7 @@
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="状态:" prop="state" style="margin-left: 60px">
-            <el-select  clearable v-model="dataForm.state" placeholder="请选择">
+            <el-select clearable v-model="state" multiple collapse-tags placeholder="请选择">
               <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
@@ -125,6 +127,7 @@ export default {
       teamIdList: [],
       startDate: [],
       endDate: [],
+      state: [],
       dataForm: {
         psName: '',
         psId: '',
@@ -199,6 +202,7 @@ export default {
     }
   },
   mounted() {
+    this.dataForm.state = this.state.toString()
     this.$refs.table.refresh(this.dataForm)
     this.$http({
       url: this.$http.adornUrl('/common/getManagerUp'),
@@ -238,6 +242,7 @@ export default {
         if (!valid) {
           return false
         }
+        this.dataForm.state = this.state.toString()
         this.$refs.table.refresh(this.dataForm)
       })
     },

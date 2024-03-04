@@ -71,7 +71,7 @@
           <template v-slot:clientType="scope">
             <!--类型插槽-->
             <template v-if="scope.item.row.clientTypeShow">
-              <el-link type="primary" @click="editSettlement(scope)" :disabled="viewDisabled">编辑 |</el-link>
+              <el-link type="primary" @click="editSettlement(scope)" :disabled="viewDisabled || editFlag">编辑 |</el-link>
               <el-link type="primary" @click="deleteSettlement(scope)" :disabled="viewDisabled">删除</el-link>
             </template>
             <template v-else>
@@ -86,7 +86,7 @@
             style="width: 500px; background-color: #f5fbff; border: solid 1px #008aff"
             @click="addSettlement()"
             icon="el-icon-circle-plus-outline"
-            :disabled="viewDisabled"
+            :disabled="viewDisabled || editFlag"
           >
             添加
           </el-button>
@@ -104,6 +104,7 @@ export default {
   data() {
     return {
       chooseStr: '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已付款 0.00',
+      editFlag: false,
       title: '',
       order: {
         name: '',
@@ -206,6 +207,7 @@ export default {
       }
     },
     addSettlement() {
+      this.editFlag = true
       this.$refs.table.options.dataList.push({
         costName: '',
         expenditureAmount: null,
@@ -213,12 +215,13 @@ export default {
         actualPaymentDate: null,
         managerName: '',
         state: 0,
-        clientTypeShow: true
+        clientTypeShow: false
       })
     },
     stateChange(scope) {},
     editSettlement(scope) {
       scope.item.row.clientTypeShow = false
+      this.editFlag = true
       // 手动触发重新渲染
       this.$nextTick(() => {
         this.$refs.table.__rowClick(scope.item.row)
@@ -292,6 +295,7 @@ export default {
       })
     },
     cancelSettlement(scope) {
+      this.editFlag = false
       scope.item.row.clientTypeShow = true
       // 手动触发重新渲染
       this.$nextTick(() => {

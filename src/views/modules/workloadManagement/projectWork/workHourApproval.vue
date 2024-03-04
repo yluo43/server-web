@@ -114,7 +114,8 @@ export default {
     }
   },
   methods: {
-    init(data) {
+    async init(data) {
+      await this.projectTaskListNoPage()
       if (data) {
         Object.assign(this.dataForm, data)
         if (data.reportWorkName) {
@@ -122,10 +123,16 @@ export default {
         }
       }
       this.selectTaskList()
-      this.projectTaskListNoPage()
+      // this.projectTaskListNoPage()
     },
-    projectTaskListNoPage() {
-      this.$http({
+    initData(params) {
+      if (params) {
+        Object.assign(this.dataForm, params)
+      }
+      this.selectTaskList()
+    },
+    async projectTaskListNoPage() {
+      const result = await this.$http({
         url: this.$http.adornUrl('/projectWork/projectTaskListNoPage'),
         method: 'get',
         params: {
@@ -133,13 +140,23 @@ export default {
           projectId: this.dataForm.projectId,
           taskId: this.dataForm.taskId
         }
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.commandList = data.payload
-        } else {
-          this.$message.error(data.msg)
-        }
       })
+      if (result.data && result.data.code === 200) {
+        this.commandList = result.data.payload
+        if (result.data.payload.length != 0) {
+          this.command = result.data.payload[0].reportWorkName
+          this.dataForm.taskId = result.data.payload[0].id
+        }
+      } else {
+        this.$message.error(data.msg)
+      }
+      // .then(({ data }) => {
+      //   if (data && data.code === 200) {
+      //     this.commandList = data.payload
+      //   } else {
+      //     this.$message.error(data.msg)
+      //   }
+      // })
     },
     onSelect(selection) {
       if (selection.length > 0) {

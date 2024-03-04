@@ -106,8 +106,14 @@
                 <!-- 操作 -->
                 <template v-slot:clientType="row">
                   <template>
-                    <el-button type="text" @click="goToTrack(row)">>>去确认</el-button>
-                    <el-button type="text" @click="goToShowDetails(row)">查看详情</el-button>
+                    <el-button type="text" :disabled="row.item.taskStatus != 2" @click="goToTrack(row)">>>去确认</el-button>
+                    <el-button
+                      type="text"
+                      :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 2"
+                      @click="goToShowDetails(row)"
+                    >
+                      查看详情
+                    </el-button>
                   </template>
                 </template>
               </baseTable>
@@ -181,21 +187,18 @@ export default {
     handleNodeClick(data) {
       this.dataForm.projectId = data.id
       if (this.activeName === 'first') {
-        this.projectList()
+        this.selectTaskList()
+        //this.projectList()
       } else if (this.activeName === 'second') {
         this.$nextTick(() => {
-          this.$refs.workerHourApproval.init({
-            projectId: this.dataForm.projectId,
-            taskId: null,
-            reportWorkName: null
+          this.$refs.workerHourApproval.initData({
+            projectId: this.dataForm.projectId
           })
         })
       } else if (this.activeName === 'third') {
         this.$nextTick(() => {
-          this.$refs.taskDetails.init({
-            projectId: this.dataForm.projectId,
-            taskId: null,
-            reportWorkName: null
+          this.$refs.taskDetails.initData({
+            projectId: this.dataForm.projectId
           })
         })
       }
