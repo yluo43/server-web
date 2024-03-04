@@ -345,6 +345,8 @@ export default {
       }).then(({data}) => {
         if (data && data.code === 200) {
           this.teamManagerList = data.payload
+          this.editDataForm.managerId = ''
+
         } else {
           this.$message.error(data.msg)
         }

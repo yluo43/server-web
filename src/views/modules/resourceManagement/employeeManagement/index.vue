@@ -448,6 +448,8 @@ export default {
       }).then(({data}) => {
         if (data && data.code === 200) {
           this.teamNamesByDept = data.payload
+
+          this.editDataForm.teamId = ""
         } else {
           this.$message.error(data.msg)
         }
