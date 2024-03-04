@@ -119,7 +119,7 @@
 
 
             <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '归属部门不能为空'}]">
-              <el-select   clearable v-model="editDataForm.deptId" placeholder="请选择"   >
+              <el-select   clearable v-model="editDataForm.deptId" placeholder="请选择"  @change="changeManagerList" >
                 <el-option      v-for="dept in onwerDeptList"
                                 :key="dept.id"
                                 :label="dept.name"
@@ -132,7 +132,7 @@
 
             <el-form-item label="团队负责人:" prop="managerId"  :rules="[ { required: true, message: '不能为空，请先选择归属部门'}]" >
               <el-select  clearable  v-model="editDataForm.managerId" placeholder="请先选择归属部门" >
-                <el-option      v-for="manager in managerList"
+                <el-option      v-for="manager in teamManagerList"
                                 :key="manager.id"
                                 :label='manager.name+"("+manager.id+")"'
                                 :value="manager.id"
