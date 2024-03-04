@@ -254,7 +254,7 @@ export default {
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          this.belongingDepartments = data.payload
+          this.belongingDepartments = data.payload.filter(item => item.id !== 0)
         } else {
           this.$message.error(data.msg)
         }

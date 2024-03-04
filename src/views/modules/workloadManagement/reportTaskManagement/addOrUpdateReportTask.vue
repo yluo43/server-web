@@ -253,7 +253,7 @@ export default {
         result.data.payload.map((item) => {
           item.check = false
         })
-        this.departments = result.data.payload
+        this.departments = result.data.payload.filter(item => item.id !== 0)
       } else {
         this.$message.error(result.data.msg)
       }

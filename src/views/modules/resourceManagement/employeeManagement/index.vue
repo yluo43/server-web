@@ -19,7 +19,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptIds">
-              <el-select  v-model="dataForm.deptIds" placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select  v-model="dataForm.deptIds" placeholder="请选择" :multiple="true" :collapse-tags="true" >
                 <el-option      v-for="dept in deptNames"
                                 :key="dept.id"
                                 :label="dept.name"
@@ -168,7 +168,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptId" :rules="[ { required: true, message: '归属部门不能为空'}]">
-              <el-select  clearable  v-model="editDataForm.deptId" placeholder="请选择" >
+              <el-select  clearable  v-model="editDataForm.deptId" placeholder="请选择" @change="changeTeamByDept">
                 <el-option      v-for="dept in onwerDeptNames"
                                 :key="dept.id"
                                 :label="dept.name"
@@ -181,7 +181,7 @@
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamId" >
               <el-select  clearable  v-model="editDataForm.teamId" placeholder="请选择" >
-                <el-option      v-for="team in teamNames"
+                <el-option      v-for="team in teamNamesByDept"
                                 :key="team.id"
                                 :label="team.name"
                                 :value="team.id"
@@ -344,6 +344,7 @@ export default {
         empLevel:'',
         departStatus:''
       },
+      teamNamesByDept:[],
       deptNames:[],
       onwerDeptNames:[],
       empLocations:[],
@@ -381,7 +382,7 @@ export default {
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
-        this.deptNames = data.payload
+        this.deptNames = data.payload.filter(item => item.id !== 0)
       } else {
         this.$message.error(data.msg)
       }
@@ -392,7 +393,7 @@ export default {
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
-        this.onwerDeptNames = data.payload
+        this.onwerDeptNames = data.payload.filter(item => item.id !== 0)
       } else {
         this.$message.error(data.msg)
       }
@@ -439,6 +440,22 @@ export default {
   },
   methods: {
 
+    changeTeamByDept(){
+      //刷新团队
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamByDept?deptId='+this.editDataForm.deptId),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.teamNamesByDept = data.payload
+
+          this.editDataForm.teamId = ""
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+
     editSubmit(){
 
       let go
@@ -455,11 +472,6 @@ export default {
       if(this.editDataForm.departDate=='-'){
         this.editDataForm.departDate = undefined
       }
-
-
-      // if(this.editDataForm.roleIds.length>0){
-      //   this.editDataForm.roleIds =this.editDataForm.roleIds
-      // }
 
       this.$http({
         url: this.$http.adornUrl(this.url),
@@ -481,6 +493,22 @@ export default {
       })
     },
     alter(row){
+
+
+
+      //初始化团队
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamByDept?deptId='+row.item.deptId),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.teamNamesByDept = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+
+
       this.editDataForm = {...row.item}
       if(this.editDataForm.departDate=='-'){
         this.editDataForm.departDate = ''
