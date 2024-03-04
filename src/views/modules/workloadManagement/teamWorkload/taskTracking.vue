@@ -6,7 +6,7 @@
           <div class="header-title">
             <div>工作量统计:</div>
             <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="reportWorkName" style="font-weight: 600px" @change="changeSelect">
+              <el-select v-model="reportWorkName" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
@@ -111,7 +111,7 @@ export default {
       //总条数
       total: 10,
       curPage: 1,
-      pageSize: 10,
+      pageSize: 500,
       //任务Id
       taskId: '',
       teamId: '',
@@ -250,11 +250,11 @@ export default {
     //切换ridio
     handlerRadio() {
       if (this.radio == 0) {
-        this.selectWorkload({ teamIdList: this.checkTeam.toString() })
+        this.selectWorkload({ teamIdList: this.checkTeam.toString() || this.teamId })
       } else {
         this.selectWorkload({
           workStatus: this.radio,
-          teamIdList: this.checkTeam.toString()
+          teamIdList: this.checkTeam.toString() || this.teamId
         })
       }
     },

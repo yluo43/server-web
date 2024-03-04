@@ -6,7 +6,7 @@
           <div style="display: flex; align-items: center; margin: 0 0 10px 30px; font-weight: 600">
             <div>工作量统计:</div>
             <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="reportWorkName" style="font-weight: 600px" @change="changeSelect">
+              <el-select v-model="reportWorkName" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>
             </div>
@@ -45,7 +45,7 @@
                 </el-select>
               </el-form-item>
 
-              <el-button type="primary" icon="el-icon-search" style="margin-left: 30px" @click="selectData">查询</el-button>
+              <el-button type="primary" icon="el-icon-search" style="margin-left: 50px" @click="selectData">查询</el-button>
               <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
             </el-form>
           </div>

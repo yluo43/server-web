@@ -6,7 +6,7 @@
           <div style="display: flex; align-items: center; margin-bottom: 10px; font-weight: 600">
             <div>工作量统计:</div>
             <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="reportWorkName" style="font-weight: 600px" @change="changeSelect">
+              <el-select v-model="reportWorkName" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
@@ -250,7 +250,8 @@ export default {
         empName: this.formData.userName,
         empId: this.formData.empId,
         managerIds: this.formData.managerIds.toString(),
-        projectIds: this.formData.projectIds.toString()
+        projectIds: this.formData.projectIds.toString(),
+        teamIdList: this.checkTeam.toString() || this.teamId
       }
       this.selectTaskDetial(data)
     },
