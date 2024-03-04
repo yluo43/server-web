@@ -382,7 +382,7 @@ export default {
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
-        this.deptNames = data.payload
+        this.deptNames = data.payload.filter(item => item.id !== 0)
       } else {
         this.$message.error(data.msg)
       }
@@ -393,7 +393,7 @@ export default {
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {
-        this.onwerDeptNames = data.payload
+        this.onwerDeptNames = data.payload.filter(item => item.id !== 0)
       } else {
         this.$message.error(data.msg)
       }

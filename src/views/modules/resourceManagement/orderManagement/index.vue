@@ -237,7 +237,7 @@ export default {
   mounted() {
     this.$refs.table.refresh(this.dataForm)
     this.$http({
-      url: this.$http.adornUrl('/common/getManagerUp'),
+      url: this.$http.adornUrl('/common/getManager'),
       params: { pid: 4 },
       method: 'get'
     }).then(({ data }) => {
@@ -252,7 +252,7 @@ export default {
       method: 'get'
     }).then(({ data }) => {
       if (data && data.code === 200) {
-        this.deptList = data.payload
+        this.deptList = data.payload.filter(item => item.id !== 0)
       } else {
         this.$message.error(data.msg)
       }
