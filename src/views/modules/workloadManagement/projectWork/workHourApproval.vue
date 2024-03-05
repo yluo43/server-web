@@ -7,7 +7,10 @@
             <el-col>
               <div style="display: flex; align-items: center">
                 <span style="font-size: 16px; font-weight: 600; margin-left: 10px">工作量统计：</span>
-                <el-dropdown @command="handleCommand">
+                <el-select v-model="dataForm.taskId" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
+                  <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
+                </el-select>
+                <!-- <el-dropdown @command="handleCommand">
                   <span class="el-dropdown-link">
                     {{ command }}
                     <i class="el-icon-arrow-down el-icon--right"></i>
@@ -17,7 +20,7 @@
                       {{ item.reportWorkName }}
                     </el-dropdown-item>
                   </el-dropdown-menu>
-                </el-dropdown>
+                </el-dropdown> -->
               </div>
             </el-col>
           </el-row>
@@ -165,15 +168,23 @@ export default {
         this.chooseStr = '已选择 0 项'
       }
     },
-    handleCommand(command) {
-      this.command = command
-      const obj = this.commandList.find((item) => item.reportWorkName === command)
-      this.dataForm.taskId = obj.id
+    changeSelect() {
       this.selectTaskList()
     },
+    // handleCommand(command) {
+    //   this.command = command
+    //   const obj = this.commandList.find((item) => item.reportWorkName === command)
+    //   this.dataForm.taskId = obj.id
+    //   this.selectTaskList()
+    // },
     //查询
     selectTaskList() {
       this.$refs.taskListTable.refresh(this.dataForm)
+    },
+    clearTable() {
+      this.$nextTick(() => {
+        this.$refs.taskListTable.options.dataList = []
+      })
     },
     //切换radio
     handlerRadio() {

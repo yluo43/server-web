@@ -176,8 +176,8 @@ export default {
       if (result.data && result.data.code === 200) {
         this.workLoadStatistics = result.data.payload
         if (result.data.payload.length != 0) {
-          this.reportWorkName = result.data.payload.slice(-1)[0].reportWorkName
-          this.taskId = result.data.payload.slice(-1)[0].taskId
+          this.reportWorkName = result.data.payload[0].reportWorkName
+          this.taskId = result.data.payload[0].taskId
         }
       } else {
         this.$message.error(result.data.msg)

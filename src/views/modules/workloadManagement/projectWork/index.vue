@@ -207,15 +207,18 @@ export default {
       this.projectList()
     },
     activeNameChange() {
+      this.projectName = ''
       if (this.activeName === 'first') {
         this.projectList()
       } else if (this.activeName === 'second') {
+        this.projectListRefresh()
         this.$nextTick(() => {
-          this.$refs.workerHourApproval.init({})
+          this.$refs.workerHourApproval.init({ projectId: this.dataForm.projectId })
         })
       } else if (this.activeName === 'third') {
+        this.projectListRefresh()
         this.$nextTick(() => {
-          this.$refs.taskDetails.init({})
+          this.$refs.taskDetails.init({ projectId: this.dataForm.projectId })
         })
       }
     },
@@ -275,15 +278,43 @@ export default {
             })
             if (list.length !== 0) {
               this.dataForm.projectId = list[0].id
+              this.data = list
+              if (this.activeName == 'first') {
+                this.$nextTick(() => {
+                  this.selectTaskList()
+                })
+              } else if (this.activeName == 'second') {
+                this.$nextTick(() => {
+                  this.$refs.workerHourApproval.initData({
+                    projectId: this.dataForm.projectId
+                  })
+                })
+              } else if (this.activeName == 'third') {
+                this.$nextTick(() => {
+                  this.$refs.taskDetails.initData({
+                    projectId: this.dataForm.projectId
+                  })
+                })
+              }
+              this.selectFirstNode()
             }
           } else {
             this.dataForm.projectId = null
+            this.data = list
+            if (this.activeName == 'first') {
+              this.$nextTick(() => {
+                this.$refs.table.options.dataList = []
+              })
+            } else if (this.activeName == 'second') {
+              this.$nextTick(() => {
+                this.$refs.workerHourApproval.clearTable()
+              })
+            } else if (this.activeName == 'third') {
+              this.$refs.taskDetails.clearTable()
+            }
+
+            this.selectFirstNode()
           }
-          this.data = list
-          this.$nextTick(() => {
-            this.selectTaskList()
-          })
-          this.selectFirstNode()
         } else {
           this.$message.error(data.msg)
         }
