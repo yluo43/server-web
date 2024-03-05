@@ -12,20 +12,18 @@
           <el-date-picker v-model="dataForm.startDate" value-format="yyyy-MM-dd" format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="归属部门:" prop="deptId">
-          <el-select  clearable v-model="dataForm.deptId" placeholder="请选择" @change="changeManagerList">
-            <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled='item.name =="新讯数字科技有限公司"'></el-option>
+          <el-select clearable v-model="dataForm.deptId" placeholder="请选择" @change="changeManagerList">
+            <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'"></el-option>
           </el-select>
         </el-form-item>
-<!--        <el-form-item label="归属团队:" prop="teamId">-->
-<!--          <el-select  clearable v-model="dataForm.teamId" placeholder="请选择">-->
-<!--            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
-        <el-form-item label="负责人:" prop="managerId" >
-          <el-select  clearable v-model="dataForm.managerId" placeholder="请选择">
-            <el-option v-for="item in managerList" :key="item.id"
-                       :label='item.name+"("+item.id+")"'
-                       :value="item.id"></el-option>
+        <!--        <el-form-item label="归属团队:" prop="teamId">-->
+        <!--          <el-select  clearable v-model="dataForm.teamId" placeholder="请选择">-->
+        <!--            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
+        <el-form-item label="负责人:" prop="managerId">
+          <el-select clearable v-model="dataForm.managerId" placeholder="请选择">
+            <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态:" prop="state" v-if="operateType === 'update'">
@@ -60,10 +58,37 @@
 <script>
 export default {
   data() {
+    const validateStartDate = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择启动时间'))
+        return
+      }
+      if (this.dataForm.startDate && new Date(Date.parse(this.format())) < new Date(Date.parse(this.dataForm.startDate))) {
+        callback(new Error('启动时间应小于等于当前时间'))
+        return
+      }
+      callback()
+    }
+    const validateEndDate = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择结束时间'))
+        return
+      }
+      if (this.dataForm.startDate && this.dataForm.endDate && new Date(Date.parse(this.dataForm.endDate)) < new Date(Date.parse(this.dataForm.startDate))) {
+        callback(new Error('结束时间应大于启动时间'))
+        return
+      }
+      if ((this.dataForm.state == 1 || this.dataForm.state == 2) && new Date(Date.parse(this.format())) < new Date(Date.parse(this.dataForm.endDate))) {
+        callback(new Error('结束时间应小于等于当前时间'))
+        return
+      }
+      callback()
+    }
     return {
       rules: {
         psName: [{ required: true, message: '请输入项目集名称', trigger: 'blur' }],
-        startDate: [{ required: true, message: '请选择启动时间', trigger: 'change' }],
+        startDate: [{ type: 'string', required: true, validator: validateStartDate, trigger: 'change' }],
+        endDate: [{ type: 'string', required: true, validator: validateEndDate, trigger: 'change' }],
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
         // teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         managerId: [{ required: true, message: '请先选择归属部门，再选择负责人', trigger: 'change' }]
@@ -87,18 +112,25 @@ export default {
     }
   },
   methods: {
-
-    changeManagerList(){
-
-      if(this.dataForm.deptId==""||this.dataForm.deptId==null){
+    format() {
+      var date = new Date()
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      month = (month < 10 ? '0' : '') + month
+      var datee = date.getDate()
+      datee = (datee < 10 ? '0' : '') + datee
+      return year + '-' + month + '-' + datee
+    },
+    changeManagerList() {
+      if (this.dataForm.deptId == '' || this.dataForm.deptId == null) {
         return false
       }
       let deptId = this.dataForm.deptId
 
       this.$http({
-        url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId='+deptId),
+        url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
         method: 'get'
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
           this.managerList = data.payload
         } else {
@@ -127,22 +159,19 @@ export default {
             this.$message.error(data.msg)
           }
         })
-      }else{
+      } else {
         let deptId = this.dataForm.deptId
 
         this.$http({
-          url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId='+deptId),
+          url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
           method: 'get'
-        }).then(({data}) => {
+        }).then(({ data }) => {
           if (data && data.code === 200) {
             this.managerList = data.payload
           } else {
             this.$message.error(data.msg)
           }
         })
-
-
-
       }
     },
     addCheck() {

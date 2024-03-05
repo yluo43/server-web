@@ -248,7 +248,9 @@ export default {
       if (result.data && result.data.code === 200) {
         this.commandList = result.data.payload
         // this.command = result.data.payload[0].reportWorkName
-        this.dataForm.taskId = result.data.payload[0].id
+        if (result.data.payload.length != 0) {
+          this.dataForm.taskId = result.data.payload[0].id
+        }
       } else {
         this.$message.error(data.msg)
       }

@@ -6,19 +6,14 @@
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="dataForm.name" placeholder="请输入关键字" clearable></el-input>
           </el-form-item>
-<!--          <el-form-item label="归属团队:">-->
-<!--            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">-->
-<!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
+          <!--          <el-form-item label="归属团队:">-->
+          <!--            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">-->
+          <!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
           <el-form-item label="项目经理:">
             <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
-              <el-option v-for="item in managerList"
-                         :key="item.id"
-                         :label='item.name+"("+item.id+")"'
-                         :value="item.id">
-
-              </el-option>
+              <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="立项时间:">
@@ -49,12 +44,18 @@
           </el-form-item>
           <el-form-item label="归属部门:">
             <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择">
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled='item.name =="新讯数字科技有限公司"'></el-option>
+              <el-option
+                v-for="item in deptList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+                :disabled="item.name == '新讯数字科技有限公司'"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="结算周期:">
             <el-select v-model="settlementCyclesList" multiple collapse-tags placeholder="请选择">
-              <el-option v-for="item in 12" :key="item" :label="item" :value="item"></el-option>
+              <el-option v-for="item in 12" :key="item" :label="item + '月'" :value="item"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="交付时间:">
@@ -252,7 +253,7 @@ export default {
       method: 'get'
     }).then(({ data }) => {
       if (data && data.code === 200) {
-        this.deptList = data.payload.filter(item => item.id !== 0)
+        this.deptList = data.payload.filter((item) => item.id !== 0)
       } else {
         this.$message.error(data.msg)
       }

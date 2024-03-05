@@ -97,7 +97,6 @@ export default {
     return {
       //add 添加 edit编辑
       flag: '',
-
       managerName: '王瑢',
       formData: {
         //统计时间段department
@@ -253,7 +252,7 @@ export default {
         result.data.payload.map((item) => {
           item.check = false
         })
-        this.departments = result.data.payload.filter(item => item.id !== 0)
+        this.departments = result.data.payload.filter((item) => item.id !== 0)
       } else {
         this.$message.error(result.data.msg)
       }

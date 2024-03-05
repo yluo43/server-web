@@ -73,6 +73,10 @@
         </el-button>
         <el-button class="el-button-func" type="primary" @click="add()" icon="el-icon-circle-plus-outline" v-auth="'projectSet:add'">新建项目集</el-button>
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+          <template v-slot:endDate="row">
+            <div v-if="!row.item.endDate">-</div>
+            <div v-else>{{ row.item.endDate }}</div>
+          </template>
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
@@ -151,7 +155,7 @@ export default {
           { label: '已完成项目数', prop: 'completeNum' },
           { label: '简介', prop: 'remarks' },
           { label: '启动时间', prop: 'startDate' },
-          { label: '结束时间', prop: 'endDate' },
+          { label: '结束时间', prop: 'endDate', slotName: 'endDate' },
           { label: '状态', prop: 'stateName' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '130px' }
         ],
@@ -220,7 +224,7 @@ export default {
       method: 'get'
     }).then(({ data }) => {
       if (data && data.code === 200) {
-        this.deptList = data.payload.filter(item => item.id !== 0)
+        this.deptList = data.payload.filter((item) => item.id !== 0)
       } else {
         this.$message.error(data.msg)
       }

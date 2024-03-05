@@ -86,11 +86,11 @@
                   type="date"
                   style="width: 100%"
                   placeholder="选择日期"
-                  :disabled="scope.item.row.clientTypeShow"
+                  :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
                 ></el-date-picker>
               </template>
               <template v-slot:state="scope">
-                <el-select clearable v-model="scope.item.row.state" placeholder="请选择" :disabled="scope.item.row.clientTypeShow" @change="stateChange(scope)">
+                <el-select v-model="scope.item.row.state" placeholder="请选择" :disabled="scope.item.row.clientTypeShow" @change="stateChange(scope)">
                   <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
                 </el-select>
               </template>
@@ -435,7 +435,7 @@ export default {
     updateSettlement(scope, item, index) {
       let obj = scope.item.row
       if (obj.state === 3) {
-        if (!obj.returnDate || !obj.returnAcount || (!obj.returnFile && !obj.returnFilePath)) {
+        if (!obj.expectReturnDate || !obj.returnDate || !obj.returnAcount || (!obj.returnFile && !obj.returnFilePath)) {
           this.$message.warning('当状态为“已收款”时，列表中回款时间、回款金额、回款单信息必须填写上传！')
           return
         }
