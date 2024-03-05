@@ -179,9 +179,12 @@ export default {
       await this.projectTaskListNoPage()
       if (data) {
         Object.assign(this.dataForm, data)
-        if (data.reportWorkName) {
-          this.command = data.reportWorkName
-        }
+        // if (data.reportWorkName) {
+        //   this.command = data.reportWorkName
+        // }
+      }
+      if (this.dataForm.projectId == null) {
+        return
       }
       this.selectTaskList()
     },
@@ -244,7 +247,7 @@ export default {
       })
       if (result.data && result.data.code === 200) {
         this.commandList = result.data.payload
-        this.command = result.data.payload[0].reportWorkName
+        // this.command = result.data.payload[0].reportWorkName
         this.dataForm.taskId = result.data.payload[0].id
       } else {
         this.$message.error(data.msg)

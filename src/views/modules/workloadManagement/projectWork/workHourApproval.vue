@@ -88,7 +88,7 @@ export default {
   data() {
     return {
       chooseStr: '已选择 0 项',
-      command: '选择任务',
+      // command: '选择任务',
       radio: 1,
       keyword: '',
       dataForm: {
@@ -121,9 +121,12 @@ export default {
       await this.projectTaskListNoPage()
       if (data) {
         Object.assign(this.dataForm, data)
-        if (data.reportWorkName) {
-          this.command = data.reportWorkName
-        }
+        // if (data.reportWorkName) {
+        //   this.command = data.reportWorkName
+        // }
+      }
+      if (this.dataForm.projectId == null) {
+        return
       }
       this.selectTaskList()
       // this.projectTaskListNoPage()
@@ -147,7 +150,7 @@ export default {
       if (result.data && result.data.code === 200) {
         this.commandList = result.data.payload
         if (result.data.payload.length != 0) {
-          this.command = result.data.payload[0].reportWorkName
+          // this.command = result.data.payload[0].reportWorkName
           this.dataForm.taskId = result.data.payload[0].id
         }
       } else {
