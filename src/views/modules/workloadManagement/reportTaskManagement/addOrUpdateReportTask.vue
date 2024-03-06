@@ -17,7 +17,7 @@
             />
           </el-form-item>
           <el-form-item label="统计部门:" prop="department">
-            <el-select v-model="formData.department" multiple clearable @remove-tag="removeTag" collapse-tags>
+            <el-select :disabled="flag === 'edit'" v-model="formData.department" multiple clearable @remove-tag="removeTag" collapse-tags>
               <el-option disabled v-for="item in departments" :key="item.id" :label="item.name" :value="item.id">
                 <el-checkbox :disabled="item.id === 0" v-model="item.check" @change="isCheck(item)">
                   {{ item.name }}
@@ -279,17 +279,16 @@ export default {
             overTime: this.formData.timePeriod[1],
             deptIds: ids.toString()
           }
-
-          this.$http({
-            url: this.$http.adornUrl('/workload/reportSelectTimeline'),
-            method: 'post',
-            data: params
-          }).then(({ data }) => {
-            if (data.code === 200 && data.success) {
-              this.$message.error(data.msg)
-              return false
-            } else {
-              if (this.flag == 'add') {
+          if (this.flag == 'add') {
+            this.$http({
+              url: this.$http.adornUrl('/workload/reportSelectTimeline'),
+              method: 'post',
+              data: params
+            }).then(({ data }) => {
+              if (data.code === 200 && data.success) {
+                this.$message.error(data.msg)
+                return false
+              } else {
                 this.$http({
                   url: this.$http.adornUrl('/workload/reportAdd'),
                   method: 'post',
@@ -304,24 +303,24 @@ export default {
                     this.cancelDialog()
                   }
                 })
-              } else {
-                //编辑
-                this.$http({
-                  url: this.$http.adornUrl('/workload/updateReport'),
-                  method: 'post',
-                  data: dataList
-                }).then(({ data }) => {
-                  if (data && data.code === 200 && data.success) {
-                    this.$message.success(data.msg)
-                    this.cancelDialog()
-                    this.$emit('selectTableData')
-                  } else {
-                    this.$message.error(data.msg)
-                  }
-                })
               }
-            }
-          })
+            })
+          } else {
+            //编辑
+            this.$http({
+              url: this.$http.adornUrl('/workload/updateReport'),
+              method: 'post',
+              data: dataList
+            }).then(({ data }) => {
+              if (data && data.code === 200 && data.success) {
+                this.$message.success(data.msg)
+                this.cancelDialog()
+                this.$emit('selectTableData')
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+          }
         } else {
           return false
         }

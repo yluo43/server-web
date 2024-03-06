@@ -99,9 +99,11 @@
                       <el-button v-show="row.item.taskStatus == 4" type="text" @click="goToArchiveDetails(row)">>>归档详情</el-button>
                       <el-button v-show="row.item.taskStatus == 3" type="text" @click="goToArchive(row)">>>去归档</el-button>
                     </el-col>
-                    <el-col :span="6"><el-button type="text" @click="goToTaskDetails(row)">任务详情</el-button></el-col>
-                    <el-col :span="4"><el-button :disabled="row.item.taskStatus !== 0" type="text" @click="editReportTask(row)">编辑</el-button></el-col>
-                    <el-col :span="4"><el-button type="text" @click="goToDelete(row)">删除</el-button></el-col>
+                    <el-col :span="6">
+                      <el-button type="text" @click="goToTaskDetails(row)">任务详情</el-button>
+                    </el-col>
+                    <el-col :span="5"><el-button :disabled="row.item.taskStatus !== 0" type="text" @click="editReportTask(row)">编辑</el-button></el-col>
+                    <el-col :span="5"><el-button type="text" @click="goToDelete(row)">删除</el-button></el-col>
                   </el-row>
                 </template>
               </template>
@@ -351,6 +353,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-button {
+  min-width: 0;
+}
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }
