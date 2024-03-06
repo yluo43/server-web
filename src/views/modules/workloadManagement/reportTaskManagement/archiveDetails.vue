@@ -41,7 +41,7 @@
               </el-form-item>
               <el-form-item label="项目经理:" prop="projectManager">
                 <el-select v-model="formData.projectManager" placeholder="请选择" multiple collapse-tags clearable>
-                  <el-option v-for="item in projectManagers" :key="item.id" :label="item.name" :value="item.id" />
+                  <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
                 </el-select>
               </el-form-item>
 

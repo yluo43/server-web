@@ -11,9 +11,7 @@
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerIds">
             <el-select v-model="projectConfigFormData.managerIds" multiple collapse-tags clearable>
-              <el-option v-for="item in managerList" :key="item.id"
-                         :label='item.name+"("+item.id+")"'
-                         :value="item.id" />
+              <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="立项时间:" prop="approvalDate">
@@ -32,11 +30,11 @@
               <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-<!--          <el-form-item label="归属团队:" prop="teamIds">-->
-<!--            <el-select v-model="projectConfigFormData.teamIds" multiple collapse-tags clearable>-->
-<!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
+          <!--          <el-form-item label="归属团队:" prop="teamIds">-->
+          <!--            <el-select v-model="projectConfigFormData.teamIds" multiple collapse-tags clearable>-->
+          <!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
           <el-form-item label="归属项目集:" prop="psIds">
             <el-select v-model="projectConfigFormData.psIds" multiple collapse-tags clearable>
               <el-option v-for="item in psList" :key="item.id" :label="item.psName" :value="item.id" />
@@ -44,7 +42,7 @@
           </el-form-item>
           <el-form-item label="归属部门:" prop="deptIds">
             <el-select v-model="projectConfigFormData.deptIds" multiple collapse-tags clearable>
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"  :disabled='item.name =="新讯数字科技有限公司"'/>
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
             </el-select>
           </el-form-item>
           <el-form-item label="交付时间:" prop="deliveryDate">
@@ -231,7 +229,7 @@ export default {
     // 查询枚举列表
     queryEnumList() {
       this.$http({
-        url: this.$http.adornUrl('/common/getManage'),
+        url: this.$http.adornUrl('/common/getManager'),
         params: { pid: 4 },
         method: 'get'
       }).then(({ data }) => {
@@ -267,7 +265,7 @@ export default {
         method: 'get'
       }).then(({ data }) => {
         if (data.success) {
-          this.deptList = [...data.payload.filter(item => item.id !== 0)]
+          this.deptList = [...data.payload.filter((item) => item.id !== 0)]
         } else {
           this.$message.error(data.msg)
         }

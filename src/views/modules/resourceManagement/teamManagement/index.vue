@@ -177,9 +177,9 @@
       <template>
         <el-transfer
           style="margin-bottom: 20px"
-          :titles="['所有成员', '团队成员']"
+          :titles="['未分配团队成员', '团队成员']"
           filterable
-          filter-placeholder="请输入团队成员姓名"
+          filter-placeholder="请输入成员姓名或工号"
           v-model="value"
           :data="teamMembers"
         ></el-transfer>

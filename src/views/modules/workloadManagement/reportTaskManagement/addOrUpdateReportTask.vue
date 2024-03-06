@@ -309,7 +309,7 @@ export default {
                 this.$http({
                   url: this.$http.adornUrl('/workload/updateReport'),
                   method: 'post',
-                  data: data
+                  data: dataList
                 }).then(({ data }) => {
                   if (data && data.code === 200 && data.success) {
                     this.$message.success(data.msg)

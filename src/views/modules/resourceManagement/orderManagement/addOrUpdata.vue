@@ -14,7 +14,7 @@
         <el-descriptions-item label="项目状态">
           <div style="width: 80%">
             <!--            0交付中 1已交付 2关闭 3已回款-->
-            <el-steps :active="order.state">
+            <el-steps :active="order.state" finish-status="success">
               <el-step title="交付中"></el-step>
               <el-step title="已交付"></el-step>
               <el-step title="关闭"></el-step>
@@ -62,6 +62,7 @@
               </template>
               <template v-slot:settlementFile="scope">
                 <el-upload
+                  :disabled="scope.item.row.clientTypeShow"
                   class="upload-demo"
                   action="#"
                   :limit="1"
@@ -86,7 +87,7 @@
                   type="date"
                   style="width: 100%"
                   placeholder="选择日期"
-                  :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
+                  :disabled="scope.item.row.clientTypeShow"
                 ></el-date-picker>
               </template>
               <template v-slot:state="scope">
@@ -114,6 +115,7 @@
               </template>
               <template v-slot:returnFile="scope">
                 <el-upload
+                  :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
                   class="upload-demo"
                   action="#"
                   :limit="1"
@@ -298,6 +300,7 @@ export default {
         this.$refs.viewOrderRef.init(item)
       })
     },
+
     updateOrder(item) {
       this.title = '编辑订单'
       this.$refs.addOrUpdateDrawer.show()
@@ -434,9 +437,21 @@ export default {
     },
     updateSettlement(scope, item, index) {
       let obj = scope.item.row
+      if (!obj.settlementAcount || obj.settlementAcount == '0.00' || obj.settlementAcount == '0') {
+        this.$message.warning('结算金额不能为空和0')
+        return
+      }
       if (obj.state === 3) {
-        if (!obj.expectReturnDate || !obj.returnDate || !obj.returnAcount || (!obj.returnFile && !obj.returnFilePath)) {
+        if (!obj.returnDate || !obj.returnAcount || (!obj.returnFile && !obj.returnFilePath)) {
           this.$message.warning('当状态为“已收款”时，列表中回款时间、回款金额、回款单信息必须填写上传！')
+          return
+        }
+        if (obj.settlementDate && obj.expectReturnDate && obj.expectReturnDate < obj.settlementDate) {
+          this.$message.warning('预计回款时间要大于等于结算时间')
+          return
+        }
+        if (obj.settlementDate && obj.returnDate && obj.returnDate < obj.settlementDate) {
+          this.$message.warning('回款时间要大于等于结算时间')
           return
         }
       } else {
@@ -446,6 +461,10 @@ export default {
         }
         if (!obj.settlementFile && !obj.settlementFilePath) {
           this.$message.warning('当状态为"实施中、提交材料、提交开票”时，结算单为必填项!')
+          return
+        }
+        if (obj.settlementDate && obj.expectReturnDate && obj.expectReturnDate < obj.settlementDate) {
+          this.$message.warning('预计回款时间要大于等于结算时间')
           return
         }
       }
@@ -470,8 +489,8 @@ export default {
           })
           this.cancelSettlement(scope, index)
         } else {
-          this.dataForm.orderFile = data.orderFilePath
           this.$message.error(data.msg)
+          this.dataForm.orderFile = data.orderFilePath
         }
       })
     },
@@ -492,6 +511,17 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .el-step__head.is-success {
+  color: #008aff;
+  border-color: #008aff;
+}
+::v-deep .el-step__title.is-success {
+  color: #c0c4cc;
+}
+::v-deep .el-step__head.is-process {
+  color: #008aff;
+  border-color: #008aff;
+}
 .title {
   color: #008aff; /* 设置标题字体颜色为红色 */
   font-size: 20px;
