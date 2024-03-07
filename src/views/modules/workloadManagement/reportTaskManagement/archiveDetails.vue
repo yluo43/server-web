@@ -31,7 +31,7 @@
               </el-form-item>
               <el-form-item label="团队负责人:" prop="teamLeader">
                 <el-select v-model="formData.teamLeader" placeholder="请选择" multiple collapse-tags clearable>
-                  <el-option v-for="item in teamLeaders" :key="item.id" :label="item.name" :value="item.id" />
+                  <el-option v-for="item in teamLeaders" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="成本项目:" prop="costItem">
@@ -195,31 +195,42 @@ export default {
         this.$message.error(result.data.msg)
       }
     },
-
-    //获取团队负责人
     getTeamLeaders() {
       this.$http({
-        url: this.$http.adornUrl('/employee/selectEmployeeList'),
+        url: this.$http.adornUrl('/common/getManager?pid=3'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          data.payload.forEach((data) => {
-            if (
-              data.empLevel == '6-' ||
-              data.empLevel == '6' ||
-              data.empLevel == '7' ||
-              data.empLevel == '8' ||
-              data.empLevel == '9' ||
-              data.empLevel == '6+'
-            ) {
-              this.teamLeaders.push(data)
-            }
-          })
+          this.teamLeaders = data.payload
         } else {
           this.$message.error(data.msg)
         }
       })
     },
+    //获取团队负责人
+    // getTeamLeaders() {
+    //   this.$http({
+    //     url: this.$http.adornUrl('/employee/selectEmployeeList'),
+    //     method: 'get'
+    //   }).then(({ data }) => {
+    //     if (data && data.code === 200) {
+    //       data.payload.forEach((data) => {
+    //         if (
+    //           data.empLevel == '6-' ||
+    //           data.empLevel == '6' ||
+    //           data.empLevel == '7' ||
+    //           data.empLevel == '8' ||
+    //           data.empLevel == '9' ||
+    //           data.empLevel == '6+'
+    //         ) {
+    //           this.teamLeaders.push(data)
+    //         }
+    //       })
+    //     } else {
+    //       this.$message.error(data.msg)
+    //     }
+    //   })
+    // },
     //获取项目
     getProject() {
       this.$http({

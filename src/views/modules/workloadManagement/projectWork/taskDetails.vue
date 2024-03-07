@@ -48,7 +48,7 @@
                       </el-form-item>
                       <el-form-item label="团队负责人:">
                         <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
-                          <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                          <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
                       <div style="display: contents; float: right">
@@ -144,7 +144,7 @@ export default {
   mounted() {
     this.$http({
       url: this.$http.adornUrl('/common/getManager'),
-      params: { pid: 4 },
+      params: { pid: 3 },
       method: 'get'
     }).then(({ data }) => {
       if (data && data.code === 200) {
