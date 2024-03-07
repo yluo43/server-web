@@ -1,28 +1,28 @@
 <template>
-  <div style="height: 100vh; width: 100%; background: white">
-    <el-container>
-      <div style="height: 100%; width: 50%">
-        <div style="display: flex; padding: 10px 10px; justify-content: space-between">
-          <div>
-            <el-tabs v-model="activeName" type="border-card" @tab-click="tabChange">
-              <el-tab-pane label="活跃部门" name="first"></el-tab-pane>
-              <el-tab-pane label="所有部门" name="second"></el-tab-pane>
-            </el-tabs>
-            <div style="height: 100%">
-              <el-input style="width: 200px" placeholder="请输入" v-model="keyword"></el-input>
-              <el-tree
-                class="filter-tree"
-                :data="data"
-                :props="defaultProps"
-                default-expand-all
-                :filter-node-method="filterNode"
-                @node-click="alter"
-                ref="tree"
-              ></el-tree>
-            </div>
-          </div>
+  <div style="height: calc(100vh - 127px); background: white">
+    <el-container style="height: 100%; width: 100%">
+      <div style="height: 100%; width: 50%; display: flex; flex-direction: column">
+        <div style="display: flex; padding: 20px 20px 20px 20px; justify-content: space-between">
+          <el-tabs v-model="activeName" type="border-card" @tab-click="tabChange">
+            <el-tab-pane label="活跃部门" name="first"></el-tab-pane>
+            <el-tab-pane label="所有部门" name="second"></el-tab-pane>
+          </el-tabs>
           <div>
             <el-button class="el-button-func" type="primary" @click="add()" v-auth="'deptInfo:add'">添加部门</el-button>
+          </div>
+        </div>
+        <div style="flex: 1; display: flex; flex-direction: column">
+          <el-input style="width: 100%; padding: 0 20px" placeholder="请输入部门名称" v-model="keyword"></el-input>
+          <div style="margin-top: 20px; padding: 0 20px; height: 435px; overflow-y: auto">
+            <el-tree
+              class="filter-tree"
+              :data="data"
+              :props="defaultProps"
+              default-expand-all
+              :filter-node-method="filterNode"
+              @node-click="alter"
+              ref="tree"
+            ></el-tree>
           </div>
         </div>
       </div>
@@ -98,7 +98,6 @@ export default {
       keyword: '',
       isDisabled: false,
       data: [],
-
       defaultProps: {
         children: 'children',
         label: 'name'
@@ -389,7 +388,9 @@ export default {
   color: #333;
   padding: 0 0;
 }
-
+::v-deep .el-tabs--border-card > .el-tabs__content {
+  padding: 0px;
+}
 .el-form--inline > .inputlist {
   /*padding-top: 20px;*/
   padding-left: 20px;

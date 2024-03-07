@@ -66,12 +66,15 @@
       <el-main>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr"></span>
-          <span style="color: blue; margin-left: 50px" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</span>
+          <el-button type="text" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</el-button>
+          <!-- <span style="color: blue; margin-left: 50px" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</span> -->
         </div>
-        <el-button class="el-button-func" type="primary" @click="download()" icon="el-icon-download" style="margin-right: 10px" v-auth="'projectSet:export'">
-          批量下载
-        </el-button>
-        <el-button class="el-button-func" type="primary" @click="add()" icon="el-icon-circle-plus-outline" v-auth="'projectSet:add'">新建项目集</el-button>
+        <div style="margin: 15px 0 10px 0">
+          <el-button class="el-button-func" type="primary" @click="download()" icon="el-icon-download" style="margin-right: 10px" v-auth="'projectSet:export'">
+            批量下载
+          </el-button>
+          <el-button class="el-button-func" type="primary" @click="add()" icon="el-icon-circle-plus-outline" v-auth="'projectSet:add'">新建项目集</el-button>
+        </div>
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
           <template v-slot:endDate="row">
             <div v-if="!row.item.endDate">-</div>

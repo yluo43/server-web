@@ -60,11 +60,34 @@
         </el-form>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr"></span>
-          <span style="color: blue; margin-left: 100px" @click="batchDelete()" v-auth="'team:deletes'">批量删除</span>
+          <el-button type="text" @click="batchDelete()" v-auth="'team:deletes'">批量删除</el-button>
+          <!-- <span style="color: blue; margin-left: 100px" @click="batchDelete()" v-auth="'team:deletes'">批量删除</span>
           <span style="color: blue; margin-left: 20px" @click="download()" v-auth="'team:export'">批量下载</span>
-          <span style="color: blue; margin-left: 20px" @click="add()" v-auth="'team:add'">新建团队</span>
+          <span style="color: blue; margin-left: 20px" @click="add()" v-auth="'team:add'">新建团队</span> -->
         </div>
       </el-header>
+      <div style="margin: 0 0 10px 13px">
+        <el-button
+          style="width: 110px"
+          icon="
+          el-icon-download"
+          type="primary"
+          @click="download()"
+          v-auth="'team:export'"
+        >
+          批量下载
+        </el-button>
+        <el-button
+          style="width: 110px"
+          icon="
+          el-icon-circle-plus-outline"
+          type="primary"
+          @click="add()"
+          v-auth="'team:add'"
+        >
+          新建团队
+        </el-button>
+      </div>
 
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
         <template v-slot:clientType="row">

@@ -273,7 +273,9 @@ $cursor: #666666; //输入框文字颜色
     color: $cursor;
   }
 }
-
+.el-form-item__error {
+  top: 50px !important;
+}
 .logoTitle {
   margin-left: 32px;
   margin-top: 30px;

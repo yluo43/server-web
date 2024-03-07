@@ -54,7 +54,7 @@
             小时(9:00-18:00)
           </el-form-item>
           <el-form-item label="描述:" prop="intro" style="margin-top: 10px">
-            <el-input type="textarea" show-word-limit maxlength="50" v-model="formData.intro" placeholder="请输入任务描述，不超过50字"></el-input>
+            <el-input type="textarea" show-word-limit maxlength="50" v-model="formData.intro" placeholder="请输入任务描述,不超过50字"></el-input>
           </el-form-item>
           <el-form-item style="display: flex; justify-content: right">
             <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
@@ -338,9 +338,9 @@ export default {
         })
       }
     },
-    removeTag(id) {
+    removeTag(name) {
       this.departments.forEach((elm, idx) => {
-        if (elm.id == id) {
+        if (elm.name == name) {
           elm.check = false
         }
       })

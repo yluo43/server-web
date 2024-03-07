@@ -8,7 +8,7 @@
           </el-form-item>
           <el-form-item label="驳回工作量:" prop="realityRate">{{ formData.realityRate }}%</el-form-item>
           <el-form-item label="驳回理由:" prop="rejectReason">
-            <el-input type="textarea" v-model="formData.rejectReason" placeholder="请输入至少5个字符" minlength="5" show-word-limit></el-input>
+            <el-input type="textarea" show-word-limit minlength="5" maxlength="100" v-model="formData.rejectReason" placeholder="请输入至少5个字符"></el-input>
           </el-form-item>
         </el-form>
         <div class="btn-group">
@@ -78,6 +78,9 @@ export default {
 </script>
 
 <style scoped>
+::v-deep .el-form-item__error {
+  top: 53px !important;
+}
 .el-dialog__body {
   padding: 25px 0 2px 0;
 }

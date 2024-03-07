@@ -214,34 +214,61 @@ export default {
         return
       }
       let data = { ids: this.ids.toString(), status: 4 }
-      this.$http({
-        url: this.$http.adornUrl('/workload/updateStatus'),
-        method: 'get',
-        params: data
-      }).then((result) => {
-        if (result.data.code == 200 && result.data.success) {
-          this.selectWorkload({ taskId: this.taskId })
-          this.$message.success('归档成功')
-        } else {
-          this.$message.error('归档失败失败：' + result.data.msg)
-        }
+
+      this.$confirm('确认批量归档吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/workload/updateStatus'),
+            method: 'get',
+            params: data
+          }).then((result) => {
+            if (result.data.code == 200 && result.data.success) {
+              this.selectWorkload({ taskId: this.taskId })
+              this.$message.success('批量归档成功')
+            } else {
+              this.$message.error('批量归档失败：' + result.data.msg)
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消归档'
+          })
+        })
     },
     //归档
     goToArchived(row) {
       let data = { ids: row.item.id, status: 4 }
-      this.$http({
-        url: this.$http.adornUrl('/workload/updateStatus'),
-        method: 'get',
-        params: data
-      }).then((result) => {
-        if (result.data.code == 200 && result.data.success) {
-          this.selectWorkload({ taskId: this.taskId })
-          this.$message.success('归档成功')
-        } else {
-          this.$message.error('归档失败失败：' + result.data.msg)
-        }
+      this.$confirm('确认归档吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/workload/updateStatus'),
+            method: 'get',
+            params: data
+          }).then((result) => {
+            if (result.data.code == 200 && result.data.success) {
+              this.selectWorkload({ taskId: this.taskId })
+              this.$message.success('归档成功')
+            } else {
+              this.$message.error('归档失败：' + result.data.msg)
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消归档'
+          })
+        })
     },
     //驳回
     goToReject(row) {

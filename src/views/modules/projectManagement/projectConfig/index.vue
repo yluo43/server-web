@@ -77,11 +77,12 @@
       <el-main>
         <div class="chooseResult">
           <span class="chooseResultStr" v-text="chooseStr" />
-          <span v-auth="'costItems:deletes'" style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span>
+          <el-button type="text" @click="deleteProjectInfo()" v-auth="'costItems:deletes'">批量删除</el-button>
+          <!-- <span v-auth="'costItems:deletes'" style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span> -->
         </div>
 
         <!-- toolBar -->
-        <div style="margin-bottom: 10px">
+        <div style="margin-bottom: 10px; margin-top: 15px">
           <el-button
             v-auth="'costItems:export'"
             class="el-button-func"
