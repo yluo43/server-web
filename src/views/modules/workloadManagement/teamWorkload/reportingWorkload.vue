@@ -44,7 +44,13 @@
               <el-table-column prop="projectName" label="成本项目">
                 <template slot-scope="scope">
                   <div @dblclick="handlerSelect(scope.row, scope.column)" style="height: 50px; line-height: 50px">
-                    <el-select v-if="scope.row.isSelect" v-model="scope.row.projectName" @change="handlerSel(scope.row, scope.column)" ref="projectName">
+                    <el-select
+                      style="width: 120px !important"
+                      v-if="scope.row.isSelect"
+                      v-model="scope.row.projectName"
+                      @change="handlerSel(scope.row, scope.column)"
+                      ref="projectName"
+                    >
                       <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name"></el-option>
                     </el-select>
                     <span v-else>{{ scope.row.projectName }}</span>

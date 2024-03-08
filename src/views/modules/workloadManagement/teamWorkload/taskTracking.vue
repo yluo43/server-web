@@ -111,7 +111,7 @@ export default {
       //总条数
       total: 10,
       curPage: 1,
-      pageSize: 500,
+      pageSize: 10,
       //任务Id
       taskId: '',
       teamId: '',
@@ -148,7 +148,7 @@ export default {
       this.selectWorkload()
     },
     select() {
-      this.selectWorkload()
+      this.handlerRadio()
     },
     //查询任务列表
     async selectTaskList() {
@@ -264,16 +264,15 @@ export default {
       let data = {
         userName: row.name,
         empId: row.empId,
-        taskId: this.taskId,
+        taskId: this.taskId
         //工作量
-        workLoad: []
+        // workLoad: []
       }
-      let workLoad = []
-      this.tableData.map((item) => {
-        if (item.empId === row.empId) {
-          data.workLoad.push(item)
-        }
-      })
+      // this.tableData.map((item) => {
+      //   if (item.empId === row.empId) {
+      //     data.workLoad.push(item)
+      //   }
+      // })
       this.$refs.editDataDialog.show()
       this.$nextTick(() => {
         this.$refs.edit.init(data)

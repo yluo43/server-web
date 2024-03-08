@@ -19,6 +19,7 @@
               </el-form-item>
               <i class="el-icon-delete" @click="deleteRow(item)"></i>
             </div>
+
             <el-button type="text" icon="el-icon-plus" @click="addRow">添加</el-button>
           </el-form-item>
           <!-- <el-row style="width: 100%" v-for="(item, index) in formData.workLoad" :key="index">
@@ -63,14 +64,10 @@ export default {
         empId: '',
         taskId: '',
         //工作量
-        workLoad: [
-          {
-            projectName: '',
-            realityRate: ''
-          }
-        ]
+        workLoad: []
       },
-      costItems: []
+      costItems: [],
+      dataList: []
     }
   },
   mounted() {
@@ -81,7 +78,26 @@ export default {
     //初始化
     init(initData) {
       Object.assign(this.formData, initData)
+      this.selectInfo()
       console.log(this.formData)
+    },
+    //根据任务id和工号查询该员工所有项目信息
+    selectInfo() {
+      this.$http({
+        url: this.$http.adornUrl('/teamWork/viewTeamWorkList'),
+        method: 'get',
+        params: {
+          taskId: this.formData.taskId,
+          empId: this.formData.empId
+        }
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.formData.workLoad = data.payload.list
+          this.workLoad = data.payload.list
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
     selectChange(params) {
       this.costItems.forEach((item) => {
@@ -143,6 +159,13 @@ export default {
       this.formData.workLoad.forEach((item) => {
         total += Number(item.realityRate)
       })
+      let flag = this.formData.workLoad.every((item) => {
+        return item.projectName && item.realityRate
+      })
+      if (!flag) {
+        this.$message.error('成本项目和实际投入不能为空')
+        return false
+      }
       if (total < 100) {
         this.$message.error('成员投入占比未满100%，请填报后再提交！')
         return false
@@ -151,14 +174,18 @@ export default {
         this.$message.error('成员投入占比超过100%，请填报后再提交！')
         return false
       }
-      this.formData.workLoad.map((item) => {
+      this.formData.workLoad.map((item, index) => {
         item.taskId = this.formData.taskId
         this.costItems.map((ele) => {
           if (item.projectId === ele.id) {
             item.deptId = ele.deptId
           }
         })
+        // if (item.workStatusName == '已归档') {
+        //   this.formData.workLoad.splice(index, 1)
+        // }
       })
+
       let data = {
         pmsWorkloadVoList: this.formData.workLoad,
         empId: this.formData.empId,

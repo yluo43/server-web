@@ -227,7 +227,7 @@ export default {
             params: data
           }).then((result) => {
             if (result.data.code == 200 && result.data.success) {
-              this.selectWorkload({ taskId: this.taskId })
+              this.handlerRadio()
               this.$message.success('批量归档成功')
             } else {
               this.$message.error('批量归档失败：' + result.data.msg)
@@ -256,7 +256,8 @@ export default {
             params: data
           }).then((result) => {
             if (result.data.code == 200 && result.data.success) {
-              this.selectWorkload({ taskId: this.taskId })
+              // this.selectWorkload({ taskId: this.taskId })
+              this.handlerRadio()
               this.$message.success('归档成功')
             } else {
               this.$message.error('归档失败：' + result.data.msg)
