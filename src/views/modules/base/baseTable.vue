@@ -80,7 +80,7 @@
       <el-pagination
         style="text-align: center"
         :current-page="options.curPage"
-        :page-sizes="[10, 50, 100, 500]"
+        :page-sizes="[10, 15, 20, 25, 30]"
         :page-size="options.pageSize"
         :total="options.count"
         layout="total, sizes, prev, pager, next, jumper"

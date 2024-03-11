@@ -88,7 +88,6 @@ export default {
       this.data = initData
       this.teamId = teamId
       this.getTeamManager()
-      console.log(teamId)
       // let newArrId = []
       // initData.pmsWorkloadVoList.map((item) => {
       //   if (newArrId.indexOf(item.empId) === -1) {
@@ -103,7 +102,7 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/teamWork/employeeListByTeamManager'),
         method: 'get',
-        params: { teamId: this.teamId }
+        params: { teamId: this.teamId, taskId: this.dataList[0].taskId }
       }).then(({ data }) => {
         if (data && data.code === 200) {
           data.payload.map((item) => {

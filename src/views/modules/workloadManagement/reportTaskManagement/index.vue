@@ -158,7 +158,7 @@ export default {
       reportTaskTitle: '',
       taskList: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '180px' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '190px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName' },
           { label: '创建时间', prop: 'createTime', slotName: 'createTime' },

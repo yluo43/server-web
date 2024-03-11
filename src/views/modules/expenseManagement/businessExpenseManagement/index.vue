@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <el-container>
-      <el-header style="height: 160px">
+      <el-header style="height: 100%">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="用户姓名:" prop="account" class="name">
@@ -102,7 +102,7 @@
           <span style="color: blue; margin-left: 20px" @click="download()" v-auth="'tripCost:export'">批量下载</span> -->
         </div>
       </el-header>
-      <div style="margin: 20px 0 10px 13px">
+      <div style="margin: 15px 0 10px 13px">
         <el-button
           style="width: 110px"
           icon="
@@ -129,7 +129,25 @@
             <el-popover placement="top-start" width="200" trigger="hover">
               <!--              :content='getHoverContent(row)'-->
               <div class="custom-content">
-                住宿费:{{ row.item.hotelTotalMoney }}元
+                <el-tooltip class="item" effect="dark" :content="'住宿费:' + row.item.hotelTotalMoney + '元'" placement="left">
+                  <div class="ellipsis">住宿费:{{ row.item.hotelTotalMoney }}元</div>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" :content="'出租车费:' + row.item.taxiMoney + '元'" placement="left">
+                  <div class="ellipsis">出租车费:{{ row.item.taxiMoney }}元</div>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" :content="'交通费:' + row.item.trafficTotalMoney + '元'" placement="left">
+                  <div class="ellipsis">交通费:{{ row.item.trafficTotalMoney }}元</div>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" :content="'夜间火车宾馆差额:' + row.item.marginMoney + '元'" placement="left">
+                  <div class="ellipsis">夜间火车宾馆差额:{{ row.item.marginMoney }}元</div>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" :content="'日常补贴:' + row.item.dailySubsidyMoney + '元'" placement="left">
+                  <div class="ellipsis">日常补贴:{{ row.item.dailySubsidyMoney }}元</div>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" :content="'资金补贴:' + row.item.moneySubsidy + '元'" placement="left">
+                  <div class="ellipsis">资金补贴:{{ row.item.moneySubsidy }}元</div>
+                </el-tooltip>
+                <!-- 住宿费:{{ row.item.hotelTotalMoney }}元
                 <br />
                 出租车费:{{ row.item.taxiMoney }}元
                 <br />
@@ -139,7 +157,7 @@
                 <br />
                 日常补贴:{{ row.item.dailySubsidyMoney }}元
                 <br />
-                资金补贴:{{ row.item.moneySubsidy }}元
+                资金补贴:{{ row.item.moneySubsidy }}元 -->
               </div>
               <span slot="reference">{{ row.item.totalMoney }}</span>
             </el-popover>
@@ -544,7 +562,12 @@ export default {
 ::v-deep .el-table__cell {
   text-align: center;
 }
-
+.ellipsis {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .chooseResult {
   width: 98%;
   height: 30px;

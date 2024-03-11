@@ -78,7 +78,7 @@
           </div>
           <div style="display: flex; justify-content: center">
             <el-pagination
-              :page-sizes="[10, 50, 100, 500]"
+              :page-sizes="[10, 15, 20, 25, 30]"
               :page-size="pageSize"
               :current-page="curPage"
               layout="total, sizes, prev, pager, next, jumper"
