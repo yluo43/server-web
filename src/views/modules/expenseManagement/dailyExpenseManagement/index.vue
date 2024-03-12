@@ -27,16 +27,16 @@
                 <el-option v-for="team in teamNames" :key="team" :label="team" :value="team" multiple="true"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="成本中心:" prop="costCenters">
-              <el-select v-model="dataForm.costCenters" placeholder="请选择" :multiple="true" :collapse-tags="true">
-                <el-option
-                  v-for="costCenter in costCenters"
-                  :key="costCenter"
-                  :label="costCenter"
-                  :value="costCenter"
-                  multiple="true"
-                  :disabled="costCenter == '新讯数字科技有限公司'"
-                ></el-option>
+            <el-form-item label="成本中心:" prop="costCenters" >
+              <el-select  v-model="dataForm.costCenters" placeholder="请选择" :multiple="true" :collapse-tags="true" >
+                <el-option      v-for="costCenter in deptNames"
+                                :key="costCenter.id"
+                                :label="costCenter.deptName"
+                                :value="costCenter.id"
+                                multiple="true"
+                                :disabled='costCenter.deptName =="新讯数字科技有限公司"'
+                >
+                </el-option>
               </el-select>
             </el-form-item>
             <br />
@@ -123,15 +123,13 @@
               <el-input v-model="editDataForm.teamName" clearable disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="成本中心:" prop="costCenters">
-              <el-select clearable v-model="editDataForm.costCenter">
-                <el-option
-                  v-for="costCenter in costCenters"
-                  :key="costCenter"
-                  :label="costCenter"
-                  :value="costCenter"
-                  :disabled="costCenter == '新讯数字科技有限公司'"
-                  multiple="true"
-                ></el-option>
+              <el-select  clearable  v-model="editDataForm.centerId"  >
+                <el-option      v-for="costCenter in costCenters"
+                                :key="costCenter.id"
+                                :label="costCenter.deptName"
+                                :value="costCenter.id" :disabled='costCenter.deptName =="新讯数字科技有限公司"'
+                                multiple="true" >
+                </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="日期:" prop="empId" disabled="disabled">
@@ -160,9 +158,16 @@
             <el-form-item label="成本项目:" prop="costItems">
               <!--              <el-input v-model="editDataForm.costItems" clearable></el-input>-->
 
-              <el-select clearable v-model="editDataForm.costItems">
-                <el-option v-for="item in reason" :key="item" :label="item" :value="item" multiple="true"></el-option>
-              </el-select>
+                            <el-select  clearable  v-model="editDataForm.costItems"  >
+                              <el-option      v-for="item in reasonByDept"
+                                              :key="item.id"
+                                              :label="item.name"
+                                              :value="item.id"
+                                              multiple="true"
+                              >
+                              </el-option>
+                            </el-select>
+
             </el-form-item>
 
             <el-form-item label="单数张数:" prop="backCitys">
@@ -225,31 +230,33 @@ export default {
         costDate: '',
         costName: '',
         createTime: '',
-        totalMoney: '',
-        documentNum: '',
-        updateUser: '',
-        costItems: ''
+        totalMoney:'',
+        documentNum:'',
+        updateUser:'',
+        costItems:'',
+        centerId:''
       },
-      costCenters: [],
-      costNames: [],
-      deptNames: [],
-      teamNames: [],
-      reason: [],
+      costCenters:[],
+      costNames:[],
+      deptNames:[],
+      teamNames:[],
+      // reason:[],
+      reasonByDept:[],
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'account' },
-          { label: '工号', prop: 'empId' },
-          { label: '归属部门', prop: 'deptName' },
-          { label: '归属团队', prop: 'teamName' },
-          { label: '成本中心', prop: 'costCenter' },
-          { label: '日期', prop: 'costDate' },
-          { label: '事由', prop: 'reason' },
-          { label: '费用名称', prop: 'costName' },
-          { label: '单据张数', prop: 'documentNum' },
-          { label: '报销金额（元）', prop: 'totalMoney' },
-          { label: '成本项目', prop: 'costItems' },
-          { label: '导入时间', prop: 'createTime' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType' }
+          {label: '用户姓名', prop: 'account'},
+          {label: '工号', prop: 'empId'},
+          {label: '归属部门', prop: 'deptName'},
+          {label: '归属团队', prop: 'teamName'},
+          {label: '成本中心', prop: 'costCenter'},
+          {label: '日期', prop: 'costDate'},
+          {label: '事由', prop: 'reason'},
+          {label: '费用名称', prop: 'costName'},
+          {label: '单据张数', prop: 'documentNum'},
+          {label: '报销金额（元）', prop: 'totalMoney'},
+          {label: '成本项目', prop: 'costItemsName'},
+          {label: '导入时间', prop: 'createTime'},
+          {label: '操作', prop: 'clientType', slotName: 'clientType'}
         ],
         url: '/dailyCost/dailyCostListPage'
       }
@@ -285,22 +292,22 @@ export default {
         this.$message.error(data.msg)
       }
     })
-    //初始化事由
-    this.$http({
-      url: this.$http.adornUrl('/report/amount/getAllReason'),
-      method: 'get'
-    }).then(({ data }) => {
-      if (data && data.code === 200) {
-        this.reason = data.payload
-      } else {
-        this.$message.error(data.msg)
-      }
-    })
+    // //初始化事由
+    // this.$http({
+    //   url: this.$http.adornUrl('/report/amount/getAllReasonFromStatic'),
+    //   method: 'get'
+    // }).then(({data}) => {
+    //   if (data && data.code === 200) {
+    //     this.reason = data.payload
+    //   } else {
+    //     this.$message.error(data.msg)
+    //   }
+    // })
     //初始化报销费用名称
     this.$http({
       url: this.$http.adornUrl('/report/amount/getAllCostName'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.costNames = data.payload
       } else {
@@ -309,8 +316,21 @@ export default {
     })
   },
   methods: {
-    alter(row) {
+    alter(row){
       let data = row.item
+
+      //刷新事由
+      this.$http({
+        url: this.$http.adornUrl('/report/amount/getAllReasonFromStaticByDept?deptId='+data.deptId),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.reasonByDept = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+
       this.drawer = true
       this.editDataForm = { ...data }
     },
