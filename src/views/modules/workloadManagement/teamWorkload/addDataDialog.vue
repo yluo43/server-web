@@ -102,7 +102,7 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/teamWork/employeeListByTeamManager'),
         method: 'get',
-        params: { teamId: this.teamId, taskId: this.dataList[0].taskId }
+        params: { taskId: this.dataList[0].taskId, teamId: this.teamId }
       }).then(({ data }) => {
         if (data && data.code === 200) {
           data.payload.map((item) => {

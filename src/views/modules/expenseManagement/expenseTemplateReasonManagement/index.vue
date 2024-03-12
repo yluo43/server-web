@@ -7,14 +7,14 @@
             <el-form-item label="事由名称:" prop="name">
               <el-input v-model="dataForm.name" placeholder="请输入事由名称" clearable></el-input>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptName">
-              <el-select v-model="dataForm.deptName" placeholder="请选择" :multiple="true" :collapse-tags="true">
-                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
+            <el-form-item label="归属部门:" prop="deptId">
+              <el-select v-model="dataForm.deptId" placeholder="请选择" :multiple="true" :collapse-tags="true">
+                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="关联项目:" prop="projectName">
-              <el-select v-model="dataForm.projectName" filterable placeholder="请选择关联项目" multiple collapse-tags clearable>
-                <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name" />
+            <el-form-item label="关联项目:" prop="projectId">
+              <el-select v-model="dataForm.projectId" filterable placeholder="请选择关联项目" multiple collapse-tags clearable>
+                <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <div style="margin-left: 20px">
@@ -93,8 +93,8 @@ export default {
       title: '',
       dataForm: {
         name: '',
-        deptName: [],
-        projectName: []
+        deptId: [],
+        projectId: []
       },
       editDataForm: {
         name: '',
@@ -130,7 +130,7 @@ export default {
     //获取项目
     getProject() {
       this.$http({
-        url: this.$http.adornUrl('/costItems/listNoPage'),
+        url: this.$http.adornUrl('/common/getProject'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -157,8 +157,8 @@ export default {
     refresh() {
       let params = {
         name: this.dataForm.name,
-        deptName: this.dataForm.deptName.toString(),
-        projectName: this.dataForm.projectName.toString()
+        deptId: this.dataForm.deptId.toString(),
+        projectId: this.dataForm.projectId.toString()
       }
       this.$refs.table.refresh(params)
     },
@@ -186,8 +186,8 @@ export default {
         .then(() => {
           this.$http({
             url: this.$http.adornUrl('/staticItem/delete'),
-            method: 'post',
-            data: this.deleteIds
+            method: 'get',
+            params: { ids: this.deleteIds.toString() }
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message({
@@ -221,8 +221,8 @@ export default {
         .then(() => {
           this.$http({
             url: this.$http.adornUrl('/staticItem/delete'),
-            method: 'post',
-            data: this.deleteIds
+            method: 'get',
+            params: { ids: this.deleteIds.toString() }
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message({
@@ -263,6 +263,16 @@ export default {
     editSubmit(formName) {
       // let user = getCName()
       // this.editDataForm.updateUser = user
+      this.departments.forEach((item) => {
+        if (item.name == this.editDataForm.deptName) {
+          this.editDataForm.deptId = item.id
+        }
+      })
+      this.costItems.forEach((item) => {
+        if (item.name == this.editDataForm.projectName) {
+          this.editDataForm.projectId = item.id
+        }
+      })
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.title == '添加') {
