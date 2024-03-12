@@ -7,14 +7,14 @@
             <el-form-item label="事由名称:" prop="name">
               <el-input v-model="dataForm.name" placeholder="请输入事由名称" clearable></el-input>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptIds">
-              <el-select v-model="dataForm.deptIds" placeholder="请选择" :multiple="true" :collapse-tags="true">
-                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
+            <el-form-item label="归属部门:" prop="deptName">
+              <el-select v-model="dataForm.deptName" placeholder="请选择" :multiple="true" :collapse-tags="true">
+                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="关联项目:" prop="projectIds">
-              <el-select v-model="dataForm.projectIds" filterable placeholder="请选择关联项目" multiple collapse-tags clearable>
-                <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
+            <el-form-item label="关联项目:" prop="projectName">
+              <el-select v-model="dataForm.projectName" filterable placeholder="请选择关联项目" multiple collapse-tags clearable>
+                <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name" />
               </el-select>
             </el-form-item>
             <div style="margin-left: 20px">
@@ -30,7 +30,7 @@
         </div>
       </el-header>
       <div style="margin: 0 0 10px 13px">
-        <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
+        <!-- <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button> -->
         <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
       </div>
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
@@ -45,22 +45,23 @@
 
       <el-drawer :title="title" :visible.sync="drawer" :before-close="handleClose" :direction="direction" size="25%">
         <div style="padding-left: 20px">
-          <el-form :inline="true" :model="editDataForm" ref="editDataForm" class="editForm">
+          <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="editForm">
             <el-form-item label="事由名称:" prop="name">
               <el-input style="width: 250px" v-model="editDataForm.name" placeholder="请输入事由名称" clearable></el-input>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptIds">
-              <el-select v-model="editDataForm.deptIds" placeholder="请选择" :multiple="true" :collapse-tags="true">
-                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
+            <!-- :multiple="true" :collapse-tags="true" -->
+            <el-form-item label="归属部门:" prop="deptName">
+              <el-select v-model="editDataForm.deptName" placeholder="请选择">
+                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="关联项目:" prop="projectIds">
-              <el-select v-model="editDataForm.projectIds" filterable placeholder="请选择关联项目" multiple collapse-tags clearable>
-                <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
+            <el-form-item label="关联项目:" prop="projectName">
+              <el-select v-model="editDataForm.projectName" filterable placeholder="请选择关联项目" clearable>
+                <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name" />
               </el-select>
             </el-form-item>
             <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
-              <el-button type="primary" style="margin-right: 20px" @click="editSubmit">保存</el-button>
+              <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">保存</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
           </el-form>
@@ -92,13 +93,13 @@ export default {
       title: '',
       dataForm: {
         name: '',
-        deptIds: [],
-        projectIds: []
+        deptName: [],
+        projectName: []
       },
       editDataForm: {
-        account: '',
-        deptIds: [],
-        projectIds: []
+        name: '',
+        deptName: '',
+        projectName: ''
       },
       tableData: {
         theads: [
@@ -107,7 +108,12 @@ export default {
           { label: '关联项目', prop: 'projectName' },
           { label: '操作', prop: 'clientType', slotName: 'clientType' }
         ],
-        url: '/dailyCost/dailyCostListPage'
+        url: '/staticItem/listPage'
+      },
+      rules: {
+        name: [{ required: true, message: '请输入事由名称', trigger: 'blur' }],
+        deptName: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
+        projectName: [{ required: true, message: '请选择关联项目', trigger: 'change' }]
       }
     }
   },
@@ -151,8 +157,8 @@ export default {
     refresh() {
       let params = {
         name: this.dataForm.name,
-        deptIds: this.dataForm.deptIds.toString(),
-        projectIds: this.dataForm.projectIds.toString()
+        deptName: this.dataForm.deptName.toString(),
+        projectName: this.dataForm.projectName.toString()
       }
       this.$refs.table.refresh(params)
     },
@@ -179,7 +185,7 @@ export default {
       })
         .then(() => {
           this.$http({
-            url: this.$http.adornUrl('/dailyCost/deleteTripCost'),
+            url: this.$http.adornUrl('/staticItem/delete'),
             method: 'post',
             data: this.deleteIds
           }).then(({ data }) => {
@@ -214,7 +220,7 @@ export default {
       })
         .then(() => {
           this.$http({
-            url: this.$http.adornUrl('/dailyCost/deleteTripCost'),
+            url: this.$http.adornUrl('/staticItem/delete'),
             method: 'post',
             data: this.deleteIds
           }).then(({ data }) => {
@@ -240,33 +246,62 @@ export default {
     add() {
       this.drawer = true
       this.title = '添加'
-      this.$refs.editDataForm.resetFields()
+      this.$nextTick(() => {
+        this.$refs.editDataForm.resetFields()
+      })
     },
     //编辑
     alter(row) {
       this.drawer = true
       this.title = '编辑'
+      this.$nextTick(() => {
+        this.$refs.editDataForm.resetFields()
+      })
       this.editDataForm = { ...row.item }
     },
     //保存
-    editSubmit() {
-      let user = getCName()
-      this.editDataForm.updateUser = user
-      console.log(this.editDataForm)
-      this.$http({
-        url: this.$http.adornUrl('/dailyCost/update'),
-        method: 'put',
-        data: this.$http.adornData(this.editDataForm)
-      }).then(({ data }) => {
-        if (data.success) {
-          this.refresh()
-          this.$message({
-            message: '保存成功！',
-            type: 'success'
-          })
-          this.drawer = false
+    editSubmit(formName) {
+      // let user = getCName()
+      // this.editDataForm.updateUser = user
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.title == '添加') {
+            this.$http({
+              url: this.$http.adornUrl('/staticItem/insert'),
+              method: 'post',
+              data: this.$http.adornData(this.editDataForm)
+            }).then(({ data }) => {
+              if (data.success) {
+                this.refresh()
+                this.$message({
+                  message: '添加成功！',
+                  type: 'success'
+                })
+                this.drawer = false
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+          } else {
+            this.$http({
+              url: this.$http.adornUrl('/staticItem/update'),
+              method: 'put',
+              data: this.$http.adornData(this.editDataForm)
+            }).then(({ data }) => {
+              if (data.success) {
+                this.refresh()
+                this.$message({
+                  message: '修改成功！',
+                  type: 'success'
+                })
+                this.drawer = false
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+          }
         } else {
-          this.$message.error(data.msg)
+          return false
         }
       })
     },
@@ -279,15 +314,15 @@ export default {
         .catch((_) => {})
     },
     //批量下载
-    download() {
-      if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何数据！')
-        return
-      }
-      let form = { ...this.dataForm }
-      form.ids = this.deleteIds
-      this.$http.downloadPost(this.$http.adornUrl('/dailyCost/export'), this.$http.adornParams(form), this)
-    },
+    // download() {
+    //   if (this.deleteIds.length <= 0) {
+    //     this.$message.error('当前未选中任何数据！')
+    //     return
+    //   }
+    //   let form = { ...this.dataForm }
+    //   form.ids = this.deleteIds
+    //   this.$http.downloadPost(this.$http.adornUrl('/dailyCost/export'), this.$http.adornParams(form), this)
+    // },
     resetForm() {
       this.$refs.dataForm.resetFields()
     }

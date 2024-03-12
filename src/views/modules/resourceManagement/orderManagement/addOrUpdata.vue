@@ -68,6 +68,7 @@
                   :limit="1"
                   :accept="'.pdf,.PDF'"
                   :auto-upload="false"
+                  :on-remove="(file, fileList) => handleFirstRemove(file, fileList, scope, index)"
                   :on-change="
                     (file, fileList) => {
                       handleFileChange(file, fileList, scope, index)
@@ -121,6 +122,7 @@
                   :limit="1"
                   :accept="'.pdf,.PDF'"
                   :auto-upload="false"
+                  :on-remove="(file, fileList) => handleSecondRemove(file, fileList, scope, index)"
                   :on-change="
                     (file, fileList) => {
                       returnFileShowChange(file, fileList, scope, index)
@@ -386,6 +388,17 @@ export default {
       this.$nextTick(() => {
         this.$refs.table[index].__rowClick(scope.item.row)
       })
+    },
+    handleFirstRemove(file, fileList, scope, index) {
+      console.log(scope.item.row)
+      scope.item.row.settlementFileShow = true
+      scope.item.row.settlementFileList = fileList
+      scope.item.row.settlementFilePath = ''
+    },
+    handleSecondRemove(file, fileList, scope, index) {
+      scope.item.row.returnFileShow = true
+      scope.item.row.returnFileList = fileList
+      scope.item.row.returnFilePath = ''
     },
     handleFileChange(file, fileList, scope, index) {
       if (file) {
