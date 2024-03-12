@@ -99,7 +99,7 @@
         </template>
       </baseTable>
 
-      <el-drawer class="drawer" :title="title" :visible.sync="drawer" :direction="direction" size="26%">
+      <el-drawer class="drawer" :title="title" :visible.sync="drawer" :direction="direction" size="23%">
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
             <el-form-item label="团队名称:" prop="teamName" :rules="[{ required: true, message: '团队不能为空' }]">
@@ -145,17 +145,17 @@
             <el-form-item label="团队编码:" prop="teamId">
               <el-input v-model="editDataForm.teamId" clearable disabled="disabled"></el-input>
             </el-form-item>
-
-            <el-form-item label="团队成员:" prop="teamMembers">
-              <el-button type="primary" style="width: 120px" plain @click="chooseTeamMember">选择团队成员</el-button>
-              <!-- <el-transfer
+            <el-row>
+              <el-form-item label="团队成员:" prop="teamMembers">
+                <el-button type="primary" style="width: 120px" plain @click="chooseTeamMember">选择团队成员</el-button>
+                <!-- <el-transfer
                 :titles="['所有成员', '团队成员']"
                 filterable
                 filter-placeholder="请输入团队成员姓名"
                 v-model="value"
                 :data="teamMembers"
               ></el-transfer> -->
-              <!-- <el-select  clearable v-model="editDataForm.teamMembers"
+                <!-- <el-select  clearable v-model="editDataForm.teamMembers"
                          filterable
                          placeholder="请选择" multiple
                          :collapse-tags="true"
@@ -167,7 +167,8 @@
                   :value="item.id">
                 </el-option>
               </el-select> -->
-            </el-form-item>
+              </el-form-item>
+            </el-row>
             <el-form-item label="创建时间:" prop="createTime" :rules="[{ required: true, message: '创建不能为空' }]">
               <el-date-picker
                 style="width: 130px"
