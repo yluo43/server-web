@@ -130,7 +130,7 @@ export default {
     //获取项目
     getProject() {
       this.$http({
-        url: this.$http.adornUrl('/common/getProject'),
+        url: this.$http.adornUrl('/common/getAllProject'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -246,17 +246,15 @@ export default {
     add() {
       this.drawer = true
       this.title = '添加'
-      this.$nextTick(() => {
-        this.$refs.editDataForm.resetFields()
-      })
+      this.clear(this.editDataForm)
+    },
+    clear(form) {
+      Object.keys(form).forEach((key) => (form[key] = ''))
     },
     //编辑
     alter(row) {
       this.drawer = true
       this.title = '编辑'
-      this.$nextTick(() => {
-        this.$refs.editDataForm.resetFields()
-      })
       this.editDataForm = { ...row.item }
     },
     //保存
