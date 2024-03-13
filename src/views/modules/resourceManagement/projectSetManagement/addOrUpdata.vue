@@ -33,7 +33,16 @@
             <el-radio :label="2">关闭</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="结束时间:" prop="endDate" v-if="operateType === 'update'">
+        <el-form-item
+          label="结束时间:"
+          prop="endDate"
+          v-if="operateType === 'update'"
+          :rules="
+            dataForm.state == 0
+              ? [{ type: 'string', validator: validateEndDate, trigger: 'change' }]
+              : [{ type: 'string', required: true, validator: validateEndDate, trigger: 'change' }]
+          "
+        >
           <el-date-picker v-model="dataForm.endDate" value-format="yyyy-MM-dd" format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="简介:" style="margin-top: 10px">
@@ -69,26 +78,12 @@ export default {
       }
       callback()
     }
-    const validateEndDate = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error('请选择结束时间'))
-        return
-      }
-      if (this.dataForm.startDate && this.dataForm.endDate && new Date(Date.parse(this.dataForm.endDate)) < new Date(Date.parse(this.dataForm.startDate))) {
-        callback(new Error('结束时间应大于启动时间'))
-        return
-      }
-      if ((this.dataForm.state == 1 || this.dataForm.state == 2) && new Date(Date.parse(this.format())) < new Date(Date.parse(this.dataForm.endDate))) {
-        callback(new Error('结束时间应小于等于当前时间'))
-        return
-      }
-      callback()
-    }
+
     return {
       rules: {
         psName: [{ required: true, message: '请输入项目集名称', trigger: 'blur' }],
         startDate: [{ type: 'string', required: true, validator: validateStartDate, trigger: 'change' }],
-        endDate: [{ type: 'string', required: true, validator: validateEndDate, trigger: 'change' }],
+        //  endDate: [{ type: 'string', validator: validateEndDate, trigger: 'change' }],
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
         // teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         managerId: [{ required: true, message: '请先选择归属部门，再选择负责人', trigger: 'change' }]
@@ -112,6 +107,23 @@ export default {
     }
   },
   methods: {
+    validateEndDate(rule, value, callback) {
+      if (!value && this.dataForm.state != 0) {
+        callback(new Error('请选择结束时间'))
+        return
+      }
+      if (value) {
+        if (this.dataForm.startDate && this.dataForm.endDate && new Date(Date.parse(this.dataForm.endDate)) < new Date(Date.parse(this.dataForm.startDate))) {
+          callback(new Error('结束时间应大于启动时间'))
+          return
+        }
+        if ((this.dataForm.state == 1 || this.dataForm.state == 2) && new Date(Date.parse(this.format())) < new Date(Date.parse(this.dataForm.endDate))) {
+          callback(new Error('结束时间应小于等于当前时间'))
+          return
+        }
+      }
+      callback()
+    },
     format() {
       var date = new Date()
       var year = date.getFullYear()

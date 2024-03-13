@@ -195,6 +195,7 @@ export default {
         contractTypeName: '',
         settlementCycle: ''
       },
+      flag: true,
       orderData: { settlementDate: '' },
       tableData: {
         theads: [
@@ -489,23 +490,27 @@ export default {
       }
       formData.set('orderId', item.id)
       formData.set('projectId', this.order.id)
-      this.$http({
-        url: this.$http.adornUrl('/costItems/settlement/update'),
-        method: 'put',
-        data: formData
-      }).then(({ data }) => {
-        if (data.success) {
-          this.$emit('refreshDataList')
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          })
-          this.cancelSettlement(scope, index)
-        } else {
-          this.$message.error(data.msg)
-          this.dataForm.orderFile = data.orderFilePath
-        }
-      })
+      if (this.flag) {
+        this.flag = false
+        this.$http({
+          url: this.$http.adornUrl('/costItems/settlement/update'),
+          method: 'put',
+          data: formData
+        }).then(({ data }) => {
+          this.flag = true
+          if (data.success) {
+            this.$emit('refreshDataList')
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.cancelSettlement(scope, index)
+          } else {
+            this.$message.error(data.msg)
+            this.dataForm.orderFile = data.orderFilePath
+          }
+        })
+      }
     },
     cancelSettlement(scope, index) {
       scope.item.row.clientTypeShow = true
