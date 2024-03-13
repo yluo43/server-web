@@ -8,7 +8,7 @@
               <el-input v-model="dataForm.name" placeholder="请输入事由名称" clearable></el-input>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptId">
-              <el-select v-model="dataForm.deptId" placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
                 <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
@@ -130,7 +130,7 @@ export default {
     //获取项目
     getProject() {
       this.$http({
-        url: this.$http.adornUrl('/common/getAllProject'),
+        url: this.$http.adornUrl('/common/getTotalProject'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
