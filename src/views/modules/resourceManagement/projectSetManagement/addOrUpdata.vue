@@ -16,11 +16,11 @@
             <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'"></el-option>
           </el-select>
         </el-form-item>
-        <!--        <el-form-item label="归属团队:" prop="teamId">-->
-        <!--          <el-select  clearable v-model="dataForm.teamId" placeholder="请选择">-->
-        <!--            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
+        <el-form-item label="归属团队:" prop="teamId">
+          <el-select clearable v-model="dataForm.teamId" placeholder="请选择">
+            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="负责人:" prop="managerId">
           <el-select clearable v-model="dataForm.managerId" placeholder="请选择">
             <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
@@ -90,7 +90,7 @@ export default {
         startDate: [{ type: 'string', required: true, validator: validateStartDate, trigger: 'change' }],
         endDate: [{ type: 'string', required: true, validator: validateEndDate, trigger: 'change' }],
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
-        // teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
+        teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         managerId: [{ required: true, message: '请先选择归属部门，再选择负责人', trigger: 'change' }]
       },
       dataForm: {
@@ -98,7 +98,7 @@ export default {
         psId: '',
         startDate: '',
         deptId: '',
-        // teamId: '',
+        teamId: '',
         managerId: '',
         state: null,
         endDate: '',
