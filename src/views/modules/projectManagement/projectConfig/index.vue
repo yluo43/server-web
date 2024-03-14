@@ -126,11 +126,11 @@
                 <br />
                 目标利润率：{{ row.item.targetRate }} %
                 <br />
-                甲方名称：{{ row.item.targetRate }}
+                甲方名称：{{ row.item.firstParty }}
                 <br />
-                合同名称：{{ row.item.targetRate }}
+                合同名称：{{ row.item.contractName }}
                 <br />
-                合同编号：{{ row.item.targetRate }}
+                合同编号：{{ row.item.contractNo }}
                 <br />
               </div>
               <div>{{ row.item.name }}</div>

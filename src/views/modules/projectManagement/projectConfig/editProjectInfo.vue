@@ -60,14 +60,35 @@
             style="width: 80% !important"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="甲方名称:" prop="name" v-if="editProjectInfoFormData.projectType == 0">
-          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入甲方名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
+        <el-form-item label="甲方名称:" prop="firstParty" v-if="editProjectInfoFormData.projectType == 0">
+          <el-input
+            v-model="editProjectInfoFormData.firstParty"
+            placeholder="请输入甲方名称"
+            style="width: 80%"
+            maxlength="50"
+            show-word-limit
+            clearable
+          ></el-input>
         </el-form-item>
-        <el-form-item label="合同名称:" prop="name" v-if="editProjectInfoFormData.projectType == 0">
-          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入合同名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
+        <el-form-item label="合同名称:" prop="contractName" v-if="editProjectInfoFormData.projectType == 0">
+          <el-input
+            v-model="editProjectInfoFormData.contractName"
+            placeholder="请输入合同名称"
+            style="width: 80%"
+            maxlength="50"
+            show-word-limit
+            clearable
+          ></el-input>
         </el-form-item>
-        <el-form-item label="合同编号:" prop="name" v-if="editProjectInfoFormData.projectType == 0">
-          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入合同编号" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
+        <el-form-item label="合同编号:" prop="contractNo" v-if="editProjectInfoFormData.projectType == 0">
+          <el-input
+            v-model="editProjectInfoFormData.contractNo"
+            placeholder="请输入合同编号"
+            style="width: 80%"
+            maxlength="50"
+            show-word-limit
+            clearable
+          ></el-input>
         </el-form-item>
         <el-form-item v-if="projectContractFlag" label="合同类型:" prop="contractType">
           <el-select clearable v-model="editProjectInfoFormData.contractType" style="width: 80% !important" placeholder="请选择合同类型">
@@ -179,6 +200,9 @@ export default {
         managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
         approvalDate: [{ required: true, validator: validateApprovalDate, trigger: ['blur', 'change'] }],
         // deliveryDate: [{ required: true, validator: validateDeliveryDate, trigger: ['blur', 'change'] }],
+        firstParty: [{ required: true, message: '请输入甲方名称', trigger: ['blur', 'change'] }],
+        contractName: [{ required: true, message: '请输入合同名称', trigger: ['blur', 'change'] }],
+        contractNo: [{ required: true, message: '请输入合同编号', trigger: ['blur', 'change'] }],
         contractType: [{ required: true, message: '请选择合同类型', trigger: 'change' }],
         contractAmount: [{ required: true, validator: validateContractAmount, trigger: ['blur', 'change'] }],
         generalBudget: [{ required: true, validator: validateGeneralBudget, trigger: ['blur', 'change'] }],
@@ -194,6 +218,9 @@ export default {
         managerId: '',
         approvalDate: '',
         deliveryDate: '',
+        firstParty: '',
+        contractName: '',
+        contractNo: '',
         contractType: '',
         contractAmount: '',
         generalBudget: '',
@@ -244,9 +271,9 @@ export default {
       if (this.editProjectInfoFormData.deptId == '' || this.editProjectInfoFormData.deptId == null) {
         return false
       }
-      let deptId = this.editProjectInfoFormData.deptIdy
-      this.dataForm.teamId = ''
-      this.dataForm.managerId = ''
+      let deptId = this.editProjectInfoFormData.deptId
+      this.editProjectInfoFormData.teamId = ''
+      this.editProjectInfoFormData.managerId = ''
       this.selectTeam(deptId)
       this.$http({
         url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
@@ -272,6 +299,9 @@ export default {
       }
 
       if (initData.operateType == 'update') {
+        if (this.editProjectInfoFormData.deptId == '' || this.editProjectInfoFormData.deptId == null) {
+          return false
+        }
         let deptId = this.editProjectInfoFormData.deptId
         this.selectTeam(deptId)
         this.$http({
@@ -293,20 +323,23 @@ export default {
       this.editProjectInfoFormRules.contractAmount[0].required = projectType === 0
       this.editProjectInfoFormData = {
         projectType: projectType,
-        name: '',
-        deptId: '',
-        // teamId: '',
-        psId: '',
-        managerId: '',
-        approvalDate: '',
-        deliveryDate: '',
-        contractType: '',
-        contractAmount: '',
-        generalBudget: '',
-        targetRate: '',
-        settlementCycle: projectType === 0 ? 1 : '',
-        projectId: '',
-        state: ''
+        name: null,
+        deptId: null,
+        teamId: null,
+        psId: null,
+        managerId: null,
+        approvalDate: null,
+        deliveryDate: null,
+        firstParty: null,
+        contractName: null,
+        contractNo: null,
+        contractType: null,
+        contractAmount: null,
+        generalBudget: null,
+        targetRate: null,
+        settlementCycle: projectType === 0 ? 1 : null,
+        projectId: null,
+        state: null
       }
     },
 

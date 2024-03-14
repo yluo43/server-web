@@ -186,6 +186,9 @@ export default {
           }
         })
       } else {
+        if (this.dataForm.deptId == '' || this.dataForm.deptId == null) {
+          return false
+        }
         let deptId = this.dataForm.deptId
         this.selectTeam(deptId)
         this.$http({
