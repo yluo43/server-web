@@ -12,17 +12,17 @@
           <el-date-picker v-model="dataForm.startDate" value-format="yyyy-MM-dd" format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
         </el-form-item>
         <el-form-item label="归属部门:" prop="deptId">
-          <el-select clearable v-model="dataForm.deptId" placeholder="请选择" @change="changeManagerList">
+          <el-select v-model="dataForm.deptId" placeholder="请选择" @change="changeManagerList">
             <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'"></el-option>
           </el-select>
         </el-form-item>
-        <!--        <el-form-item label="归属团队:" prop="teamId">-->
-        <!--          <el-select  clearable v-model="dataForm.teamId" placeholder="请选择">-->
-        <!--            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
+        <el-form-item label="归属团队:" prop="teamId">
+          <el-select v-model="dataForm.teamId" placeholder="请选择">
+            <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="负责人:" prop="managerId">
-          <el-select clearable v-model="dataForm.managerId" placeholder="请选择">
+          <el-select v-model="dataForm.managerId" placeholder="请选择">
             <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -85,15 +85,15 @@ export default {
         startDate: [{ type: 'string', required: true, validator: validateStartDate, trigger: 'change' }],
         //  endDate: [{ type: 'string', validator: validateEndDate, trigger: 'change' }],
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
-        // teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
-        managerId: [{ required: true, message: '请先选择归属部门，再选择负责人', trigger: 'change' }]
+        teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
+        managerId: [{ required: true, message: '请选择负责人', trigger: 'change' }]
       },
       dataForm: {
         psName: '',
         psId: '',
         startDate: '',
         deptId: '',
-        // teamId: '',
+        teamId: '',
         managerId: '',
         state: null,
         endDate: '',
@@ -107,6 +107,18 @@ export default {
     }
   },
   methods: {
+    selectTeam(deptId) {
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamByDept?deptId=' + deptId),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.teamList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
     validateEndDate(rule, value, callback) {
       if (!value && this.dataForm.state != 0) {
         callback(new Error('请选择结束时间'))
@@ -137,8 +149,10 @@ export default {
       if (this.dataForm.deptId == '' || this.dataForm.deptId == null) {
         return false
       }
+      this.dataForm.teamId = ''
+      this.dataForm.managerId = ''
       let deptId = this.dataForm.deptId
-
+      this.selectTeam(deptId)
       this.$http({
         url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
         method: 'get'
@@ -155,7 +169,7 @@ export default {
       this.placeholderFlag = placeholderFlag
       //this.managerList = data.managerList
       this.deptList = data.deptList
-      this.teamList = data.teamList
+      // this.teamList = data.teamList
       if (data.dataRow) {
         Object.assign(this.dataForm, data.dataRow)
       }
@@ -173,7 +187,7 @@ export default {
         })
       } else {
         let deptId = this.dataForm.deptId
-
+        this.selectTeam(deptId)
         this.$http({
           url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
           method: 'get'

@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
       <el-header style="height: auto">
-        <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData" label-width="77px">
+        <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectConfigFormData.name" placeholder="请输入关键字" style="width: 200px" clearable />
           </el-form-item>
@@ -30,11 +30,11 @@
               <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <!--          <el-form-item label="归属团队:" prop="teamIds">-->
-          <!--            <el-select v-model="projectConfigFormData.teamIds" multiple collapse-tags clearable>-->
-          <!--              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />-->
-          <!--            </el-select>-->
-          <!--          </el-form-item>-->
+          <!-- <el-form-item label="归属团队:" prop="teamIds">
+                     <el-select v-model="projectConfigFormData.teamIds" multiple collapse-tags clearable>
+                       <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
+                     </el-select>
+                   </el-form-item> -->
           <el-form-item label="归属项目集:" prop="psIds">
             <el-select v-model="projectConfigFormData.psIds" multiple collapse-tags clearable>
               <el-option v-for="item in psList" :key="item.id" :label="item.psName" :value="item.id" />
@@ -118,13 +118,19 @@
                 <br />
                 归属部门：{{ row.item.deptName }}
                 <br />
-                归属项目集：{{ row.item.psName }}
-                <br />
                 归属团队：{{ row.item.teamName }}
+                <br />
+                归属项目集：{{ row.item.psName }}
                 <br />
                 总预算：{{ row.item.generalBudget }} 元
                 <br />
                 目标利润率：{{ row.item.targetRate }} %
+                <br />
+                甲方名称：{{ row.item.targetRate }}
+                <br />
+                合同名称：{{ row.item.targetRate }}
+                <br />
+                合同编号：{{ row.item.targetRate }}
                 <br />
               </div>
               <div>{{ row.item.name }}</div>
