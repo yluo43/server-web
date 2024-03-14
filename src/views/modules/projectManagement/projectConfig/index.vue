@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
       <el-header style="height: auto">
-        <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData" label-width="77px">
+        <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectConfigFormData.name" placeholder="请输入关键字" style="width: 200px" clearable />
           </el-form-item>

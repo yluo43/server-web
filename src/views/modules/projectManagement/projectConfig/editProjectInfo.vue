@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%; margin: 0 10px" direction="vertical">
+    <el-container style="height: 100%; width: 100%; padding-left: 20px" direction="vertical">
       <el-form ref="editProjectInfoForm" :rules="editProjectInfoFormRules" :model="editProjectInfoFormData" label-width="auto" class="form-item">
         <el-form-item label="项目类型:" prop="projectType">
           <el-radio-group v-model="editProjectInfoFormData.projectType" :disabled="operateType !== 'add'" @input="changeProjectType">
@@ -42,7 +42,15 @@
             style="width: 80% !important"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="计划交付时间:" prop="deliveryDate">
+        <el-form-item
+          label="计划交付时间:"
+          prop="deliveryDate"
+          :rules="[
+            editProjectInfoFormData.projectType == 0
+              ? { required: true, validator: validateDeliveryDate, trigger: ['blur', 'change'] }
+              : { validator: validateDeliveryDate, trigger: ['blur', 'change'] }
+          ]"
+        >
           <el-date-picker
             v-model="editProjectInfoFormData.deliveryDate"
             value-format="yyyy-MM-dd"
@@ -53,13 +61,13 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="甲方名称:" prop="name" v-if="editProjectInfoFormData.projectType == 0">
-          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入项目名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
+          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入甲方名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
         </el-form-item>
         <el-form-item label="合同名称:" prop="name" v-if="editProjectInfoFormData.projectType == 0">
-          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入项目名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
+          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入合同名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
         </el-form-item>
         <el-form-item label="合同编号:" prop="name" v-if="editProjectInfoFormData.projectType == 0">
-          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入项目名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
+          <el-input v-model="editProjectInfoFormData.name" placeholder="请输入合同编号" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
         </el-form-item>
         <el-form-item v-if="projectContractFlag" label="合同类型:" prop="contractType">
           <el-select clearable v-model="editProjectInfoFormData.contractType" style="width: 80% !important" placeholder="请选择合同类型">
@@ -100,7 +108,7 @@
         </el-form-item>
       </el-form>
 
-      <el-row style="display: flex; justify-content: right; margin-top: 20px">
+      <el-row style="display: flex; justify-content: flex-end; margin: 20px 20px 20px 0">
         <el-button type="primary" @click="saveCheck">确认</el-button>
         <el-button @click="cancel()">取消</el-button>
       </el-row>
@@ -122,17 +130,17 @@ export default {
         callback()
       }
     }
-    const validateDeliveryDate = (rule, value, callback) => {
-      const approvalDate = this.editProjectInfoFormData.approvalDate
-      const deliveryDate = this.editProjectInfoFormData.deliveryDate
-      if (!value) {
-        callback(new Error('请选择计划交付时间'))
-      } else if (approvalDate && deliveryDate && approvalDate > deliveryDate) {
-        callback(new Error('计划交付时间不得小于立项时间'))
-      } else {
-        callback()
-      }
-    }
+    // const validateDeliveryDate = (rule, value, callback) => {
+    //   const approvalDate = this.editProjectInfoFormData.approvalDate
+    //   const deliveryDate = this.editProjectInfoFormData.deliveryDate
+    //   if (!value && this.editProjectInfoFormData.projectType == 0) {
+    //     callback(new Error('请选择计划交付时间'))
+    //   } else if (approvalDate && deliveryDate && approvalDate > deliveryDate) {
+    //     callback(new Error('计划交付时间不得小于立项时间'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     const validateTargetRate = (rule, value, callback) => {
       const regex = /^100(\.0{1,2})?$|^\d{1,2}(\.\d{1,2})?$/
       if (!value) {
@@ -170,7 +178,7 @@ export default {
         teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
         approvalDate: [{ required: true, validator: validateApprovalDate, trigger: ['blur', 'change'] }],
-        deliveryDate: [{ required: true, validator: validateDeliveryDate, trigger: ['blur', 'change'] }],
+        // deliveryDate: [{ required: true, validator: validateDeliveryDate, trigger: ['blur', 'change'] }],
         contractType: [{ required: true, message: '请选择合同类型', trigger: 'change' }],
         contractAmount: [{ required: true, validator: validateContractAmount, trigger: ['blur', 'change'] }],
         generalBudget: [{ required: true, validator: validateGeneralBudget, trigger: ['blur', 'change'] }],
@@ -208,12 +216,38 @@ export default {
     }
   },
   methods: {
+    validateDeliveryDate(rule, value, callback) {
+      const approvalDate = this.editProjectInfoFormData.approvalDate
+      const deliveryDate = this.editProjectInfoFormData.deliveryDate
+      if (!value && this.editProjectInfoFormData.projectType == 0) {
+        callback(new Error('请选择计划交付时间'))
+      } else if (approvalDate && deliveryDate && approvalDate > deliveryDate) {
+        callback(new Error('计划交付时间不得小于立项时间'))
+      } else {
+        callback()
+      }
+    },
+
+    selectTeam(deptId) {
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamByDept?deptId=' + deptId),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.teamList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
     changeManagerList() {
       if (this.editProjectInfoFormData.deptId == '' || this.editProjectInfoFormData.deptId == null) {
         return false
       }
-      let deptId = this.editProjectInfoFormData.deptId
-
+      let deptId = this.editProjectInfoFormData.deptIdy
+      this.dataForm.teamId = ''
+      this.dataForm.managerId = ''
+      this.selectTeam(deptId)
       this.$http({
         url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
         method: 'get'
@@ -229,7 +263,7 @@ export default {
     init(initData) {
       this.operateType = initData.operateType
       this.deptList = initData.deptList
-      this.teamList = initData.teamList
+      // this.teamList = initData.teamList
       this.psList = initData.psList
       //this.managerList = initData.managerList
       this.contractTypeList = initData.contractTypeList
@@ -239,7 +273,7 @@ export default {
 
       if (initData.operateType == 'update') {
         let deptId = this.editProjectInfoFormData.deptId
-
+        this.selectTeam(deptId)
         this.$http({
           url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
           method: 'get'
