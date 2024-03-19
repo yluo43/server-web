@@ -39,6 +39,7 @@
               <el-table-column prop="empId" label="工号"></el-table-column>
               <el-table-column prop="startTime" label="开始时间"></el-table-column>
               <el-table-column prop="overTime" label="结束时间"></el-table-column>
+              <el-table-column prop="workloadName" label="报工类别"></el-table-column>
               <el-table-column prop="projectName" label="成本项目"></el-table-column>
               <el-table-column prop="managerName" label="项目经理"></el-table-column>
               <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
@@ -91,7 +92,7 @@
       </el-main>
     </el-container>
     <!-- 驳回 -->
-    <base-dialog ref="editDataDialog" title="编辑工作量" :width="'600px'">
+    <base-dialog ref="editDataDialog" title="编辑工作量" :width="'800px'">
       <template>
         <editDataDialog ref="edit" :cancelDialog="closeDialog" @select="select"></editDataDialog>
       </template>
@@ -301,7 +302,7 @@ export default {
     },
     //合并单元格
     objectSpanMethod({ rowIndex, columnIndex }) {
-      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 3 || columnIndex === 9) {
+      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 3 || columnIndex === 10) {
         const _row = this.spanArr[rowIndex]
         const _col = _row > 0 ? 1 : 0
         return {

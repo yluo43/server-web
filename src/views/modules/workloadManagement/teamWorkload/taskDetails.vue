@@ -19,13 +19,18 @@
               <el-form-item label="工号:" prop="empId">
                 <el-input v-model="formData.empId" placeholder="请输入工号" clearable />
               </el-form-item>
+              <el-form-item label="报工类别:" prop="workLoadIds">
+                <el-select v-model="formData.workLoadIds" multiple collapse-tags placeholder="请选择报工类别" clearable>
+                  <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
               <el-form-item label="成本项目:" prop="projectIds">
-                <el-select v-model="formData.projectIds" multiple collapse-tags placeholder="请选择" clearable>
+                <el-select v-model="formData.projectIds" multiple collapse-tags placeholder="请选择成本项目" clearable>
                   <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="项目经理:" prop="managerIds">
-                <el-select v-model="formData.managerIds" multiple collapse-tags placeholder="请选择" clearable>
+                <el-select v-model="formData.managerIds" multiple collapse-tags placeholder="请选择项目经理" clearable>
                   <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -69,6 +74,7 @@
               <el-table-column prop="empId" label="工号"></el-table-column>
               <el-table-column prop="startTime" label="开始时间"></el-table-column>
               <el-table-column prop="overTime" label="结束时间"></el-table-column>
+              <el-table-column prop="workloadName" label="报工类别"></el-table-column>
               <el-table-column prop="projectName" label="成本项目"></el-table-column>
               <el-table-column prop="managerName" label="项目经理"></el-table-column>
               <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
@@ -133,6 +139,8 @@ export default {
         empId: '',
         //成本项目
         projectIds: [],
+        //报工类别
+        workLoadIds: [],
         //项目经理
         managerIds: []
       },
@@ -144,7 +152,8 @@ export default {
       pos: '',
       checkedData: [],
       checkTeam: [],
-      teams: []
+      teams: [],
+      categories: []
     }
   },
   mounted() {
@@ -152,6 +161,7 @@ export default {
     this.getManager()
     this.getTeam()
     this.getProject()
+    this.getWorkloadType()
   },
   created() {},
   methods: {
@@ -166,6 +176,19 @@ export default {
     async initTable() {
       await this.selectTaskList()
       this.selectTaskDetial()
+    },
+    //获取报工类别
+    getWorkloadType() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getWorkloadType'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.categories = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
     //查询任务列表
     async selectTaskList() {
@@ -249,6 +272,7 @@ export default {
       let data = {
         empName: this.formData.userName,
         empId: this.formData.empId,
+        workloadIds: this.formData.workLoadIds.toString(),
         managerIds: this.formData.managerIds.toString(),
         projectIds: this.formData.projectIds.toString(),
         teamIdList: this.checkTeam.toString() || this.teamId

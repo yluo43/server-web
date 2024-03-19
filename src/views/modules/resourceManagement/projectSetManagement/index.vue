@@ -274,7 +274,7 @@ export default {
       })
     },
     update(row) {
-      this.titles = '编辑项目集'
+      this.title = '编辑项目集'
       this.$refs.addOrUpdateDrawer.show()
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init('update', false, {

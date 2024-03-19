@@ -153,9 +153,10 @@ export default {
       tableData: {
         theads: [
           { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName' },
+          { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName' },
-          { label: '开始填报时间', prop: 'reportStartTime' },
-          { label: '填报天数', prop: 'reportDay' },
+          { label: '开始确认时间', prop: 'reportStartTime' },
+          { label: '确认天数', prop: 'affirmDay' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
@@ -181,8 +182,9 @@ export default {
             <span> {node.label}</span>
           </el-badge>
         )
+      } else {
+        return <span> {node.label}</span>
       }
-      return <span> {node.label}</span>
     },
     handleNodeClick(data) {
       this.dataForm.projectId = data.id
@@ -204,7 +206,7 @@ export default {
       }
     },
     projectNameChange() {
-      this.projectList()
+      this.projectListRefresh()
     },
     activeNameChange() {
       this.projectName = ''

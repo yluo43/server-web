@@ -42,7 +42,7 @@
             </el-form-item>
 
             <el-form-item label="部门助理" prop="assistantId">
-              <el-select clearable v-model="editDataForm.assistantId" placeholder="请选择部门负责人">
+              <el-select clearable v-model="editDataForm.assistantId" placeholder="请选择部门助理">
                 <el-option v-for="item in assistList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
               </el-select>
             </el-form-item>

@@ -106,6 +106,7 @@ export default {
           { label: '团队负责人', prop: 'teamManagerName', width: '120px' },
           { label: '开始时间', prop: 'startTime' },
           { label: '结束时间', prop: 'overTime' },
+          { label: '报工类别', prop: 'workloadName' },
           { label: '计划投入（%）', prop: 'planRate', width: '120px' },
           { label: '实际投入（%）', prop: 'realityRate', width: '120px' },
           { label: '确认状态', prop: 'workStatusName' },

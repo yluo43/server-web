@@ -111,6 +111,7 @@ export default {
           { label: '归属团队', prop: 'teamName' },
           { label: '开始时间', prop: 'startTime' },
           { label: '结束时间', prop: 'overTime' },
+          { label: '报工类别', prop: 'workloadName' },
           { label: '成本项目', prop: 'projectName' },
           { label: '项目经理', prop: 'projectManagerName' },
           { label: '计划投入(%)', prop: 'investRate' },

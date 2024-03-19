@@ -32,6 +32,11 @@
             <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="项目标签:" prop="labels" v-if="editProjectInfoFormData.projectType != 2">
+          <el-select clearable multiple collapse-tags v-model="editProjectInfoFormData.labels" style="width: 80% !important" placeholder="请选择项目标签">
+            <el-option v-for="item in itemLabels" :key="item.id" :label="item.labelName" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="立项时间:" prop="approvalDate">
           <el-date-picker
             v-model="editProjectInfoFormData.approvalDate"
@@ -198,6 +203,7 @@ export default {
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
         teamId: [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
+        labels: [{ required: true, message: '请选择项目标签', trigger: 'change' }],
         approvalDate: [{ required: true, validator: validateApprovalDate, trigger: ['blur', 'change'] }],
         // deliveryDate: [{ required: true, validator: validateDeliveryDate, trigger: ['blur', 'change'] }],
         firstParty: [{ required: true, message: '请输入甲方名称', trigger: ['blur', 'change'] }],
@@ -216,6 +222,7 @@ export default {
         teamId: '',
         psId: '',
         managerId: '',
+        labels: [],
         approvalDate: '',
         deliveryDate: '',
         firstParty: '',
@@ -232,6 +239,7 @@ export default {
       operateType: 'add',
       deptList: [],
       teamList: [],
+      itemLabels: [],
       psList: [],
       managerList: [],
       contractTypeList: []
@@ -254,7 +262,6 @@ export default {
         callback()
       }
     },
-
     selectTeam(deptId) {
       this.$http({
         url: this.$http.adornUrl('/common/getTeamByDept?deptId=' + deptId),
@@ -294,8 +301,17 @@ export default {
       this.psList = initData.psList
       //this.managerList = initData.managerList
       this.contractTypeList = initData.contractTypeList
+      this.itemLabels = initData.itemLabels
       if (initData.rowData) {
         Object.assign(this.editProjectInfoFormData, initData.rowData)
+        const labelNameArr = initData.rowData.labelNames.split(',')
+        this.editProjectInfoFormData.labels = []
+        this.itemLabels.map((item) => {
+          if (labelNameArr.indexOf(item.labelName) != -1) {
+            this.editProjectInfoFormData.labels.push(item.id)
+          }
+        })
+        this.editProjectInfoFormData.labelNames = ''
       }
 
       if (initData.operateType == 'update') {
@@ -328,6 +344,7 @@ export default {
         teamId: null,
         psId: null,
         managerId: null,
+        labels: null,
         approvalDate: null,
         deliveryDate: null,
         firstParty: null,

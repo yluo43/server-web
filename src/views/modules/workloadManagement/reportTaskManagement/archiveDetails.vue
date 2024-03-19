@@ -20,27 +20,32 @@
                 <el-input v-model="formData.empId" placeholder="请输入工号" clearable />
               </el-form-item>
               <el-form-item label="归属部门:" prop="deptIds">
-                <el-select v-model="formData.deptIds" placeholder="请选择" multiple collapse-tags clearable>
+                <el-select v-model="formData.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
                   <el-option v-for="item in belongingDepartments" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="归属团队:" prop="teamIds">
-                <el-select v-model="formData.teamIds" placeholder="请选择" multiple collapse-tags clearable>
+                <el-select v-model="formData.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
                   <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="团队负责人:" prop="teamLeader">
-                <el-select v-model="formData.teamLeader" placeholder="请选择" multiple collapse-tags clearable>
+                <el-select v-model="formData.teamLeader" placeholder="请选择团队负责人" multiple collapse-tags clearable>
                   <el-option v-for="item in teamLeaders" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
                 </el-select>
               </el-form-item>
+              <el-form-item label="报工类别:" prop="workLoadIds">
+                <el-select v-model="formData.workLoadIds" multiple collapse-tags placeholder="请选择报工类别" clearable>
+                  <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
+              </el-form-item>
               <el-form-item label="成本项目:" prop="costItem">
-                <el-select v-model="formData.costItem" placeholder="请选择" multiple collapse-tags clearable>
+                <el-select v-model="formData.costItem" placeholder="请选择成本项目" multiple collapse-tags clearable>
                   <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="项目经理:" prop="projectManager">
-                <el-select v-model="formData.projectManager" placeholder="请选择" multiple collapse-tags clearable>
+                <el-select v-model="formData.projectManager" placeholder="请选择项目经理" multiple collapse-tags clearable>
                   <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -97,6 +102,8 @@ export default {
         teamIds: [],
         //团队负责人
         teamLeader: [],
+        //报工类别
+        workLoadIds: [],
         //成本项目
         costItem: [],
         //项目经理
@@ -112,6 +119,8 @@ export default {
       teamLeaders: [],
       //成本项目
       costItems: [],
+      //报工类别
+      categories: [],
       taskDetial: {
         theads: [
           { label: '团队成员', prop: 'name' },
@@ -120,6 +129,7 @@ export default {
           { label: '归属团队', prop: 'teamName' },
           { label: '开始时间', prop: 'startTime' },
           { label: '结束时间', prop: 'overTime' },
+          { label: '报工类别', prop: 'workloadName' },
           { label: '成本项目', prop: 'projectName' },
           { label: '项目经理', prop: 'projectManagerName' },
           { label: '计划投入(%)', prop: 'investRate' },
@@ -139,6 +149,7 @@ export default {
     this.getTeam()
     this.getTeamLeaders()
     this.getProject()
+    this.getWorkloadType()
   },
   created() {},
   methods: {
@@ -151,6 +162,19 @@ export default {
     async initTable() {
       await this.selectTaskList()
       this.selectTaskDetial({ taskId: this.taskId, status: 4 })
+    },
+    //获取报工类别
+    getWorkloadType() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getWorkloadType'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.categories = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
     //统计工作量下拉框改变
     changeSelect(params) {
@@ -171,6 +195,7 @@ export default {
         empId: this.formData.empId,
         deptIds: this.formData.deptIds.toString(),
         teamIds: this.formData.teamIds.toString(),
+        workLoads: this.formData.workLoadIds.toString(),
         teamPersonIds: this.formData.teamLeader.toString(),
         projectIds: this.formData.costItem.toString(),
         managerIds: this.formData.projectManager.toString()

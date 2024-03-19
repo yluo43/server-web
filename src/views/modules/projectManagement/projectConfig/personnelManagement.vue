@@ -172,6 +172,7 @@ export default {
           { label: '岗位类型', prop: 'positionTypeName' },
           { label: '开始支撑时间', prop: 'supportDate', width: '100px' },
           { label: '结束支撑时间', prop: 'endSupportDate', width: '100px' },
+          { label: '投入占比(%)', prop: 'investRate' },
           { label: '状态', prop: 'stateName', width: '100px' },
           { label: '操作', prop: 'clientType', slotName: 'clientType1', width: '130px', fixed: 'right' }
         ],

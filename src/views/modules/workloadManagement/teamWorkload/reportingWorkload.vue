@@ -41,6 +41,22 @@
               <el-table-column prop="empId" label="工号"></el-table-column>
               <el-table-column prop="startTime" label="开始时间"></el-table-column>
               <el-table-column prop="overTime" label="结束时间"></el-table-column>
+              <el-table-column prop="workloadName" label="报工类别">
+                <template slot-scope="scope">
+                  <div @dblclick="handlerCategory(scope.row, scope.column)" style="height: 50px; line-height: 50px">
+                    <el-select
+                      style="width: 120px !important"
+                      v-if="scope.row.isCategory"
+                      v-model="scope.row.workloadName"
+                      @change="handlerWorkLoadName(scope.row, scope.column)"
+                      ref="workloadName"
+                    >
+                      <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.name"></el-option>
+                    </el-select>
+                    <span v-else>{{ scope.row.workloadName }}</span>
+                  </div>
+                </template>
+              </el-table-column>
               <el-table-column prop="projectName" label="成本项目">
                 <template slot-scope="scope">
                   <div @dblclick="handlerSelect(scope.row, scope.column)" style="height: 50px; line-height: 50px">
@@ -125,12 +141,14 @@ export default {
       newCostItem: '',
       tableData: [],
       costItems: [],
+      categories: [],
       spanArr: [], // 需要合并的行数
       pos: 0 // 索引
     }
   },
   mounted() {
     this.getProject()
+    this.getWorkloadType()
   },
   created() {},
   methods: {
@@ -159,6 +177,19 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.costItems = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    //获取报工类别
+    getWorkloadType() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getWorkloadType'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.categories = data.payload
         } else {
           this.$message.error(data.msg)
         }
@@ -193,6 +224,7 @@ export default {
           data.payload.pmsWorkloadVoList.map((item) => {
             this.$set(item, 'isEdit', false)
             this.$set(item, 'isSelect', false)
+            this.$set(item, 'isCategory', false)
           })
           this.tableData = [...data.payload.pmsWorkloadVoList]
           this.tableData.sort(this.compare('empId'))
@@ -299,6 +331,8 @@ export default {
           data: data
         }).then(({ data }) => {
           if (data && data.code === 200) {
+            this.selectWorkload()
+            this.$emit('changeFlag')
             this.$refs.successDialog.show()
             this.$nextTick(() => {
               this.$refs.success.init(this.taskInfo)
@@ -327,6 +361,25 @@ export default {
         return item.empId // 返回需要分组的对象
       })
       return sorted
+    },
+    //双击报工类别
+    handlerCategory(row, column) {
+      row.isCategory = true
+      this.$nextTick(() => {
+        this.$refs[column.property].focus()
+      })
+    },
+    //报工类别数据改变
+    handlerWorkLoadName(row, column, sel) {
+      this.categories.map((item) => {
+        if (item.name == row.workloadName) {
+          row.workloadType = item.id
+        }
+      })
+      this.$nextTick(() => {
+        row.isCategory = false
+        this.$refs[column.property].blur()
+      })
     },
     //双击下拉框
     handlerSelect(row, column) {

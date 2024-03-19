@@ -1,14 +1,14 @@
 <template>
   <div style="height: 100%">
     <el-container>
-      <el-header style="height: 85px">
+      <el-header style="height: 100%">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist">
-            <el-form-item label="事由名称:" prop="name">
+            <el-form-item label="报销项目名称:" prop="name">
               <el-input v-model="dataForm.name" placeholder="请输入事由名称" clearable></el-input>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptId">
-              <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
+            <el-form-item label="报销项目归属部门:" prop="deptId">
+              <el-select v-model="dataForm.deptId" placeholder="请选择报销项目归属部门" :multiple="true" :collapse-tags="true">
                 <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
@@ -17,20 +17,24 @@
                 <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
-            <div style="margin-left: 20px">
-              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
-              <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
-            </div>
+            <el-form-item label="关联项目归属部门:" prop="projectDeptId">
+              <el-select v-model="dataForm.projectDeptId" placeholder="请选择关联项目归属部门" :multiple="true" :collapse-tags="true">
+                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
+              </el-select>
+            </el-form-item>
           </div>
         </el-form>
-
+        <div style="margin: 10px 0 10px 13px">
+          <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
+          <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+        </div>
         <div class="chooseResult">
           <span>已选中{{ count }}项</span>
           <el-button type="text" @click="batchDelete()">批量删除</el-button>
         </div>
       </el-header>
-      <div style="margin: 0 0 10px 13px">
-        <!-- <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button> -->
+      <div style="margin: 10px 0 10px 13px">
+        <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
         <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
       </div>
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
@@ -42,23 +46,24 @@
           </template>
         </template>
       </baseTable>
-
-      <el-drawer :title="title" :visible.sync="drawer" :before-close="handleClose" :direction="direction" size="25%">
+      <el-drawer :title="title" :visible.sync="drawer" :before-close="handleClose" :direction="direction" size="26%">
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="editForm">
-            <el-form-item label="事由名称:" prop="name">
-              <el-input style="width: 250px" v-model="editDataForm.name" placeholder="请输入事由名称" clearable></el-input>
+            <el-form-item label="报销项目名称:" prop="name">
+              <el-input style="width: 230px" v-model="editDataForm.name" placeholder="请输入事由名称" clearable></el-input>
             </el-form-item>
-            <!-- :multiple="true" :collapse-tags="true" -->
-            <el-form-item label="归属部门:" prop="deptName">
+            <el-form-item label="报销项目归属部门:" prop="deptName">
               <el-select v-model="editDataForm.deptName" placeholder="请选择">
                 <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="关联项目:" prop="projectName">
+            <!-- <el-form-item label="关联项目:" prop="projectName">
               <el-select v-model="editDataForm.projectName" filterable placeholder="请选择关联项目" clearable>
                 <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name" />
               </el-select>
+            </el-form-item> -->
+            <el-form-item label="关联项目:" prop="value">
+              <el-cascader clearable style="width: 230px" v-model="editDataForm.value" :options="options" @change="handleChange"></el-cascader>
             </el-form-item>
             <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">保存</el-button>
@@ -94,18 +99,21 @@ export default {
       dataForm: {
         name: '',
         deptId: [],
-        projectId: []
+        projectId: [],
+        projectDeptId: []
       },
       editDataForm: {
         name: '',
         deptName: '',
-        projectName: ''
+        projectName: '',
+        value: []
       },
       tableData: {
         theads: [
-          { label: '事由名称', prop: 'name' },
-          { label: '归属部门', prop: 'deptName' },
+          { label: '报销项目名称', prop: 'name' },
+          { label: '报销项目归属部门', prop: 'deptName' },
           { label: '关联项目', prop: 'projectName' },
+          { label: '关联项目归属部门', prop: 'projectDeptName' },
           { label: '操作', prop: 'clientType', slotName: 'clientType' }
         ],
         url: '/staticItem/listPage'
@@ -114,10 +122,10 @@ export default {
         name: [{ required: true, message: '请输入事由名称', trigger: 'blur' }],
         deptName: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
         projectName: [{ required: true, message: '请选择关联项目', trigger: 'change' }]
-      }
+      },
+      options: []
     }
   },
-
   mounted() {
     //初始化项目
     this.getProject()
@@ -125,8 +133,41 @@ export default {
     this.getDept()
     //查询
     this.refresh()
+    //初始化关联项目
+    this.getProjectTreeWithDept()
   },
   methods: {
+    handleChange(value) {
+      console.log(this.editDataForm.value)
+    },
+    //获取关联项目
+    getProjectTreeWithDept() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getProjectTreeWithDept'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          data.payload.map((item, index) => {
+            if (item.deptId == 0) {
+              data.payload.splice(index, 1)
+            }
+          })
+          this.options = this.treeChange(data.payload)
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    //树数据转换
+    treeChange(treeData) {
+      treeData.map((ele) => {
+        ele.value = ele.deptId || ele.id
+        ele.label = ele.deptName || ele.name
+        if (ele.children && ele.children.length != 0) this.treeChange(ele.children)
+      })
+      return treeData
+    },
+
     //获取项目
     getProject() {
       this.$http({
@@ -158,7 +199,8 @@ export default {
       let params = {
         name: this.dataForm.name,
         deptId: this.dataForm.deptId.toString(),
-        projectId: this.dataForm.projectId.toString()
+        projectId: this.dataForm.projectId.toString(),
+        projectDeptId: this.dataForm.projectDeptId.toString()
       }
       this.$refs.table.refresh(params)
     },
@@ -178,7 +220,7 @@ export default {
     deleteList(row) {
       this.deleteIds = []
       this.deleteIds.push(row.item.id)
-      this.$confirm(`您确定删除吗?`, '提示', {
+      this.$confirm(`确定删除吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -213,7 +255,7 @@ export default {
         this.$message.error('当前未选中任何数据！')
         return
       }
-      this.$confirm('已选中' + this.deleteIds.length + '条数据,您确定删除吗?', '提示', {
+      this.$confirm('已选中' + this.deleteIds.length + '条数据,确定删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -247,23 +289,43 @@ export default {
       this.drawer = true
       this.title = '添加'
       this.clear(this.editDataForm)
+      console.log(this.editDataForm)
     },
     clear(form) {
-      Object.keys(form).forEach((key) => (form[key] = ''))
+      for (let key in form) {
+        if (Array.isArray(form[key])) {
+          form[key] = []
+        } else {
+          form[key] = ''
+        }
+      }
     },
     //编辑
     alter(row) {
+      let projectDeptId = null
+
       this.drawer = true
       this.title = '编辑'
       this.editDataForm = { ...row.item }
+      this.departments.map((item) => {
+        if (item.name == row.item.projectDeptName) {
+          projectDeptId = item.id
+        }
+      })
+      this.editDataForm.value = [projectDeptId, Number(row.item.projectId)]
+      console.log(this.editDataForm)
     },
     //保存
     editSubmit(formName) {
       // let user = getCName()
       // this.editDataForm.updateUser = user
+
       this.departments.forEach((item) => {
         if (item.name == this.editDataForm.deptName) {
           this.editDataForm.deptId = item.id
+        }
+        if (item.id == this.editDataForm.value[0]) {
+          this.editDataForm.projectDeptName = item.name
         }
       })
       this.costItems.forEach((item) => {
@@ -271,6 +333,7 @@ export default {
           this.editDataForm.projectId = item.id
         }
       })
+      this.editDataForm.projectId = this.editDataForm.value[1]
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.title == '添加') {
@@ -322,15 +385,15 @@ export default {
         .catch((_) => {})
     },
     //批量下载
-    // download() {
-    //   if (this.deleteIds.length <= 0) {
-    //     this.$message.error('当前未选中任何数据！')
-    //     return
-    //   }
-    //   let form = { ...this.dataForm }
-    //   form.ids = this.deleteIds
-    //   this.$http.downloadPost(this.$http.adornUrl('/dailyCost/export'), this.$http.adornParams(form), this)
-    // },
+    download() {
+      if (this.deleteIds.length <= 0) {
+        this.$message.error('当前未选中任何数据！')
+        return
+      }
+      let form = { ...this.dataForm }
+      form.ids = this.deleteIds
+      this.$http.downloadPost(this.$http.adornUrl('/staticItem/export'), this.$http.adornParams(form), this)
+    },
     resetForm() {
       this.$refs.dataForm.resetFields()
     }
@@ -342,14 +405,17 @@ export default {
   color: #333;
   padding: 0 0;
 }
+::v-deep .el-cascader-menu {
+  width: 190px;
+}
 ::v-deep .el-select {
-  width: 250px !important;
+  width: 230px !important;
 }
 ::v-deep .el-select__tags-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 120px;
+  max-width: 100px;
 }
 .el-form--inline > .inputlist {
   display: flex;
@@ -360,7 +426,7 @@ export default {
 }
 
 ::v-deep .editForm .el-form-item__label {
-  width: 80px !important;
+  width: 120px !important;
 }
 ::v-deep .editForm .el-form-item {
   width: 100% !important;

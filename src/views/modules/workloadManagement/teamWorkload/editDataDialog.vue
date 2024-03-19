@@ -8,6 +8,11 @@
           </el-form-item>
           <el-form-item label="工作量:">
             <div style="display: flex; align-items: center; justify-content: center" v-for="(item, index) in formData.workLoad" :key="index">
+              <el-form-item :prop="'workLoad.' + index + '.workloadName'">
+                <el-select v-model="item.workloadName" placeholder="请选择报工类别" @change="workLoadChange(item)" clearable>
+                  <el-option v-for="ele in categories" :key="ele.id" :label="ele.name" :value="ele.name" />
+                </el-select>
+              </el-form-item>
               <el-form-item :prop="'workLoad.' + index + '.projectName'">
                 <el-select v-model="item.projectName" placeholder="请选择成本项目" @change="selectChange(item)" clearable>
                   <el-option v-for="ele in costItems" :key="ele.id" :label="ele.name" :value="ele.name" />
@@ -67,11 +72,13 @@ export default {
         workLoad: []
       },
       costItems: [],
-      dataList: []
+      dataList: [],
+      categories: []
     }
   },
   mounted() {
     this.getProject()
+    this.getWorkloadType()
   },
   created() {},
   methods: {
@@ -80,6 +87,19 @@ export default {
       Object.assign(this.formData, initData)
       this.selectInfo()
       console.log(this.formData)
+    },
+    //获取报工类别
+    getWorkloadType() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getWorkloadType'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.categories = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
     //根据任务id和工号查询该员工所有项目信息
     selectInfo() {
@@ -96,6 +116,13 @@ export default {
           this.workLoad = data.payload.list
         } else {
           this.$message.error(data.msg)
+        }
+      })
+    },
+    workLoadChange(params) {
+      this.categories.forEach((item) => {
+        if (item.name == params.workloadName) {
+          params.workloadType = item.id
         }
       })
     },
@@ -142,6 +169,8 @@ export default {
         name: this.formData.userName,
         overTime: '',
         planRate: '',
+        workloadName: '',
+        workloadType: '',
         projectId: '',
         projectName: '',
         realityRate: '',
@@ -160,10 +189,10 @@ export default {
         total += Number(item.realityRate)
       })
       let flag = this.formData.workLoad.every((item) => {
-        return item.projectName && item.realityRate
+        return item.workloadName && item.projectName && item.realityRate
       })
       if (!flag) {
-        this.$message.error('成本项目和实际投入不能为空')
+        this.$message.error('报工类别、成本项目、实际投入不能为空')
         return false
       }
       if (total < 100) {

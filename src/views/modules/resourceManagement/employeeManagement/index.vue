@@ -5,7 +5,7 @@
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="姓名:" prop="name">
-              <el-input v-model="dataForm.name" placeholder="请输入关键字" clearable maxlength="50"></el-input>
+              <el-input v-model="dataForm.name" placeholder="请输入员工姓名" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
               <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable maxlength="50"></el-input>
@@ -14,12 +14,12 @@
               <el-input v-model="dataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="驻地:" prop="stationIds">
-              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择驻地" :multiple="true" :collapse-tags="true">
                 <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptIds">
-              <el-select v-model="dataForm.deptIds" placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
                 <el-option
                   v-for="dept in deptNames"
                   :key="dept.id"
@@ -31,12 +31,12 @@
               </el-select>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamIds">
-              <el-select v-model="dataForm.teamIds" placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.teamIds" placeholder="请选择归属团队" :multiple="true" :collapse-tags="true">
                 <el-option v-for="team in teamNames" :key="team.id" :label="team.name" :value="team.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="角色:" prop="roleIds">
-              <el-select clearable v-model="dataForm.roleIds" placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select clearable v-model="dataForm.roleIds" placeholder="请选择角色" :multiple="true" :collapse-tags="true">
                 <el-option v-for="role in roleNames" :key="role.id" :label="role.name" :value="role.id"></el-option>
               </el-select>
             </el-form-item>
@@ -66,14 +66,14 @@
             </el-form-item>
 
             <el-form-item label="状态:" prop="departStatus">
-              <el-select v-model="dataForm.departStatus" placeholder="请选择" @change="showEntryDate">
+              <el-select v-model="dataForm.departStatus" placeholder="请选择状态" @change="showEntryDate">
                 <el-option key="1" label="在职" value="1"></el-option>
                 <el-option key="0" label="离职" value="0"></el-option>
               </el-select>
             </el-form-item>
 
             <el-form-item label="岗位类型:" prop="positionTypes">
-              <el-select v-model="dataForm.positionTypes" placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.positionTypes" placeholder="请选择岗位类型" :multiple="true" :collapse-tags="true">
                 <el-option key="1" label="A岗" :value="1"></el-option>
                 <el-option key="2" label="B岗" :value="2"></el-option>
                 <el-option key="7" label="C岗" :value="7"></el-option>
@@ -85,7 +85,7 @@
             </el-form-item>
 
             <el-form-item label="技术级别:" prop="empLevels">
-              <el-select v-model="dataForm.empLevels" placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.empLevels" placeholder="请选择技术级别" :multiple="true" :collapse-tags="true">
                 <el-option key="0" label="0" value="0"></el-option>
                 <el-option key="1" label="1" value="1"></el-option>
                 <el-option key="2" label="2" value="2"></el-option>
@@ -153,23 +153,23 @@
       </baseTable>
       <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="25%">
         <div style="padding-left: 20px">
-          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
-            <el-form-item label="姓名:" prop="name" :rules="[{ required: true, message: '姓名不能为空' }]">
-              <el-input v-model="editDataForm.name" clearable maxlength="50"></el-input>
+          <el-form :inline="true" :rules="rules" :model="editDataForm" ref="editdataForm" class="editForm">
+            <el-form-item label="姓名:" prop="name">
+              <el-input v-model="editDataForm.name" placeholder="请输入员工姓名" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="工号:" prop="empId" :rules="[{ required: true, message: '工号不能为空' }]">
-              <el-input v-model="editDataForm.empId" clearable maxlength="50" :disabled="disabled"></el-input>
+            <el-form-item label="工号:" prop="empId">
+              <el-input v-model="editDataForm.empId" placeholder="请输入员工工号" clearable maxlength="50" :disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label="邮箱:" prop="mailbox" :rules="mailRule">
+            <el-form-item label="邮箱:" prop="mailbox">
               <el-input v-model="editDataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="驻地:" prop="stationId">
-              <el-select clearable v-model="editDataForm.stationId" filterable clearable placeholder="请选择">
+              <el-select clearable v-model="editDataForm.stationId" filterable clearable placeholder="请选择驻地">
                 <el-option v-for="location in empLocations" :key="location.id" :label="location.name" :value="location.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptId" :rules="[{ required: true, message: '归属部门不能为空' }]">
-              <el-select clearable v-model="editDataForm.deptId" placeholder="请选择" @change="changeTeamByDept">
+            <el-form-item label="归属部门:" prop="deptId">
+              <el-select clearable v-model="editDataForm.deptId" placeholder="请选择归属部门" @change="changeTeamByDept">
                 <el-option
                   v-for="dept in onwerDeptNames"
                   :key="dept.id"
@@ -181,18 +181,18 @@
               </el-select>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamId">
-              <el-select clearable v-model="editDataForm.teamId" placeholder="请选择">
+              <el-select clearable v-model="editDataForm.teamId" placeholder="请选择归属团队">
                 <el-option v-for="team in teamNamesByDept" :key="team.id" :label="team.name" :value="team.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="角色:" prop="roleIds" :rules="[{ required: true, message: '角色不能为空' }]">
-              <el-select clearable v-model="editDataForm.roleIds" placeholder="请选择" multiple :collapse-tags="true">
+            <el-form-item label="角色:" prop="roleIds">
+              <el-select clearable v-model="editDataForm.roleIds" placeholder="请选择角色" multiple :collapse-tags="true">
                 <el-option v-for="role in roleNames" :key="role.id" :label="role.name" :value="role.id"></el-option>
               </el-select>
             </el-form-item>
 
-            <el-form-item label="岗位类型:" prop="positionType" :rules="[{ required: true, message: '岗位不能为空' }]">
-              <el-select clearable v-model="editDataForm.positionType" placeholder="请选择">
+            <el-form-item label="岗位类型:" prop="positionType">
+              <el-select clearable v-model="editDataForm.positionType" placeholder="请选择岗位类型">
                 <el-option key="1" label="A岗" :value="1"></el-option>
                 <el-option key="2" label="B岗" :value="2"></el-option>
                 <el-option key="7" label="C岗" :value="7"></el-option>
@@ -204,7 +204,7 @@
             </el-form-item>
 
             <el-form-item label="技术级别:" prop="empLevel">
-              <el-select clearable v-model="editDataForm.empLevel" placeholder="请选择">
+              <el-select clearable v-model="editDataForm.empLevel" placeholder="请选择技术级别">
                 <el-option key="0" label="0" value="0"></el-option>
                 <el-option key="1" label="1" value="1"></el-option>
                 <el-option key="2" label="2" value="2"></el-option>
@@ -222,17 +222,17 @@
 
             <el-form-item label="入职时间:" prop="entryDate">
               <el-date-picker
-                style="width: 130px"
+                style="width: 190px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.entryDate"
                 type="date"
-                placeholder="选择日期"
+                placeholder="请选择入职时间"
               ></el-date-picker>
             </el-form-item>
 
             <el-form-item label="状态:" prop="departStatus" v-if="departStatusNameShow">
-              <el-select clearable v-model="editDataForm.departStatus" placeholder="请选择" @change="showEntryDate">
+              <el-select clearable v-model="editDataForm.departStatus" placeholder="请选择状态" @change="showEntryDate">
                 <el-option key="1" label="在职" :value="'1'"></el-option>
                 <el-option key="0" label="离职" :value="'0'"></el-option>
               </el-select>
@@ -240,17 +240,17 @@
 
             <el-form-item label="离职时间:" prop="departDate" v-if="entryDateShow" :rules="[{ required: entryDateInput, message: '岗位为空' }]">
               <el-date-picker
-                style="width: 130px"
+                style="width: 190px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.departDate"
                 type="date"
-                placeholder="选择日期"
+                placeholder="请选择离职时间"
               ></el-date-picker>
             </el-form-item>
-            <div style="display: inline-block; margin-top: 60px">
-              <el-button type="primary" icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
-              <el-button type="primary" icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 10px">
+              <el-button type="primary" style="margin-right: 20px" @click="editSubmit">确定</el-button>
+              <el-button type="primary" @click="drawer = false">取消</el-button>
             </div>
           </el-form>
         </div>
@@ -268,7 +268,7 @@ export default {
     var validEmail = (rule, value, callback) => {
       let reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})(,([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4}))*$/
       if (value === '' || value === undefined || value === null) {
-        callback()
+        callback(new Error('请输入邮箱'))
       } else {
         if (reg.test(value)) {
           callback()
@@ -279,10 +279,10 @@ export default {
     }
 
     return {
-      mailRule: [
-        { required: false, message: '邮箱不能为空', trigger: 'blur' },
-        { validator: validEmail, trigger: 'change' }
-      ],
+      // mailRule: [
+      //   { required: false, message: '邮箱不能为空', trigger: 'blur' },
+      //   { validator: validEmail, trigger: 'change' }
+      // ],
       entryDateInput: false,
       disabled: false,
       title: '',
@@ -350,6 +350,19 @@ export default {
           { label: '操作', prop: 'clientType', slotName: 'clientType' }
         ],
         url: '/employee/selectEmployeeListWithPage'
+      },
+      rules: {
+        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+        empId: [{ required: true, message: '请输入工号', trigger: 'blur' }],
+        mailbox: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: validEmail, trigger: 'change' }
+        ],
+        stationId: [{ required: true, message: '请选择驻地', trigger: 'change' }],
+        deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
+        roleIds: [{ required: true, message: '请选择角色', trigger: 'change' }],
+        empLevel: [{ required: true, message: '请选择技术级别', trigger: 'change' }],
+        entryDate: [{ required: true, message: '请选择入职时间', trigger: 'change' }]
       }
     }
   },
@@ -504,7 +517,7 @@ export default {
     },
     add() {
       this.drawer = true
-      this.title = '新增'
+      this.title = '添加员工'
       this.url = '/employee/insertEmployee'
       this.clear(this.editDataForm)
       this.disabled = false

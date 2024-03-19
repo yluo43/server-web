@@ -109,7 +109,7 @@
     <!-- 工作量填报 -->
     <base-dialog ref="reportingWorkloadDialog" title="工作量填报" :width="'1200px'">
       <template>
-        <reportingWorkload ref="reportingWorkload" :cancelDialog="closeDialog" @track="goTrack"></reportingWorkload>
+        <reportingWorkload ref="reportingWorkload" @changeFlag="changeTaskFlag" :cancelDialog="closeDialog" @track="goTrack"></reportingWorkload>
       </template>
     </base-dialog>
   </div>
@@ -127,6 +127,7 @@ export default {
   data() {
     return {
       activeName: 'first',
+      taskFlag: 'true',
       radio: '1',
       keyword: '',
       waitCount: '',
@@ -156,7 +157,9 @@ export default {
     //搜索框搜索
     search() {
       this.handlerRadio()
-      //this.selectTaskList({ reportWorkName: this.keyword })
+    },
+    changeTaskFlag() {
+      this.taskFlag = false
     },
     //查询表格
     selectTaskList(params) {

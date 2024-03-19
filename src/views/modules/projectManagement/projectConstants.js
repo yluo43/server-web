@@ -31,7 +31,8 @@ export const settlementCycle = [
  */
 export const projectType = [
   { id: 0, name: '合同立项' },
-  { id: 1, name: '研发立项' }
+  { id: 1, name: '研发立项' },
+  { id: 2, name: '运营管理' }
 ]
 
 /**
@@ -80,4 +81,17 @@ export const stateName = [
   { id: 1, name: '已交付' },
   { id: 3, name: '已回款' },
   { id: 2, name: '关闭' }
+]
+
+/**
+ * 项目标签枚举
+ * 0 外包  1 协外  2 大数据 3 AI 4 应用系统
+ * @type {[{name, id: number}]}
+ */
+export const itemLabel = [
+  { id: 0, name: '外包' },
+  { id: 1, name: '协外' },
+  { id: 2, name: '大数据' },
+  { id: 3, name: 'AI' },
+  { id: 4, name: '应用系统' }
 ]

@@ -51,6 +51,11 @@
                           <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
+                      <el-form-item label="报工类别:">
+                        <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
+                          <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                        </el-select>
+                      </el-form-item>
                       <div style="display: contents; float: right">
                         <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
                         <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
@@ -96,6 +101,7 @@ export default {
           { label: '团队负责人', prop: 'teamManagerName' },
           { label: '开始时间', prop: 'startTime' },
           { label: '结束时间', prop: 'overTime' },
+          { label: '报工类别', prop: 'category' },
           { label: '计划投入（%）', prop: 'planRate' },
           { label: '实际投入（%）', prop: 'realityRate' },
           { label: '提交时间', prop: 'commitTime' },
@@ -109,6 +115,7 @@ export default {
       managerIdList: [],
       deptIdList: [],
       teamIdList: [],
+      categories: [],
       dataForm: {
         teamManagerIds: '',
         deptIds: '',
@@ -175,6 +182,19 @@ export default {
     })
   },
   methods: {
+    //查询报工类别
+    selectCategories() {
+      this.$http({
+        url: this.$http.adornUrl(''),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.categories = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
     async init(data) {
       await this.projectTaskListNoPage()
       if (data) {

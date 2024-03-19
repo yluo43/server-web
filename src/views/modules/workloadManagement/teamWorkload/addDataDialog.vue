@@ -8,6 +8,11 @@
               <el-option v-for="item in users" :key="item.empId" :label="item.name" :value="item.empId" />
             </el-select>
           </el-form-item>
+          <el-form-item label="报工类别:" prop="workloadType">
+            <el-select v-model="formData.workloadType" placeholder="请选择报工类别" clearable>
+              <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
           <el-form-item label="成本项目:" prop="projectId">
             <el-select v-model="formData.projectId" placeholder="请选择成本项目" clearable>
               <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
@@ -60,18 +65,22 @@ export default {
         empId: '',
         //成本项目
         projectId: '',
+        workloadType: '',
         //实际投入
         realityRate: ''
       },
+      categories: [],
       dataList: [],
       data: {},
       users: [],
       costItems: [],
       name: '',
       projectName: '',
+      workloadName: '',
       managerName: '',
       rules: {
         empId: [{ required: true, message: '请选择一个成员', trigger: 'change' }],
+        workloadType: [{ required: true, message: '请选择一个报工类别', trigger: 'change' }],
         projectId: [{ required: true, message: '请选择一个成本项目', trigger: 'change' }],
         realityRate: [{ required: true, validator: checkRealityRate, trigger: 'change' }]
       }
@@ -79,6 +88,7 @@ export default {
   },
   mounted() {
     this.getProject()
+    this.getWorkloadType()
   },
   created() {},
   methods: {
@@ -97,7 +107,6 @@ export default {
       // })
     },
     //获取成员
-
     getTeamManager() {
       this.$http({
         url: this.$http.adornUrl('/teamWork/employeeListByTeamManager'),
@@ -113,6 +122,20 @@ export default {
         }
       })
     },
+    //获取报工类别
+    getWorkloadType() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getWorkloadType'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.categories = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+
     //确认
     confirm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -128,7 +151,11 @@ export default {
               this.managerName = item.managerName
             }
           })
-          //发起请求
+          this.categories.forEach((item) => {
+            if (item.id === this.formData.workloadType) {
+              this.workloadName = item.name
+            }
+          })
           let data = {
             id: '',
             name: this.name,
@@ -137,6 +164,8 @@ export default {
             taskId: this.dataList[0].taskId,
             projectId: this.formData.projectId,
             projectName: this.projectName,
+            workloadType: this.formData.workloadType,
+            workloadName: this.workloadName,
             realityRate: this.formData.realityRate,
             planRate: '',
             managerName: this.managerName,
@@ -150,6 +179,7 @@ export default {
             approveTime: '',
             isEdit: false,
             isSelect: false,
+            isCategory: false,
             teamManagerName: this.data.manageName
           }
           this.$emit('addData', data)
