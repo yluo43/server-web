@@ -406,7 +406,7 @@ export default {
   padding: 0 0;
 }
 ::v-deep .el-cascader-menu {
-  width: 190px;
+  width: 190px !important;
 }
 ::v-deep .el-select {
   width: 230px !important;

@@ -157,13 +157,6 @@ export default {
       } else {
         this.$message.error(data.msg)
       }
-      // .then(({ data }) => {
-      //   if (data && data.code === 200) {
-      //     this.commandList = data.payload
-      //   } else {
-      //     this.$message.error(data.msg)
-      //   }
-      // })
     },
     onSelect(selection) {
       if (selection.length > 0) {

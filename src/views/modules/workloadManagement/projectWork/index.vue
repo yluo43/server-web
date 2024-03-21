@@ -55,8 +55,8 @@
                   <el-col :span="18">
                     <el-radio-group v-model="dataForm.taskStatus" @change="handlerRadio">
                       <el-radio-button :label="null">全部</el-radio-button>
-                      <el-radio-button :label="0">待开始</el-radio-button>
-                      <el-radio-button :label="1">填报中</el-radio-button>
+                      <!-- <el-radio-button :label="0">待开始</el-radio-button>
+                      <el-radio-button :label="1">填报中</el-radio-button> -->
                       <el-radio-button :label="2">确认中</el-radio-button>
                       <el-radio-button :label="3">待归档</el-radio-button>
                       <el-radio-button :label="4">已归档</el-radio-button>
@@ -176,7 +176,7 @@ export default {
   },
   methods: {
     renderContent(h, { node, data, store }) {
-      if (data.isConfirm === '0') {
+      if (data.isConfirm === '1') {
         return (
           <el-badge value='待确认' class='small-badge'>
             <span> {node.label}</span>

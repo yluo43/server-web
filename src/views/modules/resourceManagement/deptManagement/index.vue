@@ -102,6 +102,7 @@ export default {
         children: 'children',
         label: 'name'
       },
+      op: '',
       managerRequired: false,
       showStatus: false,
       drawer: false,

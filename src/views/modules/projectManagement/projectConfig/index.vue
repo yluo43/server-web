@@ -293,7 +293,7 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/projectSet/projectSetPage'),
         method: 'get',
-        params: { curPage: -1 }
+        params: { curPage: 1, pageSize: 500 }
       }).then(({ data }) => {
         if (data.success) {
           this.psList = [...data.payload.list]

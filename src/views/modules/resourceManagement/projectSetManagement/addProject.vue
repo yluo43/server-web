@@ -17,7 +17,7 @@
         </template>
         <template v-if="dataForm.projectSource === 1">
           <el-form-item label="项目类型:" prop="projectType">
-            <el-radio-group v-model="dataForm.vo.projectType" style="width: 320px">
+            <el-radio-group v-model="dataForm.vo.projectType" style="width: 320px" @input="changeProjectType">
               <el-radio :label="0">合同立项</el-radio>
               <el-radio :label="1">研发立项</el-radio>
               <el-radio :label="2">运营管理</el-radio>
@@ -26,8 +26,9 @@
           <el-form-item label="项目名称:" prop="vo.name">
             <el-input v-model="dataForm.vo.name" clearable></el-input>
           </el-form-item>
-          <el-form-item label="归属部门:" prop="vo.deptId">
-            <el-select v-model="dataForm.vo.deptId" placeholder="请选择" @change="changeManagerList">
+          <el-form-item label="归属部门:" prop="vo.deptName">
+            <el-input v-model="dataForm.vo.deptName" disabled></el-input>
+            <!-- <el-select v-model="dataForm.vo.deptId" placeholder="请选择" @change="changeManagerList">
               <el-option
                 v-for="item in deptList"
                 :key="item.id"
@@ -35,7 +36,7 @@
                 :value="item.id"
                 :disabled="item.name == '新讯数字科技有限公司'"
               ></el-option>
-            </el-select>
+            </el-select> -->
           </el-form-item>
           <el-form-item label="归属团队:" prop="vo.teamId">
             <el-select v-model="dataForm.vo.teamId" placeholder="请选择">
@@ -51,7 +52,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="项目标签:" prop="vo.labels" v-if="dataForm.vo.projectType != 2">
-            <el-select clearable v-model="dataForm.vo.labels" placeholder="请选择项目标签">
+            <el-select clearable v-model="dataForm.vo.labels" multiple collapse-tags placeholder="请选择项目标签">
               <el-option v-for="item in itemLabels" :key="item.id" :label="item.labelName" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -99,17 +100,17 @@
             <el-input v-model="dataForm.vo.projectId" disabled></el-input>
           </el-form-item>
           <el-form-item label="合同金额:" prop="vo.contractAmount" v-if="dataForm.vo.projectType === 0">
-            <el-input v-model="dataForm.vo.contractAmount" placeholder="请输入合同金额" clearable>
+            <el-input style="margin-top: 6px" v-model="dataForm.vo.contractAmount" placeholder="请输入合同金额" clearable>
               <template slot="append">元</template>
             </el-input>
           </el-form-item>
           <el-form-item label="总预算:" prop="vo.generalBudget" v-if="dataForm.vo.projectType !== 2">
-            <el-input v-model="dataForm.vo.generalBudget" placeholder="请输入总预算" clearable>
+            <el-input style="margin-top: 6px" v-model="dataForm.vo.generalBudget" placeholder="请输入总预算" clearable>
               <template slot="append">元</template>
             </el-input>
           </el-form-item>
           <el-form-item label="目标利润率:" prop="vo.targetRate" v-if="dataForm.vo.projectType !== 2">
-            <el-input v-model="dataForm.vo.targetRate" placeholder="请输入目标利润率" clearable>
+            <el-input style="margin-top: 6px" v-model="dataForm.vo.targetRate" placeholder="请输入目标利润率" clearable>
               <template slot="append">%</template>
             </el-input>
           </el-form-item>
@@ -136,7 +137,7 @@ export default {
       rules: {
         projectId: [{ required: true, message: '请选择项目名称', trigger: 'change' }],
         'vo.name': [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
-        'vo.deptId': [{ required: true, message: '请选择归属部门', trigger: 'change' }],
+        // 'vo.deptId': [{ required: true, message: '请选择归属部门', trigger: 'change' }],
         'vo.teamId': [{ required: true, message: '请选择归属团队', trigger: 'change' }],
         'vo.managerId': [{ required: true, message: '请选择项目经理', trigger: 'change' }],
         'vo.labels': [{ required: true, message: '请选择项目标签', trigger: 'change' }],
@@ -159,11 +160,12 @@ export default {
           projectType: 0,
           name: '',
           deptId: null,
+          deptName: null,
           teamId: null,
           psId: null,
           psName: '',
           managerId: null,
-          labels: null,
+          labels: [],
           approvalDate: '',
           deliveryDate: '',
           firstParty: null,
@@ -245,6 +247,7 @@ export default {
     }
   },
   mounted() {
+    this.selectItemLabes()
     this.$http({
       url: this.$http.adornUrl('/common/getProject'),
       method: 'get'
@@ -281,6 +284,30 @@ export default {
         }
       })
     },
+    // 项目类型变更时
+    changeProjectType(projectType) {
+      // this.editProjectInfoFormRules.contractType[0].required = projectType === 0
+      // this.editProjectInfoFormRules.contractAmount[0].required = projectType === 0
+      this.dataForm.vo = {
+        projectType: projectType,
+        name: null,
+        deptId: this.dataForm.vo.deptId,
+        deptName: this.dataForm.vo.deptName,
+        teamId: null,
+        psId: this.dataForm.vo.psId,
+        psName: this.dataForm.vo.psName,
+        managerId: null,
+        labels: [],
+        approvalDate: null,
+        deliveryDate: null,
+        firstParty: null,
+        contractName: null,
+        contractNo: null,
+        contractType: null,
+        projectId: null,
+        settlementCycle: projectType === 0 ? 1 : null
+      }
+    },
     selectTeam(deptId) {
       this.$http({
         url: this.$http.adornUrl('/common/getTeamByDept?deptId=' + deptId),
@@ -294,12 +321,28 @@ export default {
       })
     },
     init(data) {
+      console.log(data)
       this.dataForm.id = data.dataRow.id
       this.deptList = data.deptList
-      this.teamList = data.teamList
-      this.dataForm.vo.psId = data.dataRow.psId
+      this.dataForm.vo.deptId = data.dataRow.deptId
+      this.dataForm.vo.deptName = data.dataRow.deptName
+      // this.teamList = data.teamList
+      this.dataForm.vo.psId = data.dataRow.id
       this.dataForm.vo.psName = data.dataRow.psName
-
+      if (this.dataForm.vo.deptId == '' || this.dataForm.vo.deptId == null) {
+        return false
+      }
+      this.selectTeam(this.dataForm.vo.deptId)
+      this.$http({
+        url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + this.dataForm.vo.deptId),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.managerList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
       // this.$http({
       //   url: this.$http.adornUrl('/common/getManager'),
       //   params: { pid: 4 },
@@ -312,25 +355,25 @@ export default {
       //   }
       // })
     },
-    changeManagerList() {
-      if (this.dataForm.vo.deptId == '' || this.dataForm.vo.deptId == null) {
-        return false
-      }
-      this.dataForm.vo.teamId = ''
-      this.dataForm.vo.managerId = ''
-      let deptId = this.dataForm.vo.deptId
-      this.selectTeam(deptId)
-      this.$http({
-        url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
-        method: 'get'
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.managerList = data.payload
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
+    // changeManagerList() {
+    //   if (this.dataForm.vo.deptId == '' || this.dataForm.vo.deptId == null) {
+    //     return false
+    //   }
+    //   this.dataForm.vo.teamId = ''
+    //   this.dataForm.vo.managerId = ''
+    //   let deptId = this.dataForm.vo.deptId
+    //   this.selectTeam(deptId)
+    //   this.$http({
+    //     url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
+    //     method: 'get'
+    //   }).then(({ data }) => {
+    //     if (data && data.code === 200) {
+    //       this.managerList = data.payload
+    //     } else {
+    //       this.$message.error(data.msg)
+    //     }
+    //   })
+    // },
     addCheck() {
       console.log(this.dataForm)
       this.$refs.dataFormRef.validate((valid) => {

@@ -272,7 +272,7 @@ export default {
       let data = {
         empName: this.formData.userName,
         empId: this.formData.empId,
-        workloadIds: this.formData.workLoadIds.toString(),
+        workloadType: this.formData.workLoadIds.toString() || null,
         managerIds: this.formData.managerIds.toString(),
         projectIds: this.formData.projectIds.toString(),
         teamIdList: this.checkTeam.toString() || this.teamId

@@ -109,7 +109,7 @@
     <!-- 工作量填报 -->
     <base-dialog ref="reportingWorkloadDialog" title="工作量填报" :width="'1200px'">
       <template>
-        <reportingWorkload ref="reportingWorkload" @changeFlag="changeTaskFlag" :cancelDialog="closeDialog" @track="goTrack"></reportingWorkload>
+        <reportingWorkload ref="reportingWorkload" :cancelDialog="closeDialog" @track="goTrack"></reportingWorkload>
       </template>
     </base-dialog>
   </div>
@@ -158,13 +158,12 @@ export default {
     search() {
       this.handlerRadio()
     },
-    changeTaskFlag() {
-      this.taskFlag = false
-    },
+
     //查询表格
     selectTaskList(params) {
       this.$refs.taskListTable.refresh(params)
     },
+
     //获取代办信息
     getMyTaskCount() {
       this.$http({

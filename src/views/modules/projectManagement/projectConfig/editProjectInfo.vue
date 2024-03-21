@@ -274,6 +274,19 @@ export default {
         }
       })
     },
+    //部门下的项目集
+    selectProjectSetByDept(deptId) {
+      this.$http({
+        url: this.$http.adornUrl('/projectSet/projectSetByDept?deptId=' + deptId),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.psList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
     changeManagerList() {
       if (this.editProjectInfoFormData.deptId == '' || this.editProjectInfoFormData.deptId == null) {
         return false
@@ -281,7 +294,9 @@ export default {
       let deptId = this.editProjectInfoFormData.deptId
       this.editProjectInfoFormData.teamId = ''
       this.editProjectInfoFormData.managerId = ''
+      this.editProjectInfoFormData.psId = ''
       this.selectTeam(deptId)
+      this.selectProjectSetByDept(deptId)
       this.$http({
         url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
         method: 'get'
@@ -298,7 +313,7 @@ export default {
       this.operateType = initData.operateType
       this.deptList = initData.deptList
       // this.teamList = initData.teamList
-      this.psList = initData.psList
+      // this.psList = initData.psList
       //this.managerList = initData.managerList
       this.contractTypeList = initData.contractTypeList
       this.itemLabels = initData.itemLabels
@@ -320,6 +335,7 @@ export default {
         }
         let deptId = this.editProjectInfoFormData.deptId
         this.selectTeam(deptId)
+        this.selectProjectSetByDept(deptId)
         this.$http({
           url: this.$http.adornUrl('/common/getManagerByDept?roleId=4&deptId=' + deptId),
           method: 'get'

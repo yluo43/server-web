@@ -225,6 +225,10 @@ export default {
             this.$set(item, 'isEdit', false)
             this.$set(item, 'isSelect', false)
             this.$set(item, 'isCategory', false)
+            if (!item.workloadName) {
+              item.workloadName = '项目工作'
+              item.workloadType = 1
+            }
           })
           this.tableData = [...data.payload.pmsWorkloadVoList]
           this.tableData.sort(this.compare('empId'))
@@ -296,12 +300,19 @@ export default {
     //提交
     submitData() {
       let arr = this.sortClass(this.tableData)
+      let workloadNameFlag = this.tableData.every((item) => {
+        return item.workloadName
+      })
       let projectNameFlag = this.tableData.every((item) => {
         return item.projectName
       })
       let realityRateFlag = this.tableData.every((item) => {
         return item.realityRate > 0
       })
+      if (!workloadNameFlag) {
+        this.$message.error('报工类别不能为空')
+        return false
+      }
       if (!projectNameFlag) {
         this.$message.error('成本项目不能为空')
         return false
@@ -332,7 +343,7 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 200) {
             this.selectWorkload()
-            this.$emit('changeFlag')
+            // this.$emit('changeFlag', this.taskId, this.teamId)
             this.$refs.successDialog.show()
             this.$nextTick(() => {
               this.$refs.success.init(this.taskInfo)

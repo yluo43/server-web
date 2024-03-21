@@ -49,9 +49,10 @@
                   <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
                 </el-select>
               </el-form-item>
-
-              <el-button type="primary" icon="el-icon-search" style="margin-left: 50px" @click="selectData">查询</el-button>
-              <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
+              <div style="margin-bottom: 10px; margin-left: 30px">
+                <el-button type="primary" icon="el-icon-search" @click="selectData">查询</el-button>
+                <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
+              </div>
             </el-form>
           </div>
           <div class="row-box">
@@ -195,7 +196,7 @@ export default {
         empId: this.formData.empId,
         deptIds: this.formData.deptIds.toString(),
         teamIds: this.formData.teamIds.toString(),
-        workLoads: this.formData.workLoadIds.toString(),
+        workloadType: this.formData.workLoadIds.toString(),
         teamPersonIds: this.formData.teamLeader.toString(),
         projectIds: this.formData.costItem.toString(),
         managerIds: this.formData.projectManager.toString()

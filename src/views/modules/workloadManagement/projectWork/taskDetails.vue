@@ -52,7 +52,7 @@
                         </el-select>
                       </el-form-item>
                       <el-form-item label="报工类别:">
-                        <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
+                        <el-select v-model="workloadType" multiple collapse-tags placeholder="请选择">
                           <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
@@ -101,7 +101,7 @@ export default {
           { label: '团队负责人', prop: 'teamManagerName' },
           { label: '开始时间', prop: 'startTime' },
           { label: '结束时间', prop: 'overTime' },
-          { label: '报工类别', prop: 'category' },
+          { label: '报工类别', prop: 'workloadName' },
           { label: '计划投入（%）', prop: 'planRate' },
           { label: '实际投入（%）', prop: 'realityRate' },
           { label: '提交时间', prop: 'commitTime' },
@@ -116,10 +116,12 @@ export default {
       deptIdList: [],
       teamIdList: [],
       categories: [],
+      workloadType: [],
       dataForm: {
         teamManagerIds: '',
         deptIds: '',
         teamIds: '',
+        wordloadType: '',
         projectId: '',
         empName: '',
         empId: '',
@@ -133,6 +135,11 @@ export default {
     deptIdList(newName, oldName) {
       if (newName) {
         this.dataForm.deptIds = newName.join(',')
+      }
+    },
+    workloadType(newName, oldName) {
+      if (newName) {
+        this.dataForm.wordloadType = newName.join(',')
       }
     },
     managerIdList(newName, oldName) {
@@ -180,12 +187,13 @@ export default {
         this.$message.error(data.msg)
       }
     })
+    this.getWorkloadType()
   },
   methods: {
-    //查询报工类别
-    selectCategories() {
+    //获取报工类别
+    getWorkloadType() {
       this.$http({
-        url: this.$http.adornUrl(''),
+        url: this.$http.adornUrl('/common/getWorkloadType'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
