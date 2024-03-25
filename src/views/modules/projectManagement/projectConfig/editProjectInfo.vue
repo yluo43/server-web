@@ -122,7 +122,7 @@
           </div>
         </el-form-item>
         <el-form-item v-if="operateType !== 'add'" label="项目编码:" prop="projectId">
-          <el-input v-model="editProjectInfoFormData.projectId" disabled></el-input>
+          <el-input v-model="editProjectInfoFormData.projectId" disabled style="width: 80%"></el-input>
         </el-form-item>
         <el-form-item v-if="operateType === 'update'" label="状态:" prop="state">
           <el-radio-group v-model="editProjectInfoFormData.state">
@@ -317,16 +317,19 @@ export default {
       //this.managerList = initData.managerList
       this.contractTypeList = initData.contractTypeList
       this.itemLabels = initData.itemLabels
+      console.log(initData.rowData)
       if (initData.rowData) {
         Object.assign(this.editProjectInfoFormData, initData.rowData)
-        const labelNameArr = initData.rowData.labelNames.split(',')
-        this.editProjectInfoFormData.labels = []
-        this.itemLabels.map((item) => {
-          if (labelNameArr.indexOf(item.labelName) != -1) {
-            this.editProjectInfoFormData.labels.push(item.id)
-          }
-        })
-        this.editProjectInfoFormData.labelNames = ''
+        if (initData.rowData.projectType != 2) {
+          const labelNameArr = initData.rowData.labelNames.split(',')
+          this.editProjectInfoFormData.labels = []
+          this.itemLabels.map((item) => {
+            if (labelNameArr.indexOf(item.labelName) != -1) {
+              this.editProjectInfoFormData.labels.push(item.id)
+            }
+          })
+          this.editProjectInfoFormData.labelNames = ''
+        }
       }
 
       if (initData.operateType == 'update') {
