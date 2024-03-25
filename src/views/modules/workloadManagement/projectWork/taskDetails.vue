@@ -249,6 +249,7 @@ export default {
       this.managerIdList = []
       this.deptIdList = []
       this.teamIdList = []
+      this.workloadType = []
     },
     onSelect(selection) {
       if (selection.length > 0) {

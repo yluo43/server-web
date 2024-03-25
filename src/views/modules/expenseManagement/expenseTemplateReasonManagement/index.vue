@@ -437,7 +437,7 @@ export default {
 }
 
 ::v-deep .editForm .el-form-item__label {
-  width: 120px !important;
+  width: 125px !important;
 }
 ::v-deep .editForm .el-form-item {
   width: 100% !important;

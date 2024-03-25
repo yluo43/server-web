@@ -74,13 +74,13 @@
             <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
           </div>
         </el-form>
-        <div class="chooseResult">
+        <!-- <div class="chooseResult">
           <span>已选中{{ count }}项</span>
-        </div>
+        </div> -->
       </el-header>
-      <div style="margin: 10px 0 10px 13px">
+      <!-- <div style="margin: 10px 0 10px 13px">
         <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
-      </div>
+      </div> -->
       <el-main>
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
           <template v-slot:clientType="row">

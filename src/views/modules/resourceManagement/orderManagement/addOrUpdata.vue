@@ -268,10 +268,14 @@ export default {
               this.$nextTick(() => {
                 let settlementDtos = this.orderList[i].settlementDtos
                 settlementDtos.forEach((item) => {
-                  item.clientTypeShow = true
-                  item.settlementFileShow = true
-                  item.returnFileShow = true
-                  item.returnShow = true
+                  this.$set(item, 'clientTypeShow', true)
+                  this.$set(item, 'settlementFileShow', true)
+                  this.$set(item, 'returnFileShow', true)
+                  this.$set(item, 'returnShow', true)
+                  //item.clientTypeShow = true
+                  // item.settlementFileShow = true
+                  //item.returnFileShow = true
+                  //item.returnShow = true
                   item.settlementFileList = []
                   item.returnFileList = []
                   if (item.settlementFilePath) {
@@ -398,12 +402,13 @@ export default {
       scope.item.row.settlementFileShow = true
       scope.item.row.settlementFileList = fileList
       scope.item.row.settlementFilePath = null
-      //  scope.item.row.settlementFile = null
+      scope.item.row.settlementFile = ''
     },
     handleSecondRemove(file, fileList, scope, index) {
       scope.item.row.returnFileShow = true
       scope.item.row.returnFileList = fileList
       scope.item.row.returnFilePath = ''
+      scope.item.returnFile = ''
     },
     handleFileChange(file, fileList, scope, index) {
       if (file) {
@@ -548,6 +553,9 @@ export default {
 ::v-deep .el-step__head.is-process {
   color: #008aff;
   border-color: #008aff;
+}
+.el-input__icon {
+  line-height: 30px;
 }
 .title {
   color: #008aff; /* 设置标题字体颜色为红色 */
