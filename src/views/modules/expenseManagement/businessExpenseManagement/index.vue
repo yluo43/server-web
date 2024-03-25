@@ -9,50 +9,37 @@
             </el-form-item>
 
             <el-form-item label="成本中心:" prop="costCenters">
-              <el-select  v-model="dataForm.costCenters" placeholder="请选择" :multiple="true" :collapse-tags="true" >
-                <el-option      v-for="costCenter in costCenters"
-                                :key="costCenter.id"
-                                :label="costCenter.deptName"
-                                :value="costCenter.id"
-                                multiple="true"
-                                :disabled='costCenter.deptName =="新讯数字科技有限公司"'
-                >
-                </el-option>
+              <el-select v-model="dataForm.costCenters" placeholder="请选择" :multiple="true" :collapse-tags="true">
+                <el-option
+                  v-for="costCenter in costCenters"
+                  :key="costCenter.id"
+                  :label="costCenter.deptName"
+                  :value="costCenter.id"
+                  multiple="true"
+                  :disabled="costCenter.deptName == '新讯数字科技有限公司'"
+                ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptNames">
-              <el-select  v-model="dataForm.deptNames" placeholder="请选择" :multiple="true" :collapse-tags="true">
-              <el-option      v-for="dept in deptNames"
-                              :key="dept.id"
-                              :label="dept.deptName"
-                              :value="dept.id"
-                              multiple="true"
-                              :disabled='dept.deptName =="新讯数字科技有限公司"'
-              >
-              </el-option>
+              <el-select v-model="dataForm.deptNames" placeholder="请选择" :multiple="true" :collapse-tags="true">
+                <el-option
+                  v-for="dept in deptNames"
+                  :key="dept.id"
+                  :label="dept.deptName"
+                  :value="dept.id"
+                  multiple="true"
+                  :disabled="dept.deptName == '新讯数字科技有限公司'"
+                ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="事由:" prop="reason">
-              <el-select  v-model="dataForm.reason" placeholder="请选择" :multiple="true" :collapse-tags="true">
-
-              <el-option      v-for="item in reason"
-                              :key="item.id"
-                              :label='item.name+"("+item.deptName+")"'
-                              :value="item.id"
-                              multiple="true"
-              >
-              </el-option>
+              <el-select v-model="dataForm.reason" placeholder="请选择" :multiple="true" :collapse-tags="true">
+                <el-option v-for="item in reason" :key="item.id" :label="item.name + '(' + item.deptName + ')'" :value="item.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamNames">
-              <el-select  v-model="dataForm.teamNames" placeholder="请选择" :multiple="true" :collapse-tags="true">
-              <el-option      v-for="team in teamNames"
-                              :key="team.id"
-                              :label="team.name"
-                              :value="team.id"
-                              multiple="true"
-              >
-              </el-option>
+              <el-select v-model="dataForm.teamNames" placeholder="请选择" :multiple="true" :collapse-tags="true">
+                <el-option v-for="team in teamNames" :key="team.id" :label="team.name" :value="team.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
 
@@ -194,15 +181,15 @@
               <el-input v-model="editDataForm.teamName" clearable disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="成本中心:" prop="costCenters">
-              <el-select  v-model="editDataForm.centerId"  @change="freshReason">
-                <el-option      v-for="costCenter in costCenters"
-                                :key="costCenter.id"
-                                :label="costCenter.deptName"
-                                :value="costCenter.id"
-                                multiple="true"
-                                :disabled='costCenter.deptName =="新讯数字科技有限公司"'
-                >
-                </el-option>
+              <el-select v-model="editDataForm.centerId" @change="freshReason">
+                <el-option
+                  v-for="costCenter in costCenters"
+                  :key="costCenter.id"
+                  :label="costCenter.deptName"
+                  :value="costCenter.id"
+                  multiple="true"
+                  :disabled="costCenter.deptName == '新讯数字科技有限公司'"
+                ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="出发日期:" prop="empId" disabled="disabled">
@@ -215,14 +202,8 @@
               <el-input v-model="editDataForm.backCity" clearable disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="事由:" prop="reason">
-              <el-select  v-model="editDataForm.reason"  >
-                <el-option      v-for="item in reasonByDept"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id"
-                                multiple="true"
-                >
-                </el-option>
+              <el-select v-model="editDataForm.reason">
+                <el-option v-for="item in reasonByDept" :key="item.id" :label="item.name" :value="item.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="宾馆名称:" prop="hotelName">
@@ -237,9 +218,9 @@
               <el-input v-model="editDataForm.totalMoney" clearable disabled="disabled"></el-input>
             </el-form-item>
 
-            <div style="display: inline-block; margin-top: 60px">
-              <el-button type="primary" icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">保存</el-button>
-              <el-button type="primary" icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
+              <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">保存</el-button>
+              <el-button @click="drawer = false">取消</el-button>
             </div>
           </el-form>
         </div>
@@ -293,35 +274,35 @@ export default {
         reason: '',
         startDate: '',
         teamNames: '',
-        hotelName:'',
-        totalMoney:'',
-        updateUser:'',
-        backCity:'',
-        businesTravel:'',
-        centerId:''
+        hotelName: '',
+        totalMoney: '',
+        updateUser: '',
+        backCity: '',
+        businesTravel: '',
+        centerId: ''
       },
-      costCenters:[],
-      deptNames:[],
-      teamNames:[],
-      empLocations:[],
-      reason:[],
-      reasonByDept:[],
+      costCenters: [],
+      deptNames: [],
+      teamNames: [],
+      empLocations: [],
+      reason: [],
+      reasonByDept: [],
       tableData: {
         theads: [
-          {label: '用户姓名', prop: 'account'},
-          {label: '工号', prop: 'empId'},
-          {label: '归属部门', prop: 'deptName'},
-          {label: '归属团队', prop: 'teamName'},
-          {label: '成本中心', prop: 'costCenter'},
-          {label: '出发日期', prop: 'startDate'},
-          {label: '返回日期', prop: 'backDate'},
-          {label: '目的城市', prop: 'backCity'},
-          {label: '事由', prop: 'reasonName'},
-          {label: '商旅100', prop: 'businesTravel'},
-          {label: '宾馆名称', prop: 'hotelName'},
-          {label: '出差合计(元)', prop: 'totalMoney',slotName: 'totalMoney'},
-          {label: '导入时间', prop: 'createTime'},
-          {label: '操作', prop: 'clientType', slotName: 'clientType'}
+          { label: '用户姓名', prop: 'account' },
+          { label: '工号', prop: 'empId' },
+          { label: '归属部门', prop: 'deptName' },
+          { label: '归属团队', prop: 'teamName' },
+          { label: '成本中心', prop: 'costCenter' },
+          { label: '出发日期', prop: 'startDate' },
+          { label: '返回日期', prop: 'backDate' },
+          { label: '目的城市', prop: 'backCity' },
+          { label: '事由', prop: 'reasonName' },
+          { label: '商旅100', prop: 'businesTravel' },
+          { label: '宾馆名称', prop: 'hotelName' },
+          { label: '出差合计(元)', prop: 'totalMoney', slotName: 'totalMoney' },
+          { label: '导入时间', prop: 'createTime' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType' }
         ],
         url: '/tripCost/tripCostListPage'
       }
@@ -382,15 +363,13 @@ export default {
     })
   },
   methods: {
-
-    freshReason(){
-
+    freshReason() {
       var deptId = this.editDataForm.deptId
       //根据部门加载事由
       this.$http({
-        url: this.$http.adornUrl('/report/amount/getAllReasonFromStaticByDept?deptId='+deptId),
+        url: this.$http.adornUrl('/report/amount/getAllReasonFromStaticByDept?deptId=' + deptId),
         method: 'get'
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
           this.reasonByDept = data.payload
         } else {
@@ -398,19 +377,16 @@ export default {
         }
       })
       this.editDataForm.reason = ''
-
-
     },
 
-    alter(row){
+    alter(row) {
       let data = row.item
-
 
       //根据部门加载事由
       this.$http({
-        url: this.$http.adornUrl('/report/amount/getAllReasonFromStaticByDept?deptId='+data.deptId),
+        url: this.$http.adornUrl('/report/amount/getAllReasonFromStaticByDept?deptId=' + data.deptId),
         method: 'get'
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
           this.reasonByDept = data.payload
         } else {

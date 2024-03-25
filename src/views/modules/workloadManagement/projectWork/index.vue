@@ -155,7 +155,7 @@ export default {
           { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName' },
-          { label: '开始确认时间', prop: 'reportStartTime' },
+          { label: '开始确认时间', prop: 'startConfirmTime' },
           { label: '确认天数', prop: 'affirmDay' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }

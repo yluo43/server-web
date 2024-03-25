@@ -63,7 +63,14 @@
               </el-select>
             </el-form-item> -->
             <el-form-item label="关联项目:" prop="value">
-              <el-cascader clearable style="width: 230px" v-model="editDataForm.value" :options="options" @change="handleChange"></el-cascader>
+              <el-cascader
+                clearable
+                :append-to-body="false"
+                style="width: 230px"
+                v-model="editDataForm.value"
+                :options="options"
+                @change="handleChange"
+              ></el-cascader>
             </el-form-item>
             <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">保存</el-button>
@@ -405,9 +412,13 @@ export default {
   color: #333;
   padding: 0 0;
 }
-::v-deep .el-cascader-menu {
-  width: 190px !important;
+::v-deep .el-drawer__body {
+  overflow: hidden;
 }
+/* ::v-deep .el-cascader-menu {
+  width: 190px;
+} */
+
 ::v-deep .el-select {
   width: 230px !important;
 }

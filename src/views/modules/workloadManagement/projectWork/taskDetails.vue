@@ -121,7 +121,7 @@ export default {
         teamManagerIds: '',
         deptIds: '',
         teamIds: '',
-        wordloadType: '',
+        workloadType: '',
         projectId: '',
         empName: '',
         empId: '',
@@ -139,7 +139,7 @@ export default {
     },
     workloadType(newName, oldName) {
       if (newName) {
-        this.dataForm.wordloadType = newName.join(',')
+        this.dataForm.workloadType = newName.join(',')
       }
     },
     managerIdList(newName, oldName) {

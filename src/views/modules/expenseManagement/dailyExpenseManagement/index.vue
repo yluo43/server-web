@@ -173,9 +173,9 @@
               <el-input v-model="editDataForm.totalMoney" clearable disabled="disabled"></el-input>
             </el-form-item>
 
-            <div style="display: inline-block; margin-top: 60px">
-              <el-button type="primary" icon="el-icon-search" style="margin-right: 20px" @click="editSubmit()">保存</el-button>
-              <el-button type="primary" icon="el-icon-refresh-right" @click="drawer = false">取消</el-button>
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
+              <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">保存</el-button>
+              <el-button @click="drawer = false">取消</el-button>
             </div>
           </el-form>
         </div>

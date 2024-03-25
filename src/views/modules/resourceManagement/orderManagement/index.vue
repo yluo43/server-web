@@ -74,9 +74,15 @@
             <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
           </div>
         </el-form>
+        <div class="chooseResult">
+          <span>已选中{{ count }}项</span>
+        </div>
       </el-header>
+      <div style="margin: 10px 0 10px 13px">
+        <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
+      </div>
       <el-main>
-        <baseTable :tableData="tableData" ref="table" :multiSelect="true">
+        <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
@@ -120,6 +126,7 @@ export default {
       teamIdList: [],
       approvalDate: [],
       deliveryDate: [],
+      count: 0,
       contractTypeList: [],
       psIdsList: [],
       settlementCyclesList: [],
@@ -162,6 +169,7 @@ export default {
       managerList: [],
       deptList: [],
       teamList: [],
+      deleteIds: [],
       psIdOptions: [],
       settlementCyclesOptions: [],
       contractTypeOptions: [
@@ -288,6 +296,28 @@ export default {
         this.$refs.table.refresh(this.dataForm)
       })
     },
+    //表格选中
+    onSelect(selection) {
+      this.deleteIds = []
+      if (selection.length > 0) {
+        this.count = selection.length
+        selection.forEach((item) => {
+          this.deleteIds.push(item.id)
+        })
+      } else {
+        this.count = 0
+      }
+    },
+    //批量下载
+    download() {
+      if (this.deleteIds.length <= 0) {
+        this.$message.error('当前未选中任何数据！')
+        return
+      }
+      let form = { ...this.dataForm }
+      form.ids = this.deleteIds
+      this.$http.downloadPost(this.$http.adornUrl('/staticItem/export'), this.$http.adornParams(form), this)
+    },
     add(row) {
       this.title = '项目订单'
       this.$refs.addOrUpdateDrawer.show()
@@ -327,5 +357,14 @@ export default {
 .el-icon-circle-plus:hover {
   cursor: pointer;
   /* 添加其他想要的样式 */
+}
+.chooseResult {
+  height: 30px;
+  line-height: 30px;
+  margin: 0 auto;
+  display: block;
+  background: #e9f3ff;
+  border-radius: 6px;
+  padding-left: 20px;
 }
 </style>

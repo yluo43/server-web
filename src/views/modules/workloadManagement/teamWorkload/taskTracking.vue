@@ -123,7 +123,7 @@ export default {
       queryData: {},
       tableData: [],
       spanArr: [],
-      pos: '',
+      pos: 0,
       checkTeam: [],
       teams: [],
       empId: '1260'

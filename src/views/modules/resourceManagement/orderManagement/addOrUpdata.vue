@@ -133,7 +133,7 @@
                   <el-button icon="el-icon-upload2" :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow" style="width: 100px">
                     上传文件
                   </el-button>
-                  <div v-if="scope.item.row.returnFileShow" slot="tip" class="el-upload__tip">支持扩展名：.pdf</div>
+                  <div slot="tip" v-if="scope.item.row.returnFileShow" class="el-upload__tip">支持扩展名：.pdf</div>
                 </el-upload>
               </template>
               <template v-slot:clientType="scope">
@@ -278,9 +278,13 @@ export default {
                     item.settlementFileList = [{ name: item.settlementFilePath.match(/\/([^/]+)$/)[1] }]
                     item.settlementFileShow = false
                   }
-                  if (item.returnFilePath) {
-                    item.returnFileList = [{ name: item.returnFilePath.match(/\/([^/]+)$/)[1] }]
-                    item.returnFileShow = false
+                  if (item.state === 0) {
+                    item.returnFileList = []
+                  } else {
+                    if (item.returnFilePath) {
+                      item.returnFileList = [{ name: item.returnFilePath.match(/\/([^/]+)$/)[1] }]
+                      item.returnFileShow = false
+                    }
                   }
                   if (item.state === 3) {
                     item.returnShow = false
@@ -391,10 +395,10 @@ export default {
       })
     },
     handleFirstRemove(file, fileList, scope, index) {
-      console.log(scope.item.row)
       scope.item.row.settlementFileShow = true
       scope.item.row.settlementFileList = fileList
-      scope.item.row.settlementFilePath = ''
+      scope.item.row.settlementFilePath = null
+      //  scope.item.row.settlementFile = null
     },
     handleSecondRemove(file, fileList, scope, index) {
       scope.item.row.returnFileShow = true
@@ -412,6 +416,7 @@ export default {
       if (file) {
         scope.item.row.returnFileShow = false
         scope.item.row.returnFile = file.raw
+        console.log(scope.item.row)
       }
       this.$refs.table[index].options.dataList[scope.item.$index] = scope.item.row
     },
@@ -496,20 +501,24 @@ export default {
           url: this.$http.adornUrl('/costItems/settlement/update'),
           method: 'put',
           data: formData
-        }).then(({ data }) => {
-          this.flag = true
-          if (data.success) {
-            this.$emit('refreshDataList')
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
-            this.cancelSettlement(scope, index)
-          } else {
-            this.$message.error(data.msg)
-            this.dataForm.orderFile = data.orderFilePath
-          }
         })
+          .then(({ data }) => {
+            this.flag = true
+            if (data.success) {
+              this.$emit('refreshDataList')
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.cancelSettlement(scope, index)
+            } else {
+              this.$message.error(data.msg)
+              this.dataForm.orderFile = data.orderFilePath
+            }
+          })
+          .catch(() => {
+            this.flag = true
+          })
       }
     },
     cancelSettlement(scope, index) {
