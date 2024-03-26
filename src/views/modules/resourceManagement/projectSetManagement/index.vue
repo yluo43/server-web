@@ -4,18 +4,18 @@
       <el-header style="height: auto">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <el-form-item label="项目集名称:" prop="psName">
-            <el-input v-model="dataForm.psName" placeholder="请输入关键字" clearable></el-input>
+            <el-input v-model="dataForm.psName" placeholder="请输入项目集名称" clearable></el-input>
           </el-form-item>
           <el-form-item label="项目集ID:" prop="psId">
-            <el-input v-model="dataForm.psId" placeholder="请输入编码" clearable></el-input>
+            <el-input v-model="dataForm.psId" placeholder="请输入项目集ID" clearable></el-input>
           </el-form-item>
           <el-form-item label="负责人:">
-            <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择负责人">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="归属部门:">
-            <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
               <el-option
                 v-for="item in deptList"
                 :key="item.id"
@@ -26,7 +26,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="归属团队:">
-            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -53,7 +53,7 @@
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="状态:" prop="state">
-            <el-select clearable v-model="state" multiple collapse-tags placeholder="请选择">
+            <el-select clearable v-model="state" multiple collapse-tags placeholder="请选择状态">
               <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
@@ -373,6 +373,7 @@ export default {
       this.teamIdList = []
       this.startDate = []
       this.endDate = []
+      this.state = []
     }
   }
 }

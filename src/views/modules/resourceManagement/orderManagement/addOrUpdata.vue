@@ -111,6 +111,7 @@
                 <el-input
                   v-model="scope.item.row.returnAcount"
                   placeholder="请输入"
+                  clearable
                   :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
                 ></el-input>
               </template>
@@ -205,7 +206,7 @@ export default {
           { label: '预计回款时间', prop: 'expectReturnDate', slotName: 'expectReturnDate', width: '112px' },
           { label: '状态', prop: 'state', slotName: 'state', width: '80px' },
           { label: '回款时间', prop: 'returnDate', slotName: 'returnDate', width: '112px' },
-          { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount', width: '50px' },
+          { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount', width: '80px' },
           { label: '回款单', prop: 'returnFile', slotName: 'returnFile', width: '80px' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '80px' }
         ],
@@ -554,7 +555,7 @@ export default {
   color: #008aff;
   border-color: #008aff;
 }
-.el-input__icon {
+::v-deep .el-input__icon {
   line-height: 30px;
 }
 .title {

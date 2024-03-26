@@ -41,8 +41,8 @@
           <el-form-item label="合同名称:" prop="contractName">
             <el-input v-model="projectConfigFormData.contractName" placeholder="请输入合同名称" style="width: 200px" clearable />
           </el-form-item>
-          <el-form-item label="合同编码:" prop="contractNo">
-            <el-input v-model="projectConfigFormData.contractNo" placeholder="请输入合同编码后四位" style="width: 200px" clearable />
+          <el-form-item label="合同编号:" prop="contractNo">
+            <el-input v-model="projectConfigFormData.contractNo" placeholder="请输入合同编号" style="width: 200px" clearable />
           </el-form-item>
           <el-form-item label="交付时间:" prop="deliveryDate">
             <el-date-picker

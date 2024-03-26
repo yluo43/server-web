@@ -4,15 +4,15 @@
       <el-header style="height: auto">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <el-form-item label="项目名称:" prop="name">
-            <el-input v-model="dataForm.name" placeholder="请输入关键字" clearable></el-input>
+            <el-input v-model="dataForm.name" placeholder="请输入项目名称" clearable></el-input>
           </el-form-item>
           <el-form-item label="归属团队:">
-            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="项目经理:">
-            <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择项目经理">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -28,22 +28,22 @@
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="合同类型:">
-            <el-select v-model="contractTypeList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="contractTypeList" multiple collapse-tags placeholder="请选择合同类型">
               <el-option v-for="item in contractTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="状态:">
-            <el-select v-model="stateList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="stateList" multiple collapse-tags placeholder="请选择状态">
               <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="归属项目集:">
-            <el-select v-model="psIdsList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="psIdsList" multiple collapse-tags placeholder="请选择归属项目集">
               <el-option v-for="item in psIdOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="归属部门:">
-            <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
               <el-option
                 v-for="item in deptList"
                 :key="item.id"
@@ -54,7 +54,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="结算周期:">
-            <el-select v-model="settlementCyclesList" multiple collapse-tags placeholder="请选择">
+            <el-select v-model="settlementCyclesList" multiple collapse-tags placeholder="请选择结算周期">
               <el-option v-for="item in 12" :key="item" :label="item + '月'" :value="item"></el-option>
             </el-select>
           </el-form-item>
