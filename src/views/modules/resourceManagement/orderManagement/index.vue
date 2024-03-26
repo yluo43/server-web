@@ -316,6 +316,11 @@ export default {
       }
       let form = { ...this.dataForm }
       form.ids = this.deleteIds
+      Object.keys(form).map((key) => {
+        if (!form[key]) {
+          delete form[key]
+        }
+      })
       this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), this.$http.adornParams(form), this)
     },
     add(row) {
