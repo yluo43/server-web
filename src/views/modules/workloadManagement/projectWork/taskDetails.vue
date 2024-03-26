@@ -11,17 +11,6 @@
                   <el-select v-model="dataForm.taskId" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
                     <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
                   </el-select>
-                  <!-- <el-dropdown @command="handleCommand">
-                    <span class="el-dropdown-link">
-                      {{ command }}
-                      <i class="el-icon-arrow-down el-icon--right"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item :command="item.reportWorkName" v-for="(item, index) in commandList" :key="index">
-                        {{ item.reportWorkName }}
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </el-dropdown> -->
                 </div>
               </el-col>
             </el-row>
@@ -66,11 +55,44 @@
               </el-col>
             </el-row>
             <div class="chooseResult">
-              <span class="chooseResultStr" v-text="chooseStr"></span>
+              <span class="chooseResultStr">已选择{{ count }}项</span>
               <span style="color: blue; margin-left: 50px" @click="download()">批量下载</span>
             </div>
-            <div>
-              <baseTable ref="table" :table-data="taskList" :multiSelect="true" style="margin-top: 10px" @select="onSelect"></baseTable>
+            <div class="table">
+              <div>
+                <el-table
+                  :data="tableData"
+                  border
+                  style="width: 100%; height: 425px; max-height: 425px; overflow-y: scroll"
+                  @selection-change="selChange"
+                  :span-method="objectSpanMethod"
+                >
+                  <el-table-column type="selection" width="55"></el-table-column>
+                  <el-table-column prop="name" label="团队成员"></el-table-column>
+                  <el-table-column prop="empId" label="工号"></el-table-column>
+                  <el-table-column prop="deptName" label="归属部门"></el-table-column>
+                  <el-table-column prop="teamName" label="归属团队"></el-table-column>
+                  <el-table-column prop="teamManagerName" label="团队负责人"></el-table-column>
+                  <el-table-column prop="startTime" label="开始时间"></el-table-column>
+                  <el-table-column prop="overTime" label="结束时间"></el-table-column>
+                  <el-table-column prop="workloadName" label="报工类别"></el-table-column>
+                  <el-table-column prop="planRate" label="计划投入(%)"></el-table-column>
+                  <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
+                  <el-table-column prop="commitTime" label="提交时间"></el-table-column>
+                  <el-table-column prop="approveTime" label="审批时间"></el-table-column>
+                </el-table>
+              </div>
+              <div style="display: flex; justify-content: center">
+                <el-pagination
+                  :page-sizes="[10, 15, 20, 25, 30]"
+                  :page-size="pageSize"
+                  :current-page="curPage"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="total"
+                  @current-change="handleCurrentChange"
+                  @size-change="handleSizeChange"
+                ></el-pagination>
+              </div>
             </div>
           </div>
         </el-main>
@@ -92,23 +114,15 @@ export default {
       command: '选择任务',
       radio: 1,
       keyword: '',
-      taskList: {
-        theads: [
-          { label: '团队成员', prop: 'name' },
-          { label: '工号', prop: 'empId' },
-          { label: '归属部门', prop: 'deptName' },
-          { label: '归属团队', prop: 'teamName' },
-          { label: '团队负责人', prop: 'teamManagerName' },
-          { label: '开始时间', prop: 'startTime' },
-          { label: '结束时间', prop: 'overTime' },
-          { label: '报工类别', prop: 'workloadName' },
-          { label: '计划投入（%）', prop: 'planRate' },
-          { label: '实际投入（%）', prop: 'realityRate' },
-          { label: '提交时间', prop: 'commitTime' },
-          { label: '审批时间', prop: 'approveTime' }
-        ],
-        url: '/projectWork/projectWorkList'
-      },
+      tableData: [],
+      //总条数
+      total: 10,
+      curPage: 1,
+      pageSize: 10,
+      spanArr: [],
+      pos: 0,
+      checkedData: [],
+      count: 0,
       managerList: [],
       deptList: [],
       teamList: [],
@@ -121,7 +135,7 @@ export default {
         teamManagerIds: '',
         deptIds: '',
         teamIds: '',
-        workloadType: '',
+        workloadType: null,
         projectId: '',
         empName: '',
         empId: '',
@@ -207,9 +221,6 @@ export default {
       await this.projectTaskListNoPage()
       if (data) {
         Object.assign(this.dataForm, data)
-        // if (data.reportWorkName) {
-        //   this.command = data.reportWorkName
-        // }
       }
       if (this.dataForm.projectId == null) {
         return
@@ -222,27 +233,83 @@ export default {
       }
       this.selectTaskList()
     },
-    clearTable() {
-      this.$nextTick(() => {
-        this.$refs.table.options.dataList = []
-      })
-    },
     changeSelect() {
       this.selectTaskList()
     },
-    // handleCommand(command) {
-    //   this.command = command
-    //   const obj = this.commandList.find((item) => item.reportWorkName === command)
-    //   this.dataForm.taskId = obj.id
-    //   this.selectTaskList()
-    // },
-    refresh() {
-      this.$refs.dataForm.validate((valid) => {
-        if (!valid) {
-          return false
+    selectTaskList() {
+      let params = { ...this.dataForm, curPage: this.curPage, pageSize: this.pageSize }
+      Object.keys(params).map((key) => {
+        if (!params[key]) {
+          delete params[key]
         }
-        this.$refs.table.refresh(this.dataForm)
       })
+      this.$http({
+        url: this.$http.adornUrl('/projectWork/projectWorkList'),
+        method: 'get',
+        params: params
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.tableData = data.payload.list
+          this.total = data.payload.totalCount
+          this.pos = 0
+          this.spanArr = []
+          this.getSpanArr(this.tableData)
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    // 分页自带的函数，当pageSize变化时会触发此函数
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.selectTaskList()
+    },
+    // 分页自带函数，当curPage变化时会触发此函数
+    handleCurrentChange(val) {
+      this.curPage = val
+      this.selectTaskList()
+    },
+    getSpanArr(data) {
+      // 遍历数据
+      for (let i = 0; i < data.length; i++) {
+        if (i === 0) {
+          this.spanArr.push(1)
+          this.pos = 0
+        } else {
+          if (data[i].empId === data[i - 1].empId) {
+            this.spanArr[this.pos] += 1
+            this.spanArr.push(0)
+          } else {
+            this.spanArr.push(1)
+            this.pos = i
+          }
+        }
+      }
+    },
+    objectSpanMethod({ rowIndex, columnIndex }) {
+      if (
+        columnIndex === 0 ||
+        columnIndex === 1 ||
+        columnIndex === 2 ||
+        columnIndex === 3 ||
+        columnIndex === 4 ||
+        columnIndex === 5 ||
+        columnIndex === 6 ||
+        columnIndex === 7
+      ) {
+        const _row = this.spanArr[rowIndex]
+        const _col = _row > 0 ? 1 : 0
+        return {
+          rowspan: _row,
+          colspan: _col
+        }
+      }
+    },
+    clearTable() {
+      this.tableData = []
+    },
+    refresh() {
+      this.selectTaskList()
     },
     resetForm() {
       this.$refs.dataForm.resetFields()
@@ -251,19 +318,11 @@ export default {
       this.teamIdList = []
       this.workloadType = []
     },
-    onSelect(selection) {
-      if (selection.length > 0) {
-        this.chooseStr = '已选择 ' + selection.length + ' 项'
-      } else {
-        this.chooseStr = '已选择 0 项'
-      }
+    selChange(selection) {
+      this.count = selection.length
+      this.checkedData = [...selection]
     },
-    //搜索
-    search() {},
-    //查询
-    selectTaskList() {
-      this.$refs.table.refresh(this.dataForm)
-    },
+
     async projectTaskListNoPage() {
       const result = await this.$http({
         url: this.$http.adornUrl('/projectWork/projectTaskListNoPage'),
@@ -284,30 +343,21 @@ export default {
         this.$message.error(data.msg)
       }
     },
-    // projectTaskListNoPage() {
-    //   this.$http({
-    //     url: this.$http.adornUrl('/projectWork/projectTaskListNoPage'),
-    //     method: 'get',
-    //     params: {
-    //       workStatus: this.dataForm.workStatus,
-    //       projectId: this.dataForm.projectId,
-    //       taskId: this.dataForm.taskId
-    //     }
-    //   }).then(({ data }) => {
-    //     if (data && data.code === 200) {
-    //       this.commandList = data.payload
-    //     } else {
-    //       this.$message.error(data.msg)
-    //     }
-    //   })
-    // },
+    //下载
     download() {
-      const list = this.$refs.table.getSelectRow()
-      if (list.length === 0) {
+      if (this.count === 0) {
         this.$message.warning('请至少选择一条数据！')
         return
       }
-      let data = list.map((obj) => obj.id)
+      let ids = []
+      this.tableData.map((item) => {
+        this.checkedData.map((ele) => {
+          if (item.empId === ele.empId) {
+            ids.push(item.id)
+          }
+        })
+      })
+      let data = ids
       this.$http.downloadPost(this.$http.adornUrl('/projectWork/export'), { ids: data }, this)
     }
   }
@@ -318,7 +368,9 @@ export default {
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }
-
+::v-deep.el-table::before {
+  display: none !important;
+}
 .table {
   background-color: white;
   margin-top: 10px;

@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="width: 100%; height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-main style="width: 100%">
         <div class="table" style="height: 640px; background-color: white">
@@ -10,17 +10,6 @@
                 <el-select v-model="dataForm.taskId" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
                   <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
                 </el-select>
-                <!-- <el-dropdown @command="handleCommand">
-                  <span class="el-dropdown-link">
-                    {{ command }}
-                    <i class="el-icon-arrow-down el-icon--right"></i>
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item :command="item.reportWorkName" v-for="(item, index) in commandList" :key="index">
-                      {{ item.reportWorkName }}
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown> -->
               </div>
             </el-col>
           </el-row>
@@ -38,33 +27,50 @@
             </el-col>
           </el-row>
           <div class="chooseResult">
-            <span class="chooseResultStr" v-text="chooseStr"></span>
+            <span class="chooseResultStr">已选择{{ count }}项</span>
             <span style="color: blue; margin-left: 50px" @click="projectWorkOperate(null, 1)">批量确认</span>
           </div>
-          <div>
-            <baseTable ref="taskListTable" :table-data="taskList" :multiSelect="true" style="margin-top: 10px" @select="onSelect">
-              <!-- 操作 -->
-              <template v-slot:clientType="row">
-                <template>
-                  <el-button :disabled="row.item.workStatusName != '待确认'" type="text" @click="projectWorkOperate(row, 1)">确认</el-button>
-                  <el-button :disabled="row.item.workStatusName != '待确认'" type="text" @click="projectWorkOperateTwo(row, 2)">驳回</el-button>
-                  <!-- <el-tooltip class="item" effect="dark" content="确认" placement="bottom">
-                    <i
-                      class="el-icon-circle-check"
-                      style="font-size: 1.5em; margin-right: 1em"
-                      @click="row.item.workStatusName == '待确认' ? projectWorkOperate(row, 1) : ''"
-                    ></i>
-                  </el-tooltip>
-                  <el-tooltip class="item" effect="dark" content="驳回" placement="bottom">
-                    <i
-                      class="el-icon-circle-close"
-                      style="font-size: 1.5em; margin-right: 1em"
-                      @click="row.item.workStatusName == '待确认' ? projectWorkOperateTwo(row, 2) : ''"
-                    ></i>
-                  </el-tooltip> -->
-                </template>
-              </template>
-            </baseTable>
+
+          <div class="table">
+            <div>
+              <el-table
+                :data="tableData"
+                border
+                style="width: 100%; height: 425px; max-height: 425px; overflow-y: scroll"
+                @selection-change="selChange"
+                :span-method="objectSpanMethod"
+              >
+                <el-table-column type="selection" width="55"></el-table-column>
+                <el-table-column prop="name" label="团队成员"></el-table-column>
+                <el-table-column prop="empId" label="工号"></el-table-column>
+                <el-table-column prop="deptName" label="归属部门"></el-table-column>
+                <el-table-column prop="teamName" label="归属团队"></el-table-column>
+                <el-table-column prop="teamManagerName" label="团队负责人"></el-table-column>
+                <el-table-column prop="startTime" label="开始时间"></el-table-column>
+                <el-table-column prop="overTime" label="结束时间"></el-table-column>
+                <el-table-column prop="workloadName" label="报工类别"></el-table-column>
+                <el-table-column prop="planRate" label="计划投入(%)"></el-table-column>
+                <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
+                <el-table-column prop="workStatusName" label="确认状态"></el-table-column>
+                <el-table-column label="操作" width="200px">
+                  <template slot-scope="scope">
+                    <el-button :disabled="scope.row.workStatusName != '待确认'" type="text" @click="projectWorkOperate(scope.row, 1)">确认</el-button>
+                    <el-button :disabled="scope.row.workStatusName != '待确认'" type="text" @click="projectWorkOperateTwo(scope.row, 2)">驳回</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div style="display: flex; justify-content: center">
+              <el-pagination
+                :page-sizes="[10, 15, 20, 25, 30]"
+                :page-size="pageSize"
+                :current-page="curPage"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total"
+                @current-change="handleCurrentChange"
+                @size-change="handleSizeChange"
+              ></el-pagination>
+            </div>
           </div>
         </div>
       </el-main>
@@ -78,15 +84,22 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import projectWorkOperate from '@/views/modules/workloadManagement/projectWork/projectWorkOperate.vue'
 
 export default {
-  components: { projectWorkOperate, baseTable, baseDialog },
+  components: { projectWorkOperate, baseDialog },
   props: {},
   data() {
     return {
+      //总条数
+      total: 10,
+      curPage: 1,
+      pageSize: 10,
+      spanArr: [],
+      pos: 0,
+      checkedData: [],
+      count: 0,
       chooseStr: '已选择 0 项',
       // command: '选择任务',
       radio: 1,
@@ -97,23 +110,7 @@ export default {
         taskId: null,
         type: '1'
       },
-      taskList: {
-        theads: [
-          { label: '团队成员', prop: 'name', width: '100px' },
-          { label: '工号', prop: 'empId' },
-          { label: '归属部门', prop: 'deptName' },
-          { label: '归属团队', prop: 'teamName' },
-          { label: '团队负责人', prop: 'teamManagerName', width: '120px' },
-          { label: '开始时间', prop: 'startTime' },
-          { label: '结束时间', prop: 'overTime' },
-          { label: '报工类别', prop: 'workloadName' },
-          { label: '计划投入（%）', prop: 'planRate', width: '120px' },
-          { label: '实际投入（%）', prop: 'realityRate', width: '120px' },
-          { label: '确认状态', prop: 'workStatusName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
-        ],
-        url: '/projectWork/projectWorkList'
-      },
+      tableData: [],
       commandList: []
     }
   },
@@ -122,15 +119,11 @@ export default {
       await this.projectTaskListNoPage()
       if (data) {
         Object.assign(this.dataForm, data)
-        // if (data.reportWorkName) {
-        //   this.command = data.reportWorkName
-        // }
       }
       if (this.dataForm.projectId == null) {
         return
       }
       this.selectTaskList()
-      // this.projectTaskListNoPage()
     },
     initData(params) {
       if (params) {
@@ -151,37 +144,85 @@ export default {
       if (result.data && result.data.code === 200) {
         this.commandList = result.data.payload
         if (result.data.payload.length != 0) {
-          // this.command = result.data.payload[0].reportWorkName
           this.dataForm.taskId = result.data.payload[0].id
         }
       } else {
         this.$message.error(data.msg)
       }
     },
-    onSelect(selection) {
-      if (selection.length > 0) {
-        this.chooseStr = '已选择 ' + selection.length + ' 项'
-      } else {
-        this.chooseStr = '已选择 0 项'
-      }
+    selChange(selection) {
+      this.count = selection.length
+      this.checkedData = [...selection]
     },
     changeSelect() {
       this.selectTaskList()
     },
-    // handleCommand(command) {
-    //   this.command = command
-    //   const obj = this.commandList.find((item) => item.reportWorkName === command)
-    //   this.dataForm.taskId = obj.id
-    //   this.selectTaskList()
-    // },
-    //查询
     selectTaskList() {
-      this.$refs.taskListTable.refresh(this.dataForm)
+      let params = { ...this.dataForm, curPage: this.curPage, pageSize: this.pageSize }
+      this.$http({
+        url: this.$http.adornUrl('/projectWork/projectWorkList'),
+        method: 'get',
+        params: params
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.tableData = data.payload.list
+          this.total = data.payload.totalCount
+          this.pos = 0
+          this.spanArr = []
+          this.getSpanArr(this.tableData)
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    // 分页自带的函数，当pageSize变化时会触发此函数
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.selectTaskList()
+    },
+    // 分页自带函数，当curPage变化时会触发此函数
+    handleCurrentChange(val) {
+      this.curPage = val
+      this.selectTaskList()
+    },
+    getSpanArr(data) {
+      // 遍历数据
+      for (let i = 0; i < data.length; i++) {
+        if (i === 0) {
+          this.spanArr.push(1)
+          this.pos = 0
+        } else {
+          if (data[i].empId === data[i - 1].empId) {
+            this.spanArr[this.pos] += 1
+            this.spanArr.push(0)
+          } else {
+            this.spanArr.push(1)
+            this.pos = i
+          }
+        }
+      }
+    },
+    objectSpanMethod({ rowIndex, columnIndex }) {
+      if (
+        columnIndex === 0 ||
+        columnIndex === 1 ||
+        columnIndex === 2 ||
+        columnIndex === 3 ||
+        columnIndex === 4 ||
+        columnIndex === 5 ||
+        columnIndex === 6 ||
+        columnIndex === 7
+      ) {
+        const _row = this.spanArr[rowIndex]
+        const _col = _row > 0 ? 1 : 0
+        return {
+          rowspan: _row,
+          colspan: _col
+        }
+      }
     },
     clearTable() {
-      this.$nextTick(() => {
-        this.$refs.taskListTable.options.dataList = []
-      })
+      this.tableData = []
     },
     //切换radio
     handlerRadio() {
@@ -190,27 +231,31 @@ export default {
     projectWorkOperateTwo(row, operateType) {
       this.$refs.projectWorkOperateDialog.show()
       this.$nextTick(() => {
-        row.item.operateType = operateType
-        this.$refs.projectWorkOperate.init(row.item)
+        row.operateType = operateType
+        this.$refs.projectWorkOperate.init(row)
       })
     },
     projectWorkOperate(row, operateType) {
       let message = ''
       let ids = []
       if (row) {
-        ids = [row.item.id]
+        ids = [row.id]
         message = '您确定提交吗?'
       } else {
-        const list = this.$refs.taskListTable.getSelectRow()
-        if (list.length === 0) {
+        if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        message = '已选中' + list.length + '项，批量确认吗？'
-        list.forEach((item) => {
-          ids.push(item.id)
+        message = '已选中' + this.count + '项，批量确认吗？'
+        this.tableData.map((item) => {
+          this.checkedData.map((ele) => {
+            if (item.empId === ele.empId) {
+              ids.push(item.id)
+            }
+          })
         })
       }
+      console.log(ids)
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -249,7 +294,9 @@ export default {
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }
-
+::v-deep.el-table::before {
+  display: none !important;
+}
 .table {
   background-color: white;
   margin-top: 10px;

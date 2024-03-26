@@ -65,7 +65,7 @@
             <el-table
               :data="tableData"
               border
-              style="width: 100%; max-height: 425px; overflow-y: scroll"
+              style="width: 100%; height: 425px; max-height: 425px; overflow-y: scroll"
               @selection-change="selChange"
               :span-method="objectSpanMethod"
             >
@@ -79,19 +79,7 @@
               <el-table-column prop="managerName" label="项目经理"></el-table-column>
               <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
               <el-table-column prop="commitTime" label="提交时间"></el-table-column>
-              <el-table-column prop="workStatusName" label="确认状态">
-                <!-- <template slot-scope="scope">
-                  <template v-if="scope.row.workStatus == 1">
-                    <span>待确认</span>
-                  </template>
-                  <template v-if="scope.row.workStatus == 3">
-                    <span style="color: red">被驳回</span>
-                  </template>
-                  <template v-if="scope.row.workStatus == 2">
-                    <span>已确认</span>
-                  </template>
-                </template> -->
-              </el-table-column>
+              <el-table-column prop="workStatusName" label="确认状态"></el-table-column>
             </el-table>
           </div>
           <div style="display: flex; justify-content: center">
@@ -283,6 +271,11 @@ export default {
     selectTaskDetial(params) {
       let data = { curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 2 }
       data = { ...data, ...params }
+      Object.keys(data).map((key) => {
+        if (!data[key]) {
+          delete data[key]
+        }
+      })
       this.$http({
         url: this.$http.adornUrl('/teamWork/viewTeamWorkList'),
         method: 'get',
@@ -393,6 +386,9 @@ export default {
 }
 ::v-deep .el-form-item__content {
   width: 180px;
+}
+::v-deep.el-table::before {
+  display: none !important;
 }
 ::v-deep .el-input__icon {
   line-height: 0;

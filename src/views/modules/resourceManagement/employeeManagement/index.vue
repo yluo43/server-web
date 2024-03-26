@@ -361,7 +361,7 @@ export default {
         stationId: [{ required: true, message: '请选择驻地', trigger: 'change' }],
         deptId: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
         roleIds: [{ required: true, message: '请选择角色', trigger: 'change' }],
-        empLevel: [{ required: true, message: '请选择技术级别', trigger: 'change' }],
+        positionType: [{ required: true, message: '请选择岗位类型', trigger: 'change' }],
         entryDate: [{ required: true, message: '请选择入职时间', trigger: 'change' }]
       }
     }

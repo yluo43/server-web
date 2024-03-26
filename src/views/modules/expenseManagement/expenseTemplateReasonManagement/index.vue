@@ -54,7 +54,7 @@
             </el-form-item>
             <el-form-item label="报销项目归属部门:" prop="deptName">
               <el-select v-model="editDataForm.deptName" placeholder="请选择">
-                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
+                <el-option v-for="dept in onwerDeptNames" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <!-- <el-form-item label="关联项目:" prop="projectName">
@@ -63,14 +63,7 @@
               </el-select>
             </el-form-item> -->
             <el-form-item label="关联项目:" prop="value">
-              <el-cascader
-                clearable
-                :append-to-body="false"
-                style="width: 230px"
-                v-model="editDataForm.value"
-                :options="options"
-                @change="handleChange"
-              ></el-cascader>
+              <el-cascader clearable :append-to-body="false" style="width: 230px" v-model="editDataForm.value" :options="options"></el-cascader>
             </el-form-item>
             <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">保存</el-button>
@@ -99,6 +92,7 @@ export default {
       //成本项目
       costItems: [],
       departments: [],
+      onwerDeptNames: [],
       deleteIds: [],
       drawer: false,
       direction: 'rtl',
@@ -126,9 +120,9 @@ export default {
         url: '/staticItem/listPage'
       },
       rules: {
-        name: [{ required: true, message: '请输入事由名称', trigger: 'blur' }],
-        deptName: [{ required: true, message: '请选择归属部门', trigger: 'change' }],
-        projectName: [{ required: true, message: '请选择关联项目', trigger: 'change' }]
+        name: [{ required: true, message: '请输入报销项目名称', trigger: 'blur' }],
+        deptName: [{ required: true, message: '请选择报销项目归属部门', trigger: 'change' }]
+        //  projectName: [{ required: true, message: '请选择关联项目', trigger: 'change' }]
       },
       options: []
     }
@@ -138,15 +132,13 @@ export default {
     this.getProject()
     //初始化部门
     this.getDept()
+    this.getOwnDept()
     //查询
     this.refresh()
     //初始化关联项目
     this.getProjectTreeWithDept()
   },
   methods: {
-    handleChange(value) {
-      console.log(this.editDataForm.value)
-    },
     //获取关联项目
     getProjectTreeWithDept() {
       this.$http({
@@ -188,6 +180,19 @@ export default {
         }
       })
     },
+    getOwnDept() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getDeptByRole'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.onwerDeptNames = data.payload.filter((item) => item.id !== 0)
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+
     //获取部门
     getDept() {
       this.$http({
@@ -296,7 +301,6 @@ export default {
       this.drawer = true
       this.title = '添加'
       this.clear(this.editDataForm)
-      console.log(this.editDataForm)
     },
     clear(form) {
       for (let key in form) {
@@ -335,12 +339,13 @@ export default {
           this.editDataForm.projectDeptName = item.name
         }
       })
+      this.editDataForm.projectId = this.editDataForm.value[1]
       this.costItems.forEach((item) => {
-        if (item.name == this.editDataForm.projectName) {
-          this.editDataForm.projectId = item.id
+        if (item.id == this.editDataForm.projectId) {
+          this.editDataForm.projectName = item.name
         }
       })
-      this.editDataForm.projectId = this.editDataForm.value[1]
+      // this.editDataForm.projectId = this.editDataForm.value[1]
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.title == '添加') {
@@ -351,10 +356,7 @@ export default {
             }).then(({ data }) => {
               if (data.success) {
                 this.refresh()
-                this.$message({
-                  message: '添加成功！',
-                  type: 'success'
-                })
+                this.$message.success(data.msg)
                 this.drawer = false
               } else {
                 this.$message.error(data.msg)
@@ -368,10 +370,7 @@ export default {
             }).then(({ data }) => {
               if (data.success) {
                 this.refresh()
-                this.$message({
-                  message: '修改成功！',
-                  type: 'success'
-                })
+                this.$message.success(data.msg)
                 this.drawer = false
               } else {
                 this.$message.error(data.msg)

@@ -34,7 +34,7 @@
 
         <div class="table">
           <div>
-            <el-table :data="tableData" border style="width: 100%; max-height: 425px; overflow-y: scroll" :span-method="objectSpanMethod">
+            <el-table :data="tableData" border style="width: 100%; height: 425px; max-height: 425px; overflow-y: scroll" :span-method="objectSpanMethod">
               <el-table-column prop="name" label="团队成员"></el-table-column>
               <el-table-column prop="empId" label="工号"></el-table-column>
               <el-table-column prop="startTime" label="开始时间"></el-table-column>
@@ -318,6 +318,9 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
+}
+::v-deep.el-table::before {
+  display: none !important;
 }
 .main {
   .top {
