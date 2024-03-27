@@ -309,26 +309,28 @@ export default {
       })
     },
     // 初始化
-    init(initData) {
-      this.operateType = initData.operateType
+    init(initData,operateType) {
+      this.operateType = operateType
       this.deptList = initData.deptList
       // this.teamList = initData.teamList
       // this.psList = initData.psList
       //this.managerList = initData.managerList
       this.contractTypeList = initData.contractTypeList
       this.itemLabels = initData.itemLabels
-      console.log(initData.rowData)
       if (initData.rowData) {
         Object.assign(this.editProjectInfoFormData, initData.rowData)
         if (initData.rowData.projectType != 2) {
-          const labelNameArr = initData.rowData.labelNames.split(',')
-          this.editProjectInfoFormData.labels = []
-          this.itemLabels.map((item) => {
-            if (labelNameArr.indexOf(item.labelName) != -1) {
-              this.editProjectInfoFormData.labels.push(item.id)
-            }
-          })
-          this.editProjectInfoFormData.labelNames = ''
+
+          if(initData.rowData.labelNames!=null &&initData.rowData.labelNames.length>0){
+            const labelNameArr = initData.rowData.labelNames.split(',')
+            this.editProjectInfoFormData.labels = []
+            this.itemLabels.map((item) => {
+              if (labelNameArr.indexOf(item.labelName) != -1) {
+                this.editProjectInfoFormData.labels.push(item.id)
+              }
+            })
+            this.editProjectInfoFormData.labelNames = ''
+          }
         }
       }
 
