@@ -1,0 +1,144 @@
+@font-face {
+  font-family: "element-icons"; /* Project id 3700155 */
+  src: url('iconfont.woff2?t=1667375626204') format('woff2'),
+       url('iconfont.woff?t=1667375626204') format('woff'),
+       url('iconfont.ttf?t=1667375626204') format('truetype'),
+       url('iconfont.svg?t=1667375626204#element-icons') format('svg');
+}
+
+.element-icons {
+  font-family: "element-icons" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.el-icon-chengbentongji:before {
+  content: "\ea49";
+}
+
+.el-icon-daorubaoxiao:before {
+  content: "\ea4a";
+}
+
+.el-icon-fentanguanli:before {
+  content: "\ea4b";
+}
+
+.el-icon-daoruxinchou:before {
+  content: "\ea4c";
+}
+
+.el-icon-xiangmulixiang:before {
+  content: "\ea4d";
+}
+
+.el-icon-xiangmuguanli:before {
+  content: "\ea4e";
+}
+
+.el-icon-xiangmushouru:before {
+  content: "\ea4f";
+}
+
+.el-icon-qitachengben1:before {
+  content: "\ea51";
+}
+
+.el-icon-anniutubiao-bianji:before {
+  content: "\ea52";
+}
+
+.el-icon-anniutubiao-zhongzhi:before {
+  content: "\ea50";
+}
+
+.el-icon-anniutubiao-daochu:before {
+  content: "\ea54";
+}
+
+.el-icon-anniutubiao-daoru1:before {
+  content: "\ea57";
+}
+
+.el-icon-shangjiantou:before {
+  content: "\ea53";
+}
+
+.el-icon-gouxuan:before {
+  content: "\ea58";
+}
+
+.el-icon-guishuxiangmu:before {
+  content: "\ea59";
+}
+
+.el-icon-shijian:before {
+  content: "\ea5a";
+}
+
+.el-icon-xiajiantou:before {
+  content: "\ea5b";
+}
+
+.el-icon-xiangqing:before {
+  content: "\ea5d";
+}
+
+.el-icon-fentanbianji:before {
+  content: "\ea5e";
+}
+
+.el-icon-sousuo:before {
+  content: "\ea5f";
+}
+
+.el-icon-icon_cancel:before {
+  content: "\ea60";
+}
+
+.el-icon-youjiantou:before {
+  content: "\ea61";
+}
+
+.el-icon-icon_save:before {
+  content: "\ea62";
+}
+
+.el-icon-guanbi:before {
+  content: "\ea63";
+}
+
+.el-icon-tishi:before {
+  content: "\ea64";
+}
+
+.el-icon-riqi:before {
+  content: "\ea65";
+}
+
+.el-icon-tianjia:before {
+  content: "\ea66";
+}
+
+.el-icon-zuojiantou:before {
+  content: "\ea67";
+}
+
+.el-icon-xiangguanxiangmu:before {
+  content: "\ea68";
+}
+
+.el-icon-shanchu:before {
+  content: "\ea5c";
+}
+
+.el-icon-caozuoshuoming:before {
+  content: "\ea69";
+}
+
+.el-icon-anniutubiao-tijiao:before {
+  content: "\ea55";
+}
+

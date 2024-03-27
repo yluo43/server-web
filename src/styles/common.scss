@@ -1,0 +1,479 @@
+.home {
+  margin-top: -20px;
+}
+
+.div-bg {
+  background-color: #fff;
+  text-align: center;
+  float: left;
+  padding: 0 10px 10px 0px;
+}
+
+
+.baseInfo-div {
+  width: 100%;
+  padding-top: 20px
+}
+
+.title-component {
+  position: relative;
+}
+
+.title-font {
+  font-size: 14px;
+  font-weight: bolder;
+  color: #464646;
+  line-height: 30px;
+  text-align: left;
+  margin-left: 5px;
+}
+
+.return {
+  float: left;
+  marginTop: '-40px'
+}
+
+.details-div {
+  padding-top: 10px
+}
+
+
+.scrollbar-div {
+  width: 100%;
+}
+
+.main-levelList-Scrollbar {
+  .el-scrollbar__wrap {
+    max-height: calc(100vh - 210px); // 最大高度
+    overflow-x: hidden; // 隐藏横向滚动栏
+    padding-bottom: 1px
+  }
+}
+
+.main-levelList-Scrollbar {
+  padding-top: 0px;
+  padding-bottom: 20px
+}
+
+.main-performanceList-Scrollbar {
+  .el-scrollbar__wrap {
+    max-height: calc(100vh - 240px); // 最大高度
+    overflow-x: hidden; // 隐藏横向滚动栏
+    padding-bottom: 1px
+  }
+}
+
+.main-performanceList-Scrollbar {
+  padding-top: 0px;
+  padding-bottom: 20px
+}
+
+.pageHeight {
+  background-color: transparent;
+  width: 100%;
+  position: relative;
+  border-radius: 12px;
+  min-height: 600px;
+}
+
+.el-date-editor.el-input {
+  width: 120px
+}
+
+.tip {
+  font-size: 14px;
+  color: #909399;
+}
+
+/**左侧树字体**/
+.el-tree-node__label {
+  font-size: 13px;
+}
+
+.el-table__body {
+  // 使表格兼容safari，不错位
+  width: 100%;
+  table-layout: fixed !important;
+}
+
+
+/********************** dialog   start ************************/
+.el-dialog__title {
+  font-size: 15px !important;
+  font-weight: 600;
+}
+
+.el-dialog {
+  border-radius: 8px;
+}
+
+.el-dialog__header {
+  border-bottom: 1px solid #d9d9d9;
+  padding: 9px 18px 10px;
+  text-align: left;
+  height: 40px;
+}
+
+.el-dialog__headerbtn {
+  top: 14px;
+}
+
+.el-dialog__body {
+  padding: 25px 20px 2px 20px;
+}
+
+/********************** dialog   end ************************/
+
+.pageForm {
+  background-color: white;
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.submitButton {
+  line-height: 50px;
+  position: relative;
+  padding-top: 15px;
+  margin-top: 15px;
+  //border-top: 1px solid #EBEEF5;
+}
+
+.moveButton {
+  font-size: 10px;
+  height: 40px;
+  width: 56px;
+  padding: 0;
+
+  &:hover {
+    background-color: #2A6EFF !important;
+    color: #ffffff !important;
+  }
+
+  &:focus {
+    background-color: #2A6EFF !important;
+    color: #ffffff !important;
+  }
+
+}
+
+.clickButton {
+  margin-bottom: 10px;
+  margin-left: 7px;
+  float: right;
+
+  &:hover {
+    background-color: #2A6EFF !important;
+    color: #ffffff !important;
+  }
+
+  &:focus {
+    background-color: #2A6EFF !important;
+    color: #ffffff !important;
+  }
+}
+
+.clickDelButton {
+  margin-bottom: 10px;
+  margin-left: 7px;
+  float: right;
+  background-color: #ffffff !important;
+  border: solid 1px darkgray;
+  color: grey;
+
+  &:hover {
+    background-color: #ffffff !important;
+    color: grey !important;
+  }
+
+  &:focus {
+    background-color: #ffffff !important;
+    color: grey !important;
+  }
+}
+
+.clickMiddleButton {
+  margin-bottom: 10px;
+  margin-left: 7px;
+  float: right;
+  background-color: #ffffff !important;
+  color: #2A6EFF;
+
+  &:hover {
+    background-color: #ffffff !important;
+    color: #2A6EFF !important;
+  }
+
+  &:focus {
+    background-color: #ffffff !important;
+    color: #2A6EFF !important;
+  }
+}
+
+/*****改变选择框样式******/
+.el-select-dropdown__item {
+  padding: 0 20px;
+  white-space: pre-line;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #606266;
+  height: 100%;
+  line-height: 40px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  cursor: pointer
+}
+
+.el-select__tags {
+  overflow: auto;
+}
+
+.maxHeightRow {
+  height: 100%;
+  max-height: 120px;
+  overflow: auto;
+}
+
+.maxDiaHeightRow {
+  height: 100%;
+  overflow: auto;
+}
+
+/*****改变选择框样式结束******/
+
+.tableBackGround {
+  background-color: #e9f0ff !important;
+}
+
+/***项目管理页面****/
+.tabStyle {
+  width: 98%;
+  margin: 15px auto 0 auto;
+  height: 45px;
+}
+
+.searchStyle {
+  width: 98%;
+  margin: 0 auto 20px auto;
+  height: 40px;
+  padding-left: 15px;
+}
+
+.containHeight {
+  width: 98%;
+  margin: 0 auto;
+  padding-left: 15px;
+}
+
+/***项目管理页面结束****/
+/***表格修改****/
+.tableData {
+  position: relative;
+}
+
+.tableData > > > tr th:nth-child(1) .cell {
+  text-align: center;
+  padding: 0;
+}
+
+.el-table {
+  font-size: 12px !important;
+}
+
+/***表格修改结束****/
+
+/**关联合同与人员**/
+
+.relatedContractDiv {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.relatedMembersDiv {
+  position: relative;
+  width: 100%;
+  padding-bottom: 15px;
+}
+
+.noProjectRelatedClass {
+  width: 80px;
+  height: 80px;
+}
+
+.noProjectRelatedTextClass {
+  width: 98px;
+  height: 22px;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #909399;
+  line-height: 22px;
+}
+
+/**关联合同与人员结束**/
+
+.requiredText {
+  color: red;
+  float: left;
+  margin-left: 5px;
+}
+
+/*提交or编辑在最上方的样式*/
+
+.buttonDivClass {
+  height: 40px;
+  min-width: 200px;
+  position: fixed;
+  float: right;
+  margin: -38px auto auto 0px;
+  border-radius: 12px;
+  right: 30px;
+}
+
+/****/
+
+.myRow {
+  margin-bottom: 10px;
+}
+
+.myText {
+  float: left;
+}
+
+.el-col {
+  min-height: 1px;
+  line-height: 40px;
+  font-size: 12px;
+}
+
+.display {
+  display: inline-block;
+}
+
+> > > .el-table .cell {
+  text-align: center;
+}
+
+
+> > > .el-table--border {
+  border: 1px solid #F5F7FA;
+}
+
+.tableClickButton {
+  font-size: 12px !important;
+  width: 100%;
+  padding: 0;
+}
+
+.tableMulClickButton {
+  font-size: 12px !important;
+  padding: 0;
+}
+
+.el-table tbody tr:hover > td {
+  background: rgb(234, 239, 247) !important;
+  color: #303133 !important;
+}
+
+.button-style {
+  background-color: #ffffff !important;
+  color: #2A6EFF;
+
+  &:hover {
+    background-color: #ffffff !important;
+    color: #2A6EFF !important;
+  }
+
+  &:focus {
+    background-color: #ffffff !important;
+    color: #2A6EFF !important;
+  }
+}
+
+.header-container{
+  border: 1px solid #dddddd;
+  padding-top: 20px;
+}
+
+.el-button{
+  height: 38px;
+  min-width: 80px;
+}
+
+
+::-webkit-scrollbar { /*滚动条整体样式*/
+  width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #e1f1f1;
+}
+
+::-webkit-scrollbar-track { /*滚动条里面轨道*/
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background: #fff;
+}
+
+
+.el-input__inner{
+  height: 28px !important;
+  font-size: 12px !important;
+  padding: 0 5px;
+
+}
+
+.el-date-editor .el-range__icon ,.el-date-editor .el-range-separator{
+  line-height: 20px;
+}
+
+
+.el-form--inline .el-form-item{
+  vertical-align: -webkit-baseline-middle;
+}
+.el-form-item{
+  margin-bottom: 2px !important;
+  min-width: 200px !important;}
+
+.el-form-item__content{
+  min-width: 140px;
+}
+.el-form-item__label{
+  font-size: 12px !important;
+  font-weight: 400;
+}
+.el-range-editor .el-range-input{
+  font-size: 11px;
+  width: 48%;
+
+}
+
+.el-range__close-icon{
+  display: none !important;
+}
+
+.el-button {
+  width: 80px;
+  height: 28px;
+}
+
+
+.chooseResult span{
+  cursor: pointer;
+}
+
+
+.el-form-item__error{
+  top:32px !important;
+}
+
+
+.el-select{
+  width: 190px !important;
+}

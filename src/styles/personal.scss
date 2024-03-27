@@ -1,0 +1,90 @@
+.cert-scrollbarDiv{
+  .el-scrollbar__wrap {
+    max-height: 93px; // 最大高度
+    overflow-x: hidden; // 隐藏横向滚动栏
+    margin-bottom: -17px;
+  }
+}
+.achievements-scrollbarDiv{
+  .el-scrollbar__wrap {
+    max-height: 150px; // 最大高度
+    overflow-x: hidden; // 隐藏横向滚动栏
+    margin-bottom: -17px;
+  }
+}
+.none-border {
+  .el-table {
+    border:none;
+  }
+}
+// 修改证书模块-table单元格的内边距
+.cert-top-table {
+  .el-table .cell {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-all;
+    line-height: 23px;
+    padding-right: 2px;
+  }
+  .el-table .cell, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell {
+    padding-left: 2px;
+  }
+}
+.toggle-radio{
+  .el-radio__inner {
+    border: 1px solid #C0C4CC;
+    border-radius: 100%;
+    width: 14px;
+    height: 14px;
+    background-color: #FFF;
+    cursor: pointer;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+}
+
+.search-list-scroller{
+  .el-scrollbar__wrap {
+    height: 700px; // 最大高度
+    overflow-x: hidden; // 隐藏横向滚动栏
+  }
+}
+ .certName_div {
+   .el-input__inner {
+     padding: 0px 0px;
+   }
+ }
+
+ .searchInput {
+   .el-input__inner {
+     height: 23px;
+   }
+   .el-input__suffix {
+     top: 5px;
+   }
+   .el-input__icon {
+     line-height: inherit;
+   }
+   .el-input__suffix-inner {
+     display: inline-block;
+   }
+ }
+
+ .personal-main-div{
+   width: 100%;
+   /*padding: 0px 10px;*/
+ }
+ .personal-detail-title{
+   margin-top: 30px;
+ }
+.personal-home{
+  margin-top: -20px;
+}
+.month-bottom-pane{
+  .el-tabs--border-card>.el-tabs__content {
+     padding: 0px;
+  }
+}
