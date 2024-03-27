@@ -2,6 +2,7 @@
   <div>
     <div class="navbar">
       <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar"></hamburger>
+      <span class="welcomeTitle">欢迎进入PMIS项目管理信息系统</span>
       <div class="right-menu">
         <!-- 用户信息 -->
         <span v-html="'\u00a0\u00a0\u00a0\u00a0'"/>
@@ -100,6 +101,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .welcomeTitle{
+    margin-top: 26px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
 .navbar {
   height: 50px;
   overflow: hidden;

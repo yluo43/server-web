@@ -420,3 +420,60 @@
   border-radius: 10px;
   background: #fff;
 }
+
+
+.el-input__inner{
+  height: 28px !important;
+  font-size: 12px !important;
+  padding: 0 5px;
+
+}
+
+.el-date-editor .el-range__icon ,.el-date-editor .el-range-separator{
+  line-height: 20px;
+}
+
+
+.el-form--inline .el-form-item{
+  vertical-align: -webkit-baseline-middle;
+}
+.el-form-item{
+  margin-bottom: 2px !important;
+  min-width: 200px !important;}
+
+.el-form-item__content{
+  min-width: 140px;
+}
+.el-form-item__label{
+  font-size: 12px !important;
+  font-weight: 400;
+}
+.el-range-editor .el-range-input{
+  font-size: 11px;
+  width: 48%;
+
+}
+
+.el-range__close-icon{
+  display: none !important;
+}
+
+.el-button {
+  width: 80px;
+  height: 28px;
+}
+
+
+.chooseResult span{
+  cursor: pointer;
+}
+
+
+.el-form-item__error{
+  top:32px !important;
+}
+
+
+.el-select{
+  width: 190px !important;
+}

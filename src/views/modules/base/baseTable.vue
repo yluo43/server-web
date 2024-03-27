@@ -2,45 +2,44 @@
   <div class="el-main__mdgMainTable" style="width: 100%; height: 100%">
     <div>
       <el-table
+        ref="table"
+        v-loading="options.tableLoading"
+        :row-key="(row) => row.id"
         :cell-style="cellStyle"
-        :header-cell-style="{'text-align':'center'}"
+        :header-cell-style="{ 'text-align': 'center' }"
         border
         stripe
         highlight-current-row
         fixed
         :data="options.dataList"
         default-expand-all
-        v-loading="options.tableLoading"
         :height="options.height"
         :max-height="options.maxHeight"
         style="width: 100%"
         :row-class-name="tableRowClassName"
-        v-bind:style="{ 'min-height': options.minHeight }"
+        size="mini"
+        :style="{ 'min-height': options.minHeight }"
         @selection-change="__handleSelectionChange"
         @sort-change="__changeTableSort"
         @row-dblclick="__rowDblclick"
         @row-click="__rowClick"
         @select="__select"
         @select-all="__selectAll"
-        size="mini"
-        ref="table"
-        :row-key='row => row.id'
       >
         <el-table-column
           :key="9999"
           :type="type"
+          v-if="type != null"
           header-align="center"
           align="center"
           width="50"
-          :reserve-selection="memberTypeFlag ? true: false"
-
-        >
-        </el-table-column>
+          :reserve-selection="memberTypeFlag"
+        ></el-table-column>
         <template v-for="(item, index) in options.theads">
           <template v-if="item.slotName != null">
             <el-table-column
-              align="center"
               :key="index"
+              align="center"
               :label="item.label"
               :prop="item.prop"
               :show-overflow-tooltip="true"
@@ -50,8 +49,8 @@
               :fixed="item.fixed"
             >
               <template slot-scope="scope">
-                <div @click.stop="__clickStop" style="display: inline">
-                  <slot :name="item.slotName" v-bind:item="scope.row"></slot>
+                <div style="display: inline" @click.stop="__clickStop">
+                  <slot :name="item.slotName" :item="scope.row"></slot>
                 </div>
               </template>
             </el-table-column>
@@ -66,8 +65,7 @@
               :sortable="item.sortName != null"
               :width="item.width"
               :fixed="item.fixed"
-            >
-            </el-table-column>
+            ></el-table-column>
           </template>
         </template>
         <el-table-column type="expand" v-if="options.expandHtml != null">
@@ -81,21 +79,48 @@
     <div v-if="!hidePage">
       <el-pagination
         style="text-align: center"
-        @size-change="__sizeChangeHandle"
-        @current-change="__currentChangeHandle"
         :current-page="options.curPage"
-        :page-sizes="[10, 50, 100,500]"
+        :page-sizes="[10, 15, 20, 25, 30]"
         :page-size="options.pageSize"
         :total="options.count"
         layout="total, sizes, prev, pager, next, jumper"
-      >
-      </el-pagination>
+        @size-change="__sizeChangeHandle"
+        @current-change="__currentChangeHandle"
+      ></el-pagination>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    tableData: {
+      type: Object
+    },
+    type: {
+      type: String,
+      default: 'selection'
+    },
+    multiSelect: {
+      type: Boolean,
+      default: false
+    },
+    hidePage: {
+      type: Boolean,
+      default: false
+    },
+    afterSelect: {
+      type: Function
+    },
+    auth: {
+      type: Boolean,
+      default: true
+    },
+    memberTypeFlag: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       options: {
@@ -119,36 +144,6 @@ export default {
       searchParams: {}
     }
   },
-  props: {
-    tableData: {
-      type: Object
-    },
-    type:{
-      type: String,
-      default: 'selection'
-
-    },
-    multiSelect: {
-      type: Boolean,
-      default: false
-    },
-    hidePage: {
-      type: Boolean,
-      default: false
-    },
-    afterSelect: {
-      type: Function
-    },
-    auth: {
-      type: Boolean,
-      default: true
-    },
-    memberTypeFlag: {
-      type: Boolean,
-      default: false
-    }
-  },
-  components: {},
   created() {
     this.__initTable(this.tableData)
     this.options.tableLoading = false
@@ -161,7 +156,7 @@ export default {
   mounted() {},
   methods: {
     cellStyle() {
-      return "text-align:center";
+      return 'text-align:center'
     },
     __calculateHeight() {
       // 根据屏幕高度算表格高度
@@ -176,7 +171,7 @@ export default {
       }
     },
     __initTable(tableData) {
-      this.$emit('select',[])
+      this.$emit('select', [])
       this.__calculateHeight()
       Object.assign(this.options, tableData)
     },
@@ -197,7 +192,7 @@ export default {
       this.refresh()
     },
     __handleSelectionChange(val) {
-      this.$emit('select',val)
+      this.$emit('select', val)
       this.options.multipleSelection = val
       if (this.afterSelect != null) {
         this.afterSelect()
@@ -205,10 +200,11 @@ export default {
     },
     // 当前页
     __currentChangeHandle(val) {
-      this.$emit('select',[])
+      this.$emit('select', [])
       this.$refs.table.clearSelection()
       this.options.curPage = val
-      if (this.options.dataListSelected.length !== 0) { // 已选会员类型列表不为空
+      if (this.options.dataListSelected.length !== 0) {
+        // 已选会员类型列表不为空
         if (this.options.pageSize === 10) {
           this.options.dataList = this.options.dataListSelected.slice((val - 1) * 10, (val - 1) * 10 + 10)
         } else if (this.options.pageSize === 20) {
@@ -241,16 +237,13 @@ export default {
         this.options.dblclick(row)
       }
     },
-    clearSelection(){
+    clearSelection() {
       this.$refs.table.clearSelection()
     },
     __rowClick(row, column, event) {
       if (!this.multiSelect) {
         // 单选
-        if (
-          this.$refs.table.selection == null ||
-          this.$refs.table.selection[0] !== row
-        ) {
+        if (this.$refs.table.selection == null || this.$refs.table.selection[0] !== row) {
           this.$refs.table.clearSelection()
           this.$refs.table.toggleRowSelection(row)
         } else {
@@ -264,7 +257,7 @@ export default {
         this.$refs.table.toggleRowSelection(row)
       }
     },
-    selectone(row){
+    selectone(row) {
       this.$refs.table.clearSelection()
       this.$refs.table.setCurrentRow(row)
       this.$refs.table.toggleRowSelection(row, true)
@@ -298,7 +291,7 @@ export default {
         this.$refs.table.toggleRowSelection(row, true)
       }
     },
-    __clickStop: function() {
+    __clickStop: function () {
       // 该方法为了阻止冒泡事件，没什么软用
     },
     // 获取当前选项
@@ -319,9 +312,9 @@ export default {
         // 这里要clone下对象，不能直接操作外部数据
         searchParams = JSON.parse(JSON.stringify(params))
       }
-      if (! this.options.url) {
+      if (!this.options.url) {
         this.options.tableLoading = false
-        this.$emit('refresh',this.options.curPage,this.options.pageSize)
+        this.$emit('refresh', this.options.curPage, this.options.pageSize)
         return
       }
       for (const key in searchParams) {
@@ -345,7 +338,7 @@ export default {
       })
         .then(({ data }) => {
           if (data && data.code === 200) {
-            data.page=data.payload
+            data.page = data.payload
             this.options.dataList = data.page.list
             this.options.count = data.page.totalCount
             this.options.data = data
@@ -363,7 +356,7 @@ export default {
             this.$refs.table.doLayout()
           })
         })
-        .catch((e) => {
+        .catch(() => {
           this.options.tableLoading = false
         })
     },
@@ -384,16 +377,16 @@ export default {
         this.$refs.tableColSetPage.init()
       })
     },
-    tableRowClassName({row,rowIndex}) {
+    tableRowClassName({ row, rowIndex }) {
       if (row.labelLevel === 0) {
-        return 'all-match-row';
-      }else if(row.labelLevel === 1){
-        return 'strong-match-row';
-      }else if(row.labelLevel === 2){
-        return 'weak-match-row';
+        return 'all-match-row'
+      } else if (row.labelLevel === 1) {
+        return 'strong-match-row'
+      } else if (row.labelLevel === 2) {
+        return 'weak-match-row'
       }
-      return '';
-    },
+      return ''
+    }
   }
 }
 </script>
@@ -401,22 +394,24 @@ export default {
 .el-table--border {
   height: 100% !important;
 }
-.el-table .el-table__cell{
+
+.el-table .el-table__cell {
   text-align: center !important;
 }
 
 ::v-deep .el-table__body tr.el-table__row--striped td {
   background-color: unset !important;
 }
+
 ::v-deep .el-table__row {
   /*background: unset !important;*/
 }
 
-::v-deep .el-table__body tr:hover > td{
-  background-color:unset !important;
+::v-deep .el-table__body tr:hover > td {
+  background-color: unset !important;
 }
 
-.el-table__row >>> .all-match-row{
+.el-table__row >>> .all-match-row {
   background: #f59898 !important;
 }
 
@@ -440,29 +435,28 @@ export default {
   background: #89ab89 !important;
 }
 
-.el-table--mini .el-table__cell{
+.el-table--mini .el-table__cell {
   height: 30px !important;
   padding: 0 0 !important;
 }
 
-
-
-::-webkit-scrollbar { /*滚动条整体样式*/
+::-webkit-scrollbar {
+  /*滚动条整体样式*/
   width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
   height: 12px;
 }
 
-::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
   background: #e1f1f1;
 }
 
-::-webkit-scrollbar-track { /*滚动条里面轨道*/
+::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
   -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   background: #fff;
 }
-
-
 </style>

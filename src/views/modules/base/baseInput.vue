@@ -75,11 +75,11 @@
     width: 100%;
   }
   .countries-select /deep/ .el-input--small .el-input__inner{
-    height: 40px;
+    height: 28px !important;
     width: 100%;
   }
   .countries-select /deep/ .el-input--suffix .el-input__inner{
-    height: 40px;
+    height: 28px !important;
   }
 
 

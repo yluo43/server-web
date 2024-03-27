@@ -8,7 +8,7 @@
           </el-form-item>
 
           <el-form-item label="所属部门" prop="deptId">
-            <el-select  v-model="dataForm.deptId" placeholder="请选择所属部门" >
+            <el-select  clearable  v-model="dataForm.deptId" placeholder="请选择所属部门" >
               <el-option      v-for="item in deptList"
                               :key="item.id"
                               :label="item.deptName"
