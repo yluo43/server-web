@@ -1,17 +1,17 @@
 <template>
   <div>
     <el-container class="container">
-      <div :class="classObj" class="app-wrapper" style=" background-color:#F5F7FA">
-        <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
-        <sidebar class="sidebar-container" style="top:1px;left:1px"/>
+      <div :class="classObj" class="app-wrapper" style="background-color: #f5f7fa">
+        <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+        <sidebar class="sidebar-container" style="top: 1px; left: 1px" />
         <el-container class="main-container">
-          <el-header style="height:100px">
-            <navbar/>
-            <TopNavbar/>
+          <el-header style="height: 110px">
+            <navbar />
+            <TopNavbar />
           </el-header>
 
           <el-main>
-            <app-main/>
+            <app-main />
           </el-main>
         </el-container>
       </div>
@@ -63,8 +63,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/mixin.scss";
-@import "~@/styles/variables.scss";
+@import '~@/styles/mixin.scss';
+@import '~@/styles/variables.scss';
 
 .app-wrapper {
   @include clearfix;
@@ -98,7 +98,7 @@ export default {
 }
 
 .hideSidebar .fixed-header {
-  width: calc(100% - 85px)
+  width: calc(100% - 85px);
 }
 
 .mobile .fixed-header {
@@ -119,17 +119,19 @@ export default {
   border: 1px solid #eee;
 }
 
-
-::-webkit-scrollbar { /*滚动条整体样式*/
+::-webkit-scrollbar {
+  /*滚动条整体样式*/
   width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
   height: 8px;
 }
-::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.2);
   background: #e1f1f1;
 }
-::-webkit-scrollbar-track { /*滚动条里面轨道*/
+::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
   -webkit-box-shadow: inset 0 0 0 rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   background: #fff;

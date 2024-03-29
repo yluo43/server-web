@@ -5,40 +5,33 @@
       <span class="welcomeTitle">欢迎进入PMIS项目管理信息系统</span>
       <div class="right-menu">
         <!-- 用户信息 -->
-        <span v-html="'\u00a0\u00a0\u00a0\u00a0'"/>
+        <span v-html="'\u00a0\u00a0\u00a0\u00a0'" />
         <el-dropdown class="avatar-container" trigger="click">
           <div class="avatar-wrapper">
             <span>您好，{{ userChineseName }}</span>
-            <i class="el-icon-caret-bottom"/>
+            <i class="el-icon-caret-bottom" />
           </div>
           <el-dropdown-menu slot="dropdown" class="user-dropdown">
             <router-link to="/">
-              <el-dropdown-item
-                @click.native.prevent="layout">
-                退出登录
-              </el-dropdown-item>
+              <el-dropdown-item @click.native.prevent="layout">退出登录</el-dropdown-item>
             </router-link>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-
     </div>
   </div>
-
-
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import { getCName, getUserID ,removeToken,removeCName} from '@/utils/auth'
+import { getCName, getUserID, removeToken, removeCName } from '@/utils/auth'
 
 export default {
   mounted() {
     // 监听是大屏还是小屏
     this.monitor()
-
   },
   data() {
     return {
@@ -52,10 +45,7 @@ export default {
     Hamburger
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar'
-    ])
+    ...mapGetters(['sidebar', 'avatar'])
   },
   methods: {
     /*personalPage() {
@@ -73,9 +63,9 @@ export default {
       removeCName()
       this.$http({
         url: this.$http.adornUrl(`/userLogin/logout`),
-        method: 'get',
+        method: 'get'
       }).then(({ data }) => {
-        if (data && data.code === 200 ) {
+        if (data && data.code === 200) {
           this.$message({
             type: 'success',
             message: '退出成功！'
@@ -85,7 +75,7 @@ export default {
         }
       })
 
-      this.$router.push({name:'login'})
+      this.$router.push({ name: 'login' })
       // setTimeout(() => {
       // location.reload() //强制刷新
       // },0)
@@ -101,32 +91,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .welcomeTitle{
-    margin-top: 26px;
-    display: inline-block;
-    font-weight: bold;
-    font-size: 14px;
-  }
+.welcomeTitle {
+  line-height: 60px;
+  // margin-top: 20px;
+  display: inline-block;
+  font-weight: bold;
+  font-size: 14px;
+}
 
 .navbar {
-  height: 50px;
+  height: 60px;
   overflow: hidden;
   background: #ffffff;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   position: relative;
   z-index: 100;
-  margin-left: 4px;
+  // margin-left: 4px;
 
   .hamburger-container {
-    line-height: 65px;
+    line-height: 59px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
+    transition: background 0.3s;
     -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -137,7 +128,7 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 50px;
+    line-height: 60px;
 
     &:focus {
       outline: none;
@@ -153,14 +144,13 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }
-
 
     .avatar-container {
       margin-right: 30px;
@@ -185,7 +175,6 @@ export default {
         }
       }
     }
-
   }
 }
 
@@ -204,7 +193,6 @@ export default {
 .overColor {
   background-color: #e4e7ed;
 }
-
 
 /* 服务信息样式 */
 .service-footer li {
@@ -227,7 +215,7 @@ export default {
 .horizon-line {
   width: 1px;
   height: 16px;
-  background: #D7DBE5;
+  background: #d7dbe5;
   border-radius: 2px;
   display: -webkit-inline-box;
   vertical-align: middle;
