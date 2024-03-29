@@ -309,8 +309,9 @@ export default {
       })
     },
     // 初始化
-    init(initData,operateType) {
-      this.operateType = operateType
+    init(initData) {
+      console.log(initData)
+      this.operateType = initData.operateType
       this.deptList = initData.deptList
       // this.teamList = initData.teamList
       // this.psList = initData.psList
@@ -320,8 +321,7 @@ export default {
       if (initData.rowData) {
         Object.assign(this.editProjectInfoFormData, initData.rowData)
         if (initData.rowData.projectType != 2) {
-
-          if(initData.rowData.labelNames!=null &&initData.rowData.labelNames.length>0){
+          if (initData.rowData.labelNames != null && initData.rowData.labelNames.length > 0) {
             const labelNameArr = initData.rowData.labelNames.split(',')
             this.editProjectInfoFormData.labels = []
             this.itemLabels.map((item) => {
