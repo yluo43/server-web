@@ -1,4 +1,4 @@
-# iot-ui
+# pmis-ui
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.ebupt.net/eb-information-system/oa/iot/iot-ui.git
+git remote add origin https://gitlab.ebupt.net/product-devp-project/projectmanage/pmis-ui.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.ebupt.net/eb-information-system/oa/iot/iot-ui/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.ebupt.net/product-devp-project/projectmanage/pmis-ui/-/settings/integrations)
 
 ## Collaborate with your team
 
