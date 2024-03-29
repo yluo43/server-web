@@ -116,8 +116,8 @@ element.style {
 
 .el-menu-item.is-active {
   //设置背景颜色
-  color: #a1d3f1 !important;
-  background-color: #5782E9 !IMPORTANT;
+  color: #2462F9 !important;
+  background-color: #E9EFFE !important;
 }
 
 //  修改标签高度
@@ -267,7 +267,9 @@ element.style {
     padding-left: 2px;
   }
 }
-
+.el-popper[x-placement^=bottom] {
+  margin-top: 0; 
+}
 //.searchInput{
 //  .el-popper[x-placement^=bottom] .popper__arrow::after{
 //    border-bottom-color: transparent;

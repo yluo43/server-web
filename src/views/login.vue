@@ -1,9 +1,9 @@
 <template>
   <div align="center">
     <div class="logoTitle">
-      <img :src="logo" class="sidebar-logo" style="height: 90px" />
+      <img :src="logo" class="sidebar-logo" style="height: 64px" />
       <div id="u2300_text">
-        <p><span style="color: dodgerblue">PMIS平台</span></p>
+        <p><span style="color: #262b39; margin-left: 32px">PMIS项目管理系统</span></p>
       </div>
     </div>
     <div class="login-border">
@@ -18,13 +18,17 @@
           label-position="left"
         >
           <div class="title-container">
-            <div class="title"></div>
+            <div class="title">
+              <img src="@/assets/pmis-logo-small.png" />
+              <span style="margin-left: 16px">欢迎登录</span>
+            </div>
           </div>
-          <el-form-item prop="username">
+          <div style="text-align: left; margin-top: 35px; height: 25px; line-height: 25px; font-size: 16px; color: #262b39">用户名</div>
+          <el-form-item prop="username" style="margin-top: 3px">
             <el-input
               ref="username"
               v-model="loginForm.username"
-              placeholder="请输入账号"
+              placeholder="请输入用户名"
               name="username"
               type="text"
               tabindex="1"
@@ -33,8 +37,8 @@
               @keyup.enter.native="handleLogin"
             />
           </el-form-item>
-
-          <el-form-item prop="password">
+          <div style="text-align: left; margin-top: 24px; height: 25px; line-height: 25px; font-size: 16px; color: #262b39">密码</div>
+          <el-form-item prop="password" style="margin-top: 3px">
             <el-input
               :key="passwordType"
               ref="password"
@@ -82,23 +86,29 @@
               background-image: none;
               border-radius: 4px;
               width: 100%;
-              margin-top: 65px;
+              margin-top: 42px;
               align-content: center;
             "
             @click.native.prevent="handleLogin"
           >
             登&nbsp;&nbsp;录
           </el-button>
+          <div style="display: flex; padding: 42px 34px; align-items: center">
+            <div style="flex: 1; border: 1px solid #d8e0ef"></div>
+            <div style="font-size: 14px; padding: 0 10px; color: #adb5bd">新讯数字科技有限公司</div>
+            <div style="flex: 1; border: 1px solid #d8e0ef"></div>
+            <!-- <el-divider content-position="center"><span style="font-size: 14px; color: #adb5bd">新讯数字科技有限公司</span></el-divider> -->
+          </div>
         </el-form>
       </div>
     </div>
-    <h2 style="color: aliceblue; position: fixed; bottom: 2em; left: 10%">系统使用最佳分辨率: 1920*1080</h2>
+    <!-- <h2 style="color: aliceblue; position: fixed; bottom: 2em; left: 10%">系统使用最佳分辨率: 1920*1080</h2> -->
   </div>
 </template>
 
 <script>
 import { setCName } from '@/utils/auth'
-import logoImgMiddle from '@/assets/logo-eb.png'
+import logoImgMiddle from '@/assets/pmis-logo-big.png'
 import { fnAddDynamicMenuRoutes } from '@/router'
 import router from '@/router'
 import { mapMutations } from 'vuex'
@@ -130,7 +140,7 @@ export default {
       loading: false,
       passwordType: 'password',
       redirect: undefined,
-      bodyBgImage: 'url(' + require('../assets/background.jpg') + ')'
+      bodyBgImage: 'url(' + require('@/assets/login-background.png') + ')'
     }
   },
   watch: {
@@ -214,6 +224,7 @@ export default {
     setBodyBackGround() {
       document.body.style.backgroundSize = 'cover'
       document.body.style.backgroundRepeat = 'no-repeat'
+      document.body.style.backgroundPosition = 'center'
       document.body.style.backgroundImage = this.bodyBgImage
     },
     // 清除背景图
@@ -277,11 +288,13 @@ $cursor: #666666; //输入框文字颜色
   top: 50px !important;
 }
 .logoTitle {
-  margin-left: 32px;
-  margin-top: 30px;
-  float: left;
-  display: inline-flex;
-  font-size: 48px;
+  display: flex;
+  align-items: center;
+  margin-left: 76px;
+  //margin-top: 60px;
+  //float: left;
+  //display: inline-flex;
+  font-size: 42px;
 }
 
 /* reset element-ui css */
@@ -307,7 +320,7 @@ $cursor: #666666; //输入框文字颜色
       border-radius: 4px;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
+        box-shadow: 0 0 0px 1000px #ffffff inset !important;
         -webkit-text-fill-color: $cursor !important;
       }
 
@@ -319,16 +332,16 @@ $cursor: #666666; //输入框文字颜色
 
   .el-form-item {
     width: 100%;
-    height: 48px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.08);
-    color: white;
-    float: left;
-    margin-bottom: -23px;
-    margin-top: 50px;
-    padding-bottom: 1px;
-    background: #f5f7fa !important;
+    height: 50px;
+    background: #fff;
+    border: 1px solid #dddfe6;
+    color: #bcbec0;
+    //float: left;
+    // margin-bottom: -23px;
+    //margin-top: 50px;
+    // padding-bottom: 1px;
+    // border-radius: 4px;
+    // background: #f5f7fa !important;
   }
 
   .el-form-item:focus-within {
@@ -337,7 +350,8 @@ $cursor: #666666; //输入框文字颜色
   }
 
   .el-form-item__content {
-    padding-bottom: 4px;
+    // padding-bottom: 4px;
+    line-height: 50px;
   }
 
   .el-checkbox {
@@ -347,32 +361,36 @@ $cursor: #666666; //输入框文字颜色
 </style>
 
 <style lang="scss" scoped>
-.el-form-item {
-  width: 260px !important;
-}
+// .el-form-item {
+//   width: 100% !important;
+// }
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 $back_gray: #dfe5e7;
 
 .login-container {
-  height: 440px;
-  width: 440px;
+  height: 497px;
+  width: 460px;
   overflow: hidden;
-  margin-top: 15%;
-  left: 70%;
+  border-radius: 20px;
+  //margin-top: 5%;
+  left: 75%;
   position: absolute;
-  min-width: 440px;
-  min-height: 440px;
+  top: 200px;
+  min-width: 460px;
+  min-height: 497px;
   transform: translate(-50%);
   opacity: 1;
-  background-image: linear-gradient(white, white), linear-gradient(-30deg, #2668ff, #67e8e8);
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  // background-image: linear-gradient(white, white), linear-gradient(-30deg, #2668ff, #67e8e8);
   box-shadow: 0px 0px 20px 0px #e9eef6;
   padding: 1px;
 
   .login-form {
     position: relative;
-    margin: 50px 50px 0px 48px;
+    margin: 36px 30px 0px 30px;
     overflow: hidden;
   }
 
@@ -388,9 +406,11 @@ $back_gray: #dfe5e7;
     position: relative;
 
     .title {
-      font-size: 27px;
-      color: #2a6eff;
-      margin: 0px auto -10px auto;
+      display: flex;
+      align-items: center;
+      font-size: 20px;
+      color: #2462f9;
+      //  margin: 0px auto -10px auto;
       text-align: center;
     }
   }
@@ -398,7 +418,7 @@ $back_gray: #dfe5e7;
   .show-pwd {
     position: absolute;
     right: 6%;
-    top: 7px;
+    // top: 7px;
     font-size: 16px;
     color: $dark_gray;
     cursor: pointer;
