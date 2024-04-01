@@ -98,7 +98,7 @@
 <script>
 import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
-import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/rejectDialog.vue'
+import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
 export default {
   components: { baseTable, baseDialog, rejectDialog },
   props: {},

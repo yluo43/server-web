@@ -2,18 +2,30 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <div style="width: 100%">
-        <el-form ref="formData" label-width="110px" :rules="rules" :model="formData">
-          <el-form-item label="用户姓名:" prop="name">
-            {{ formData.name }}
+        <el-form ref="dataForm" label-width="110px" :rules="rules" :model="dataForm">
+          <el-form-item label="补贴项目:" prop="name" style="width: 70%">
+            <el-table :data="tableData" border @selection-change="handleSelectionChange">
+              <el-table-column type="selection" width="55"></el-table-column>
+              <el-table-column prop="name" label="项目列表"></el-table-column>
+              <el-table-column prop="empId" label="调休天数"></el-table-column>
+            </el-table>
           </el-form-item>
-          <el-form-item label="驳回工作量:" prop="overtimeDuration">{{ formData.overtimeDuration }}%</el-form-item>
-          <el-form-item label="驳回理由:" prop="rejectReason">
-            <el-input type="textarea" show-word-limit minlength="5" maxlength="100" v-model="formData.rejectReason" placeholder="请输入至少5个字符"></el-input>
+          <el-form-item style="width: 70%">
+            <i class="el-icon-warning-outline"></i>
+            <span>该员工总调休天数10天，其中已调休3天，已补贴1天，剩余可调休天数6天。</span>
+          </el-form-item>
+          <el-form-item label="补贴天数:" prop="overtimeDuration">
+            <el-input v-model="dataForm.rejectReason" placeholder="请输入补贴天数"></el-input>
+            天
+          </el-form-item>
+          <el-form-item label="补贴金额:" prop="rejectReason">
+            <el-input v-model="dataForm.rejectReason" placeholder="请输入补贴金额"></el-input>
+            元
           </el-form-item>
         </el-form>
         <div class="btn-group">
           <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
-          <el-button type="primary" @click="confirm('formData')">确认</el-button>
+          <el-button type="primary" @click="confirm('dataForm')">确认</el-button>
         </div>
       </div>
     </el-container>
@@ -21,7 +33,9 @@
 </template>
 
 <script>
+import baseTable from '@/views/modules/base/baseTable.vue'
 export default {
+  components: { baseTable },
   props: {
     cancelDialog: {
       type: Function
@@ -29,7 +43,17 @@ export default {
   },
   data() {
     return {
-      formData: {
+      tableData: [
+        {
+          name: '1111',
+          empId: '222'
+        },
+        {
+          name: '1111',
+          empId: '222'
+        }
+      ],
+      dataForm: {
         //姓名
         name: '',
         //驳回加班时长
@@ -46,9 +70,11 @@ export default {
   created() {},
   methods: {
     init(initData) {
-      Object.assign(this.formData, initData)
-      console.log(this.formData)
+      Object.assign(this.dataForm, initData)
+      console.log(this.dataForm)
     },
+    //
+    handleSelectionChange() {},
     //确认
     confirm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -77,17 +103,8 @@ export default {
 </script>
 
 <style scoped>
-::v-deep .el-form-item__error {
-  top: 53px !important;
-}
-.el-dialog__body {
-  padding: 25px 0 2px 0;
-}
-.el-date-editor.el-input {
+.el-input {
   width: 190px;
-}
-.el-dialog__body {
-  width: 50%;
 }
 .btn-group {
   width: 100%;

@@ -13,7 +13,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="加班项目" prop="overtimeProject">
+            <el-form-item prop="overtimeProject">
+              <template slot="label">
+                加班项目
+                <el-tooltip class="item" effect="dark" content="员工只可选择系统内本人已投入的项目!" placement="top-start">
+                  <i class="el-icon-info"></i>
+                </el-tooltip>
+              </template>
               <el-select v-model="overtimeDataForm.overtimeProject" placeholder="请选择加班项目" clearable>
                 <el-option v-for="item in overtimeProjects" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
@@ -52,7 +58,13 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="加班结束时间" prop="overTimeEndTime">
-              <el-date-picker v-model="overtimeDataForm.overTimeEndTime" type="datetime" placeholder="选择日期时间"></el-date-picker>
+              <el-date-picker
+                v-model="overtimeDataForm.overTimeEndTime"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm"
+                format="yyyy-MM-dd HH:mm"
+                placeholder="选择日期时间"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -127,6 +139,28 @@ export default {
   components: {},
   props: {},
   data() {
+    const validateoverTimeStartTime = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择加班开始时间'))
+      } else if (this.overtimeDataForm.overtimeType == 0 && new Date(this.overtimeDataForm.overTimeStartTime).getHours() < 19) {
+        callback(new Error('加班开始时间不得小于19点'))
+      } else if (this.overtimeDataForm.overtimeType == 1 && new Date(this.overtimeDataForm.overTimeStartTime).getHours() < 9) {
+        callback(new Error('加班开始时间不得小于9点'))
+      } else {
+        callback()
+      }
+    }
+    const validateoverTimeEndTime = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请选择加班结束时间'))
+      } else if (new Date(this.overtimeDataForm.overTimeEndTime).getTime() < new Date(this.overtimeDataForm.overTimeStartTime).getTime()) {
+        callback(new Error('加班结束时间不能小于加班开始时间'))
+      } else if (new Date(this.overtimeDataForm.overTimeEndTime).getTime() > this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime)) {
+        callback(new Error('加班结束时间不能大于加班开始时间的次日9:00'))
+      } else {
+        callback()
+      }
+    }
     const validateCompensatoryLeaveStartTime = (rule, value, callback) => {
       if (!value || !this.compensatoryLeaveDataForm.startDate || !this.compensatoryLeaveDataForm.startTime) {
         callback(new Error('请选择调休开始时间'))
@@ -165,8 +199,8 @@ export default {
       overtimeRules: {
         overtimeProject: [{ required: true, message: '请选择加班项目', trigger: 'change' }],
         overtimeReason: [{ required: true, message: '请输入加班原因', trigger: 'blur' }],
-        overTimeStartTime: [{ required: true, message: '请选择加班开始时间', trigger: 'change' }],
-        overTimeEndTime: [{ required: true, message: '请选择加班结束时间', trigger: 'change' }]
+        overTimeStartTime: [{ required: true, validator: validateoverTimeStartTime, trigger: 'change' }],
+        overTimeEndTime: [{ required: true, validator: validateoverTimeEndTime, trigger: 'change' }]
       },
       compensatoryLeaveRules: {
         compensatoryLeaveStartTime: [{ required: true, validator: validateCompensatoryLeaveStartTime, trigger: 'change' }],
@@ -192,7 +226,6 @@ export default {
         }
       }
     },
-
     overtimeDuration(value) {
       if (value) {
         this.overtimeDataForm.overtimeDuration = value
@@ -210,7 +243,18 @@ export default {
   computed: {
     overtimeDuration() {
       if (this.overtimeDataForm.overTimeStartTime && this.overtimeDataForm.overTimeEndTime) {
-        return (new Date(this.overtimeDataForm.overTimeEndTime).getTime() - new Date(this.overtimeDataForm.overTimeStartTime).getTime()) / 1000 / 60 / 60
+        const nextDay = this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime)
+        let endTime
+        if (new Date(this.overtimeDataForm.overTimeEndTime).getTime() > nextDay) {
+          endTime = nextDay
+        } else {
+          endTime = new Date(this.overtimeDataForm.overTimeEndTime).getTime()
+        }
+        if (this.overtimeDataForm.overtimeType == 0) {
+          return Math.round(((endTime - new Date(this.overtimeDataForm.overTimeStartTime).getTime()) / 1000 / 60 / 60) * 10) / 10
+        } else {
+          return Math.round(((endTime - new Date(this.overtimeDataForm.overTimeStartTime).getTime()) / 1000 / 60 / 60) * 10) / 10
+        }
       } else {
         return 0
       }
@@ -248,6 +292,15 @@ export default {
     },
     //提交加班申请
     submitOverTime() {
+      if (this.overtimeDataForm.overtimeDuration < 2) {
+        this.$message.warning('加班时长不能小于2小时')
+        return
+      } else if (this.overtimeDataForm.overtimeDuration > 24) {
+        this.$message.warning('加班时长不能大于24小时')
+        return
+      }
+      console.log(new Date(this.overtimeDataForm.overTimeStartTime).getHours())
+      console.log(this.overtimeDataForm)
       let message = '提交后本次申请记录将无法修改，确定提交吗？'
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
@@ -300,6 +353,16 @@ export default {
         diffDay = 0.5
       }
       return diffDay
+    },
+    //计算开始时间次日九点的时间戳
+    calNextDayTimeStamp(date) {
+      var currentDate = new Date(date)
+      currentDate.setHours(9)
+      currentDate.setMinutes(0)
+      currentDate.setSeconds(0)
+      currentDate.setMilliseconds(0)
+      currentDate.setDate(currentDate.getDate() + 1)
+      return currentDate.getTime()
     },
     //日期格式转换
     formatDate(date) {

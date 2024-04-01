@@ -88,24 +88,31 @@
           项
         </div>
         <div>
-          <el-button type="text" @click="pass">批量通过</el-button>
+          <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
       </div>
       <el-main class="table">
         <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
           <template v-slot:clientType="row">
             <template>
-              <el-button type="text" @click="pass(row)">通过</el-button>
-              <el-button type="text" @click="reject(row)">驳回</el-button>
-              <el-button type="text" @click="view(row)">查看</el-button>
+              <el-button type="text" @click="pass(row.item)">通过</el-button>
+              <el-button type="text" @click="reject(row.item)">驳回</el-button>
+              <el-button type="text" @click="view(row.item)">查看</el-button>
             </template>
           </template>
         </baseTable>
       </el-main>
     </div>
+    <!-- 驳回加班时长 -->
     <base-dialog ref="rejectDialog" title="加班时长驳回" :width="'500px'">
       <template>
         <rejectDialog ref="reject" :cancelDialog="closeDialog" @selectTableData="selectTableData"></rejectDialog>
+      </template>
+    </base-dialog>
+    <!-- 审批流程 -->
+    <base-dialog ref="approvalProcessDialog" title="查看审批流程" :width="'800px'">
+      <template>
+        <approvalProcessDialog ref="approvalProcess" :cancelDialog="closeApprovalProcessDialog"></approvalProcessDialog>
       </template>
     </base-dialog>
   </el-container>
@@ -114,9 +121,10 @@
 <script>
 import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
-import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/rejectDialog.vue'
+import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
+import approvalProcessDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/approvalProcessDialog.vue'
 export default {
-  components: { baseTable, baseDialog, rejectDialog },
+  components: { baseTable, baseDialog, rejectDialog, approvalProcessDialog },
   props: {},
   data() {
     return {
@@ -248,11 +256,16 @@ export default {
     },
     //通过
     pass(row) {
+      const h = this.$createElement
       let message = ''
       let ids = []
       if (row) {
-        message = `${row.item.name}在${row}至${row}的加班申请,加班时长${row}小时,确定通过吗？`
+        console.log(row)
+        message = h('p', null, [h('span', null, `${row.name}在`), h('span', { style: 'color: red' }, row.reportDay)])
         ids = [row.id]
+        this.open(message, ids)
+        // message = `${row.item.name}在${row}至${row}的加班申请,加班时长${row}小时,确定通过吗？`
+        // ids = [row.id]
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
@@ -261,20 +274,26 @@ export default {
         ids = this.selData.filter((item) => {
           return item.id
         })
+        message = '已选中多条数据，确定批量通过吗？'
+        this.open(message, ids)
       }
-      this.$confirm(message, '提示', {
+    },
+    open(message, ids) {
+      this.$msgbox({
+        message: message,
+        showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(() => {
           this.$http({
-            url: this.$http.adornUrl(''),
-            method: 'post',
-            data
+            url: this.$http.adornUrl('/projectWork/projectList'),
+            method: 'get'
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message.success(data.msg)
+              this.$refs.approvalProcessDialog.show()
             } else {
               this.$message.error(data.msg)
             }
@@ -298,8 +317,14 @@ export default {
     closeDialog() {
       this.$refs.rejectDialog.hide()
     },
+    //关闭查看详情弹窗
+    closeApprovalProcessDialog() {
+      this.$refs.approvalProcessDialog.hide()
+    },
     //查看
-    view() {},
+    view(row) {
+      this.$refs.approvalProcessDialog.show()
+    },
     //选择框选择
     checkedTable(sel) {
       this.count = sel.length

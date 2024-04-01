@@ -76,9 +76,16 @@
         </div>
       </div>
     </el-container>
+    <!-- 驳回 -->
     <base-dialog ref="rejectDialog" title="加班时长驳回" :width="'500px'">
       <template>
         <rejectDialog ref="reject" :cancelDialog="closeDialog" @selectTableData="selectTableData"></rejectDialog>
+      </template>
+    </base-dialog>
+    <!-- 审批流程 -->
+    <base-dialog ref="approvalProcessDialog" title="查看审批流程" :width="'500px'">
+      <template>
+        <approvalProcessDialog ref="approvalProcess" :cancelDialog="closeDialog"></approvalProcessDialog>
       </template>
     </base-dialog>
   </div>
@@ -87,9 +94,10 @@
 <script>
 import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
-import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/rejectDialog.vue'
+import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
+import approvalProcessDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/approvalProcessDialog.vue'
 export default {
-  components: { baseTable, baseDialog, rejectDialog },
+  components: { baseTable, baseDialog, rejectDialog, approvalProcessDialog },
   props: {},
   data() {
     return {

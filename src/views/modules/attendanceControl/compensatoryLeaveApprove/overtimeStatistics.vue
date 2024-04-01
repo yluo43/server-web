@@ -60,7 +60,7 @@
       </template>
     </base-dialog>
     <!-- 工时补贴 -->
-    <base-dialog ref="workAllowanceDialog" title="工时补贴" :width="'800px'">
+    <base-dialog ref="workAllowanceDialog" title="工时补贴" :width="'600px'">
       <template>
         <workAllowanceDialog ref="workAllowance" :cancelDialog="closeWorkAllowanceDialog" @selectTableData="selectTableData"></workAllowanceDialog>
       </template>
@@ -71,8 +71,8 @@
 <script>
 import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
-import detailsDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/detailsDialog.vue'
-import workAllowanceDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/workAllowanceDialog.vue'
+import detailsDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/detailsDialog.vue'
+import workAllowanceDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/workAllowanceDialog.vue'
 export default {
   components: { baseTable, baseDialog, detailsDialog, workAllowanceDialog },
   props: {},
@@ -156,7 +156,9 @@ export default {
       this.$refs.workAllowanceDialog.hide()
     },
     //工时补贴
-    workAllowance() {},
+    workAllowance() {
+      this.$refs.workAllowanceDialog.show()
+    },
     //选择框选择
     checkedTable(sel) {
       this.count = sel.length
