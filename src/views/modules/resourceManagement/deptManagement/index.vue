@@ -42,7 +42,7 @@
             </el-form-item>
 
             <el-form-item label="部门助理" prop="assistantId">
-              <el-select clearable v-model="editDataForm.assistantId" placeholder="请选择部门助理">
+              <el-select clearable v-model="editDataForm.assistantId" placeholder="请选择部门助理" multiple collapse-tags>
                 <el-option v-for="item in assistList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
@@ -108,19 +108,20 @@ export default {
       drawer: false,
       direction: 'rtl',
       title: '',
-      dataForm: {
-        deptName: '',
-        managerName: ''
-      },
+      // dataForm: {
+      //   deptName: '',
+      //   managerName: ''
+      // },
       editDataForm: {
         deptName: '',
         id: '',
         managerId: '',
-        assistantId: '',
+        assistantId: [],
         parentId: '',
         parentName: '',
         managerName: '',
-        status: '',
+        state: '',
+        //    status: '',
         remarks: '',
         deptTeam: []
       },
@@ -165,6 +166,7 @@ export default {
       }
     },
     filterNode(value, data) {
+      console.log(data.name)
       if (!value) return true
       return data.name.indexOf(value) !== -1
     },
@@ -191,6 +193,7 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.editDataForm = { ...data.payload }
+          console.log(this.editDataForm)
         } else {
           this.$message.error(data.msg)
         }
@@ -198,13 +201,13 @@ export default {
     },
 
     //树数据转换
-    treeChange(treeData) {
-      treeData.map((ele) => {
-        ele.label = ele.name
-        if (ele.children && ele.children.length != 0) this.treeChange(ele.children)
-      })
-      return treeData
-    },
+    // treeChange(treeData) {
+    //   treeData.map((ele) => {
+    //     ele.label = ele.name
+    //     if (ele.children && ele.children.length != 0) this.treeChange(ele.children)
+    //   })
+    //   return treeData
+    // },
     changeParentId(row) {
       let name
       this.deptList.forEach((dept) => {
@@ -221,7 +224,6 @@ export default {
           name = manager.managerName
         }
       })
-
       return name
     },
 
@@ -232,6 +234,8 @@ export default {
       this.op = 'add'
       this.clear(this.editDataForm)
       delete this.editDataForm['deptTeam']
+      this.editDataForm.assistantId = []
+      this.editDataForm.state = 0
       this.showStatus = false
       this.managerRequired = false
 
@@ -270,11 +274,11 @@ export default {
           this.editDataForm.managerName = manager.name
         }
       })
-      this.assistList.forEach((item) => {
-        if (item.id == this.editDataForm.assistantId) {
-          this.editDataForm.assistantName = item.name
-        }
-      })
+      // this.assistList.forEach((item) => {
+      //   if (item.id == this.editDataForm.assistantId) {
+      //     this.editDataForm.assistantName = item.name
+      //   }
+      // })
       if (this.editDataForm.state == 0) {
         this.editDataForm.stateName = '正常'
       } else {
@@ -291,7 +295,11 @@ export default {
           }
         })
       }
-
+      Object.keys(this.editDataForm).map((key) => {
+        if (!this.editDataForm[key]) {
+          delete this.editDataForm[key]
+        }
+      })
       this.$http({
         url: this.$http.adornUrl(url),
         method: 'post',
@@ -345,42 +353,44 @@ export default {
     },
     clear(form) {
       Object.keys(form).forEach((key) => (form[key] = ''))
-    },
-    deleteList(row) {
-      let id = ''
-      id = row.item.id
-
-      this.$confirm(`您确定删除吗?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/deptInfo/delete?id=' + id),
-            method: 'post'
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-              location.reload()
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-    },
-    resetForm() {
-      this.$refs.dataForm.resetFields()
     }
+
+    // deleteList(row) {
+    //   let id = ''
+    //   id = row.item.id
+
+    //   this.$confirm(`您确定删除吗?`, '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   })
+    //     .then(() => {
+    //       this.$http({
+    //         url: this.$http.adornUrl('/deptInfo/delete?id=' + id),
+    //         method: 'post'
+    //       }).then(({ data }) => {
+    //         if (data && data.code === 200) {
+    //           this.$message({
+    //             message: '删除成功',
+    //             type: 'success'
+    //           })
+    //           location.reload()
+    //         } else {
+    //           this.$message.error(data.msg)
+    //         }
+    //       })
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消删除'
+    //       })
+    //     })
+    // }
+
+    // resetForm() {
+    //   this.$refs.dataForm.resetFields()
+    // }
   }
 }
 </script>

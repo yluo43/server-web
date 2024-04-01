@@ -599,6 +599,9 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.el-input {
+  width: 190px;
+}
 .chooseResult {
   width: 98%;
   height: 30px;

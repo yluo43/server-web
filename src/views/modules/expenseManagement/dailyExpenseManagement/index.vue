@@ -137,8 +137,8 @@
             <el-form-item label="日期:" prop="empId" disabled="disabled">
               <el-input v-model="editDataForm.costDate" clearable disabled="disabled"></el-input>
             </el-form-item>
-            <el-form-item label="事由:" prop="reason" maxlength="50">
-              <el-input v-model="editDataForm.reason" clearable></el-input>
+            <el-form-item label="事由:" prop="reason">
+              <el-input v-model="editDataForm.reason" clearable maxlength="50" show-word-limit></el-input>
 
               <!--              <el-select  v-model="editDataForm.reason"  >-->
               <!--                <el-option      v-for="item in reason"-->
@@ -511,6 +511,9 @@ export default {
 }
 ::v-deep .editForm .el-form-item {
   width: 100% !important;
+}
+.el-input {
+  width: 190px;
 }
 
 .el-button-func {
