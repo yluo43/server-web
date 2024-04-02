@@ -46,11 +46,11 @@
                 <el-option v-for="item in assistList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-<!--            <el-form-item label="上级部门" prop="parentId">-->
-<!--              <el-select clearable v-model="editDataForm.parentId" placeholder="请选择上级部门">-->
-<!--                <el-option v-for="item in deptList" :key="item.id" :label="item.deptName" :value="item.id"></el-option>-->
-<!--              </el-select>-->
-<!--            </el-form-item>-->
+            <!--            <el-form-item label="上级部门" prop="parentId">-->
+            <!--              <el-select clearable v-model="editDataForm.parentId" placeholder="请选择上级部门">-->
+            <!--                <el-option v-for="item in deptList" :key="item.id" :label="item.deptName" :value="item.id"></el-option>-->
+            <!--              </el-select>-->
+            <!--            </el-form-item>-->
             <el-form-item label="团队" v-if="op == 'alter'">
               <div style="border: 1px solid lightgray; width: 190px; max-height: 200px; overflow-y: auto">
                 <el-tree :data="editDataForm.deptTeam" :props="defaultProps" default-expand-all ref="deptTeam"></el-tree>
@@ -192,6 +192,9 @@ export default {
         params: params
       }).then(({ data }) => {
         if (data && data.code === 200) {
+          if (data.payload.assistantIds.length != 0) {
+            data.payload.assistantIds = data.payload.assistantIds.map((item) => item.id)
+          }
           this.editDataForm = { ...data.payload }
         } else {
           this.$message.error(data.msg)
