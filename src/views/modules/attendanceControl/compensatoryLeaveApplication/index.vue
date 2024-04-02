@@ -13,14 +13,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item prop="overtimeProject">
+            <el-form-item prop="projectId">
               <template slot="label">
                 加班项目
                 <el-tooltip class="item" effect="dark" content="员工只可选择系统内本人已投入的项目!" placement="top-start">
                   <i class="el-icon-info"></i>
                 </el-tooltip>
               </template>
-              <el-select v-model="overtimeDataForm.overtimeProject" placeholder="请选择加班项目" clearable>
+              <el-select v-model="overtimeDataForm.projectId" placeholder="请选择加班项目" clearable>
                 <el-option v-for="item in overtimeProjects" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -38,8 +38,8 @@
         </el-row>
         <el-row style="margin-top: 30px">
           <el-col :span="6">
-            <el-form-item label="是否居家办公" prop="homeFlag">
-              <el-radio-group v-model="overtimeDataForm.homeFlag">
+            <el-form-item label="是否居家办公" prop="isRemoteWork">
+              <el-radio-group v-model="overtimeDataForm.isRemoteWork">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
@@ -72,7 +72,7 @@
           </el-col>
         </el-row>
         <div style="margin-top: 20px">
-          <el-button type="primary" @click="submitOverTime">提交</el-button>
+          <el-button type="primary" @click="submitOverTime('overtimeDataForm')">提交</el-button>
           <el-button @click="cancelOverTime">取消</el-button>
         </div>
       </el-form>
@@ -126,8 +126,8 @@
           </el-col>
         </el-row>
         <div style="margin-top: 20px">
-          <el-button type="primary" @click="submitCompensatoryLeave">提交</el-button>
-          <el-button>取消</el-button>
+          <el-button type="primary" @click="submitCompensatoryLeave('compensatoryLeaveDataForm')">提交</el-button>
+          <el-button @click="cancelCompensatoryLeave">取消</el-button>
         </div>
       </el-form>
     </div>
@@ -155,7 +155,7 @@ export default {
         callback(new Error('请选择加班结束时间'))
       } else if (new Date(this.overtimeDataForm.overTimeEndTime).getTime() < new Date(this.overtimeDataForm.overTimeStartTime).getTime()) {
         callback(new Error('加班结束时间不能小于加班开始时间'))
-      } else if (new Date(this.overtimeDataForm.overTimeEndTime).getTime() > this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime)) {
+      } else if (new Date(this.overtimeDataForm.overTimeEndTime).getTime() > this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 9, 2)) {
         callback(new Error('加班结束时间不能大于加班开始时间的次日9:00'))
       } else {
         callback()
@@ -165,24 +165,31 @@ export default {
       if (!value || !this.compensatoryLeaveDataForm.startDate || !this.compensatoryLeaveDataForm.startTime) {
         callback(new Error('请选择调休开始时间'))
         return
+      } else {
+        callback()
       }
-      callback()
     }
     const validateCompensatoryLeaveEndTime = (rule, value, callback) => {
       if (!value || !this.compensatoryLeaveDataForm.endDate || !this.compensatoryLeaveDataForm.endTime) {
         callback(new Error('请选择调休结束时间'))
         return
+      } else if (
+        new Date(this.compensatoryLeaveDataForm.compensatoryLeaveEndTime).getTime() <=
+        new Date(this.compensatoryLeaveDataForm.compensatoryLeaveStartTime).getTime()
+      ) {
+        callback(new Error('调休结束时间不能小于等于调休开始时间'))
+      } else {
+        callback()
       }
-      callback()
     }
     return {
       overtimeProjects: [],
       overtimeDataForm: {
         overtimeType: '',
-        overtimeProject: '',
+        projectId: '',
         projectManager: '',
         overtimeReason: '',
-        homeFlag: '',
+        isRemoteWork: '',
         overTimeStartTime: '',
         overTimeEndTime: '',
         overtimeDuration: 0
@@ -197,7 +204,7 @@ export default {
         days: 0
       },
       overtimeRules: {
-        overtimeProject: [{ required: true, message: '请选择加班项目', trigger: 'change' }],
+        projectId: [{ required: true, message: '请选择加班项目', trigger: 'change' }],
         overtimeReason: [{ required: true, message: '请输入加班原因', trigger: 'blur' }],
         overTimeStartTime: [{ required: true, validator: validateoverTimeStartTime, trigger: 'change' }],
         overTimeEndTime: [{ required: true, validator: validateoverTimeEndTime, trigger: 'change' }]
@@ -209,8 +216,14 @@ export default {
     }
   },
   watch: {
-    'overtimeDataForm.overtimeProject': {
-      handler(value) {}
+    'overtimeDataForm.projectId': {
+      handler(value) {
+        this.overtimeProjects.map((item) => {
+          if (item.id == value) {
+            this.overtimeDataForm.projectManager = item.managerName
+          }
+        })
+      }
     },
     'compensatoryLeaveDataForm.startDate': {
       handler(value) {
@@ -227,9 +240,7 @@ export default {
       }
     },
     overtimeDuration(value) {
-      if (value) {
-        this.overtimeDataForm.overtimeDuration = value
-      }
+      this.overtimeDataForm.overtimeDuration = value
     },
     compensatoryLeaveEndTime(value) {
       if (value) {
@@ -243,7 +254,7 @@ export default {
   computed: {
     overtimeDuration() {
       if (this.overtimeDataForm.overTimeStartTime && this.overtimeDataForm.overTimeEndTime) {
-        const nextDay = this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime)
+        const nextDay = this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 9, 2)
         let endTime
         if (new Date(this.overtimeDataForm.overTimeEndTime).getTime() > nextDay) {
           endTime = nextDay
@@ -253,7 +264,7 @@ export default {
         if (this.overtimeDataForm.overtimeType == 0) {
           return Math.round(((endTime - new Date(this.overtimeDataForm.overTimeStartTime).getTime()) / 1000 / 60 / 60) * 10) / 10
         } else {
-          return Math.round(((endTime - new Date(this.overtimeDataForm.overTimeStartTime).getTime()) / 1000 / 60 / 60) * 10) / 10
+          return Math.round(((endTime - new Date(this.overtimeDataForm.overTimeStartTime).getTime() - this.subTime()) / 1000 / 60 / 60) * 10) / 10
         }
       } else {
         return 0
@@ -274,6 +285,7 @@ export default {
   },
   mounted() {
     this.getEmpProject()
+    this.empId = this.$store.state.user.empId
   },
   created() {},
   methods: {
@@ -291,48 +303,120 @@ export default {
       })
     },
     //提交加班申请
-    submitOverTime() {
-      if (this.overtimeDataForm.overtimeDuration < 2) {
-        this.$message.warning('加班时长不能小于2小时')
-        return
-      } else if (this.overtimeDataForm.overtimeDuration > 24) {
-        this.$message.warning('加班时长不能大于24小时')
-        return
-      }
-      console.log(new Date(this.overtimeDataForm.overTimeStartTime).getHours())
-      console.log(this.overtimeDataForm)
-      let message = '提交后本次申请记录将无法修改，确定提交吗？'
-      this.$confirm(message, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+    submitOverTime(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (!valid) {
+          return
+        }
+        if (this.overtimeDataForm.overtimeType == 1) {
+          if (this.overtimeDataForm.overtimeDuration < 2) {
+            this.$message.warning('加班时长不能小于2小时')
+            return
+          } else if (this.overtimeDataForm.overtimeDuration > 24) {
+            this.$message.warning('加班时长不能大于24小时')
+            return
+          }
+        }
+        let message = '提交后本次申请记录将无法修改，确定提交吗？'
+        let data = {
+          empId: this.empId,
+          startTime: this.overtimeDataForm.overTimeStartTime,
+          endTime: this.overtimeDataForm.overTimeEndTime,
+          isRemoteWork: this.overtimeDataForm.isRemoteWork,
+          overtimeType: this.overtimeDataForm.overtimeType,
+          overtime_hours: this.overtimeDataForm.overtimeDuration,
+          projectId: this.overtimeDataForm.projectId,
+          reason: this.overtimeDataForm.overtimeReason,
+          teamId: this.overtimeDataForm.projectManager,
+          status
+        }
+        this.$confirm(message, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.$http({
+              url: this.$http.adornUrl('/attendance/addOvertime'),
+              method: 'post',
+              data: data
+            }).then(({ data }) => {
+              if (data && data.code === 200) {
+                this.$message.success(data.msg)
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消确认'
+            })
+          })
       })
-        .then(() => {
-          this.$http({
-            url: this.$http.adornUrl(''),
-            method: 'post',
-            data: this.overtimeDataForm
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message.success(data.msg)
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消确认'
-          })
-        })
     },
     //提交调休申请
-    submitCompensatoryLeave() {
-      console.log(this.compensatoryLeaveDataForm)
+    submitCompensatoryLeave(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (!valid) {
+          return
+        }
+        if (this.compensatoryLeaveDataForm.days < 0.5) {
+          this.$message.warning('调休时长最小0.5天')
+          return
+        }
+        let message = '提交后本次申请记录将无法修改，确定提交吗？'
+        let data = {
+          empId: this.empId,
+          startTime: this.compensatoryLeaveDataForm.compensatoryLeaveStartTime,
+          endTime: this.compensatoryLeaveDataForm.compensatoryLeaveEndTime,
+          dayffDays: this.compensatoryLeaveDataForm.days,
+          status
+        }
+        this.$confirm(message, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.$http({
+              url: this.$http.adornUrl('/attendance/addDayoff'),
+              method: 'post',
+              data: data
+            }).then(({ data }) => {
+              if (data && data.code === 200) {
+                this.$message.success(data.msg)
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
+          })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消确认'
+            })
+          })
+      })
     },
     //加班申请取消
-    cancelOverTime() {},
+    cancelOverTime() {
+      this.clear(this.overtimeDataForm)
+    },
+    //调休申请取消
+    cancelCompensatoryLeave() {
+      this.clear(this.overtimeDataForm)
+    },
+    clear(form) {
+      Object.keys(form).forEach((key) => {
+        if (Array.isArray(form[key])) {
+          form[key] = []
+        } else {
+          form[key] = ''
+        }
+      })
+    },
     //计算两个日期之间的天数
     getDaysBetweenDates(date1, date2) {
       var oneDay = 24 * 60 * 60 * 1000 // 一天的毫秒数
@@ -340,7 +424,7 @@ export default {
       var diffDays = Math.floor(timeDiff / oneDay) // 差值的天数
       return diffDays
     },
-    //计算两个时间之间的天数
+    //计算两个时间段之间的天数
     getTimeDays() {
       let diffDay
       if (this.compensatoryLeaveDataForm.startTime == '09:00' && this.compensatoryLeaveDataForm.endTime == '12:00') {
@@ -354,16 +438,54 @@ export default {
       }
       return diffDay
     },
-    //计算开始时间次日九点的时间戳
-    calNextDayTimeStamp(date) {
+    //节假日加班时要减去的午餐和晚餐时间
+    subTime() {
+      let startTime = new Date(this.overtimeDataForm.overTimeStartTime).getTime()
+      let endTime = new Date(this.overtimeDataForm.overTimeEndTime).getTime()
+      const elevenClock = this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 11, 1)
+      const twelveClock = this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 12, 1)
+      const thirteenClock = this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 13, 1)
+      const eighteen = this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 18, 1)
+      const nineteen = this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 19, 1)
+      if (startTime < elevenClock) {
+        if (twelveClock < endTime && thirteenClock > endTime) {
+          return endTime - twelveClock
+        } else if (thirteenClock <= endTime && eighteen > endTime) {
+          return 60 * 60 * 1000
+        } else if (eighteen <= endTime && nineteen > endTime) {
+          return endTime - eighteen + 60 * 60 * 1000
+        } else if (endTime >= nineteen) {
+          return 2 * 60 * 60 * 1000
+        } else {
+          return 0
+        }
+      } else {
+        if (eighteen <= endTime && nineteen > endTime) {
+          return endTime - eighteen
+        } else if (endTime >= nineteen) {
+          return 60 * 60 * 1000
+        } else {
+          return 0
+        }
+      }
+    },
+    //计算指定时间的时间戳
+    //flag 1为当天  2为次日
+    calNextDayTimeStamp(date, hours, flag) {
       var currentDate = new Date(date)
-      currentDate.setHours(9)
+      currentDate.setHours(hours)
       currentDate.setMinutes(0)
       currentDate.setSeconds(0)
       currentDate.setMilliseconds(0)
-      currentDate.setDate(currentDate.getDate() + 1)
+      if (flag == 1) {
+        currentDate.setDate(currentDate.getDate())
+      } else {
+        currentDate.setDate(currentDate.getDate() + 1)
+      }
+
       return currentDate.getTime()
     },
+
     //日期格式转换
     formatDate(date) {
       var date = new Date(date)

@@ -53,7 +53,6 @@ export default {
     },
     //确认
     submitUpload() {
-      console.log(this.uploadFileList)
       if (this.uploadFileList.length == 0) {
         this.$message.warning('请选择需要导入的文件！')
         return

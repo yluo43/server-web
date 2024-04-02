@@ -28,23 +28,23 @@
             </el-select>
           </el-form-item>
           <el-form-item label="审批状态:" prop="teamIds">
-            <el-select v-model="dataForm.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
+            <el-select v-model="dataForm.teamIds" placeholder="请选择审批状态" multiple collapse-tags clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="是否居家办公:" prop="teamIds">
-            <el-select v-model="dataForm.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
+            <el-select v-model="dataForm.teamIds" placeholder="请选择是否居家办公" multiple collapse-tags clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="加班类型:" prop="teamIds">
-            <el-select v-model="dataForm.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
+            <el-select v-model="dataForm.teamIds" placeholder="请选择加班类型" multiple collapse-tags clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="申请时间:" prop="deliveryDate">
+          <el-form-item label="申请时间:" prop="applyTime">
             <el-date-picker
-              v-model="dataForm.deliveryDate"
+              v-model="dataForm.applyTime"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
               type="daterange"
@@ -53,9 +53,9 @@
               end-placeholder="年/月/日"
             />
           </el-form-item>
-          <el-form-item label="加班开始时间:" prop="deliveryDate">
+          <el-form-item label="加班开始时间:" prop="startTime">
             <el-date-picker
-              v-model="dataForm.deliveryDate"
+              v-model="dataForm.startTime"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
               type="daterange"
@@ -64,9 +64,9 @@
               end-placeholder="年/月/日"
             />
           </el-form-item>
-          <el-form-item label="加班结束时间:" prop="deliveryDate">
+          <el-form-item label="加班结束时间:" prop="endTime">
             <el-date-picker
-              v-model="dataForm.deliveryDate"
+              v-model="dataForm.endTime"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
               type="daterange"
@@ -138,23 +138,26 @@ export default {
         empId: '',
         deptIds: [],
         teamIds: [],
-        projectId: ''
+        projectId: '',
+        applyTime: [],
+        startTime: [],
+        endTime: []
       },
       tableData: {
         theads: [
           { label: '用户姓名', prop: 'name' },
           { label: '工号', prop: 'empId' },
-          { label: '归属部门', prop: 'managerName' },
+          { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'startConfirmTime' },
-          { label: '加班开始时间', prop: 'affirmDay' },
-          { label: '加班结束时间', prop: 'affirmDay' },
+          { label: '加班开始时间', prop: 'startTime' },
+          { label: '加班结束时间', prop: 'endTime' },
           { label: '加班类型', prop: 'affirmDay' },
-          { label: '加班时长', prop: 'affirmDay' },
+          { label: '加班时长', prop: '' },
           { label: '是否居家办公', prop: 'affirmDay' },
           { label: '加班原因', prop: 'affirmDay' },
           { label: '申请时间', prop: 'affirmDay' },
           { label: '审批状态', prop: 'taskStatus', slotName: 'taskStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '300px' }
         ],
         url: '/projectWork/projectTaskList'
       },
@@ -261,11 +264,9 @@ export default {
       let ids = []
       if (row) {
         console.log(row)
-        message = h('p', null, [h('span', null, `${row.name}在`), h('span', { style: 'color: red' }, row.reportDay)])
+        message = h('p', null, [h('span', null, `${row.name}在${row.startTime}至${row.endTime}`), h('span', { style: 'color: red' }, row.reportDay)])
         ids = [row.id]
         this.open(message, ids)
-        // message = `${row.item.name}在${row}至${row}的加班申请,加班时长${row}小时,确定通过吗？`
-        // ids = [row.id]
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
@@ -333,7 +334,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 .row-box {
   display: flex;

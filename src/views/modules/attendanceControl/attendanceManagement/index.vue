@@ -3,9 +3,9 @@
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <div style="margin-left: 20px">
         <el-form ref="dataForm" :inline="true" :model="dataForm">
-          <el-form-item label="日期:" prop="deliveryDate">
+          <el-form-item label="日期:" prop="dateRange">
             <el-date-picker
-              v-model="dataForm.deliveryDate"
+              v-model="dataForm.dateRange"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
               type="daterange"
@@ -38,10 +38,6 @@
       </div>
       <div>
         <el-button style="margin: 10px 0 10px 20px" type="primary" icon="el-icon-plus" @click="importFile">导入</el-button>
-        <!-- <div class="chooseResult">
-          <span>已选择{{ count }}项</span>
-          <el-button type="text" @click="pass">批量通过</el-button>
-        </div> -->
         <div style="margin-left: 20px">
           <baseTable :tableData="tableData" ref="table" :type="null"></baseTable>
         </div>
@@ -72,7 +68,10 @@ export default {
         name: '',
         empId: '',
         deptIds: [],
-        teamIds: []
+        teamIds: [],
+        dateRange: [],
+        startDate: '',
+        endDate: ''
       },
       tableData: {
         theads: [
@@ -127,11 +126,25 @@ export default {
     },
     //表格查询
     selectTableData() {
-      this.$refs.table.refresh(this.dataForm)
+      this.$refs.table.refresh(this.dataConversion(this.dataForm))
     },
     //表单重置
     resetForm() {
       this.$refs.dataForm.resetFields()
+    },
+    dataConversion(form) {
+      let params = JSON.parse(JSON.stringify(form))
+      if (params.dateRange.length != 0) {
+        params.startDate = params.dateRange[0]
+        params.endDate = params.dateRange[1]
+      }
+      Object.keys(params).forEach((key) => {
+        if (Array.isArray(params[key])) {
+          params[key] = params[key].toString()
+        }
+      })
+      delete params.dateRange
+      return params
     },
     //导入
     importFile() {
