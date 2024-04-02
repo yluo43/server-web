@@ -41,16 +41,16 @@
               </el-select>
             </el-form-item>
 
-            <el-form-item label="部门助理" prop="assistantId">
-              <el-select clearable v-model="editDataForm.assistantId" placeholder="请选择部门助理">
+            <el-form-item label="部门助理" prop="assistantIds">
+              <el-select clearable v-model="editDataForm.assistantIds" placeholder="请选择部门助理" multiple collapse-tags>
                 <el-option v-for="item in assistList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="上级部门" prop="parentId">
-              <el-select clearable v-model="editDataForm.parentId" placeholder="请选择上级部门">
-                <el-option v-for="item in deptList" :key="item.id" :label="item.deptName" :value="item.id"></el-option>
-              </el-select>
-            </el-form-item>
+            <!--            <el-form-item label="上级部门" prop="parentId">-->
+            <!--              <el-select clearable v-model="editDataForm.parentId" placeholder="请选择上级部门">-->
+            <!--                <el-option v-for="item in deptList" :key="item.id" :label="item.deptName" :value="item.id"></el-option>-->
+            <!--              </el-select>-->
+            <!--            </el-form-item>-->
             <el-form-item label="团队" v-if="op == 'alter'">
               <div style="border: 1px solid lightgray; width: 190px; max-height: 200px; overflow-y: auto">
                 <el-tree :data="editDataForm.deptTeam" :props="defaultProps" default-expand-all ref="deptTeam"></el-tree>
@@ -108,19 +108,20 @@ export default {
       drawer: false,
       direction: 'rtl',
       title: '',
-      dataForm: {
-        deptName: '',
-        managerName: ''
-      },
+      // dataForm: {
+      //   deptName: '',
+      //   managerName: ''
+      // },
       editDataForm: {
         deptName: '',
         id: '',
         managerId: '',
-        assistantId: '',
+        assistantIds: [],
         parentId: '',
         parentName: '',
         managerName: '',
-        status: '',
+        state: '',
+        //    status: '',
         remarks: '',
         deptTeam: []
       },
@@ -133,16 +134,16 @@ export default {
   mounted() {
     this.getDeptInfoTree({ state: 0 })
     //初始化deptList
-    this.$http({
-      url: this.$http.adornUrl('/deptInfo/listAll'),
-      method: 'get'
-    }).then(({ data }) => {
-      if (data && data.code === 200) {
-        this.deptList = data.payload.list
-      } else {
-        this.$message.error(data.msg)
-      }
-    })
+    // this.$http({
+    //   url: this.$http.adornUrl('/deptInfo/listAll'),
+    //   method: 'get'
+    // }).then(({ data }) => {
+    //   if (data && data.code === 200) {
+    //     this.deptList = data.payload.list
+    //   } else {
+    //     this.$message.error(data.msg)
+    //   }
+    // })
 
     //初始化部门助理
     this.$http({
@@ -165,6 +166,7 @@ export default {
       }
     },
     filterNode(value, data) {
+      console.log(data.name)
       if (!value) return true
       return data.name.indexOf(value) !== -1
     },
@@ -190,6 +192,9 @@ export default {
         params: params
       }).then(({ data }) => {
         if (data && data.code === 200) {
+          if (data.payload.assistantIds.length != 0) {
+            data.payload.assistantIds = data.payload.assistantIds.map((item) => item.id)
+          }
           this.editDataForm = { ...data.payload }
         } else {
           this.$message.error(data.msg)
@@ -198,13 +203,13 @@ export default {
     },
 
     //树数据转换
-    treeChange(treeData) {
-      treeData.map((ele) => {
-        ele.label = ele.name
-        if (ele.children && ele.children.length != 0) this.treeChange(ele.children)
-      })
-      return treeData
-    },
+    // treeChange(treeData) {
+    //   treeData.map((ele) => {
+    //     ele.label = ele.name
+    //     if (ele.children && ele.children.length != 0) this.treeChange(ele.children)
+    //   })
+    //   return treeData
+    // },
     changeParentId(row) {
       let name
       this.deptList.forEach((dept) => {
@@ -221,7 +226,6 @@ export default {
           name = manager.managerName
         }
       })
-
       return name
     },
 
@@ -232,6 +236,8 @@ export default {
       this.op = 'add'
       this.clear(this.editDataForm)
       delete this.editDataForm['deptTeam']
+      this.editDataForm.assistantIds = []
+      this.editDataForm.state = 0
       this.showStatus = false
       this.managerRequired = false
 
@@ -270,11 +276,11 @@ export default {
           this.editDataForm.managerName = manager.name
         }
       })
-      this.assistList.forEach((item) => {
-        if (item.id == this.editDataForm.assistantId) {
-          this.editDataForm.assistantName = item.name
-        }
-      })
+      // this.assistList.forEach((item) => {
+      //   if (item.id == this.editDataForm.assistantId) {
+      //     this.editDataForm.assistantName = item.name
+      //   }
+      // })
       if (this.editDataForm.state == 0) {
         this.editDataForm.stateName = '正常'
       } else {
@@ -291,7 +297,11 @@ export default {
           }
         })
       }
-
+      Object.keys(this.editDataForm).map((key) => {
+        if (!this.editDataForm[key]) {
+          delete this.editDataForm[key]
+        }
+      })
       this.$http({
         url: this.$http.adornUrl(url),
         method: 'post',
@@ -345,42 +355,44 @@ export default {
     },
     clear(form) {
       Object.keys(form).forEach((key) => (form[key] = ''))
-    },
-    deleteList(row) {
-      let id = ''
-      id = row.item.id
-
-      this.$confirm(`您确定删除吗?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/deptInfo/delete?id=' + id),
-            method: 'post'
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-              location.reload()
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-    },
-    resetForm() {
-      this.$refs.dataForm.resetFields()
     }
+
+    // deleteList(row) {
+    //   let id = ''
+    //   id = row.item.id
+
+    //   this.$confirm(`您确定删除吗?`, '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   })
+    //     .then(() => {
+    //       this.$http({
+    //         url: this.$http.adornUrl('/deptInfo/delete?id=' + id),
+    //         method: 'post'
+    //       }).then(({ data }) => {
+    //         if (data && data.code === 200) {
+    //           this.$message({
+    //             message: '删除成功',
+    //             type: 'success'
+    //           })
+    //           location.reload()
+    //         } else {
+    //           this.$message.error(data.msg)
+    //         }
+    //       })
+    //     })
+    //     .catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消删除'
+    //       })
+    //     })
+    // }
+
+    // resetForm() {
+    //   this.$refs.dataForm.resetFields()
+    // }
   }
 }
 </script>

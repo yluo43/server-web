@@ -381,7 +381,7 @@ export default {
         returnFile: null,
         settlementFileShow: true,
         returnFileShow: true,
-        clientTypeShow: true,
+        clientTypeShow: false,
         returnShow: true
       })
     },

@@ -10,7 +10,7 @@
   .sidebar-container {
     transition: width 0.28s;
     width: $sideBarWidth !important;
-    background-color:#4070E6;
+    background-color:#fff;
     height: 100%;
     position: fixed;
     font-size: 0px;
@@ -77,6 +77,7 @@
       &:hover {
         background-color: $menuHover !important;
         color: $menuTextHover !important;
+      
       }
     }
 
@@ -127,7 +128,7 @@
       overflow: hidden;
 
       & > .el-submenu__title {
-        padding: 0 !important;
+        //padding: 0 !important;
 
 
         .svg-icon {
@@ -210,6 +211,7 @@
     &:hover {
       // you can use $subMenuHover
       background-color: $menuHover !important;
+      color: $menuTextHover !important;
     }
   }
 
