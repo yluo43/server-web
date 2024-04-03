@@ -157,7 +157,7 @@ export default {
           { label: '加班原因', prop: 'affirmDay' },
           { label: '申请时间', prop: 'affirmDay' },
           { label: '审批状态', prop: 'taskStatus', slotName: 'taskStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '300px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
         url: '/projectWork/projectTaskList'
       },
@@ -244,6 +244,20 @@ export default {
     selectTableData() {
       this.$refs.table.refresh(this.dataForm)
     },
+    dataConversion(form) {
+      let params = JSON.parse(JSON.stringify(form))
+      if (params.dateRange.length != 0) {
+        params.startDate = params.dateRange[0]
+        params.endDate = params.dateRange[1]
+      }
+      Object.keys(params).forEach((key) => {
+        if (Array.isArray(params[key])) {
+          params[key] = params[key].toString()
+        }
+      })
+      delete params.dateRange
+      return params
+    },
     //表单重置
     resetForm() {
       this.$refs.dataForm.resetFields()
@@ -288,7 +302,8 @@ export default {
         showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        customClass: 'msgClass'
       })
         .then(() => {
           this.$http({
@@ -340,7 +355,13 @@ export default {
   }
 }
 </script>
+
 <style lang="scss" scoped>
+.el-button {
+  min-width: 60px;
+  margin-left: 0;
+  width: auto;
+}
 .row-box {
   display: flex;
   align-items: center;
@@ -349,5 +370,14 @@ export default {
   background-color: #e8f4ff;
   padding-left: 20px;
   margin: 20px 0 20px 20px;
+}
+</style>
+<style lang="scss">
+.msgClass {
+  padding: 20px;
+  .el-message-box__content {
+    padding: 0 0 20px 0;
+    font-size: 16px;
+  }
 }
 </style>

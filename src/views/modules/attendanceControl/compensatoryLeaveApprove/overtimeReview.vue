@@ -76,24 +76,31 @@
       <div>
         <div class="chooseResult">
           <span>已选择{{ count }}项</span>
-          <el-button type="text" @click="pass">批量通过</el-button>
+          <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
         <div style="margin-left: 20px">
           <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
             <template v-slot:clientType="row">
               <template>
-                <el-button type="text" @click="pass(row)">通过</el-button>
-                <el-button type="text" @click="reject(row)">驳回</el-button>
-                <el-button type="text" @click="view(row)">查看</el-button>
+                <el-button type="text" @click="pass(row.item)">通过</el-button>
+                <el-button type="text" @click="reject(row.item)">驳回</el-button>
+                <el-button type="text" @click="view(row.item)">查看</el-button>
               </template>
             </template>
           </baseTable>
         </div>
       </div>
     </el-container>
+    <!-- 驳回加班时长 -->
     <base-dialog ref="rejectDialog" title="加班时长驳回" :width="'500px'">
       <template>
         <rejectDialog ref="reject" :cancelDialog="closeDialog" @selectTableData="selectTableData"></rejectDialog>
+      </template>
+    </base-dialog>
+    <!-- 审批流程 -->
+    <base-dialog ref="approvalProcessDialog" title="查看审批流程" :width="'800px'">
+      <template>
+        <approvalProcessDialog ref="approvalProcess" :cancelDialog="closeApprovalProcessDialog"></approvalProcessDialog>
       </template>
     </base-dialog>
   </div>
@@ -103,8 +110,9 @@
 import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
+import approvalProcessDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/approvalProcessDialog.vue'
 export default {
-  components: { baseTable, baseDialog, rejectDialog },
+  components: { baseTable, baseDialog, rejectDialog, approvalProcessDialog },
   props: {},
   data() {
     return {
@@ -175,16 +183,37 @@ export default {
     selectTableData() {
       this.$refs.table.refresh(this.dataForm)
     },
+    dataConversion(form) {
+      let params = JSON.parse(JSON.stringify(form))
+      if (params.dateRange.length != 0) {
+        params.startDate = params.dateRange[0]
+        params.endDate = params.dateRange[1]
+      }
+      Object.keys(params).forEach((key) => {
+        if (Array.isArray(params[key])) {
+          params[key] = params[key].toString()
+        }
+      })
+      delete params.dateRange
+      return params
+    },
     //表单重置
     resetForm() {
       this.$refs.dataForm.resetFields()
     },
+    //通过
     pass(row) {
+      const h = this.$createElement
       let message = ''
       let ids = []
       if (row) {
-        message = `${row.item.name}在${row}至${row}的加班申请,加班时长${row}小时,确定通过吗？`
+        message = h('p', null, [
+          h('span', null, `${row.name}在${row.startTime}至${row.endTime}的加班申请,`),
+          h('span', { style: 'color: red' }, `加班时长${row.hours}`),
+          h('span', null, `,确认通过吗？`)
+        ])
         ids = [row.id]
+        this.open(message, ids)
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
@@ -193,20 +222,30 @@ export default {
         ids = this.selData.filter((item) => {
           return item.id
         })
+        message = '已选中多条数据，确定批量通过吗？'
+        this.open(message, ids)
       }
-      this.$confirm(message, '提示', {
+    },
+    open(message, ids) {
+      this.$msgbox({
+        message: message,
+        showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        customClass: 'msgClass'
       })
         .then(() => {
           this.$http({
-            url: this.$http.adornUrl(''),
-            method: 'post',
-            data
+            url: this.$http.adornUrl('/projectWork/projectList'),
+            method: 'get'
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message.success(data.msg)
+              this.$refs.approvalProcessDialog.show()
+              this.$nextTick(() => {
+                this.$refs.approvalProcess.init({ flag: 1 })
+              })
             } else {
               this.$message.error(data.msg)
             }
@@ -231,7 +270,13 @@ export default {
       this.$refs.rejectDialog.hide()
     },
     //查看
-    view() {},
+    view() {
+      this.$refs.approvalProcessDialog.show()
+    },
+    //关闭查看详情弹窗
+    closeApprovalProcessDialog() {
+      this.$refs.approvalProcessDialog.hide()
+    },
     //选择框选择
     checkedTable(sel) {
       this.count = sel.length
@@ -247,13 +292,6 @@ export default {
   margin-left: 0;
   width: auto;
 }
-.el-select {
-  width: 200px !important;
-}
-
-::v-deep .el-select .el-tag {
-  max-width: 70% !important;
-}
 
 .chooseResult {
   display: flex;
@@ -263,5 +301,14 @@ export default {
   background-color: #e8f4ff;
   padding-left: 20px;
   margin: 20px 0 20px 20px;
+}
+</style>
+<style lang="scss">
+.msgClass {
+  padding: 20px;
+  .el-message-box__content {
+    padding: 0 0 20px 0;
+    font-size: 16px;
+  }
 }
 </style>

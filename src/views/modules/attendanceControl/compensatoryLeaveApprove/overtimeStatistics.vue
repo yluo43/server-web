@@ -54,7 +54,7 @@
       </div>
     </el-container>
     <!-- 查看明细 -->
-    <base-dialog ref="detailsDialog" title="查看明细" :width="'800px'">
+    <base-dialog ref="detailsDialog" title="查看明细" :width="'1000px'">
       <template>
         <detailsDialog ref="details" :cancelDialog="closeDetailsDialog" @selectTableData="selectTableData"></detailsDialog>
       </template>

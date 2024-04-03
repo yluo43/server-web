@@ -30,11 +30,11 @@
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="selectTableData">查询</el-button>
-            <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
-          </el-form-item>
         </el-form>
+        <div>
+          <el-button type="primary" icon="el-icon-search" @click="selectTableData">查询</el-button>
+          <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
+        </div>
       </div>
       <div>
         <el-button style="margin: 10px 0 10px 20px" type="primary" icon="el-icon-plus" @click="importFile">导入</el-button>
@@ -158,27 +158,4 @@ export default {
 }
 </script>
 
-<style scoped>
-::v-deep .el-button {
-  min-width: 60px;
-  margin-left: 0;
-  width: auto;
-}
-.el-select {
-  width: 200px !important;
-}
-
-::v-deep .el-select .el-tag {
-  max-width: 70% !important;
-}
-
-/* .chooseResult {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  border-radius: 5px;
-  background-color: #e8f4ff;
-  padding-left: 20px;
-  margin: 20px 0 20px 20px;
-} */
-</style>
+<style scoped></style>
