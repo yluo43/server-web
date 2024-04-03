@@ -396,10 +396,10 @@ export default {
         }
       })
     },
-    freshMembersWithEdit(id) {
+    freshMembersWithEdit(id,deptId) {
       //初始化没有团队的人员
       this.$http({
-        url: this.$http.adornUrl('/common/getTeamEmpById?teamId=' + id),
+        url: this.$http.adornUrl('/common/getTeamEmpById?teamId=' + id +'&deptId='+deptId),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -517,7 +517,7 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.teamManagerList = data.payload
-          this.freshMembersWithEdit(row.item.id)
+          this.freshMembersWithEdit(row.item.id,row.item.deptId)
           this.editDataForm = { ...row.item }
           this.value = this.editDataForm.teamMembers
           console.log(this.editDataForm)
