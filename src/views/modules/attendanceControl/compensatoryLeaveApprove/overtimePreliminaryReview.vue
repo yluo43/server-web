@@ -263,8 +263,11 @@ export default {
       let message = ''
       let ids = []
       if (row) {
-        console.log(row)
-        message = h('p', null, [h('span', null, `${row.name}在${row.startTime}至${row.endTime}`), h('span', { style: 'color: red' }, row.reportDay)])
+        message = h('p', null, [
+          h('span', null, `${row.name}在${row.startTime}至${row.endTime}的加班申请,`),
+          h('span', { style: 'color: red' }, `加班时长${row.hours}`),
+          h('span', null, `,确认通过吗？`)
+        ])
         ids = [row.id]
         this.open(message, ids)
       } else {
@@ -295,6 +298,9 @@ export default {
             if (data && data.code === 200) {
               this.$message.success(data.msg)
               this.$refs.approvalProcessDialog.show()
+              this.$nextTick(() => {
+                this.$refs.approvalProcess.init({ flag: 1 })
+              })
             } else {
               this.$message.error(data.msg)
             }

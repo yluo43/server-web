@@ -45,8 +45,8 @@
           <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
             <template v-slot:clientType="row">
               <template>
-                <el-button type="text" @click="viewDetails(row)">查看明细</el-button>
-                <el-button type="text" @click="workAllowance(row)">工时补贴</el-button>
+                <el-button type="text" @click="viewDetails(row.item)">查看明细</el-button>
+                <el-button type="text" @click="workAllowance(row.item)">工时补贴</el-button>
               </template>
             </template>
           </baseTable>
@@ -138,27 +138,44 @@ export default {
     },
     //表格查询
     selectTableData() {
-      this.$refs.table.refresh(this.dataForm)
+      this.$refs.table.refresh(this.dataConversion(this.dataForm))
+    },
+    dataConversion(form) {
+      let params = JSON.parse(JSON.stringify(form))
+      Object.keys(params).forEach((key) => {
+        if (Array.isArray(params[key])) {
+          params[key] = params[key].toString()
+        }
+      })
+      return params
     },
     //表单重置
     resetForm() {
       this.$refs.dataForm.resetFields()
     },
     //查看明细
-    viewDetails() {
+    viewDetails(row) {
       this.$refs.detailsDialog.show()
+      this.$nextTick(() => {
+        this.$refs.details.init(row)
+      })
     },
-    //关闭驳回弹窗
+    //工时补贴
+    workAllowance(row) {
+      this.$refs.workAllowanceDialog.show()
+      this.$nextTick(() => {
+        this.$refs.workAllowance.init(row)
+      })
+    },
+    //关闭查看详情弹窗
     closeDetailsDialog() {
       this.$refs.detailsDialog.hide()
     },
+    //关闭工时补贴弹窗
     closeWorkAllowanceDialog() {
       this.$refs.workAllowanceDialog.hide()
     },
-    //工时补贴
-    workAllowance() {
-      this.$refs.workAllowanceDialog.show()
-    },
+
     //选择框选择
     checkedTable(sel) {
       this.count = sel.length

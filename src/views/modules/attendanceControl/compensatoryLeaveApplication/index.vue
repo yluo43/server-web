@@ -317,6 +317,11 @@ export default {
             return
           }
         }
+        if (new Date().getTime() - 72 * 60 * 60 * 1000 > new Date(this.overtimeDataForm.overTimeStartTime).getTime()) {
+          this.$message.warning('加班开始时间已超过72小时，请重新选择')
+          return
+        }
+
         let message = '提交后本次申请记录将无法修改，确定提交吗？'
         let data = {
           empId: this.empId,

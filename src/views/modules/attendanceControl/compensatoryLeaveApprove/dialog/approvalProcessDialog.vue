@@ -7,19 +7,26 @@
           <div>222</div>
         </template>
       </el-step>
-      <el-step title="项目初审">
+      <el-step v-if="flag == 1 || flag == 2 || flag == 3" title="项目初审">
         <template slot="description">
           <div>111</div>
           <div>222</div>
         </template>
       </el-step>
-      <el-step title="部门复审">
+      <el-step v-else title="团队初审">
         <template slot="description">
           <div>111</div>
           <div>222</div>
         </template>
       </el-step>
-      <el-step title="已通过"></el-step>
+      <el-step v-if="flag != 2 || flag != 5" title="部门复审">
+        <template slot="description">
+          <div>111</div>
+          <div>222</div>
+        </template>
+      </el-step>
+      <el-step v-if="flag == 1 || flag == 4" title="已通过"></el-step>
+      <el-step v-else title="已驳回"></el-step>
     </el-steps>
     <div class="btn-group">
       <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
@@ -35,12 +42,16 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      flag: ''
+    }
   },
   mounted() {},
   created() {},
   methods: {
-    init(initData) {}
+    init(initData) {
+      this.flag = initData.flag
+    }
   }
 }
 </script>

@@ -2,26 +2,35 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <div style="width: 100%">
-        <el-form ref="dataForm" label-width="110px" :rules="rules" :model="dataForm">
+        <el-form ref="dataForm" label-width="110px" :model="dataForm">
           <el-form-item label="用户姓名:" prop="name">
             {{ dataForm.name }}
           </el-form-item>
-          <el-form-item label="驳回工作量:" prop="overtimeDuration">{{ dataForm.overtimeDuration }}%</el-form-item>
+          <el-form-item label="驳回加班时长:" prop="overtimeDuration">{{ dataForm.overtimeDuration }}</el-form-item>
           <el-form-item label="驳回理由:" prop="rejectReason">
-            <el-input type="textarea" show-word-limit minlength="5" maxlength="100" v-model="dataForm.rejectReason" placeholder="请输入至少5个字符"></el-input>
+            <el-input type="textarea" show-word-limit maxlength="100" v-model="dataForm.rejectReason" placeholder="请输入驳回理由"></el-input>
           </el-form-item>
         </el-form>
         <div class="btn-group">
           <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
-          <el-button type="primary" @click="confirm('dataForm')">确认</el-button>
+          <el-button type="primary" @click="confirm">确认</el-button>
         </div>
       </div>
     </el-container>
+    <!-- 审批流程 -->
+    <base-dialog ref="approvalProcessDialog" title="查看审批流程" :width="'800px'">
+      <template>
+        <approvalProcessDialog ref="approvalProcess" :cancelDialog="closeApprovalProcessDialog"></approvalProcessDialog>
+      </template>
+    </base-dialog>
   </div>
 </template>
 
 <script>
+import baseDialog from '@/views/modules/base/baseDialog.vue'
+import approvalProcessDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/approvalProcessDialog.vue'
 export default {
+  components: { baseDialog, approvalProcessDialog },
   props: {
     cancelDialog: {
       type: Function
@@ -36,9 +45,6 @@ export default {
         overtimeDuration: '',
         //驳回理由
         rejectReason: ''
-      },
-      rules: {
-        rejectReason: [{ required: true, message: '请填写驳回理由', trigger: 'blur' }]
       }
     }
   },
@@ -47,30 +53,32 @@ export default {
   methods: {
     init(initData) {
       Object.assign(this.dataForm, initData)
-      console.log(this.dataForm)
     },
     //确认
-    confirm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.$http({
-            url: this.$http.adornUrl('/workload/updateStatus'),
-            method: 'get',
-            params: data
-          }).then((result) => {
-            if (result.data.success) {
-              this.cancelDialog()
-              this.$message.success('驳回成功')
-              this.$emit('selectTableData')
-            } else {
-              this.$message.error('驳回失败：' + result.data.msg)
-            }
+    confirm() {
+      // this.$refs.approvalProcessDialog.show()
+      // this.$nextTick(() => {
+      //   this.$refs.approvalProcess.init({ flag: 2 })
+      // })
+      this.$http({
+        url: this.$http.adornUrl('/workload/updateStatus'),
+        method: 'get',
+        params: data
+      }).then((result) => {
+        if (result.data.success) {
+          this.cancelDialog()
+          this.$message.success('驳回成功')
+          this.$refs.approvalProcessDialog.show()
+          this.$nextTick(() => {
+            this.$refs.approvalProcess.init()
           })
-          //发起请求
         } else {
-          return false
+          this.$message.error('驳回失败：' + result.data.msg)
         }
       })
+    },
+    closeApprovalProcessDialog() {
+      this.$refs.approvalProcessDialog.hide()
     }
   }
 }
