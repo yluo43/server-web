@@ -140,6 +140,9 @@ export default {
     },
     async initTable() {
       await this.selectTaskList()
+      if (!this.taskId) {
+        return
+      }
       this.selectWorkload({ taskId: this.taskId })
     },
     //获取团队
@@ -159,26 +162,41 @@ export default {
     changeSelect(params) {
       this.taskId = params
       this.handlerRadio()
-      //this.selectWorkload({ taskId: params })
     },
     //团队下拉框值改变
     search() {
       this.handlerRadio()
-      // this.selectWorkload({ taskId: this.taskId, teamIds: this.teamIds.toString() })
     },
     //查询任务列表
+    // async selectTaskList() {
+    //   let params = { empId: this.empId }
+    //   const result = await this.$http({
+    //     url: this.$http.adornUrl('/workload/selectTasks'),
+    //     method: 'get',
+    //     params: params
+    //   })
+    //   if (result.data && result.data.code === 200) {
+    //     this.workLoadStatistics = result.data.payload
+    //     if (result.data.payload.length != 0) {
+    //       this.reportWorkName = result.data.payload[0].reportWorkName
+    //       this.taskId = result.data.payload[0].taskId
+    //     }
+    //   } else {
+    //     this.$message.error(result.data.msg)
+    //   }
+    // },
     async selectTaskList() {
-      let params = { empId: this.empId }
+      let params = { empId: this.empId, status: 3, curPage: 1, pageSize: 500 }
       const result = await this.$http({
-        url: this.$http.adornUrl('/workload/selectTasks'),
+        url: this.$http.adornUrl('/workload/selectReportPage'),
         method: 'get',
         params: params
       })
       if (result.data && result.data.code === 200) {
-        this.workLoadStatistics = result.data.payload
-        if (result.data.payload.length != 0) {
-          this.reportWorkName = result.data.payload[0].reportWorkName
-          this.taskId = result.data.payload[0].taskId
+        this.workLoadStatistics = result.data.payload.list
+        if (result.data.payload.list.length != 0) {
+          this.reportWorkName = result.data.payload.list[0].reportWorkName
+          this.taskId = result.data.payload.list[0].taskId
         }
       } else {
         this.$message.error(result.data.msg)

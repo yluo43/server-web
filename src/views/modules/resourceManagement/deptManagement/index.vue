@@ -35,8 +35,8 @@
             <el-form-item label="部门名称" prop="deptName" :rules="[{ required: true, message: '部门名称不能为空' }]">
               <el-input v-model="editDataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="部门经理" prop="managerId" :rules="[{ required: managerRequired, message: '部门经理不能为空' }]">
-              <el-select clearable v-model="editDataForm.managerId" placeholder="请选择部门负责人">
+            <el-form-item label="部门经理" prop="managerId">
+              <el-select clearable v-model="editDataForm.managerId" placeholder="请选择部门经理">
                 <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
