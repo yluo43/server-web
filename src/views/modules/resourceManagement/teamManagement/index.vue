@@ -93,8 +93,14 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'team:delete'" />
-            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'team:update'" />
+            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'team:delete'" />
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'team:update'" />
+            </el-tooltip>
+            <!-- <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'team:delete'" />
+            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'team:update'" /> -->
           </template>
         </template>
       </baseTable>
@@ -396,10 +402,10 @@ export default {
         }
       })
     },
-    freshMembersWithEdit(id,deptId) {
+    freshMembersWithEdit(id, deptId) {
       //初始化没有团队的人员
       this.$http({
-        url: this.$http.adornUrl('/common/getTeamEmpById?teamId=' + id +'&deptId='+deptId),
+        url: this.$http.adornUrl('/common/getTeamEmpById?teamId=' + id + '&deptId=' + deptId),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -517,7 +523,7 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.teamManagerList = data.payload
-          this.freshMembersWithEdit(row.item.id,row.item.deptId)
+          this.freshMembersWithEdit(row.item.id, row.item.deptId)
           this.editDataForm = { ...row.item }
           this.value = this.editDataForm.teamMembers
           console.log(this.editDataForm)

@@ -83,7 +83,34 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-tooltip class="item" effect="dark" content="查看项目" placement="bottom" v-auth="'projectSet:showProject'">
+              <el-tooltip class="item" effect="dark" content="查看项目" placement="bottom">
+                <svg-icon
+                  :icon-class="'view-project-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="view(row)"
+                  v-auth="'projectSet:showProject'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="添加项目" placement="bottom">
+                <svg-icon
+                  :icon-class="'add-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="addProject(row)"
+                  v-auth="'projectSet:addProject'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                <svg-icon
+                  :icon-class="'delete-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="deleteList(row)"
+                  v-auth="'projectSet:delete'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="update(row)" v-auth="'projectSet:update'" />
+              </el-tooltip>
+              <!-- <el-tooltip class="item" effect="dark" content="查看项目" placement="bottom" v-auth="'projectSet:showProject'">
                 <i class="el-icon-document" style="font-size: 1.5em; margin-right: 1em" @click="view(row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="添加项目" placement="bottom" v-auth="'projectSet:addProject'">
@@ -94,7 +121,7 @@
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="编辑" placement="bottom" v-auth="'projectSet:update'">
                 <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em; margin-right: 1em" @click="update(row)" />
-              </el-tooltip>
+              </el-tooltip> -->
             </template>
           </template>
         </baseTable>
@@ -223,7 +250,7 @@ export default {
       }
     })
     this.$http({
-      url: this.$http.adornUrl('/common/getDept'),
+      url: this.$http.adornUrl('/common/getDeptByRole'),
       method: 'get'
     }).then(({ data }) => {
       if (data && data.code === 200) {

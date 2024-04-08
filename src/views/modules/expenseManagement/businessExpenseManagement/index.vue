@@ -119,8 +119,19 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'tripCost:delete'" />
-            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'tripCost:update'" />
+            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <svg-icon
+                :icon-class="'delete-icon'"
+                style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                @click="deleteList(row)"
+                v-auth="'tripCost:delete'"
+              />
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'tripCost:update'" />
+            </el-tooltip>
+            <!-- <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'tripCost:delete'" />
+            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'tripCost:update'" /> -->
           </template>
         </template>
 

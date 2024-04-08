@@ -41,12 +41,19 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" />
-            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" />
+            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" />
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="alter(row)" />
+            </el-tooltip>
+            <!-- <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" />
+            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" /> -->
           </template>
         </template>
       </baseTable>
-      <el-drawer :title="title" :visible.sync="drawer" :before-close="handleClose" :direction="direction" size="26%">
+      <!-- :before-close="handleClose" -->
+      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="26%">
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="editForm">
             <el-form-item label="报销项目名称:" prop="name">
@@ -383,13 +390,13 @@ export default {
       })
     },
     //抽屉关闭二次确认
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then((_) => {
-          done()
-        })
-        .catch((_) => {})
-    },
+    // handleClose(done) {
+    //   this.$confirm('确认关闭？')
+    //     .then((_) => {
+    //       done()
+    //     })
+    //     .catch((_) => {})
+    // },
     //批量下载
     download() {
       if (this.deleteIds.length <= 0) {

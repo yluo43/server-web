@@ -85,7 +85,18 @@
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
           <template v-slot:clientType="row">
             <!--类型插槽-->
-            <template>
+            <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom">
+              <svg-icon
+                :icon-class="'order-submission-icon'"
+                style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                @click="add(row)"
+                v-auth="'costItems:order'"
+              />
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="支出" placement="bottom">
+              <svg-icon :icon-class="'expenditure-icon'" style="height: 1.5em; width: 1.5em" @click="expenditureAdd(row)" v-auth="'costItems:expenditure'" />
+            </el-tooltip>
+            <!-- <template>
               <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom" v-auth="'costItems:order'">
                 <i class="el-icon-document" style="font-size: 1.5em; margin-right: 1em" @click="add(row)"></i>
               </el-tooltip>
@@ -94,7 +105,7 @@
               <el-tooltip class="item" effect="dark" content="支出" placement="bottom" v-auth="'costItems:expenditure'">
                 <i class="el-icon-edit-outline" style="font-size: 1.5em; margin-right: 1em" @click="expenditureAdd(row)"></i>
               </el-tooltip>
-            </template>
+            </template> -->
           </template>
         </baseTable>
       </el-main>

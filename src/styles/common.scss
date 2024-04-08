@@ -392,7 +392,9 @@
     color: #2A6EFF !important;
   }
 }
-
+.svg-icon:focus {
+  outline: none;
+}
 .header-container{
   border: 1px solid #dddddd;
   padding-top: 20px;

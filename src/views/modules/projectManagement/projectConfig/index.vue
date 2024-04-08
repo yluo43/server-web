@@ -154,11 +154,30 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-link v-auth="'costItems:member'" type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item)">人员</el-link>
+              <el-tooltip class="item" effect="dark" content="人员" placement="bottom">
+                <svg-icon
+                  :icon-class="'person-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="editPersonnelInfo(row.item)"
+                  v-auth="'costItems:member'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                <svg-icon
+                  :icon-class="'edit-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="updateProjectInfo(row.item)"
+                  v-auth="'costItems:update'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="deleteProjectInfo(row.item)" v-auth="'costItems:delete'" />
+              </el-tooltip>
+              <!-- <el-link v-auth="'costItems:member'" type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item)">人员</el-link>
               <el-link v-auth="'costItems:update'" type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updateProjectInfo(row.item)">
                 编辑
               </el-link>
-              <el-link v-auth="'costItems:delete'" type="primary" style="margin-left: 10px" @click="deleteProjectInfo(row.item)">删除</el-link>
+              <el-link v-auth="'costItems:delete'" type="primary" style="margin-left: 10px" @click="deleteProjectInfo(row.item)">删除</el-link> -->
             </template>
           </template>
         </baseTable>
@@ -166,7 +185,8 @@
     </el-container>
 
     <!-- 编辑项目信息 -->
-    <base-drawer ref="editProjectInfoDrawer" :title="editDrawertitle" :handle-close="beforeCloseEditProjectDrawer">
+    <!-- :handle-close="beforeCloseEditProjectDrawer" -->
+    <base-drawer ref="editProjectInfoDrawer" :title="editDrawertitle">
       <template>
         <editProjectInfo ref="editProjectInfo" @closeDrawer="closeEditProjectInfoDrawer" />
       </template>
@@ -367,13 +387,13 @@ export default {
     },
 
     // 点击抽屉外区域时
-    beforeCloseEditProjectDrawer(done) {
-      this.$confirm('确认关闭？')
-        .then((_) => {
-          done()
-        })
-        .catch((_) => {})
-    },
+    // beforeCloseEditProjectDrawer(done) {
+    //   this.$confirm('确认关闭？')
+    //     .then((_) => {
+    //       done()
+    //     })
+    //     .catch((_) => {})
+    // },
 
     // 表格勾选时
     onSelectTableItem(selection) {
