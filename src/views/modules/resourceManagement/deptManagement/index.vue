@@ -50,7 +50,7 @@
             </el-form-item>
 
             <el-form-item label="状态" prop="state" v-if="showStatus">
-              <el-radio-group v-model="editDataForm.state">
+              <el-radio-group v-model="editDataForm.state" style="width: 400px">
                 <el-radio :label="0">正常</el-radio>
                 <el-radio :label="1">解散</el-radio>
               </el-radio-group>
@@ -61,6 +61,7 @@
                 type="textarea"
                 show-word-limit
                 :maxlength="50"
+                :rows="3"
                 v-model="editDataForm.remarks"
                 placeholder="请输入部门说明,不超过50字"
                 clearable
