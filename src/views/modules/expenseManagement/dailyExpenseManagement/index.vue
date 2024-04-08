@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <el-container>
-      <el-header style="height: 130px">
+      <el-header style="height: 100%">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="用户姓名:" prop="account">
@@ -75,16 +75,16 @@
             </div>
           </div>
         </el-form>
-
-        <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr"></span>
-          <el-button type="text" @click="batchDelete()" v-auth="'dailyCost:deletes'">批量删除</el-button>
-          <!-- <span style="color: blue; margin-left: 100px" @click="batchDelete()" v-auth="'dailyCost:deletes'">批量删除</span>
-          <span style="color: blue; margin-left: 20px" @click="download()" v-auth="'dailyCost:export'">批量下载</span> -->
-        </div>
       </el-header>
 
-      <div style="margin: 0 0 10px 13px">
+      <div class="chooseResult">
+        <span class="chooseResultStr" v-text="chooseStr"></span>
+        <el-button type="text" @click="batchDelete()" v-auth="'dailyCost:deletes'">批量删除</el-button>
+        <!-- <span style="color: blue; margin-left: 100px" @click="batchDelete()" v-auth="'dailyCost:deletes'">批量删除</span>
+          <span style="color: blue; margin-left: 20px" @click="download()" v-auth="'dailyCost:export'">批量下载</span> -->
+      </div>
+
+      <div style="margin: 15px 0 16px 13px">
         <el-button
           style="width: 110px"
           icon="
@@ -530,6 +530,7 @@ export default {
   height: 30px;
   line-height: 30px;
   margin: 0 auto;
+  margin-top: 15px;
   display: block;
   background: #e9f3ff;
   border-radius: 6px;

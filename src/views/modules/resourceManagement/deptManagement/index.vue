@@ -1,19 +1,19 @@
 <template>
-  <div style="height: calc(100vh - 127px); background: white">
-    <el-container style="height: 100%; width: 100%">
-      <div style="height: 100%; width: 50%; display: flex; flex-direction: column">
-        <div style="display: flex; padding: 20px 20px 20px 20px; justify-content: space-between">
+  <div style="width: 100%; height: 100%">
+    <el-container>
+      <div class="left-box">
+        <div class="left-top">
           <el-tabs v-model="activeName" type="border-card" @tab-click="tabChange">
             <el-tab-pane label="活跃部门" name="first"></el-tab-pane>
             <el-tab-pane label="所有部门" name="second"></el-tab-pane>
           </el-tabs>
           <div>
-            <el-button class="el-button-func" type="primary" @click="add()" v-auth="'deptInfo:add'">添加部门</el-button>
+            <el-button class="el-button-func" icon="el-icon-circle-plus-outline" type="primary" @click="add()" v-auth="'deptInfo:add'">添加部门</el-button>
           </div>
         </div>
-        <div style="flex: 1; display: flex; flex-direction: column">
-          <el-input style="width: 100%; padding: 0 20px" placeholder="请输入部门名称" v-model="keyword"></el-input>
-          <div style="margin-top: 20px; padding: 0 20px; height: 435px; overflow-y: auto">
+        <div class="left-content">
+          <el-input class="left-input" placeholder="请输入部门名称" v-model="keyword"></el-input>
+          <div class="left-tree">
             <el-tree
               class="filter-tree"
               :data="data"
@@ -26,12 +26,10 @@
           </div>
         </div>
       </div>
-      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="20%">
-        <el-form :inline="true" :disabled="isDisabled" :model="editDataForm" ref="editDataForm" class="editForm">
-          <div>
-            <!--            <el-form-item label="部门ID" prop="id" :rules="[ { required: true, message: '部门ID不能为空'}]" >-->
-            <!--              <el-input v-model="editDataForm.id"  clearable  maxlength="50"></el-input>-->
-            <!--            </el-form-item>-->
+      <div class="right-box">
+        <div v-if="drawer">
+          <div style="font-size: 14px; color: #262b39">{{ title }}</div>
+          <el-form :inline="true" :disabled="isDisabled" :model="editDataForm" ref="editDataForm" class="editForm">
             <el-form-item label="部门名称" prop="deptName" :rules="[{ required: true, message: '部门名称不能为空' }]">
               <el-input v-model="editDataForm.deptName" placeholder="请输入部门名称" clearable maxlength="50"></el-input>
             </el-form-item>
@@ -40,19 +38,13 @@
                 <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-
             <el-form-item label="部门助理" prop="assistantIds">
               <el-select clearable v-model="editDataForm.assistantIds" placeholder="请选择部门助理" multiple collapse-tags>
                 <el-option v-for="item in assistList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <!--            <el-form-item label="上级部门" prop="parentId">-->
-            <!--              <el-select clearable v-model="editDataForm.parentId" placeholder="请选择上级部门">-->
-            <!--                <el-option v-for="item in deptList" :key="item.id" :label="item.deptName" :value="item.id"></el-option>-->
-            <!--              </el-select>-->
-            <!--            </el-form-item>-->
             <el-form-item label="团队" v-if="op == 'alter'">
-              <div style="border: 1px solid lightgray; width: 190px; max-height: 200px; overflow-y: auto">
+              <div style="border: 1px solid lightgray; width: 400px; min-height: 60px; max-height: 200px; overflow-y: auto">
                 <el-tree :data="editDataForm.deptTeam" :props="defaultProps" default-expand-all ref="deptTeam"></el-tree>
               </div>
             </el-form-item>
@@ -70,18 +62,24 @@
                 show-word-limit
                 :maxlength="50"
                 v-model="editDataForm.remarks"
-                placeholder="请输入部门说明"
+                placeholder="请输入部门说明,不超过50字"
                 clearable
                 maxlength="50"
+                style="width: 400px"
               ></el-input>
             </el-form-item>
+          </el-form>
+
+          <div style="display: flex; justify-content: center; margin: 30px 0 0 280px">
+            <el-button @click="drawer = false" style="margin-right: 24px">取消</el-button>
+            <el-button v-if="!isDisabled" type="primary" @click="editSubmit()">确定</el-button>
           </div>
-        </el-form>
-        <div style="display: flex; justify-content: flex-end; margin-top: 30px; margin-right: 10px">
-          <el-button @click="drawer = false">取消</el-button>
-          <el-button v-if="!isDisabled" type="primary" style="margin-right: 20px" @click="editSubmit()">确认</el-button>
         </div>
-      </el-drawer>
+        <div v-else style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center">
+          <img style="width: 164px; height: 152px" src="@/assets/no-data.png" />
+          <span style="font-size: 14px; color: #cfd2d8; margin-top: 10px">暂无数据</span>
+        </div>
+      </div>
     </el-container>
   </div>
 </template>
@@ -108,10 +106,6 @@ export default {
       drawer: false,
       direction: 'rtl',
       title: '',
-      // dataForm: {
-      //   deptName: '',
-      //   managerName: ''
-      // },
       editDataForm: {
         deptName: '',
         id: '',
@@ -396,7 +390,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -409,20 +403,62 @@ export default {
   padding-left: 20px;
   /*display: flex;*/
 }
-
+.left-box {
+  height: 100%;
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  background: white;
+  .left-top {
+    display: flex;
+    justify-content: space-between;
+    padding: 24px;
+  }
+  .left-content {
+    flex: 1;
+    .left-input {
+      width: 240px;
+      margin-left: 24px;
+    }
+    .left-tree {
+      margin: 30px 0 0 24px;
+      min-height: 500px;
+      overflow-y: auto;
+    }
+  }
+}
+.right-box {
+  width: 65%;
+  padding: 24px;
+  background: white;
+  margin-left: 24px;
+}
 .el-button-func {
-  width: 86px;
-  height: 30px;
+  width: 112px;
+  height: 32px;
   text-align: center;
 }
 ::v-deep .el-table__cell {
   text-align: center;
 }
-
+.editForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 27px;
+}
+.el-input {
+  width: 400px;
+}
+::v-deep .el-select {
+  width: 400px !important;
+}
 ::v-deep .editForm .el-form-item__label {
   width: 80px !important;
 }
-::v-deep .editForm .el-form-item {
-  width: 100% !important;
-}
+
+// ::v-deep .editForm .el-form-item {
+//   width: 100% !important;
+// }
 </style>
