@@ -284,9 +284,7 @@ $cursor: #666666; //输入框文字颜色
     color: $cursor;
   }
 }
-.el-form-item__error {
-  top: 50px !important;
-}
+
 .logoTitle {
   display: flex;
   align-items: center;
@@ -364,6 +362,9 @@ $cursor: #666666; //输入框文字颜色
 // .el-form-item {
 //   width: 100% !important;
 // }
+::v-deep .el-form-item__error {
+  top: 50px !important;
+}
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;

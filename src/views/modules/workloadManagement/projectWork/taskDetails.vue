@@ -47,7 +47,7 @@
                       </el-form-item>
                       <div style="display: contents; float: right">
                         <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
-                        <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+                        <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
                       </div>
                     </el-form>
                   </el-header>

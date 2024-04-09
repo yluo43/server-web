@@ -26,7 +26,7 @@
         </el-form>
         <div style="margin: 10px 0 10px 13px">
           <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
-          <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+          <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
         </div>
         <div class="chooseResult">
           <span>已选中{{ count }}项</span>

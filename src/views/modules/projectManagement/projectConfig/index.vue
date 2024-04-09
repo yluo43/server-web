@@ -82,7 +82,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="queryProjectList">查询</el-button>
-            <el-button type="primary" icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
+            <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
       </el-header>
