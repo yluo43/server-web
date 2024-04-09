@@ -41,7 +41,7 @@
             </el-form-item>
             <br />
             <el-form-item label="费用名称:" prop="costNames">
-              <el-select v-model="dataForm.costNames" :multiple="true" :collapse-tags="true" style="width: 240px !important">
+              <el-select v-model="dataForm.costNames" :multiple="true" :collapse-tags="true">
                 <el-option v-for="costName in costNames" :key="costName" :label="costName" :value="costName" multiple="true"></el-option>
               </el-select>
             </el-form-item>
@@ -406,7 +406,7 @@ export default {
 
     batchDelete() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何报销数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
 
@@ -441,7 +441,7 @@ export default {
     },
     download() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何报销数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       let form = { ...this.dataForm }

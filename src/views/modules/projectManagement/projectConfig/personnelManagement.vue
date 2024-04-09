@@ -79,7 +79,7 @@
 
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="queryPersonnelList">查询</el-button>
-            <el-button type="primary" icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
+            <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
       </el-header>
@@ -100,8 +100,14 @@
           <template v-slot:clientType1="row">
             <!--类型插槽-->
             <template>
-              <el-link type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updatePersonnelInfo(row.item)">编辑</el-link>
-              <el-link type="primary" style="margin-left: 10px" @click="deletePersonnelInfo(row.item)">删除</el-link>
+              <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="updatePersonnelInfo(row.item)" />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="deletePersonnelInfo(row.item)" />
+              </el-tooltip>
+              <!-- <el-link type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updatePersonnelInfo(row.item)">编辑</el-link>
+              <el-link type="primary" style="margin-left: 10px" @click="deletePersonnelInfo(row.item)">删除</el-link> -->
             </template>
           </template>
         </baseTable>

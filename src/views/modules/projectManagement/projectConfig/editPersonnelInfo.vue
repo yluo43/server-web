@@ -2,8 +2,15 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%; margin: 0 10px" direction="vertical">
       <el-form ref="editPersonnelInfoForm" :rules="editPersonnelInfoFormRules" :model="editPersonnelInfoFormData" label-width="auto" class="form-item">
-        <el-form-item label="人员姓名:" prop="empId" :disabled="operateType == 'update'">
-          <el-select clearable v-model="editPersonnelInfoFormData.empId" filterable style="width: 80% !important" placeholder="请选择人员姓名">
+        <el-form-item label="人员姓名:" prop="empId">
+          <el-select
+            clearable
+            v-model="editPersonnelInfoFormData.empId"
+            :disabled="operateType == 'update'"
+            filterable
+            style="width: 80% !important"
+            placeholder="请选择人员姓名"
+          >
             <el-option v-for="item in personnelList" :key="item.empId" :label="item.empId + '-' + item.name" :value="item.empId"></el-option>
           </el-select>
         </el-form-item>
@@ -108,6 +115,7 @@ export default {
     // 初始化
     initPersonnelInfo(initData) {
       this.operateType = initData.operateType
+      console.log(this.operateType)
       this.editPersonnelInfoFormData.projectId = initData.projectId
       if (initData.rowData) {
         Object.assign(this.editPersonnelInfoFormData, initData.rowData)

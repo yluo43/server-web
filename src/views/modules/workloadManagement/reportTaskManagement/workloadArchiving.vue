@@ -229,7 +229,7 @@ export default {
         return item.id
       })
       if (this.ids.length === 0) {
-        this.$message.warning('请选择一条数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       let data = { ids: this.ids.toString(), status: 4 }

@@ -177,17 +177,17 @@ export default {
       tableData: {
         theads: [
           { label: '项目集名称', prop: 'psName' },
-          { label: '项目集ID', prop: 'psId' },
-          { label: '负责人', prop: 'managerName' },
+          { label: '项目集ID', prop: 'psId', width: '80px' },
+          { label: '负责人', prop: 'managerName', width: '80px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '项目数量', prop: 'projectNum' },
+          { label: '项目数量', prop: 'projectNum', width: '80px' },
           { label: '已完成项目数', prop: 'completeNum' },
           { label: '简介', prop: 'remarks' },
           { label: '启动时间', prop: 'startDate' },
           { label: '结束时间', prop: 'endDate', slotName: 'endDate' },
           { label: '状态', prop: 'stateName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '130px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
         url: '/projectSet/projectSetPage'
       },

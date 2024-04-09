@@ -577,7 +577,7 @@ export default {
       })
     },
     deleteList(row) {
-      this.$confirm('确定删除吗（' + row.item.name + '）吗', '提示', {
+      this.$confirm('确定删除（' + row.item.name + '）吗', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -620,7 +620,7 @@ export default {
     },
     batchDelete() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何报销数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       this.$confirm('已选中' + this.deleteIds.length + '位成员,确认批量删除吗?', '提示', {
@@ -655,7 +655,7 @@ export default {
 
     download() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何员工数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
 

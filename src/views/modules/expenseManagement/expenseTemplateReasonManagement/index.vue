@@ -271,7 +271,7 @@ export default {
     //批量删除
     batchDelete() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       this.$confirm('已选中' + this.deleteIds.length + '条数据,确定删除吗?', '提示', {
@@ -400,7 +400,7 @@ export default {
     //批量下载
     download() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       let form = { ...this.dataForm }

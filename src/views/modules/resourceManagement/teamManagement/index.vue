@@ -598,7 +598,7 @@ export default {
 
     download() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何团队数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       let form = { ...this.dataForm }
@@ -609,7 +609,7 @@ export default {
 
     batchDelete() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何团队！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       this.$confirm('已选中' + this.deleteIds.length + '个团队,确认批量删除吗?', '提示', {
