@@ -313,6 +313,10 @@ export default {
       })
     },
     view(row) {
+      if (row.item.projectNum == 0) {
+        this.$message('当前项目集下无项目!')
+        return
+      }
       this.title = '查看项目'
       this.$refs.showProjectDrawer.show()
       this.$nextTick(() => {
