@@ -245,7 +245,7 @@ export default {
     //获取部门
     async getDept() {
       const result = await this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       })
       if (result.data && result.data.code === 200) {
