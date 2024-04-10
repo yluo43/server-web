@@ -3,7 +3,14 @@
     <el-container style="height: 100%; width: 100%; margin: 0 10px" direction="vertical">
       <el-form ref="editPersonnelInfoForm" :rules="editPersonnelInfoFormRules" :model="editPersonnelInfoFormData" label-width="auto" class="form-item">
         <el-form-item label="人员姓名:" prop="empId">
-          <el-select  clearable v-model="editPersonnelInfoFormData.empId" filterable style="width: 80% !important" placeholder="请选择人员姓名">
+          <el-select
+            clearable
+            v-model="editPersonnelInfoFormData.empId"
+            :disabled="operateType == 'update'"
+            filterable
+            style="width: 80% !important"
+            placeholder="请选择人员姓名"
+          >
             <el-option v-for="item in personnelList" :key="item.empId" :label="item.empId + '-' + item.name" :value="item.empId"></el-option>
           </el-select>
         </el-form-item>
@@ -51,8 +58,12 @@ export default {
       const regex = /^100(\.0{1,2})?$|^\d{1,2}(\.\d{1,2})?$/
       if (!value) {
         callback(new Error('请输入投入占比'))
+      } else if (value > 100) {
+        callback(new Error('投入占比不得超过100%'))
+      } else if (value < 0) {
+        callback(new Error('投入占比需大于等于0'))
       } else if (!regex.test(value)) {
-        callback(new Error('请输入最多两位小数的数字'))
+        callback(new Error('投入占比最多保留2位小数'))
       } else {
         callback()
       }
@@ -104,6 +115,7 @@ export default {
     // 初始化
     initPersonnelInfo(initData) {
       this.operateType = initData.operateType
+      console.log(this.operateType)
       this.editPersonnelInfoFormData.projectId = initData.projectId
       if (initData.rowData) {
         Object.assign(this.editPersonnelInfoFormData, initData.rowData)

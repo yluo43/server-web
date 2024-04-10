@@ -1,17 +1,17 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-main style="width: 100%" class="main">
+      <el-main class="main">
         <div class="top">
-          <div style="display: flex; align-items: center; margin-bottom: 10px; font-weight: 600">
+          <div class="header-title">
             <div>工作量统计:</div>
-            <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="reportWorkName" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
+            <div style="margin-left: 10px">
+              <el-select v-model="reportWorkName" style="width: 230px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
           </div>
-          <div style="margin-bottom: 10px">
+          <div style="margin-bottom: 10px; padding-left: 16px">
             <el-form ref="formData" :inline="true" label-width="65px" :label-position="labelposition" :model="formData">
               <el-form-item label="用户姓名:" prop="userName">
                 <el-input v-model="formData.userName" placeholder="请输入用户姓名" clearable />
@@ -39,7 +39,7 @@
               <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
             </el-form>
           </div>
-          <div class="row-box">
+          <div class="chooseResult" style="display: flex; margin-bottom: 16px">
             <div>
               已选择
               <span>{{ count }}</span>
@@ -394,27 +394,32 @@ export default {
   line-height: 0;
 }
 .main {
+  width: 100%;
+  padding: 0;
   .top {
     background: white;
-    padding-left: 30px;
   }
   .header-title {
-    font-size: 16px;
-    font-weight: 600;
-  }
-  .status {
-    padding: 20px 0;
-  }
-  .row-box {
     display: flex;
     align-items: center;
-    height: 40px;
-    border-radius: 5px;
-    margin-left: -20px;
-    margin-bottom: 20px;
-    background-color: #e8f4ff;
-    padding-left: 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    padding-left: 16px;
   }
+  .status {
+    padding: 20px 16px;
+  }
+  // .row-box {
+  //   display: flex;
+  //   align-items: center;
+  //   height: 40px;
+  //   border-radius: 5px;
+  //   margin-left: -20px;
+  //   margin-bottom: 20px;
+  //   background-color: #e8f4ff;
+  //   padding-left: 20px;
+  // }
 }
 .table {
   background-color: white;

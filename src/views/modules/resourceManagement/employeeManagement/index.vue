@@ -103,19 +103,19 @@
 
             <div style="display: contents">
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
-              <el-button type="primary" @click="resetForm()" icon="el-icon-search" style="margin-right: 20px">重置</el-button>
+              <el-button @click="resetForm()" icon="el-icon-search" style="margin-right: 20px">重置</el-button>
             </div>
           </div>
         </el-form>
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr"></span>
+          <span v-text="chooseStr"></span>
           <el-button type="text" @click="batchDelete()" v-auth="'employee:deleteEmployees'">批量删除</el-button>
           <!-- <span style="color:blue;margin-left: 100px;cursor: pointer" @click="batchDelete()" v-auth="'employee:deleteEmployees'"> 批量删除 </span>
           <span style="color:blue;margin-left: 20px;cursor: pointer" @click="download()" v-auth="'employee:export'"> 批量下载 </span>
           <span style="color:blue;margin-left: 20px;cursor: pointer" @click="add()" v-auth="'employee:insertEmployee'"> 添加员工 </span> -->
         </div>
       </el-header>
-      <div style="margin: 5px 0 10px 13px">
+      <div class="operate-button">
         <el-button
           style="width: 110px"
           icon="
@@ -141,13 +141,24 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <svg-icon
+            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <svg-icon
+                :icon-class="'delete-icon'"
+                style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                @click="deleteList(row)"
+                v-auth="'employee:deleteEmployee'"
+              />
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'employee:updateEmployee'" />
+            </el-tooltip>
+            <!-- <svg-icon
               :icon-class="'delete'"
               style="height: 1.5em; width: 1.5em; margin-right: 2em"
               @click="deleteList(row)"
               v-auth="'employee:deleteEmployee'"
             />
-            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'employee:updateEmployee'" />
+            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'employee:updateEmployee'" /> -->
           </template>
         </template>
       </baseTable>
@@ -566,7 +577,7 @@ export default {
       })
     },
     deleteList(row) {
-      this.$confirm('确定删除吗（' + row.item.name + '）吗', '提示', {
+      this.$confirm('确定删除（' + row.item.name + '）吗', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -609,7 +620,7 @@ export default {
     },
     batchDelete() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何报销数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       this.$confirm('已选中' + this.deleteIds.length + '位成员,确认批量删除吗?', '提示', {
@@ -644,7 +655,7 @@ export default {
 
     download() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何员工数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
 
@@ -674,11 +685,11 @@ export default {
   color: #333;
   padding: 0 0;
 }
-.el-form--inline > .inputlist {
-  /*padding-top: 20px;*/
+/* .el-form--inline > .inputlist {
+  padding-top: 20px;
   padding-left: 20px;
-  /*display: flex;*/
-}
+  display: flex;
+} */
 .el-button-func {
   width: 86px;
   height: 30px;
@@ -687,7 +698,7 @@ export default {
 ::v-deep .el-table__cell {
   text-align: center;
 }
-.chooseResult {
+/* .chooseResult {
   width: 98%;
   height: 30px;
   line-height: 30px;
@@ -696,7 +707,7 @@ export default {
   background: #e9f3ff;
   border-radius: 6px;
   padding-left: 20px;
-}
+} */
 
 ::v-deep .editForm .el-form-item__label {
   width: 80px !important;

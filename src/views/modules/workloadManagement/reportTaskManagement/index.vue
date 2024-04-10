@@ -1,14 +1,14 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-header style="padding: 0 10px 0 16px">
+      <el-header style="padding: 0">
         <el-tabs v-model="activeName" type="border-card" @tab-click="tabChange">
           <el-tab-pane label="填报任务管理" name="first"></el-tab-pane>
           <el-tab-pane label="工作量归档" name="second"></el-tab-pane>
           <el-tab-pane label="归档任务详情" name="third"></el-tab-pane>
         </el-tabs>
       </el-header>
-      <el-main style="width: 100%" class="main" v-if="activeName === 'first'">
+      <el-main style="width: 100%; padding: 0" class="main" v-if="activeName === 'first'">
         <div class="management-header">
           <div class="management-item">
             <p>我的待办</p>
@@ -175,11 +175,12 @@ export default {
 
   mounted() {
     // console.log(this.$store.state.user.empId)
-    this.empId = this.$store.state.user.empId
     this.selectTaskList({ empId: this.empId })
     this.selectTaskAmount()
   },
-  created() {},
+  created() {
+    this.empId = this.$store.state.user.empId
+  },
   methods: {
     selectTable() {
       this.handlerRadio()

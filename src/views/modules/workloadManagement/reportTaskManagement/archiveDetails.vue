@@ -1,9 +1,9 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-main style="width: 100%" class="main">
+      <el-main class="main">
         <div class="top">
-          <div style="display: flex; align-items: center; margin: 0 0 10px 30px; font-weight: 600">
+          <div class="header-title">
             <div>工作量统计:</div>
             <div style="margin-left: 10px; font-weight: 600">
               <el-select v-model="reportWorkName" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
@@ -11,8 +11,8 @@
               </el-select>
             </div>
           </div>
-          <div>
-            <el-form ref="formData" :inline="true" label-width="110px" :label-position="labelposition" :model="formData">
+          <div style="padding-left: 16px">
+            <el-form ref="formData" :inline="true" :label-position="labelposition" :model="formData">
               <el-form-item label="用户姓名:" prop="name">
                 <el-input v-model="formData.name" placeholder="请输入用户姓名" clearable />
               </el-form-item>
@@ -49,13 +49,13 @@
                   <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <div style="margin-bottom: 10px; margin-left: 30px">
+              <div style="margin-bottom: 10px">
                 <el-button type="primary" icon="el-icon-search" @click="selectData">查询</el-button>
                 <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
               </div>
             </el-form>
           </div>
-          <div class="row-box">
+          <div class="chooseResult" style="display: flex">
             <div>
               已选择
               <span>{{ count }}</span>
@@ -348,22 +348,18 @@ export default {
   line-height: 0;
 }
 .main {
+  width: 100%;
+  padding: 0;
   .top {
     background: white;
-    padding-left: 30px;
   }
   .header-title {
-    font-size: 16px;
-    font-weight: 600;
-  }
-  .row-box {
     display: flex;
     align-items: center;
-    height: 40px;
-    border-radius: 5px;
-    margin-left: -20px;
-    background-color: #e8f4ff;
-    padding-left: 20px;
+    padding-left: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    padding-left: 16px;
   }
 }
 .table {

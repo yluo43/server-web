@@ -54,19 +54,19 @@
             </el-form-item>
             <div style="display: contents">
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px; margin-left: 100px">查询</el-button>
-              <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+              <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
             </div>
           </div>
         </el-form>
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr"></span>
+          <span v-text="chooseStr"></span>
           <el-button type="text" @click="batchDelete()" v-auth="'team:deletes'">批量删除</el-button>
           <!-- <span style="color: blue; margin-left: 100px" @click="batchDelete()" v-auth="'team:deletes'">批量删除</span>
           <span style="color: blue; margin-left: 20px" @click="download()" v-auth="'team:export'">批量下载</span>
           <span style="color: blue; margin-left: 20px" @click="add()" v-auth="'team:add'">新建团队</span> -->
         </div>
       </el-header>
-      <div style="margin: 0 0 10px 13px">
+      <div class="operate-button">
         <el-button
           style="width: 110px"
           icon="
@@ -93,8 +93,14 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'team:delete'" />
-            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'team:update'" />
+            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'team:delete'" />
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'team:update'" />
+            </el-tooltip>
+            <!-- <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'team:delete'" />
+            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'team:update'" /> -->
           </template>
         </template>
       </baseTable>
@@ -396,10 +402,10 @@ export default {
         }
       })
     },
-    freshMembersWithEdit(id) {
+    freshMembersWithEdit(id, deptId) {
       //初始化没有团队的人员
       this.$http({
-        url: this.$http.adornUrl('/common/getTeamEmpById?teamId=' + id),
+        url: this.$http.adornUrl('/common/getTeamEmpById?teamId=' + id + '&deptId=' + deptId),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -517,7 +523,7 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.teamManagerList = data.payload
-          this.freshMembersWithEdit(row.item.id)
+          this.freshMembersWithEdit(row.item.id, row.item.deptId)
           this.editDataForm = { ...row.item }
           this.value = this.editDataForm.teamMembers
           console.log(this.editDataForm)
@@ -592,7 +598,7 @@ export default {
 
     download() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何团队数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       let form = { ...this.dataForm }
@@ -603,7 +609,7 @@ export default {
 
     batchDelete() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何团队！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       this.$confirm('已选中' + this.deleteIds.length + '个团队,确认批量删除吗?', '提示', {
@@ -664,11 +670,11 @@ export default {
   padding: 0 0;
 }
 
-.el-form--inline > .inputlist {
-  /*padding-top: 20px;*/
+/* .el-form--inline > .inputlist {
+  padding-top: 20px;
   padding-left: 20px;
-  /*display: flex;*/
-}
+  display: flex;
+} */
 
 .el-button-func {
   width: 86px;
@@ -679,7 +685,7 @@ export default {
   text-align: center;
 }
 
-.chooseResult {
+/* .chooseResult {
   width: 98%;
   height: 30px;
   line-height: 30px;
@@ -688,7 +694,7 @@ export default {
   background: #e9f3ff;
   border-radius: 6px;
   padding-left: 20px;
-}
+} */
 
 ::v-deep .drawer .el-form--inline .el-form-item__label {
   width: 85px !important;

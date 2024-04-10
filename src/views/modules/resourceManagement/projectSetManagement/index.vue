@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
-      <el-header style="height: auto">
+    <el-container style="height: 100%; width: 100%">
+      <el-header style="height: auto; padding: 0">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <el-form-item label="项目集名称:" prop="psName">
             <el-input v-model="dataForm.psName" placeholder="请输入项目集名称" clearable></el-input>
@@ -59,17 +59,16 @@
           </el-form-item>
           <div style="display: contents; float: right">
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
-            <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+            <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
           </div>
         </el-form>
       </el-header>
-      <el-main>
+      <el-main style="padding: 0">
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr"></span>
+          <span v-text="chooseStr"></span>
           <el-button type="text" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</el-button>
-          <!-- <span style="color: blue; margin-left: 50px" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</span> -->
         </div>
-        <div style="margin: 15px 0 10px 0">
+        <div class="operate-button">
           <el-button class="el-button-func" type="primary" @click="download()" icon="el-icon-download" style="margin-right: 10px" v-auth="'projectSet:export'">
             批量下载
           </el-button>
@@ -83,7 +82,34 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-tooltip class="item" effect="dark" content="查看项目" placement="bottom" v-auth="'projectSet:showProject'">
+              <el-tooltip class="item" effect="dark" content="查看项目" placement="bottom">
+                <svg-icon
+                  :icon-class="'view-project-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="view(row)"
+                  v-auth="'projectSet:showProject'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="添加项目" placement="bottom">
+                <svg-icon
+                  :icon-class="'add-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="addProject(row)"
+                  v-auth="'projectSet:addProject'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                <svg-icon
+                  :icon-class="'delete-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="deleteList(row)"
+                  v-auth="'projectSet:delete'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="update(row)" v-auth="'projectSet:update'" />
+              </el-tooltip>
+              <!-- <el-tooltip class="item" effect="dark" content="查看项目" placement="bottom" v-auth="'projectSet:showProject'">
                 <i class="el-icon-document" style="font-size: 1.5em; margin-right: 1em" @click="view(row)"></i>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="添加项目" placement="bottom" v-auth="'projectSet:addProject'">
@@ -94,7 +120,7 @@
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="编辑" placement="bottom" v-auth="'projectSet:update'">
                 <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em; margin-right: 1em" @click="update(row)" />
-              </el-tooltip>
+              </el-tooltip> -->
             </template>
           </template>
         </baseTable>
@@ -150,17 +176,17 @@ export default {
       tableData: {
         theads: [
           { label: '项目集名称', prop: 'psName' },
-          { label: '项目集ID', prop: 'psId' },
-          { label: '负责人', prop: 'managerName' },
+          { label: '项目集ID', prop: 'psId', width: '80px' },
+          { label: '负责人', prop: 'managerName', width: '80px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '项目数量', prop: 'projectNum' },
+          { label: '项目数量', prop: 'projectNum', width: '80px' },
           { label: '已完成项目数', prop: 'completeNum' },
           { label: '简介', prop: 'remarks' },
           { label: '启动时间', prop: 'startDate' },
           { label: '结束时间', prop: 'endDate', slotName: 'endDate' },
           { label: '状态', prop: 'stateName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '130px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
         url: '/projectSet/projectSetPage'
       },
@@ -223,7 +249,7 @@ export default {
       }
     })
     this.$http({
-      url: this.$http.adornUrl('/common/getDept'),
+      url: this.$http.adornUrl('/common/getDeptByRole'),
       method: 'get'
     }).then(({ data }) => {
       if (data && data.code === 200) {
@@ -286,6 +312,10 @@ export default {
       })
     },
     view(row) {
+      if (row.item.projectNum == 0) {
+        this.$message('当前项目集下无项目!')
+        return
+      }
       this.title = '查看项目'
       this.$refs.showProjectDrawer.show()
       this.$nextTick(() => {
@@ -384,14 +414,14 @@ export default {
   width: auto;
 }
 
-.chooseResult {
+/* .chooseResult {
   height: 30px;
   line-height: 30px;
   margin: 10px auto;
   display: block;
   background: #e9f3ff;
   border-radius: 6px;
-}
+} */
 
 .el-icon-document:hover,
 .el-icon-circle-plus:hover {

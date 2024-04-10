@@ -54,13 +54,23 @@
 <script>
 export default {
   data() {
+    const checkOrderAmount = (rule, value, callback) => {
+      const regex = /^[0-9.]*$/
+      if (!value) {
+        return callback(new Error('请输入订单金额'))
+      } else if (!regex.test(value)) {
+        return callback(new Error('订单金额须为数字'))
+      } else {
+        callback()
+      }
+    }
     return {
       rules: {
         orderName: [{ required: true, message: '请输入订单名称', trigger: 'blur' }],
         startDate: [{ required: true, message: '请选择开始日期', trigger: 'change' }],
         endDate: [{ required: true, message: '请选择结束日期', trigger: 'change' }],
-        orderAmount: [{ required: true, message: '请输入订单金额', trigger: 'blur' }],
-        orderFile: [{ required: true, message: '请上传订单', trigger: 'change' }]
+        orderAmount: [{ required: true, validator: checkOrderAmount, trigger: 'blur' }]
+        // orderFile: [{ required: true, message: '请上传订单', trigger: 'change' }]
       },
       fileList: [],
       dataForm: {

@@ -2,13 +2,13 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-container>
-        <el-main style="width: 100%">
+        <el-main style="width: 100%; padding: 0">
           <div class="table" style="height: 640px; background-color: white">
             <el-row style="display: flex; align-items: center">
               <el-col>
                 <div style="display: flex; align-items: center">
-                  <span style="font-size: 16px; font-weight: 600; margin-left: 10px">工作量统计：</span>
-                  <el-select v-model="dataForm.taskId" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
+                  <span style="font-size: 16px; font-weight: 600; margin-left: 16px">工作量统计：</span>
+                  <el-select v-model="dataForm.taskId" style="width: 230px !important" @change="changeSelect">
                     <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
                   </el-select>
                 </div>
@@ -47,7 +47,7 @@
                       </el-form-item>
                       <div style="display: contents; float: right">
                         <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
-                        <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+                        <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
                       </div>
                     </el-form>
                   </el-header>
@@ -55,8 +55,9 @@
               </el-col>
             </el-row>
             <div class="chooseResult">
-              <span class="chooseResultStr">已选择{{ count }}项</span>
-              <span style="color: blue; margin-left: 50px" @click="download()">批量下载</span>
+              <span>已选择{{ count }}项</span>
+              <el-button type="text" @click="download()">批量下载</el-button>
+              <!-- <span style="color: blue; margin-left: 50px" @click="download()">批量下载</span> -->
             </div>
             <div class="table">
               <div>

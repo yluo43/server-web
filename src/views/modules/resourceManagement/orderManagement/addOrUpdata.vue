@@ -390,6 +390,12 @@ export default {
         scope.item.row.returnShow = false
       } else {
         scope.item.row.returnShow = true
+        scope.item.row.returnAcount = ''
+        scope.item.row.returnDate = ''
+        scope.item.row.returnFile = ''
+        scope.item.row.returnFileList = []
+        scope.item.row.returnFilePath = ''
+        scope.item.row.returnFileShow = true
       }
     },
     editSettlement(scope, index) {
@@ -402,7 +408,7 @@ export default {
     handleFirstRemove(file, fileList, scope, index) {
       scope.item.row.settlementFileShow = true
       scope.item.row.settlementFileList = fileList
-      scope.item.row.settlementFilePath = null
+      scope.item.row.settlementFilePath = ''
       scope.item.row.settlementFile = ''
     },
     handleSecondRemove(file, fileList, scope, index) {
@@ -462,21 +468,39 @@ export default {
     },
     updateSettlement(scope, item, index) {
       let obj = scope.item.row
+      const regex = /^[0-9-.]*$/
       if (!obj.settlementAcount || obj.settlementAcount == '0.00' || obj.settlementAcount == '0') {
         this.$message.warning('结算金额不能为空和0')
         return
       }
+      if (!regex.test(obj.settlementAcount)) {
+        this.$message.warning('结算金额须为数字')
+        return
+      }
+      if (obj.settlementDate && obj.expectReturnDate && obj.expectReturnDate < obj.settlementDate) {
+        this.$message.warning('预计回款时间要大于等于结算时间')
+        return
+      }
+
       if (obj.state === 3) {
         if (!obj.returnDate || !obj.returnAcount || (!obj.returnFile && !obj.returnFilePath)) {
           this.$message.warning('当状态为“已收款”时，列表中回款时间、回款金额、回款单信息必须填写上传！')
           return
         }
-        if (obj.settlementDate && obj.expectReturnDate && obj.expectReturnDate < obj.settlementDate) {
-          this.$message.warning('预计回款时间要大于等于结算时间')
+        if (!obj.returnAcount || obj.returnAcount == '0.00' || obj.returnAcount == '0') {
+          this.$message.warning('回款金额不能为空和0')
+          return
+        }
+        if (!regex.test(obj.returnAcount)) {
+          this.$message.warning('结算金额须为数字')
           return
         }
         if (obj.settlementDate && obj.returnDate && obj.returnDate < obj.settlementDate) {
           this.$message.warning('回款时间要大于等于结算时间')
+          return
+        }
+        if (obj.returnAcount > obj.settlementAcount) {
+          this.$message.warning('回款金额要小于等于结算金额')
           return
         }
       } else {
@@ -486,10 +510,6 @@ export default {
         }
         if (!obj.settlementFile && !obj.settlementFilePath) {
           this.$message.warning('当状态为"实施中、提交材料、提交开票”时，结算单为必填项!')
-          return
-        }
-        if (obj.settlementDate && obj.expectReturnDate && obj.expectReturnDate < obj.settlementDate) {
-          this.$message.warning('预计回款时间要大于等于结算时间')
           return
         }
       }
@@ -576,8 +596,8 @@ export default {
   line-height: 30px;
   margin: 10px auto;
   display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
+  background: #e8f3ff;
+  border-radius: 4px;
 }
 
 .center-button-container {

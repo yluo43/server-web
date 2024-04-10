@@ -320,6 +320,9 @@ export default {
 ::v-deep .el-descriptions-item__label {
   color: #008aff; /* 设置描述项label字体颜色为绿色 */
 }
+::v-deep .el-input__icon {
+  line-height: 30px;
+}
 
 .el-link {
   margin-right: 10px;
@@ -330,8 +333,8 @@ export default {
   line-height: 30px;
   margin: 10px auto;
   display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
+  background: #e8f3ff;
+  border-radius: 4px;
 }
 
 .center-button-container {
