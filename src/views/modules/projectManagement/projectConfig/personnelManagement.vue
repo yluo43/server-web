@@ -86,12 +86,13 @@
 
       <el-main>
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr" />
-          <span style="color: blue; margin-left: 50px" @click="deletePersonnelInfo()">批量删除</span>
+          <span v-text="chooseStr" />
+          <el-button type="text" @click="deletePersonnelInfo()">批量删除</el-button>
+          <!-- <span style="color: blue; margin-left: 50px" @click="deletePersonnelInfo()">批量删除</span> -->
         </div>
 
         <!-- toolBar -->
-        <div style="margin-bottom: 10px">
+        <div class="operate-button">
           <el-button class="el-button-func" type="primary" icon="el-icon-download" style="margin-right: 10px" @click="batchDownload">批量下载</el-button>
           <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addPersonnelInfo">添加人员</el-button>
         </div>
@@ -290,14 +291,27 @@ export default {
     },
 
     // 查询总数
+    // getTableTotalCount() {
+    //   this.$http({
+    //     url: this.$http.adornUrl('/costItems/member/page'),
+    //     method: 'get',
+    //     params: this.$http.adornParams({ projectId: this.personnelManagementFormData.projectId })
+    //   }).then(({ data }) => {
+    //     if (data.success) {
+    //       this.projectInfo.personnelCount = data.payload.totalCount
+    //     } else {
+    //       this.$message.error('获取项目参与人数失败，请刷新后重试')
+    //     }
+    //   })
+    // },
     getTableTotalCount() {
       this.$http({
-        url: this.$http.adornUrl('/costItems/member/page'),
+        url: this.$http.adornUrl('/costItems/member/memberCount'),
         method: 'get',
         params: this.$http.adornParams({ projectId: this.personnelManagementFormData.projectId })
       }).then(({ data }) => {
         if (data.success) {
-          this.projectInfo.personnelCount = data.payload.totalCount
+          this.projectInfo.personnelCount = data.payload.memberCount
         } else {
           this.$message.error('获取项目参与人数失败，请刷新后重试')
         }
@@ -325,7 +339,7 @@ export default {
     closeEditPersonnelInfoDialog() {
       this.$refs.editPersonnelInfoDialog.hide()
       this.queryPersonnelList()
-      this.getTableTotalCount()
+      //  this.getTableTotalCount()
     },
 
     // 删除所选人员-单条/批量
@@ -362,7 +376,7 @@ export default {
             if (data.success) {
               this.$message.success('删除成功')
               this.queryPersonnelList()
-              this.getTableTotalCount()
+              //this.getTableTotalCount()
             } else {
               this.$message.error(data.msg)
             }
@@ -405,7 +419,7 @@ export default {
   color: white;
 }
 
-.chooseResult {
+/* .chooseResult {
   height: 30px;
   line-height: 30px;
   margin: 10px auto;
@@ -416,7 +430,7 @@ export default {
 
 .chooseResultStr {
   margin-left: 10px;
-}
+} */
 
 .el-button {
   margin-left: 0;

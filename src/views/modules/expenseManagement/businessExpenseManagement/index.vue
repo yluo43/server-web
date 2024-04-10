@@ -94,15 +94,12 @@
             </div>
           </div>
         </el-form>
-
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr"></span>
+          <span v-text="chooseStr"></span>
           <el-button type="text" @click="batchDelete()" v-auth="'tripCost:deletes'">批量删除</el-button>
-          <!-- <span style="color: blue; margin-left: 100px" @click="batchDelete()" v-auth="'tripCost:deletes'">批量删除</span>
-          <span style="color: blue; margin-left: 20px" @click="download()" v-auth="'tripCost:export'">批量下载</span> -->
         </div>
       </el-header>
-      <div style="margin: 15px 0 10px 13px">
+      <div class="operate-button">
         <el-button
           style="width: 110px"
           icon="
@@ -583,11 +580,11 @@ export default {
   padding: 0 0;
 }
 
-.el-form--inline > .inputlist {
-  /*padding-top: 20px;*/
+/* .el-form--inline > .inputlist {
+  padding-top: 20px;
   padding-left: 20px;
-  /*display: flex;*/
-}
+  display: flex;
+} */
 
 ::v-deep .editForm .el-form-item__label {
   width: 80px !important;
@@ -613,7 +610,7 @@ export default {
 .el-input {
   width: 190px;
 }
-.chooseResult {
+/* .chooseResult {
   width: 98%;
   height: 30px;
   line-height: 30px;
@@ -623,5 +620,5 @@ export default {
   background: #e9f3ff;
   border-radius: 6px;
   padding-left: 20px;
-}
+} */
 </style>

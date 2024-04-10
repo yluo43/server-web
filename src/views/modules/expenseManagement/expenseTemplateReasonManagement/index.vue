@@ -24,7 +24,7 @@
             </el-form-item>
           </div>
         </el-form>
-        <div style="margin: 10px 0 10px 13px">
+        <div>
           <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
           <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
         </div>
@@ -33,7 +33,7 @@
           <el-button type="text" @click="batchDelete()">批量删除</el-button>
         </div>
       </el-header>
-      <div style="margin: 10px 0 10px 13px">
+      <div class="operate-button">
         <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
         <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
       </div>
@@ -434,13 +434,13 @@ export default {
   white-space: nowrap;
   max-width: 100px;
 }
-.el-form--inline > .inputlist {
+/* .el-form--inline > .inputlist {
   display: flex;
   align-items: center;
-  /*padding-top: 20px;*/
+  padding-top: 20px;
   padding-left: 20px;
-  /*display: flex;*/
-}
+  display: flex;
+} */
 
 ::v-deep .editForm .el-form-item__label {
   width: 125px !important;
@@ -458,7 +458,7 @@ export default {
   text-align: center;
 }
 
-.chooseResult {
+/* .chooseResult {
   width: 98%;
   height: 30px;
   line-height: 30px;
@@ -467,5 +467,5 @@ export default {
   background: #e9f3ff;
   border-radius: 6px;
   padding-left: 20px;
-}
+} */
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
-      <el-header style="height: auto">
+    <el-container style="height: 100%; width: 100%">
+      <el-header style="height: 100%; padding: 0">
         <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectConfigFormData.name" placeholder="请输入项目名称" style="width: 200px" clearable />
@@ -87,15 +87,15 @@
         </el-form>
       </el-header>
 
-      <el-main>
+      <el-main style="padding: 0">
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr" />
+          <span v-text="chooseStr" />
           <el-button type="text" @click="deleteProjectInfo()" v-auth="'costItems:deletes'">批量删除</el-button>
           <!-- <span v-auth="'costItems:deletes'" style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span> -->
         </div>
 
         <!-- toolBar -->
-        <div style="margin-bottom: 10px; margin-top: 15px">
+        <div class="operate-button">
           <el-button
             v-auth="'costItems:export'"
             class="el-button-func"
@@ -513,18 +513,18 @@ export default {
   max-width: 70% !important;
 }
 
-.chooseResult {
+/* .chooseResult {
   height: 30px;
   line-height: 30px;
   margin: 10px auto;
   display: block;
   background: #e9f3ff;
   border-radius: 6px;
-}
+} */
 
-.chooseResultStr {
+/* .chooseResultStr {
   margin-left: 10px;
-}
+} */
 
 .el-button {
   margin-left: 0;

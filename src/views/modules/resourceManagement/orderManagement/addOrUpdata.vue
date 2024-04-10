@@ -596,8 +596,8 @@ export default {
   line-height: 30px;
   margin: 10px auto;
   display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
+  background: #e8f3ff;
+  border-radius: 4px;
 }
 
 .center-button-container {

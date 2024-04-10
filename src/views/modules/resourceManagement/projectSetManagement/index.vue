@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
-      <el-header style="height: auto">
+    <el-container style="height: 100%; width: 100%">
+      <el-header style="height: auto; padding: 0">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <el-form-item label="项目集名称:" prop="psName">
             <el-input v-model="dataForm.psName" placeholder="请输入项目集名称" clearable></el-input>
@@ -63,13 +63,12 @@
           </div>
         </el-form>
       </el-header>
-      <el-main>
+      <el-main style="padding: 0">
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr"></span>
+          <span v-text="chooseStr"></span>
           <el-button type="text" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</el-button>
-          <!-- <span style="color: blue; margin-left: 50px" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</span> -->
         </div>
-        <div style="margin: 15px 0 10px 0">
+        <div class="operate-button">
           <el-button class="el-button-func" type="primary" @click="download()" icon="el-icon-download" style="margin-right: 10px" v-auth="'projectSet:export'">
             批量下载
           </el-button>
@@ -415,14 +414,14 @@ export default {
   width: auto;
 }
 
-.chooseResult {
+/* .chooseResult {
   height: 30px;
   line-height: 30px;
   margin: 10px auto;
   display: block;
   background: #e9f3ff;
   border-radius: 6px;
-}
+} */
 
 .el-icon-document:hover,
 .el-icon-circle-plus:hover {

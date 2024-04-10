@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
-      <el-header style="height: auto">
+    <el-container style="height: 100%; width: 100%">
+      <el-header style="height: auto; padding: 0">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="dataForm.name" placeholder="请输入项目名称" clearable></el-input>
@@ -78,10 +78,10 @@
           <span>已选中{{ count }}项</span>
         </div>
       </el-header>
-      <div style="margin: 10px 0 10px 13px">
+      <div class="operate-button">
         <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
       </div>
-      <el-main>
+      <el-main style="padding: 0">
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
           <template v-slot:clientType="row">
             <!--类型插槽-->
@@ -374,7 +374,7 @@ export default {
   cursor: pointer;
   /* 添加其他想要的样式 */
 }
-.chooseResult {
+/* .chooseResult {
   height: 30px;
   line-height: 30px;
   margin: 0 auto;
@@ -382,5 +382,5 @@ export default {
   background: #e9f3ff;
   border-radius: 6px;
   padding-left: 20px;
-}
+} */
 </style>

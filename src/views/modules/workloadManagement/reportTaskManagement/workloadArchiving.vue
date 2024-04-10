@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-main style="width: 100%" class="main">
+      <el-main class="main">
         <div class="top">
           <div class="header-title">
             <div>工作量统计:</div>
@@ -27,7 +27,7 @@
               </el-select>
             </div>
           </div>
-          <div class="row-box">
+          <div class="chooseResult" style="display: flex">
             <div>
               已选择
               <span>{{ count }}</span>
@@ -313,27 +313,20 @@ export default {
   line-height: 0;
 }
 .main {
+  width: 100%;
+  padding: 0;
   .top {
     background: white;
-    padding-left: 30px;
   }
   .header-title {
     font-size: 16px;
     font-weight: 600;
     display: flex;
     align-items: center;
+    padding-left: 16px;
   }
   .status {
-    padding: 20px 0;
-  }
-  .row-box {
-    display: flex;
-    align-items: center;
-    height: 40px;
-    border-radius: 5px;
-    margin-left: -20px;
-    background-color: #e8f4ff;
-    padding-left: 20px;
+    padding: 20px 16px;
   }
 }
 .table {

@@ -1,12 +1,12 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-main style="width: 100%" class="main">
+      <el-main class="main">
         <div class="top">
           <div class="header-title">
             <div>工作量统计:</div>
-            <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="reportWorkName" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
+            <div style="margin-left: 10px">
+              <el-select v-model="reportWorkName" style="width: 230px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
@@ -323,9 +323,11 @@ export default {
   display: none !important;
 }
 .main {
+  width: 100%;
+  padding: 0;
   .top {
     background: white;
-    padding-left: 30px;
+    padding-left: 20px;
   }
   .header-title {
     font-size: 16px;
