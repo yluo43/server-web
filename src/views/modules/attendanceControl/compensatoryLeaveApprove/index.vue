@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-header style="padding: 0">
-        <el-tabs v-model="activeName" type="border-card" @tab-click="activeNameChange">
+        <el-tabs v-model="activeName" type="border-card">
           <el-tab-pane label="加班初审" name="first"></el-tab-pane>
           <el-tab-pane label="加班复审" name="second"></el-tab-pane>
           <el-tab-pane label="调休初审" name="third"></el-tab-pane>
@@ -35,7 +35,6 @@
     </el-container>
   </div>
 </template>
-
 <script>
 import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
@@ -61,9 +60,7 @@ export default {
     }
   },
   mounted() {},
-  methods: {
-    activeNameChange() {}
-  }
+  methods: {}
 }
 </script>
 

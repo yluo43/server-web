@@ -1,32 +1,32 @@
 <template>
   <div style="height: 100%">
-    <el-steps :active="2" align-center>
+    <el-steps :active="step" align-center>
       <el-step title="提交">
         <template slot="description">
-          <div>111</div>
-          <div>222</div>
+          <div>{{ approveInfo.name }}</div>
+          <div>{{ approveInfo.createTime }}</div>
         </template>
       </el-step>
-      <el-step v-if="flag == 1 || flag == 2 || flag == 3" title="项目初审">
+      <el-step v-if="flag == 1" title="项目初审">
         <template slot="description">
-          <div>111</div>
-          <div>222</div>
+          <div>{{ approveInfo.firstAuditor }}</div>
+          <div>{{ approveInfo.firstTrialTime }}</div>
         </template>
       </el-step>
       <el-step v-else title="团队初审">
         <template slot="description">
-          <div>111</div>
-          <div>222</div>
+          <div>{{ approveInfo.firstAuditor }}</div>
+          <div>{{ approveInfo.firstTrialTime }}</div>
         </template>
       </el-step>
-      <el-step v-if="flag != 2 || flag != 5" title="部门复审">
+      <el-step v-if="approveInfo.status != 1" title="部门复审">
         <template slot="description">
-          <div>111</div>
-          <div>222</div>
+          <div>{{ approveInfo.reAuditor }}</div>
+          <div>{{ approveInfo.reTrialTime }}</div>
         </template>
       </el-step>
-      <el-step v-if="flag == 1 || flag == 4" title="已通过"></el-step>
-      <el-step v-else title="已驳回"></el-step>
+      <el-step v-if="approveInfo.status != 1 && approveInfo.status != 3" title="已通过"></el-step>
+      <el-step v-else status="error" title="已驳回"></el-step>
     </el-steps>
     <div class="btn-group">
       <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
@@ -43,14 +43,69 @@ export default {
   },
   data() {
     return {
-      flag: ''
+      //1 加班2调休
+      flag: '',
+      step: 1,
+      status: '',
+      approveInfo: {
+        name: '',
+        createTime: '',
+        firstAuditor: '',
+        firstTrialTime: '',
+        reAuditor: '',
+        reTrialTime: '',
+        status: ''
+      }
     }
   },
   mounted() {},
   created() {},
   methods: {
-    init(initData) {
-      this.flag = initData.flag
+    // status  0待初审1初审驳回2待复审3复审驳回4审核通过
+    // flag  1加班 2调休
+    init(initData, flag) {
+      this.flag = flag
+      let url
+      let params = {}
+      if (flag == 1) {
+        url = this.$http.adornUrl('/attendance/overtimeStatusInfo')
+        params = { overtimeId: initData.id }
+      } else {
+        url = this.$http.adornUrl('/attendance/dayoffStatusInfo')
+        params = { dayoffId: initData.id }
+      }
+      this.getApproveInfo(url, params)
+    },
+    //获取审批信息
+    getApproveInfo(url, params) {
+      this.$http({
+        url: url,
+        method: 'get',
+        params: params
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.approveInfo = data.payload
+          switch (this.approveInfo.status) {
+            case 0:
+              this.step = 1
+              break
+            case 1:
+              this.step = 2
+              break
+            case 2:
+              this.step = 2
+              break
+            case 3:
+              this.step = 3
+              break
+            case 4:
+              this.step = 4
+              break
+          }
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     }
   }
 }
@@ -66,4 +121,13 @@ export default {
   border-top: 1px solid lightgray;
   margin-top: 20px;
 }
+::v-deep .el-step__icon-inner {
+  display: none;
+}
+/* ::v-deep .el-step__title.is-finish {
+  color: #c0c4cc;
+} */
+/* ::v-deep .el-step__head.is-process {
+  border-color: #409eff;
+} */
 </style>

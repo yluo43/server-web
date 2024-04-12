@@ -1,10 +1,10 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <div style="margin-left: 20px">
+      <div style="margin-left: 16px">
         <el-form ref="dataForm" :inline="true" :model="dataForm">
-          <el-form-item label="用户姓名:" prop="name">
-            <el-input v-model="dataForm.name" placeholder="请输入用户姓名" clearable />
+          <el-form-item label="用户姓名:" prop="userName">
+            <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
           <el-form-item label="工号:" prop="empId">
             <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
@@ -29,19 +29,10 @@
         <div class="chooseResult">
           <span>已选择{{ count }}项</span>
         </div>
-        <div style="margin-bottom: 10px; margin-left: 20px">
-          <el-button
-            v-auth="'costItems:export'"
-            class="el-button-func"
-            type="primary"
-            icon="el-icon-download"
-            style="margin-right: 10px"
-            @click="batchDownload"
-          >
-            批量下载
-          </el-button>
+        <div class="operate-button">
+          <el-button class="el-button-func" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
         </div>
-        <div style="margin-left: 20px">
+        <div>
           <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
             <template v-slot:clientType="row">
               <template>
@@ -54,9 +45,9 @@
       </div>
     </el-container>
     <!-- 查看明细 -->
-    <base-dialog ref="detailsDialog" title="查看明细" :width="'1000px'">
+    <base-dialog ref="detailsDialog" title="查看明细" :width="'1000px'" class="detialStyle">
       <template>
-        <detailsDialog ref="details" :cancelDialog="closeDetailsDialog" @selectTableData="selectTableData"></detailsDialog>
+        <detailsDialog ref="details" :cancelDialog="closeDetailsDialog"></detailsDialog>
       </template>
     </base-dialog>
     <!-- 工时补贴 -->
@@ -83,7 +74,7 @@ export default {
       teamList: [],
       selData: [],
       dataForm: {
-        name: '',
+        userName: '',
         empId: '',
         deptIds: [],
         teamIds: []
@@ -209,16 +200,6 @@ export default {
 
 ::v-deep .el-select .el-tag {
   max-width: 70% !important;
-}
-
-.chooseResult {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  border-radius: 5px;
-  background-color: #e8f4ff;
-  padding-left: 20px;
-  margin: 20px 0 10px 20px;
 }
 
 .el-button {

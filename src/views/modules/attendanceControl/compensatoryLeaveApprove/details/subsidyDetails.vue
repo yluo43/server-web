@@ -9,11 +9,17 @@
 import baseTable from '@/views/modules/base/baseTable.vue'
 export default {
   components: { baseTable },
+  props: {
+    empId: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       tableData: {
         theads: [
-          { label: '补贴项目', prop: 'affirmDay' },
+          { label: '补贴项目', prop: 'projectName' },
           { label: '补贴天数', prop: 'affirmDay' },
           { label: '添加时间', prop: 'affirmDay' }
         ],

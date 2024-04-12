@@ -1,10 +1,10 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <div style="margin-left: 20px">
+      <div style="margin-left: 16px">
         <el-form ref="dataForm" :inline="true" :model="dataForm">
-          <el-form-item label="用户姓名:" prop="name">
-            <el-input v-model="dataForm.name" placeholder="请输入用户姓名" clearable />
+          <el-form-item label="用户姓名:" prop="userName">
+            <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
           <el-form-item label="工号:" prop="empId">
             <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
@@ -14,44 +14,45 @@
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="调休开始时间:" prop="deliveryDate">
-            <el-date-picker
-              v-model="dataForm.deliveryDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="调休结束时间:" prop="deliveryDate">
-            <el-date-picker
-              v-model="dataForm.deliveryDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="申请时间:" prop="deliveryDate">
-            <el-date-picker
-              v-model="dataForm.deliveryDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="审批状态:" prop="teamIds">
-            <el-select v-model="dataForm.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
+          <el-form-item label="审批状态:" prop="status">
+            <el-select v-model="dataForm.status" placeholder="请选择审批状态" clearable>
+              <el-option v-for="item in approvalStatus" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
+          <el-form-item label="调休开始时间:" prop="compensatoryLeaveStartTime">
+            <el-date-picker
+              v-model="dataForm.compensatoryLeaveStartTime"
+              value-format="yyyy-MM-dd"
+              format="yyyy-MM-dd"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="年/月/日"
+              end-placeholder="年/月/日"
+            />
+          </el-form-item>
+          <el-form-item label="调休结束时间:" prop="compensatoryLeaveEndTime">
+            <el-date-picker
+              v-model="dataForm.compensatoryLeaveEndTime"
+              value-format="yyyy-MM-dd"
+              format="yyyy-MM-dd"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="年/月/日"
+              end-placeholder="年/月/日"
+            />
+          </el-form-item>
+          <el-form-item label="申请时间:" prop="applyTime">
+            <el-date-picker
+              v-model="dataForm.applyTime"
+              value-format="yyyy-MM-dd"
+              format="yyyy-MM-dd"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="年/月/日"
+              end-placeholder="年/月/日"
+            />
+          </el-form-item>
+
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="selectTableData">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
@@ -63,7 +64,7 @@
           <span>已选择{{ count }}项</span>
           <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
-        <div style="margin-left: 20px">
+        <div style="margin-top: 10px">
           <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
             <template v-slot:clientType="row">
               <template>
@@ -79,13 +80,13 @@
     <!-- 驳回 -->
     <base-dialog ref="rejectDialog" title="调休申请驳回" :width="'500px'">
       <template>
-        <rejectDialog ref="reject" :cancelDialog="closeDialog"></rejectDialog>
+        <rejectDialog ref="reject" :cancelDialog="closeDialog" @refrshTable="selectTableData"></rejectDialog>
       </template>
     </base-dialog>
     <!-- 审批流程 -->
     <base-dialog ref="approvalProcessDialog" title="查看审批流程" :width="'800px'">
       <template>
-        <approvalProcessDialog ref="approvalProcess" :cancelDialog="closeApprovalProcessDialog" @selectTableData="selectTableData"></approvalProcessDialog>
+        <approvalProcessDialog ref="approvalProcess" :cancelDialog="closeApprovalProcessDialog"></approvalProcessDialog>
       </template>
     </base-dialog>
   </div>
@@ -94,6 +95,7 @@
 <script>
 import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
+import { getCName } from '@/utils/auth'
 import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
 import approvalProcessDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/approvalProcessDialog.vue'
 export default {
@@ -102,28 +104,46 @@ export default {
   data() {
     return {
       count: 0,
-      deptList: [],
+      remainingDays: 0,
+      approvalStatus: [
+        { id: 1, name: '审批中' },
+        { id: 2, name: '已通过' },
+        { id: 3, name: '已驳回' }
+      ],
       teamList: [],
       selData: [],
       dataForm: {
-        name: '',
+        operatorName: '',
+        userName: '',
         empId: '',
         deptIds: [],
-        teamIds: []
+        teamIds: [],
+        status: '',
+        compensatoryLeaveStartTime: [],
+        compensatoryLeaveEndTime: [],
+        applyTime: [],
+        createTimeStart: '',
+        createTimeEnd: '',
+        startTimeStart: '',
+        startTimeEnd: '',
+        endTimeStart: '',
+        endTimeEnd: '',
+        searchType: 1
       },
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'name' },
+          { label: '用户姓名', prop: 'userName' },
           { label: '工号', prop: 'empId' },
-          { label: '归属团队', prop: 'startConfirmTime' },
-          { label: '调休开始时间', prop: 'affirmDay' },
-          { label: '调休结束时间', prop: 'affirmDay' },
-          { label: '调休天数', prop: 'affirmDay' },
-          { label: '申请时间', prop: 'affirmDay' },
-          { label: '审批状态', prop: 'taskStatus', slotName: 'taskStatus' },
+          { label: '归属团队', prop: 'teamName' },
+          { label: '调休开始时间', prop: 'startTime' },
+          { label: '调休结束时间', prop: 'endTime' },
+          { label: '调休天数', prop: 'dayoffDays' },
+          { label: '申请时间', prop: 'createTime' },
+          { label: '审批状态', prop: 'status', slotName: 'status' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '150px' }
         ],
-        url: '/projectWork/projectTaskList'
+        url: '/attendance/getDayoffList'
+        //url: '/projectWork/projectTaskList'
       }
     }
   },
@@ -131,7 +151,9 @@ export default {
     this.getTeam()
     this.selectTableData()
   },
-  created() {},
+  created() {
+    this.dataForm.operatorName = getCName()
+  },
   methods: {
     //获取团队
     getTeam() {
@@ -148,40 +170,68 @@ export default {
     },
     //表格查询
     selectTableData() {
-      this.$refs.table.refresh(this.dataForm)
+      this.$refs.table.refresh(this.dataConversion(this.dataForm))
     },
     dataConversion(form) {
       let params = JSON.parse(JSON.stringify(form))
-      if (params.dateRange.length != 0) {
-        params.startDate = params.dateRange[0]
-        params.endDate = params.dateRange[1]
+      if (params.compensatoryLeaveStartTime.length > 0) {
+        params.startTimeStart = params.compensatoryLeaveStartTime[0]
+        params.startTimeEnd = params.compensatoryLeaveStartTime[1]
+      }
+      if (params.compensatoryLeaveEndTime.length > 0) {
+        params.endTimeStart = params.compensatoryLeaveEndTime[0]
+        params.endTimeEnd = params.compensatoryLeaveEndTime[1]
+      }
+      if (params.applyTime.length > 0) {
+        params.createTimeStart = params.applyTime[0]
+        params.createTimeEnd = params.applyTime[1]
       }
       Object.keys(params).forEach((key) => {
         if (Array.isArray(params[key])) {
           params[key] = params[key].toString()
         }
       })
-      delete params.dateRange
+      delete params.compensatoryLeaveStartTime
+      delete params.compensatoryLeaveEndTime
+      delete params.applyTime
       return params
     },
     //表单重置
     resetForm() {
       this.$refs.dataForm.resetFields()
     },
+    //获取剩余可调休天数
+    async getRemainingDays() {
+      const { data } = await this.$http({
+        url: this.$http.adornUrl(''),
+        method: 'get'
+      })
+      if (data && data.code === 200) {
+        this.remainingDays = data.payload
+      } else {
+        this.$message.error(data.msg)
+      }
+    },
     //通过
-    pass(row) {
+    async pass(row) {
+      await this.getRemainingDays()
       const h = this.$createElement
       let message = ''
       let ids = []
       if (row) {
         message = h('p', null, [
-          h('span', null, `${row.name}在${row.startTime}至${row.endTime}的调休申请,`),
-          h('span', { style: 1 > 2 ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}(剩余可调休天数:${row.days})`),
+          h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的调休申请,`),
+          h(
+            'span',
+            { style: this.remainingDays > row.dayoffDays ? 'color:#70B603' : 'color:red' },
+            `调休天数${row.dayoffDays}(剩余可调休天数:${this.remainingDays})`
+          ),
+          h('span', { style: this.remainingDays > row.dayoffDays ? 'display:none' : 'display:inline-block;color:red' }, `,已超出剩余可调休天数`),
           h('span', null, `,确认通过吗？`)
         ])
 
         ids = [row.id]
-        this.open(message, ids)
+        this.open(message, ids, row)
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
@@ -194,7 +244,7 @@ export default {
         this.open(message, ids)
       }
     },
-    open(message, ids) {
+    open(message, ids, row) {
       this.$msgbox({
         message: message,
         showCancelButton: true,
@@ -205,15 +255,19 @@ export default {
       })
         .then(() => {
           this.$http({
-            url: this.$http.adornUrl('/projectWork/projectList'),
-            method: 'get'
+            url: this.$http.adornUrl('/attendance/dayoffAudit'),
+            method: 'get',
+            data: { ids: ids.toString(), status: 0 }
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message.success(data.msg)
-              this.$refs.approvalProcessDialog.show()
-              this.$nextTick(() => {
-                this.$refs.approvalProcess.init()
-              })
+              this.selectTableData()
+              if (row) {
+                this.$refs.approvalProcessDialog.show()
+                this.$nextTick(() => {
+                  this.$refs.approvalProcess.init(row, 2)
+                })
+              }
             } else {
               this.$message.error(data.msg)
             }
@@ -230,7 +284,7 @@ export default {
     reject(row) {
       this.$refs.rejectDialog.show()
       this.$nextTick(() => {
-        this.$refs.reject.init(row)
+        this.$refs.reject.init(row, 2)
       })
     },
     //关闭驳回弹窗
@@ -238,8 +292,11 @@ export default {
       this.$refs.rejectDialog.hide()
     },
     //查看
-    view() {
+    view(row) {
       this.$refs.approvalProcessDialog.show()
+      this.$nextTick(() => {
+        this.$refs.approvalProcess.init(row, 2)
+      })
     },
     //关闭查看详情弹窗
     closeApprovalProcessDialog() {
@@ -263,15 +320,6 @@ export default {
   max-width: 70% !important;
 }
 
-.chooseResult {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  border-radius: 5px;
-  background-color: #e8f4ff;
-  padding-left: 20px;
-  margin: 20px 0 20px 20px;
-}
 .el-button {
   min-width: 60px;
   margin-left: 0;

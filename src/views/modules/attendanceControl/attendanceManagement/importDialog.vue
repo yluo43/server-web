@@ -7,7 +7,7 @@
           drag
           action="#"
           ref="uploadFile"
-          :limit="2"
+          :limit="1"
           :multiple="false"
           :accept="'.xls,.xlt,.xlsx'"
           :auto-upload="false"
@@ -42,8 +42,7 @@ export default {
   mounted() {},
   created() {},
   methods: {
-    init(initData) {},
-    //文件移出
+    //文件移除
     removeFile(file, fileList) {
       this.uploadFileList = []
     },
@@ -60,17 +59,14 @@ export default {
       let formData = new FormData()
       formData.set('uploadFile', this.uploadFileList[0].raw)
       this.$http({
-        url: this.$http.adornUrl(''),
+        url: this.$http.adornUrl('/attendance/import'),
         method: 'post',
         data: formData
       }).then(({ data }) => {
         if (data.success) {
-          this.$message({
-            message: '导入成功',
-            type: 'success'
-          })
-          this.$emit('refreshTableData')
+          this.$message.success(data.msg)
           this.cancelDialog()
+          this.$emit('refreshTableData')
         } else {
           this.$message.error(data.msg)
         }

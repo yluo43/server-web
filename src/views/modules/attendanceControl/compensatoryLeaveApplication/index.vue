@@ -164,7 +164,6 @@ export default {
     const validateCompensatoryLeaveStartTime = (rule, value, callback) => {
       if (!value || !this.compensatoryLeaveDataForm.startDate || !this.compensatoryLeaveDataForm.startTime) {
         callback(new Error('请选择调休开始时间'))
-        return
       } else {
         callback()
       }
@@ -172,7 +171,6 @@ export default {
     const validateCompensatoryLeaveEndTime = (rule, value, callback) => {
       if (!value || !this.compensatoryLeaveDataForm.endDate || !this.compensatoryLeaveDataForm.endTime) {
         callback(new Error('请选择调休结束时间'))
-        return
       } else if (
         new Date(this.compensatoryLeaveDataForm.compensatoryLeaveEndTime).getTime() <=
         new Date(this.compensatoryLeaveDataForm.compensatoryLeaveStartTime).getTime()
@@ -227,25 +225,19 @@ export default {
     },
     'compensatoryLeaveDataForm.startDate': {
       handler(value) {
-        if (value) {
-          this.compensatoryLeaveDataForm.compensatoryLeaveStartTime = value + '\xa0' + this.compensatoryLeaveDataForm.startTime
-        }
+        this.compensatoryLeaveDataForm.compensatoryLeaveStartTime = value + '\xa0' + this.compensatoryLeaveDataForm.startTime
       }
     },
     'compensatoryLeaveDataForm.startTime': {
       handler(value) {
-        if (value) {
-          this.compensatoryLeaveDataForm.compensatoryLeaveStartTime = this.compensatoryLeaveDataForm.startDate + '\xa0' + value
-        }
+        this.compensatoryLeaveDataForm.compensatoryLeaveStartTime = this.compensatoryLeaveDataForm.startDate + '\xa0' + value
       }
     },
     overtimeDuration(value) {
       this.overtimeDataForm.overtimeDuration = value
     },
     compensatoryLeaveEndTime(value) {
-      if (value) {
-        this.compensatoryLeaveDataForm.compensatoryLeaveEndTime = value
-      }
+      this.compensatoryLeaveDataForm.compensatoryLeaveEndTime = value
     },
     days(value) {
       this.compensatoryLeaveDataForm.days = value
@@ -284,8 +276,8 @@ export default {
     }
   },
   mounted() {
-    this.getEmpProject()
     this.empId = this.$store.state.user.empId
+    this.getEmpProject()
   },
   created() {},
   methods: {
@@ -332,8 +324,7 @@ export default {
           overtime_hours: this.overtimeDataForm.overtimeDuration,
           projectId: this.overtimeDataForm.projectId,
           reason: this.overtimeDataForm.overtimeReason,
-          teamId: this.overtimeDataForm.projectManager,
-          status
+          teamId: this.overtimeDataForm.projectManager
         }
         this.$confirm(message, '提示', {
           confirmButtonText: '确定',
@@ -376,8 +367,7 @@ export default {
           empId: this.empId,
           startTime: this.compensatoryLeaveDataForm.compensatoryLeaveStartTime,
           endTime: this.compensatoryLeaveDataForm.compensatoryLeaveEndTime,
-          dayffDays: this.compensatoryLeaveDataForm.days,
-          status
+          dayffDays: this.compensatoryLeaveDataForm.days * 8
         }
         this.$confirm(message, '提示', {
           confirmButtonText: '确定',

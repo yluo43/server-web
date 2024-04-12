@@ -19,21 +19,20 @@ export default {
     return {
       tableData: {
         theads: [
-          { label: '加班项目', prop: 'name' },
-          { label: '加班开始时间', prop: 'empId' },
-          { label: '加班结束时间', prop: 'managerName' },
-          { label: '加班类型', prop: 'startConfirmTime' },
-          { label: '加班时长', prop: 'affirmDay' },
-          { label: '是否居家办公', prop: 'affirmDay' },
-          { label: '申请时间', prop: 'affirmDay' },
-          { label: '审批通过时间', prop: 'taskStatus' }
+          { label: '加班项目', prop: 'projectName' },
+          { label: '加班开始时间', prop: 'startTime' },
+          { label: '加班结束时间', prop: 'endTime' },
+          { label: '加班类型', prop: 'overtimeType' },
+          { label: '加班时长', prop: 'overtimeHours' },
+          { label: '是否居家办公', prop: 'isRemoteWork' },
+          { label: '申请时间', prop: 'createTime' },
+          { label: '审批通过时间', prop: 'approveTime' }
         ],
         url: '/projectWork/projectTaskList'
       }
     }
   },
   mounted() {
-    console.log(this.empId)
     this.selectTableData()
   },
   created() {},

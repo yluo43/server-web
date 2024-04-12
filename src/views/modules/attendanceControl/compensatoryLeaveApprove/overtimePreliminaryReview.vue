@@ -4,15 +4,15 @@
       <el-row>
         <el-col>
           <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
-          <el-tree :data="data" :props="defaultProps" :highlight-current="true" node-key="id" ref="treeRef" @node-click="handleNodeClick"></el-tree>
+          <el-tree :data="treeData" :props="defaultProps" :highlight-current="true" node-key="id" ref="treeRef" @node-click="handleNodeClick"></el-tree>
         </el-col>
       </el-row>
     </el-aside>
     <div>
-      <div style="margin-left: 20px">
+      <div style="margin-left: 16px">
         <el-form ref="dataForm" :inline="true" :model="dataForm">
-          <el-form-item label="用户姓名:" prop="name">
-            <el-input v-model="dataForm.name" placeholder="请输入用户姓名" clearable />
+          <el-form-item label="用户姓名:" prop="userName">
+            <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
           <el-form-item label="工号:" prop="empId">
             <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
@@ -27,21 +27,17 @@
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="审批状态:" prop="teamIds">
-            <el-select v-model="dataForm.teamIds" placeholder="请选择审批状态" multiple collapse-tags clearable>
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
+          <el-form-item label="审批状态:" prop="status">
+            <el-select v-model="dataForm.status" placeholder="请选择审批状态" clearable>
+              <el-option v-for="item in approvalStatus" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="是否居家办公:" prop="teamIds">
-            <el-select v-model="dataForm.teamIds" placeholder="请选择是否居家办公" multiple collapse-tags clearable>
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
+          <el-form-item label="是否居家办公:" prop="isRemoteWork">
+            <el-select v-model="dataForm.isRemoteWork" placeholder="请选择是否居家办公" clearable>
+              <el-option v-for="item in isRemoteWorks" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="加班类型:" prop="teamIds">
-            <el-select v-model="dataForm.teamIds" placeholder="请选择加班类型" multiple collapse-tags clearable>
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
+
           <el-form-item label="申请时间:" prop="applyTime">
             <el-date-picker
               v-model="dataForm.applyTime"
@@ -52,6 +48,11 @@
               start-placeholder="年/月/日"
               end-placeholder="年/月/日"
             />
+          </el-form-item>
+          <el-form-item label="加班类型:" prop="overtimeType">
+            <el-select v-model="dataForm.overtimeType" placeholder="请选择加班类型" clearable>
+              <el-option v-for="item in overtimeTypes" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
           </el-form-item>
           <el-form-item label="加班开始时间:" prop="startTime">
             <el-date-picker
@@ -81,7 +82,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="row-box">
+      <div class="chooseResult" style="display: flex; margin-bottom: 10px">
         <div>
           已选择
           <span>{{ count }}</span>
@@ -91,7 +92,7 @@
           <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
       </div>
-      <el-main class="table">
+      <el-main style="padding: 0">
         <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
           <template v-slot:clientType="row">
             <template>
@@ -106,7 +107,7 @@
     <!-- 驳回加班时长 -->
     <base-dialog ref="rejectDialog" title="加班时长驳回" :width="'500px'">
       <template>
-        <rejectDialog ref="reject" :cancelDialog="closeDialog" @selectTableData="selectTableData"></rejectDialog>
+        <rejectDialog ref="reject" :cancelDialog="closeDialog" @refrshTable="selectTableData"></rejectDialog>
       </template>
     </base-dialog>
     <!-- 审批流程 -->
@@ -121,6 +122,7 @@
 <script>
 import baseTable from '@/views/modules/base/baseTable.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
+import { getCName } from '@/utils/auth'
 import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
 import approvalProcessDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/approvalProcessDialog.vue'
 export default {
@@ -130,43 +132,70 @@ export default {
     return {
       projectName: '',
       count: 0,
+      approvalStatus: [
+        { id: 1, name: '审批中' },
+        { id: 2, name: '已通过' },
+        { id: 3, name: '已驳回' }
+      ],
+      isRemoteWorks: [
+        { id: 0, name: '否' },
+        { id: 1, name: '是' }
+      ],
+      overtimeTypes: [
+        { id: 1, name: '日常加班' },
+        { id: 2, name: '节假日加班' }
+      ],
       deptList: [],
       teamList: [],
       selData: [],
       dataForm: {
-        name: '',
+        projectId: '',
+        operatorName: '',
+        userName: '',
         empId: '',
         deptIds: [],
         teamIds: [],
-        projectId: '',
+        status: '',
+        isRemoteWork: '',
+        overtimeType: '',
         applyTime: [],
         startTime: [],
-        endTime: []
+        endTime: [],
+        createTimeStart: '',
+        createTimeEnd: '',
+        startTimeStart: '',
+        startTimeEnd: '',
+        endTimeStart: '',
+        endTimeEnd: '',
+        searchType: 1
       },
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'name' },
-          { label: '工号', prop: 'empId' },
+          { label: '用户姓名', prop: 'userName' },
+          { label: '工号', prop: 'empId', width: '60px' },
           { label: '归属部门', prop: 'deptName' },
-          { label: '归属团队', prop: 'startConfirmTime' },
+          { label: '归属团队', prop: 'teamName' },
           { label: '加班开始时间', prop: 'startTime' },
           { label: '加班结束时间', prop: 'endTime' },
-          { label: '加班类型', prop: 'affirmDay' },
-          { label: '加班时长', prop: '' },
-          { label: '是否居家办公', prop: 'affirmDay' },
-          { label: '加班原因', prop: 'affirmDay' },
-          { label: '申请时间', prop: 'affirmDay' },
-          { label: '审批状态', prop: 'taskStatus', slotName: 'taskStatus' },
+          { label: '加班类型', prop: 'overtimeType' },
+          { label: '加班时长', prop: 'overtimeHours' },
+          { label: '是否居家办公', prop: 'isRemoteWork' },
+          { label: '加班原因', prop: 'reason' },
+          { label: '申请时间', prop: 'createTime' },
+          { label: '审批状态', prop: 'status', slotName: 'status' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
-        url: '/projectWork/projectTaskList'
+        url: '/attendance/getOvertimeList'
       },
-      data: [],
+      treeData: [],
       defaultProps: {
         children: 'children',
         label: 'label'
       }
     }
+  },
+  created() {
+    this.dataForm.operatorName = getCName()
   },
   mounted() {
     this.getProjectList()
@@ -204,22 +233,19 @@ export default {
     //获取项目树
     getProjectList() {
       this.$http({
-        url: this.$http.adornUrl('/projectWork/projectList'),
+        url: this.$http.adornUrl('/common/getProjectByManagerId'),
         method: 'get',
         params: { projectName: this.projectName }
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          let list = []
           if (data.payload.length > 0) {
             data.payload.forEach((item) => {
-              list.push({
+              this.data.push({
                 label: item.name,
-                id: item.id,
-                isConfirm: item.isConfirm
+                id: item.id
               })
             })
           }
-          this.data = list
           this.selectFirstNode()
         } else {
           this.$message.error(data.msg)
@@ -240,28 +266,6 @@ export default {
         }
       })
     },
-    //表格查询
-    selectTableData() {
-      this.$refs.table.refresh(this.dataForm)
-    },
-    dataConversion(form) {
-      let params = JSON.parse(JSON.stringify(form))
-      if (params.dateRange.length != 0) {
-        params.startDate = params.dateRange[0]
-        params.endDate = params.dateRange[1]
-      }
-      Object.keys(params).forEach((key) => {
-        if (Array.isArray(params[key])) {
-          params[key] = params[key].toString()
-        }
-      })
-      delete params.dateRange
-      return params
-    },
-    //表单重置
-    resetForm() {
-      this.$refs.dataForm.resetFields()
-    },
     //项目树搜索框数据变化
     projectNameChange() {
       this.getProjectList()
@@ -271,6 +275,40 @@ export default {
       this.dataForm.projectId = data.id
       this.selectTableData()
     },
+    //表格查询
+    selectTableData() {
+      this.$refs.table.refresh(this.dataConversion(this.dataForm))
+    },
+    //查询条件数据转换
+    dataConversion(form) {
+      let params = JSON.parse(JSON.stringify(form))
+      if (params.applyTime.length > 0) {
+        params.createTimeStart = params.applyTime[0]
+        params.createTimeEnd = params.applyTime[1]
+      }
+      if (params.startTime.length > 0) {
+        params.startTimeStart = params.startTime[0]
+        params.startTimeEnd = params.startTime[1]
+      }
+      if (params.endTime.length > 0) {
+        params.endTimeStart = params.endTime[0]
+        params.endTimeEnd = params.endTime[1]
+      }
+      Object.keys(params).forEach((key) => {
+        if (Array.isArray(params[key])) {
+          params[key] = params[key].toString()
+        }
+      })
+      delete params.applyTime
+      delete params.startTime
+      delete params.endTime
+      return params
+    },
+    //表单重置
+    resetForm() {
+      this.$refs.dataForm.resetFields()
+    },
+
     //通过
     pass(row) {
       const h = this.$createElement
@@ -278,12 +316,12 @@ export default {
       let ids = []
       if (row) {
         message = h('p', null, [
-          h('span', null, `${row.name}在${row.startTime}至${row.endTime}的加班申请,`),
-          h('span', { style: 'color: red' }, `加班时长${row.hours}`),
+          h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的加班申请,`),
+          h('span', { style: 'color: red' }, `加班时长${row.overtimeHours}`),
           h('span', null, `,确认通过吗？`)
         ])
         ids = [row.id]
-        this.open(message, ids)
+        this.open(message, ids, row)
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
@@ -296,7 +334,7 @@ export default {
         this.open(message, ids)
       }
     },
-    open(message, ids) {
+    open(message, ids, row) {
       this.$msgbox({
         message: message,
         showCancelButton: true,
@@ -307,15 +345,19 @@ export default {
       })
         .then(() => {
           this.$http({
-            url: this.$http.adornUrl('/projectWork/projectList'),
-            method: 'get'
+            url: this.$http.adornUrl('/attendance/overtimeAudit'),
+            method: 'get',
+            data: { ids: ids.toString(), status: 0 }
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message.success(data.msg)
-              this.$refs.approvalProcessDialog.show()
-              this.$nextTick(() => {
-                this.$refs.approvalProcess.init({ flag: 1 })
-              })
+              this.selectTableData()
+              if (row) {
+                this.$refs.approvalProcessDialog.show()
+                this.$nextTick(() => {
+                  this.$refs.approvalProcess.init(row, 1)
+                })
+              }
             } else {
               this.$message.error(data.msg)
             }
@@ -332,7 +374,7 @@ export default {
     reject(row) {
       this.$refs.rejectDialog.show()
       this.$nextTick(() => {
-        this.$refs.reject.init(row.item)
+        this.$refs.reject.init(row, 1)
       })
     },
     //关闭驳回弹窗
@@ -346,6 +388,9 @@ export default {
     //查看
     view(row) {
       this.$refs.approvalProcessDialog.show()
+      this.$nextTick(() => {
+        this.$refs.approvalProcess.init(row, 1)
+      })
     },
     //选择框选择
     checkedTable(sel) {
@@ -361,15 +406,6 @@ export default {
   min-width: 60px;
   margin-left: 0;
   width: auto;
-}
-.row-box {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  border-radius: 5px;
-  background-color: #e8f4ff;
-  padding-left: 20px;
-  margin: 20px 0 20px 20px;
 }
 </style>
 <style lang="scss">

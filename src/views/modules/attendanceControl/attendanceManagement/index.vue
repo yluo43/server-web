@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <div style="margin-left: 20px">
+      <div>
         <el-form ref="dataForm" :inline="true" :model="dataForm">
           <el-form-item label="日期:" prop="dateRange">
             <el-date-picker
@@ -30,15 +30,15 @@
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" @click="selectTableData">查询</el-button>
+            <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
+          </el-form-item>
         </el-form>
-        <div>
-          <el-button type="primary" icon="el-icon-search" @click="selectTableData">查询</el-button>
-          <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
-        </div>
       </div>
       <div>
-        <el-button style="margin: 10px 0 10px 20px" type="primary" icon="el-icon-plus" @click="importFile">导入</el-button>
-        <div style="margin-left: 20px">
+        <el-button style="margin: 10px 0 10px 0" type="primary" icon="el-icon-circle-plus-outline" @click="importFile">导入</el-button>
+        <div>
           <baseTable :tableData="tableData" ref="table" :type="null"></baseTable>
         </div>
       </div>
@@ -70,24 +70,24 @@ export default {
         deptIds: [],
         teamIds: [],
         dateRange: [],
-        startDate: '',
-        endDate: ''
+        recordStartDate: '',
+        recordEndDate: ''
       },
       tableData: {
         theads: [
-          { label: '日期', prop: 'affirmDay' },
+          { label: '日期', prop: 'recordDate' },
           { label: '姓名', prop: 'name' },
           { label: '工号', prop: 'empId' },
-          { label: '归属部门', prop: 'managerName' },
-          { label: '归属团队', prop: 'startConfirmTime' },
-          { label: '上班时间', prop: 'affirmDay' },
-          { label: '下班时间', prop: 'affirmDay' },
-          { label: '迟到(分钟)', prop: 'affirmDay' },
-          { label: '早退(分钟)', prop: 'affirmDay' },
-          { label: '工作时间(小时)', prop: 'affirmDay' },
-          { label: '申请加班时间(小时)', prop: 'affirmDay' }
+          { label: '归属部门', prop: 'deptName' },
+          { label: '归属团队', prop: 'teamName' },
+          { label: '上班时间', prop: 'onTime' },
+          { label: '下班时间', prop: 'offTime' },
+          { label: '迟到(分钟)', prop: 'late' },
+          { label: '早退(分钟)', prop: 'early' },
+          { label: '工作时间(小时)', prop: 'workingHours' },
+          { label: '申请加班时间(小时)', prop: 'overtimeHours' }
         ],
-        url: '/projectWork/projectTaskList'
+        url: '/attendance/list'
       }
     }
   },
@@ -132,11 +132,12 @@ export default {
     resetForm() {
       this.$refs.dataForm.resetFields()
     },
+    //查询条件数据转换
     dataConversion(form) {
       let params = JSON.parse(JSON.stringify(form))
       if (params.dateRange.length != 0) {
-        params.startDate = params.dateRange[0]
-        params.endDate = params.dateRange[1]
+        params.recordStartDate = params.dateRange[0]
+        params.recordEndDate = params.dateRange[1]
       }
       Object.keys(params).forEach((key) => {
         if (Array.isArray(params[key])) {

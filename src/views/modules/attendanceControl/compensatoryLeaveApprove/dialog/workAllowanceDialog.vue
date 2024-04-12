@@ -4,15 +4,18 @@
       <div style="width: 100%">
         <el-form ref="dataForm" label-width="110px" :rules="rules" :model="dataForm">
           <el-form-item label="补贴项目:" prop="subsidyProject" style="width: 70%">
-            <el-table :data="tableData" highlight-current-row border @selection-change="handleSelectionChange">
+            <el-table :data="tableData" ref="refsTable" border @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column prop="name" label="项目列表"></el-table-column>
-              <el-table-column prop="empId" label="调休天数"></el-table-column>
+              <el-table-column prop="projectName" label="项目列表"></el-table-column>
+              <el-table-column prop="dayoffDays" label="调休天数"></el-table-column>
             </el-table>
           </el-form-item>
           <el-form-item style="width: 70%">
-            <i class="el-icon-warning-outline"></i>
-            <span>该员工总调休天数10天，其中已调休3天，已补贴1天，剩余可调休天数6天。</span>
+            <i class="el-icon-warning-outline" style="color: #faad14"></i>
+            <span>
+              该员工总调休天数{{ totalDays }}天，其中已调休{{ compensatedLeaveDays }}天，已补贴{{ subsidizedDays }}天，剩余可调休天数
+              <span style="color: #70b603">{{ remainingDays }}天。</span>
+            </span>
           </el-form-item>
           <el-form-item label="补贴天数:" prop="subsidyDays">
             <el-input v-model="dataForm.subsidyDays" placeholder="请输入补贴天数"></el-input>
@@ -51,16 +54,24 @@ export default {
       //已补贴天数
       subsidizedDays: '',
       //剩余可调休天数
-      remainingDays: '',
-      checkedData: [],
+      remainingDays: 3,
+      checkedProject: [],
       tableData: [
         {
-          name: '1111',
-          empId: '222'
+          projectName: '项目一',
+          dayoffDays: '1'
         },
         {
-          name: '1111',
-          empId: '222'
+          projectName: '项目二',
+          dayoffDays: '0.5'
+        },
+        {
+          projectName: '项目三',
+          dayoffDays: '2'
+        },
+        {
+          projectName: '项目四',
+          dayoffDays: '1'
         }
       ],
       dataForm: {
@@ -82,14 +93,44 @@ export default {
   methods: {
     init(initData) {
       this.empId = initData.empId
-      this.getInfo()
+      this.getProjectInfo()
+      this.getCompensatoryLeaveInfo()
     },
-    //查询数据信息
-    getInfo() {},
-    handleSelectionChange(sel) {
-      this.checkedData = [...sel]
-
-      // this.dataForm.subsidyProject = 'aa'
+    //查询项目数据
+    getProjectInfo() {
+      this.$http({
+        url: this.$http.adornUrl(''),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.tableData = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    //查询调休信息
+    getCompensatoryLeaveInfo() {
+      this.$http({
+        url: this.$http.adornUrl(''),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    handleSelectionChange(selection) {
+      if (selection.length > 1) {
+        //移除上一次选中行数据
+        selection.splice(0, 1)
+        //修改选中图标为未选中状态
+        this.$refs.refsTable.clearSelection()
+        //将当前选中行改为选中状态
+        this.$refs.refsTable.toggleRowSelection(selection[0])
+      }
+      this.checkedProject = selection
     },
     //确认
     confirm(formName) {
@@ -97,7 +138,7 @@ export default {
         if (!valid) {
           return false
         }
-        if (this.checkedData.length == 0) {
+        if (this.checkedProject.length == 0) {
           this.$message.warning(`请选择一个补贴项目`)
           return false
         }
@@ -105,10 +146,14 @@ export default {
           this.$message.warning(`该成员剩余可补贴天数不足${this.dataForm.subsidyDays}天`)
           return false
         }
+        if (this.checkedProject[0].dayoffDays < this.dataForm.subsidyDays) {
+          this.$message.warning(`该成员在${this.checkedProject[0].projectName}项目中可补贴天数不足${this.dataForm.subsidyDays}天`)
+          return false
+        }
         this.$http({
-          url: this.$http.adornUrl('/workload/updateStatus'),
-          method: 'get',
-          params: data
+          url: this.$http.adornUrl(''),
+          method: 'post',
+          data: data
         }).then((result) => {
           if (result.data.success) {
             this.cancelDialog()
@@ -141,5 +186,8 @@ export default {
   align-items: center;
   border-top: 1px solid lightgray;
   margin-top: 20px;
+}
+::v-deep .el-table__header-wrapper .el-table__header .el-checkbox {
+  display: none;
 }
 </style>

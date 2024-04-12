@@ -14,11 +14,11 @@
       </div>
       <!-- 调休明细-->
       <div v-if="activeName === 'second'">
-        <compensatoryLeaveDetails ref="compensatoryLeaveDetails"></compensatoryLeaveDetails>
+        <compensatoryLeaveDetails ref="compensatoryLeaveDetails" :empId="empId"></compensatoryLeaveDetails>
       </div>
       <!-- 补贴-->
       <div v-if="activeName === 'third'">
-        <subsidyDetails ref="subsidyDetails"></subsidyDetails>
+        <subsidyDetails ref="subsidyDetails" :empId="empId"></subsidyDetails>
       </div>
     </div>
   </div>
@@ -37,19 +37,24 @@ export default {
   data() {
     return {
       activeName: 'first',
-      empId: '1260'
+      empId: ''
     }
   },
   mounted() {},
   created() {},
   methods: {
-    init(initData) {}
+    init(initData) {
+      this.empId = initData.empId
+    }
   }
 }
 </script>
 
 <style scoped>
-::v-deep .el-dialog__header {
-  border-bottom: 0px;
+::v-deep .el-tabs__nav-wrap::after {
+  top: 0;
+}
+::v-deep .el-tabs__active-bar {
+  top: 0;
 }
 </style>
