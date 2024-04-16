@@ -246,20 +246,21 @@ export default {
     },
 
     //获取剩余可调休天数
-    async getRemainingDays() {
+    async getRemainingDays(empId) {
       const { data } = await this.$http({
-        url: this.$http.adornUrl(''),
-        method: 'get'
+        url: this.$http.adornUrl('/attendance/getSubsidyInfo'),
+        method: 'get',
+        params: { empId: empId }
       })
       if (data && data.code === 200) {
-        this.remainingDays = data.payload
+        this.remainingDays = data.payload.totalDays - data.payload.subsidyDays - data.payload.dayoffDays
       } else {
         this.$message.error(data.msg)
       }
     },
     //通过
     async pass(row) {
-      await this.getRemainingDays()
+      await this.getRemainingDays(row.empId)
       const h = this.$createElement
       let message = ''
       let ids = []

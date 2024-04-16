@@ -226,12 +226,12 @@ export default {
     },
     'compensatoryLeaveDataForm.startDate': {
       handler(value) {
-        this.compensatoryLeaveDataForm.compensatoryLeaveStartTime = value + '\xa0' + this.compensatoryLeaveDataForm.startTime
+        this.compensatoryLeaveDataForm.compensatoryLeaveStartTime = value + ' ' + this.compensatoryLeaveDataForm.startTime
       }
     },
     'compensatoryLeaveDataForm.startTime': {
       handler(value) {
-        this.compensatoryLeaveDataForm.compensatoryLeaveStartTime = this.compensatoryLeaveDataForm.startDate + '\xa0' + value
+        this.compensatoryLeaveDataForm.compensatoryLeaveStartTime = this.compensatoryLeaveDataForm.startDate + ' ' + value
       }
     },
     overtimeDuration(value) {
@@ -264,7 +264,7 @@ export default {
       }
     },
     compensatoryLeaveEndTime() {
-      return this.compensatoryLeaveDataForm.endDate + '\xa0' + this.compensatoryLeaveDataForm.endTime
+      return this.compensatoryLeaveDataForm.endDate + ' ' + this.compensatoryLeaveDataForm.endTime
     },
     days() {
       let diffDay1 = this.getDaysBetweenDates(new Date(this.compensatoryLeaveDataForm.endDate), new Date(this.compensatoryLeaveDataForm.startDate))
@@ -311,7 +311,7 @@ export default {
           }
         }
         if (new Date().getTime() - 72 * 60 * 60 * 1000 > new Date(this.overtimeDataForm.overTimeStartTime).getTime()) {
-          this.$message.warning('加班开始时间已超过72小时，请重新选择')
+          this.$message.warning('加班已超过72小时，不可申请')
           return
         }
         let message = '提交后本次申请记录将无法修改，确定提交吗？'
@@ -343,6 +343,7 @@ export default {
             }).then(({ data }) => {
               if (data && data.code === 200) {
                 this.$message.success(data.msg)
+                this.cancelOverTime()
               } else {
                 this.$message.error(data.msg)
               }
@@ -386,6 +387,7 @@ export default {
             }).then(({ data }) => {
               if (data && data.code === 200) {
                 this.$message.success(data.msg)
+                this.cancelCompensatoryLeave()
               } else {
                 this.$message.error(data.msg)
               }
@@ -401,11 +403,11 @@ export default {
     },
     //加班申请取消
     cancelOverTime() {
-      this.clear(this.overtimeDataForm)
+      this.$refs.overtimeDataForm.resetFields()
     },
     //调休申请取消
     cancelCompensatoryLeave() {
-      this.clear(this.overtimeDataForm)
+      this.clear(this.compensatoryLeaveDataForm)
     },
     clear(form) {
       Object.keys(form).forEach((key) => {
@@ -414,6 +416,9 @@ export default {
         } else {
           form[key] = ''
         }
+      })
+      this.$nextTick(() => {
+        this.$refs.compensatoryLeaveDataForm.clearValidate()
       })
     },
     //计算两个日期之间的天数

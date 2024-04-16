@@ -3,7 +3,7 @@
     <el-container style="height: 100%; width: 100%">
       <div style="width: 100%">
         <el-form ref="dataForm" label-width="110px" :rules="rules" :model="dataForm">
-          <el-form-item label="补贴项目:" prop="subsidyProject" style="width: 70%">
+          <el-form-item label="补贴项目:" prop="projectId" style="width: 70%">
             <el-table :data="tableData" ref="refsTable" border @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column prop="name" label="项目列表"></el-table-column>
@@ -56,27 +56,10 @@ export default {
       //剩余可调休天数
       remainingDays: 3,
       checkedProject: [],
-      tableData: [
-        {
-          projectName: '项目一',
-          dayoffDays: '1'
-        },
-        {
-          projectName: '项目二',
-          dayoffDays: '0.5'
-        },
-        {
-          projectName: '项目三',
-          dayoffDays: '2'
-        },
-        {
-          projectName: '项目四',
-          dayoffDays: '1'
-        }
-      ],
+      tableData: [],
       dataForm: {
         //项目
-        subsidyProject: '',
+        projectId: '',
         //补贴天数
         subsidyDays: '',
         //补贴金额
@@ -108,6 +91,7 @@ export default {
           this.totalDays = data.payload.totalDays
           this.compensatedLeaveDays = data.payload.dayoffDays
           this.subsidizedDays = data.payload.subsidyDays
+          this.remainingDays = this.totalDays - this.compensatedLeaveDays - this.subsidizedDays
         } else {
           this.$message.error(data.msg)
         }
@@ -123,6 +107,7 @@ export default {
         this.$refs.refsTable.toggleRowSelection(selection[0])
       }
       this.checkedProject = selection
+      this.dataForm.projectId = this.checkedProject[0].id
     },
     //确认
     confirm(formName) {
@@ -138,12 +123,18 @@ export default {
           this.$message.warning(`该成员剩余可补贴天数不足${this.dataForm.subsidyDays}天`)
           return false
         }
-        if (this.checkedProject[0].dayoffDays < this.dataForm.subsidyDays) {
-          this.$message.warning(`该成员在${this.checkedProject[0].projectName}项目中可补贴天数不足${this.dataForm.subsidyDays}天`)
+        if (this.checkedProject[0].days < this.dataForm.subsidyDays) {
+          this.$message.warning(`该成员在${this.checkedProject[0].name}项目中可补贴天数不足${this.dataForm.subsidyDays}天`)
           return false
         }
+        let data = {
+          days: this.dataForm.subsidyDays,
+          empId: this.empId,
+          money: this.dataForm.subsidyAmount,
+          projectId: this.dataForm.projectId
+        }
         this.$http({
-          url: this.$http.adornUrl(''),
+          url: this.$http.adornUrl('/attendance/addSubsidy'),
           method: 'post',
           data: data
         }).then((result) => {
