@@ -6,8 +6,8 @@
           <el-form-item label="补贴项目:" prop="subsidyProject" style="width: 70%">
             <el-table :data="tableData" ref="refsTable" border @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column prop="projectName" label="项目列表"></el-table-column>
-              <el-table-column prop="dayoffDays" label="调休天数"></el-table-column>
+              <el-table-column prop="name" label="项目列表"></el-table-column>
+              <el-table-column prop="days" label="调休天数"></el-table-column>
             </el-table>
           </el-form-item>
           <el-form-item style="width: 70%">
@@ -93,29 +93,21 @@ export default {
   methods: {
     init(initData) {
       this.empId = initData.empId
-      this.getProjectInfo()
       this.getCompensatoryLeaveInfo()
     },
-    //查询项目数据
-    getProjectInfo() {
-      this.$http({
-        url: this.$http.adornUrl(''),
-        method: 'get'
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.tableData = data.payload
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
+
     //查询调休信息
     getCompensatoryLeaveInfo() {
       this.$http({
-        url: this.$http.adornUrl(''),
-        method: 'get'
+        url: this.$http.adornUrl('/attendance/getSubsidyInfo'),
+        method: 'get',
+        params: { empId: this.empId }
       }).then(({ data }) => {
         if (data && data.code === 200) {
+          this.tableData = data.payload.projectList
+          this.totalDays = data.payload.totalDays
+          this.compensatedLeaveDays = data.payload.dayoffDays
+          this.subsidizedDays = data.payload.subsidyDays
         } else {
           this.$message.error(data.msg)
         }

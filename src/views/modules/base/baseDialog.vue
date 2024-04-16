@@ -10,6 +10,7 @@
       :top="__reCalcTop()"
       :append-to-body="true"
       @close="__dialogClose"
+      :class="speailStyle ? 'speail-style' : ''"
     >
       <transition name="el-fade-in-linear">
         <div v-if="this.visible" class="el-card__mdgView" style="overflow-x: hidden; max-height: 600px">
@@ -31,6 +32,10 @@ export default {
     title: {
       type: String,
       default: ' '
+    },
+    speailStyle: {
+      type: Boolean,
+      default: false
     },
     appendToBody: {
       type: Boolean,

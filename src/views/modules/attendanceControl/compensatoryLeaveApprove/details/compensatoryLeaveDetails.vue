@@ -23,9 +23,9 @@ export default {
           { label: '调休结束时间', prop: 'endTime' },
           { label: '调休天数', prop: 'dayoffDays' },
           { label: '申请时间', prop: 'createTime' },
-          { label: '审批通过时间', prop: 'approveTime' }
+          { label: '审批通过时间', prop: 'reTrialTime' }
         ],
-        url: '/projectWork/projectTaskList'
+        url: '/attendance/dayoffAudit'
       }
     }
   },
@@ -36,7 +36,7 @@ export default {
   methods: {
     //表格查询
     selectTableData() {
-      this.$refs.table.refresh()
+      this.$refs.table.refresh(this.empId)
     }
   }
 }

@@ -202,6 +202,7 @@ export default {
         days: 0
       },
       overtimeRules: {
+        overtimeType: [{ required: true, message: '请选择加班类型', trigger: 'change' }],
         projectId: [{ required: true, message: '请选择加班项目', trigger: 'change' }],
         overtimeReason: [{ required: true, message: '请输入加班原因', trigger: 'blur' }],
         overTimeStartTime: [{ required: true, validator: validateoverTimeStartTime, trigger: 'change' }],
@@ -313,7 +314,6 @@ export default {
           this.$message.warning('加班开始时间已超过72小时，请重新选择')
           return
         }
-
         let message = '提交后本次申请记录将无法修改，确定提交吗？'
         let data = {
           empId: this.empId,
@@ -323,9 +323,13 @@ export default {
           overtimeType: this.overtimeDataForm.overtimeType,
           overtime_hours: this.overtimeDataForm.overtimeDuration,
           projectId: this.overtimeDataForm.projectId,
-          reason: this.overtimeDataForm.overtimeReason,
-          teamId: this.overtimeDataForm.projectManager
+          reason: this.overtimeDataForm.overtimeReason
         }
+        Object.keys(data).map((key) => {
+          if (!data[key] && data[key] != 0) {
+            delete data[key]
+          }
+        })
         this.$confirm(message, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

@@ -94,10 +94,23 @@
       </div>
       <el-main style="padding: 0">
         <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
+          <template v-slot:overtimeType="row">
+            <span v-if="row.item.overtimeType == 0">日常加班</span>
+            <span v-else>节假日加班</span>
+          </template>
+          <template v-slot:isRemoteWork="row">
+            <span v-if="row.item.isRemoteWork == 0">是</span>
+            <span v-else>否</span>
+          </template>
+          <template v-slot:status="row">
+            <span v-if="row.item.status == 0 || row.item.status == 2">待审核</span>
+            <span v-if="row.item.status == 1 || row.item.status == 3">已驳回</span>
+            <span v-if="row.item.status == 4">已通过</span>
+          </template>
           <template v-slot:clientType="row">
             <template>
-              <el-button type="text" @click="pass(row.item)">通过</el-button>
-              <el-button type="text" @click="reject(row.item)">驳回</el-button>
+              <el-button v-if="row.item.status == 0" type="text" @click="pass(row.item)">通过</el-button>
+              <el-button v-if="row.item.status == 0" type="text" @click="reject(row.item)">驳回</el-button>
               <el-button type="text" @click="view(row.item)">查看</el-button>
             </template>
           </template>
@@ -177,9 +190,9 @@ export default {
           { label: '归属团队', prop: 'teamName' },
           { label: '加班开始时间', prop: 'startTime' },
           { label: '加班结束时间', prop: 'endTime' },
-          { label: '加班类型', prop: 'overtimeType' },
+          { label: '加班类型', prop: 'overtimeType', soltName: 'overtimeType' },
           { label: '加班时长', prop: 'overtimeHours' },
-          { label: '是否居家办公', prop: 'isRemoteWork' },
+          { label: '是否居家办公', prop: 'isRemoteWork', soltName: 'isRemoteWork' },
           { label: '加班原因', prop: 'reason' },
           { label: '申请时间', prop: 'createTime' },
           { label: '审批状态', prop: 'status', slotName: 'status' },

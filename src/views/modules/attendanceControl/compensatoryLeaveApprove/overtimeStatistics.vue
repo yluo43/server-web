@@ -45,7 +45,7 @@
       </div>
     </el-container>
     <!-- 查看明细 -->
-    <base-dialog ref="detailsDialog" title="查看明细" :width="'1000px'" class="detialStyle">
+    <base-dialog ref="detailsDialog" title="查看明细" :width="'1000px'" :speail-style="true">
       <template>
         <detailsDialog ref="details" :cancelDialog="closeDetailsDialog"></detailsDialog>
       </template>
@@ -81,16 +81,16 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'name' },
+          { label: '用户姓名', prop: 'userName' },
           { label: '工号', prop: 'empId' },
-          { label: '归属部门', prop: 'startConfirmTime' },
-          { label: '归属团队', prop: 'startConfirmTime' },
-          { label: '团队负责人', prop: 'startConfirmTime' },
-          { label: '累计加班时长', prop: 'affirmDay' },
-          { label: '可调休天数', prop: 'affirmDay' },
+          { label: '归属部门', prop: 'deptName' },
+          { label: '归属团队', prop: 'teamName' },
+          { label: '团队负责人', prop: 'teamManager' },
+          { label: '累计加班时长', prop: 'overtimeHours' },
+          { label: '可调休天数', prop: 'dayoffDays' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
-        url: '/projectWork/projectTaskList'
+        url: '/attendance/overtimeStats'
       }
     }
   },
@@ -131,6 +131,7 @@ export default {
     selectTableData() {
       this.$refs.table.refresh(this.dataConversion(this.dataForm))
     },
+    //查询条件格式转换
     dataConversion(form) {
       let params = JSON.parse(JSON.stringify(form))
       Object.keys(params).forEach((key) => {
@@ -205,5 +206,13 @@ export default {
 .el-button {
   margin-left: 0;
   width: auto;
+}
+</style>
+<style>
+.speail-style .el-dialog__body {
+  padding: 5px 20px 2px 20px;
+}
+.speail-style .el-dialog__header {
+  border-bottom: none;
 }
 </style>

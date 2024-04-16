@@ -61,7 +61,10 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/attendance/import'),
         method: 'post',
-        data: formData
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data; charset=utf-8' // 设置请求头为multipart/form-data
+        }
       }).then(({ data }) => {
         if (data.success) {
           this.$message.success(data.msg)

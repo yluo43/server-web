@@ -26,9 +26,9 @@ export default {
           { label: '加班时长', prop: 'overtimeHours' },
           { label: '是否居家办公', prop: 'isRemoteWork' },
           { label: '申请时间', prop: 'createTime' },
-          { label: '审批通过时间', prop: 'approveTime' }
+          { label: '审批通过时间', prop: 'reTrialTime' }
         ],
-        url: '/projectWork/projectTaskList'
+        url: '/attendance/overtimeDetailByEmp'
       }
     }
   },
@@ -39,7 +39,7 @@ export default {
   methods: {
     //表格查询
     selectTableData() {
-      this.$refs.table.refresh()
+      this.$refs.table.refresh(this.empId)
     }
   }
 }

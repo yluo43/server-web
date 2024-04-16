@@ -75,10 +75,15 @@
         </div>
         <div style="margin-top: 10px">
           <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
+            <template v-slot:status="row">
+              <span v-if="row.item.status == 0 || row.item.status == 2">待审核</span>
+              <span v-if="row.item.status == 1 || row.item.status == 3">已驳回</span>
+              <span v-if="row.item.status == 4">已通过</span>
+            </template>
             <template v-slot:clientType="row">
               <template>
-                <el-button type="text" @click="pass(row.item)">通过</el-button>
-                <el-button type="text" @click="reject(row.item)">驳回</el-button>
+                <el-button v-if="row.item.status == 2" type="text" @click="pass(row.item)">通过</el-button>
+                <el-button v-if="row.item.status == 2" type="text" @click="reject(row.item)">驳回</el-button>
                 <el-button type="text" @click="view(row.item)">查看</el-button>
               </template>
             </template>
@@ -284,7 +289,6 @@ export default {
       }
     },
     open(message, ids, row) {
-      console.log(111)
       this.$msgbox({
         message: message,
         showCancelButton: true,

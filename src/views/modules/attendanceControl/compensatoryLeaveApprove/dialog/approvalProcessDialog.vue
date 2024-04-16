@@ -43,9 +43,8 @@ export default {
   },
   data() {
     return {
-      //1 加班2调休
       flag: '',
-      step: 1,
+      step: 0,
       status: '',
       approveInfo: {
         name: '',
@@ -111,7 +110,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .btn-group {
   width: 100%;
   height: 50px;
@@ -124,10 +123,24 @@ export default {
 ::v-deep .el-step__icon-inner {
   display: none;
 }
-/* ::v-deep .el-step__title.is-finish {
+::v-deep .el-step__icon {
+  width: 10px;
+  height: 10px;
+  top: 5px;
+}
+::v-deep .el-step__title.is-finish {
   color: #c0c4cc;
-} */
-/* ::v-deep .el-step__head.is-process {
+}
+::v-deep .el-step__head.is-process {
   border-color: #409eff;
-} */
+  color: #409eff;
+  .el-step__icon {
+    width: 13px;
+    height: 13px;
+  }
+}
+::v-deep .el-step__head.is-error .el-step__icon {
+  width: 13px;
+  height: 13px;
+}
 </style>

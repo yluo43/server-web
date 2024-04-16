@@ -101,9 +101,6 @@ export default {
 </script>
 
 <style scoped>
-::v-deep .el-form-item__error {
-  top: 53px !important;
-}
 .el-dialog__body {
   padding: 25px 0 2px 0;
 }

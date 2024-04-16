@@ -20,7 +20,17 @@
           <el-form-item label="工号:" prop="empId">
             <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
           </el-form-item>
-          <el-form-item label="归属部门:" prop="deptIds">
+          <el-form-item label="归属部门:" prop="deptId">
+            <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="归属团队:" prop="teamId">
+            <el-select v-model="dataForm.teamId" placeholder="请选择归属团队" clearable>
+              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <!-- <el-form-item label="归属部门:" prop="deptIds">
             <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
             </el-select>
@@ -29,7 +39,7 @@
             <el-select v-model="dataForm.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" @click="selectTableData">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
@@ -67,8 +77,10 @@ export default {
       dataForm: {
         name: '',
         empId: '',
-        deptIds: [],
-        teamIds: [],
+        deptId: '',
+        teamId: '',
+        // deptIds: [],
+        // teamIds: [],
         dateRange: [],
         recordStartDate: '',
         recordEndDate: ''

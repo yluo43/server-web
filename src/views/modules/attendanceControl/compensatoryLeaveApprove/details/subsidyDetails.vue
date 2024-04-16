@@ -20,10 +20,10 @@ export default {
       tableData: {
         theads: [
           { label: '补贴项目', prop: 'projectName' },
-          { label: '补贴天数', prop: 'affirmDay' },
-          { label: '添加时间', prop: 'affirmDay' }
+          { label: '补贴天数', prop: 'subsidyDays' },
+          { label: '添加时间', prop: 'createTime' }
         ],
-        url: '/projectWork/projectTaskList'
+        url: '/attendance/subsidyDetailByEmp'
       }
     }
   },
@@ -34,7 +34,7 @@ export default {
   methods: {
     //表格查询
     selectTableData() {
-      this.$refs.table.refresh()
+      this.$refs.table.refresh(this.empId)
     }
   }
 }
