@@ -6,7 +6,7 @@
           <el-form-item label="用户姓名:" prop="userName">
             {{ dataForm.userName }}
           </el-form-item>
-          <el-form-item v-if="rejectFlag == 1" label="驳回加班时长:" prop="overtimeHours">{{ dataForm.overtimeHours }}</el-form-item>
+          <el-form-item v-if="rejectFlag == 1 || rejectFlag == 2" label="驳回加班时长:" prop="overtimeHours">{{ dataForm.overtimeHours }}</el-form-item>
           <el-form-item v-else label="驳回调休天数:" prop="days">{{ dataForm.days }}</el-form-item>
           <el-form-item label="驳回理由:" prop="rejectReason">
             <el-input type="textarea" show-word-limit maxlength="50" v-model="dataForm.rejectReason" placeholder="请输入驳回理由"></el-input>
@@ -39,7 +39,7 @@ export default {
   },
   data() {
     return {
-      // 1加班初审驳回 加班复审驳回 2调休初审驳回 调休复审驳回
+      // 1加班初审驳回 2加班复审驳回 3调休初审驳回 4调休复审驳回
       rejectFlag: '',
       dataForm: {
         //姓名
@@ -65,15 +65,27 @@ export default {
     //确认
     confirm() {
       let url
+      let params
       if (this.rejectFlag == 1) {
         url = this.$http.adornUrl('/attendance/overtimeAudit')
-      } else {
+        params = { ids: this.dataForm.overtimeId, status: 1, reason: this.dataForm.rejectReason }
+      }
+      if (this.rejectFlag == 2) {
+        url = this.$http.adornUrl('/attendance/overtimeAudit')
+        params = { ids: this.dataForm.overtimeId, status: 3, reason: this.dataForm.rejectReason }
+      }
+      if (this.rejectFlag == 3) {
         url = this.$http.adornUrl('/attendance/dayoffAudit')
+        params = { ids: this.dataForm.dayoffId, status: 1, reason: this.dataForm.rejectReason }
+      }
+      if (this.rejectFlag == 4) {
+        url = this.$http.adornUrl('/attendance/dayoffAudit')
+        params = { ids: this.dataForm.dayoffId, status: 3, reason: this.dataForm.rejectReason }
       }
       this.$http({
         url: url,
         method: 'get',
-        params: { ids: this.dataForm.overtimeId || this.dataForm.dayoffId, status: this.dataForm.status, reason: this.dataForm.rejectReason }
+        params: params
       }).then((result) => {
         if (result.data.success) {
           this.cancelDialog()
@@ -81,7 +93,7 @@ export default {
           this.$emit('refrshTable')
           this.$refs.approvalProcessDialog.show()
           this.$nextTick(() => {
-            if (this.rejectFlag == 1) {
+            if (this.rejectFlag == 1 || this.rejectFlag == 2) {
               this.$refs.approvalProcess.init(this.initData, 1)
             } else {
               this.$refs.approvalProcess.init(this.initData, 2)

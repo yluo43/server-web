@@ -44,7 +44,7 @@ export default {
   data() {
     return {
       flag: '',
-      step: 0,
+      step: '',
       approveInfo: {
         name: '',
         createTime: '',
@@ -82,7 +82,7 @@ export default {
         params: params
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          this.approveInfo = data.payload
+          this.approveInfo = data.payload[0]
           switch (this.approveInfo.status) {
             case 0:
               this.step = 1
@@ -97,7 +97,7 @@ export default {
               this.step = 3
               break
             case 4:
-              this.step = 4
+              this.step = 3
               break
           }
         } else {
@@ -141,5 +141,8 @@ export default {
 ::v-deep .el-step__head.is-error .el-step__icon {
   width: 13px;
   height: 13px;
+}
+::v-deep .el-step__description.is-finish {
+  color: #c0c4cc;
 }
 </style>

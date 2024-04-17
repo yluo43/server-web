@@ -105,8 +105,8 @@
             </template>
             <template v-slot:clientType="row">
               <template>
-                <el-button v-if="row.item.status == 2" type="text" @click="pass(row.item)">通过</el-button>
-                <el-button v-if="row.item.status == 2" type="text" @click="reject(row.item)">驳回</el-button>
+                <el-button :disabled="row.item.status != 2" type="text" @click="pass(row.item)">通过</el-button>
+                <el-button :disabled="row.item.status != 2" type="text" @click="reject(row.item)">驳回</el-button>
                 <el-button type="text" @click="view(row.item)">查看</el-button>
               </template>
             </template>
@@ -145,8 +145,8 @@ export default {
       teamList: [],
       selData: [],
       approvalStatus: [
-        { id: 1, name: '审批中' },
-        { id: 2, name: '已通过' },
+        { id: 2, name: '审批中' },
+        { id: 4, name: '已通过' },
         { id: 3, name: '已驳回' }
       ],
       isRemoteWorks: [
@@ -276,7 +276,7 @@ export default {
       if (row) {
         message = h('p', null, [
           h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的加班申请,`),
-          h('span', { style: 'color: red' }, `加班时长${row.overtimeHours}`),
+          h('span', { style: 'color: red' }, `加班时长${row.overtimeHours}小时`),
           h('span', null, `,确认通过吗？`)
         ])
         ids = [row.overtimeId]
@@ -286,8 +286,10 @@ export default {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        ids = this.selData.map((item) => {
-          return item.overtimeId
+        this.selData.filter((item) => {
+          if (item.status == 2) {
+            ids.push(item.overtimeId)
+          }
         })
         message = '已选中多条数据，确定批量通过吗？'
         this.open(message, ids)
@@ -306,7 +308,7 @@ export default {
           this.$http({
             url: this.$http.adornUrl('/attendance/overtimeAudit'),
             method: 'get',
-            data: { ids: ids.toString(), status: 2 }
+            params: { ids: ids.toString(), status: 4 }
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message.success(data.msg)
@@ -333,7 +335,7 @@ export default {
     reject(row) {
       this.$refs.rejectDialog.show()
       this.$nextTick(() => {
-        this.$refs.reject.init(row, 1)
+        this.$refs.reject.init(row, 2)
       })
     },
     //关闭驳回弹窗

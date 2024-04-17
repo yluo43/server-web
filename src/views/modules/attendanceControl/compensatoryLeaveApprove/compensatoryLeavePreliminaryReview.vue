@@ -9,11 +9,16 @@
           <el-form-item label="工号:" prop="empId">
             <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
           </el-form-item>
-          <el-form-item label="归属团队:" prop="teamIds">
-            <el-select v-model="dataForm.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
+          <el-form-item label="归属团队:" prop="teamId">
+            <el-select v-model="dataForm.teamId" placeholder="请选择归属团队" clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
+          <!-- <el-form-item label="归属团队:" prop="teamIds">
+            <el-select v-model="dataForm.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
+              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item> -->
           <el-form-item label="审批状态:" prop="status">
             <el-select v-model="dataForm.status" placeholder="请选择审批状态" clearable>
               <el-option v-for="item in approvalStatus" :key="item.id" :label="item.name" :value="item.id" />
@@ -73,8 +78,8 @@
             </template>
             <template v-slot:clientType="row">
               <template>
-                <el-button v-if="row.item.status == 0" type="text" @click="pass(row.item)">通过</el-button>
-                <el-button v-if="row.item.status == 0" type="text" @click="reject(row.item)">驳回</el-button>
+                <el-button :disabled="row.item.status != 0" type="text" @click="pass(row.item)">通过</el-button>
+                <el-button :disabled="row.item.status != 0" type="text" @click="reject(row.item)">驳回</el-button>
                 <el-button type="text" @click="view(row.item)">查看</el-button>
               </template>
             </template>
@@ -121,7 +126,7 @@ export default {
         operatorName: '',
         userName: '',
         empId: '',
-        deptIds: [],
+        teamId: '',
         teamIds: [],
         status: '',
         compensatoryLeaveStartTime: [],
@@ -142,7 +147,7 @@ export default {
           { label: '归属团队', prop: 'teamName' },
           { label: '调休开始时间', prop: 'startTime' },
           { label: '调休结束时间', prop: 'endTime' },
-          { label: '调休天数', prop: 'days' },
+          { label: '调休天数(天)', prop: 'days' },
           { label: '申请时间', prop: 'createTime' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '150px' }
@@ -226,11 +231,10 @@ export default {
       if (row) {
         message = h('p', null, [
           h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的调休申请,`),
-          h('span', { style: this.remainingDays > row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}(剩余可调休天数:${this.remainingDays})`),
+          h('span', { style: this.remainingDays > row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}天(剩余可调休天数:${this.remainingDays}天)`),
           h('span', { style: this.remainingDays > row.days ? 'display:none' : 'display:inline-block;color:red' }, `,已超出剩余可调休天数`),
           h('span', null, `,确认通过吗？`)
         ])
-
         ids = [row.dayoffId]
         this.open(message, ids, row)
       } else {
@@ -238,8 +242,10 @@ export default {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        ids = this.selData.map((item) => {
-          return item.dayoffId
+        this.selData.filter((item) => {
+          if (item.status == 0) {
+            ids.push(item.dayoffId)
+          }
         })
         message = '已选中多条数据，确定批量通过吗？'
         this.open(message, ids)
@@ -258,7 +264,7 @@ export default {
           this.$http({
             url: this.$http.adornUrl('/attendance/dayoffAudit'),
             method: 'get',
-            data: { ids: ids.toString(), status: 0 }
+            params: { ids: ids.toString(), status: 2 }
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message.success(data.msg)
@@ -285,7 +291,7 @@ export default {
     reject(row) {
       this.$refs.rejectDialog.show()
       this.$nextTick(() => {
-        this.$refs.reject.init(row, 2)
+        this.$refs.reject.init(row, 3)
       })
     },
     //关闭驳回弹窗
