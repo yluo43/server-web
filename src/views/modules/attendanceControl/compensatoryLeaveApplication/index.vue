@@ -321,7 +321,7 @@ export default {
           endTime: this.overtimeDataForm.overTimeEndTime,
           isRemoteWork: this.overtimeDataForm.isRemoteWork,
           overtimeType: this.overtimeDataForm.overtimeType,
-          overtime_hours: this.overtimeDataForm.overtimeDuration,
+          overtimeHours: this.overtimeDataForm.overtimeDuration,
           projectId: this.overtimeDataForm.projectId,
           reason: this.overtimeDataForm.overtimeReason
         }
@@ -341,7 +341,7 @@ export default {
               method: 'post',
               data: data
             }).then(({ data }) => {
-              if (data && data.code === 200) {
+              if (data.code == 200 && data.success) {
                 this.$message.success(data.msg)
                 this.cancelOverTime()
               } else {
@@ -372,7 +372,7 @@ export default {
           empId: this.empId,
           startTime: this.compensatoryLeaveDataForm.compensatoryLeaveStartTime,
           endTime: this.compensatoryLeaveDataForm.compensatoryLeaveEndTime,
-          dayffDays: this.compensatoryLeaveDataForm.days * 8
+          dayoffHours: this.compensatoryLeaveDataForm.days * 8
         }
         this.$confirm(message, '提示', {
           confirmButtonText: '确定',
@@ -385,7 +385,7 @@ export default {
               method: 'post',
               data: data
             }).then(({ data }) => {
-              if (data && data.code === 200) {
+              if (data.code == 200 && data.success) {
                 this.$message.success(data.msg)
                 this.cancelCompensatoryLeave()
               } else {

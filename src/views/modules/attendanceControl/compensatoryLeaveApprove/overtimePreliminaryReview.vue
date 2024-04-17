@@ -109,7 +109,7 @@
             <span v-else>节假日加班</span>
           </template>
           <template v-slot:isRemoteWork="row">
-            <span v-if="row.item.isRemoteWork == 0">是</span>
+            <span v-if="row.item.isRemoteWork == 1">是</span>
             <span v-else>否</span>
           </template>
           <template v-slot:status="row">
@@ -196,15 +196,15 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'userName' },
-          { label: '工号', prop: 'empId', width: '60px' },
+          { label: '用户姓名', prop: 'userName', width: '70px' },
+          { label: '工号', prop: 'empId', width: '70px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
           { label: '加班开始时间', prop: 'startTime' },
           { label: '加班结束时间', prop: 'endTime' },
-          { label: '加班类型', prop: 'overtimeType', soltName: 'overtimeType' },
-          { label: '加班时长', prop: 'overtimeHours' },
-          { label: '是否居家办公', prop: 'isRemoteWork', soltName: 'isRemoteWork' },
+          { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
+          { label: '加班时长(小时)', prop: 'overtimeHours' },
+          { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork' },
           { label: '加班原因', prop: 'reason' },
           { label: '申请时间', prop: 'createTime' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
@@ -353,16 +353,17 @@ export default {
           h('span', { style: 'color: red' }, `加班时长${row.overtimeHours}`),
           h('span', null, `,确认通过吗？`)
         ])
-        ids = [row.id]
+        ids = [row.overtimeId]
         this.open(message, ids, row)
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        ids = this.selData.filter((item) => {
-          return item.id
+        ids = this.selData.map((item) => {
+          return item.overtimeId
         })
+        console.log(ids)
         message = '已选中多条数据，确定批量通过吗？'
         this.open(message, ids)
       }
@@ -380,7 +381,7 @@ export default {
           this.$http({
             url: this.$http.adornUrl('/attendance/overtimeAudit'),
             method: 'get',
-            data: { ids: ids.toString(), status: 0 }
+            params: { ids: ids.toString(), status: 0 }
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message.success(data.msg)

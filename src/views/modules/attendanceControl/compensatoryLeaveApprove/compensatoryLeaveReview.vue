@@ -63,7 +63,7 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="selectTableData">查询</el-button>
+            <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="selectTableData">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
@@ -154,7 +154,7 @@ export default {
           { label: '归属团队', prop: 'teamName' },
           { label: '调休开始时间', prop: 'startTime' },
           { label: '调休结束时间', prop: 'endTime' },
-          { label: '调休天数', prop: 'dayoffDays' },
+          { label: '调休天数', prop: 'days' },
           { label: '申请时间', prop: 'createTime' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '150px' }
@@ -267,23 +267,19 @@ export default {
       if (row) {
         message = h('p', null, [
           h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的调休申请,`),
-          h(
-            'span',
-            { style: this.remainingDays > row.dayoffDays ? 'color:#70B603' : 'color:red' },
-            `调休天数${row.dayoffDays}(剩余可调休天数:${this.remainingDays})`
-          ),
-          h('span', { style: this.remainingDays > row.dayoffDays ? 'display:none' : 'display:inline-block;color:red' }, `,已超出剩余可调休天数`),
+          h('span', { style: this.remainingDays > row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}(剩余可调休天数:${this.remainingDays})`),
+          h('span', { style: this.remainingDays > row.days ? 'display:none' : 'display:inline-block;color:red' }, `,已超出剩余可调休天数`),
           h('span', null, `,确认通过吗？`)
         ])
-        ids = [row.id]
+        ids = [row.dayoffId]
         this.open(message, ids, row)
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        ids = this.selData.filter((item) => {
-          return item.id
+        ids = this.selData.map((item) => {
+          return item.dayoffId
         })
         message = '已选中多条数据，确定批量通过吗？'
         this.open(message, ids)

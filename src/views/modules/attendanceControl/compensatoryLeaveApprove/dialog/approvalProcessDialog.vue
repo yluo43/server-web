@@ -45,7 +45,6 @@ export default {
     return {
       flag: '',
       step: 0,
-      status: '',
       approveInfo: {
         name: '',
         createTime: '',
@@ -68,10 +67,10 @@ export default {
       let params = {}
       if (flag == 1) {
         url = this.$http.adornUrl('/attendance/overtimeStatusInfo')
-        params = { overtimeId: initData.id }
+        params = { overtimeId: initData.overtimeId }
       } else {
         url = this.$http.adornUrl('/attendance/dayoffStatusInfo')
-        params = { dayoffId: initData.id }
+        params = { dayoffId: initData.dayoffId }
       }
       this.getApproveInfo(url, params)
     },

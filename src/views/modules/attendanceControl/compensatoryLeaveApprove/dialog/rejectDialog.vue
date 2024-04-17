@@ -7,7 +7,7 @@
             {{ dataForm.userName }}
           </el-form-item>
           <el-form-item v-if="rejectFlag == 1" label="驳回加班时长:" prop="overtimeHours">{{ dataForm.overtimeHours }}</el-form-item>
-          <el-form-item v-else label="驳回调休天数:" prop="overtimeHours">{{ dataForm.overtimeHours }}</el-form-item>
+          <el-form-item v-else label="驳回调休天数:" prop="days">{{ dataForm.days }}</el-form-item>
           <el-form-item label="驳回理由:" prop="rejectReason">
             <el-input type="textarea" show-word-limit maxlength="50" v-model="dataForm.rejectReason" placeholder="请输入驳回理由"></el-input>
           </el-form-item>
@@ -47,11 +47,10 @@ export default {
         //驳回加班时长
         overtimeHours: '',
         //驳回调休天数
-        dayoffDays: '',
+        days: '',
         //驳回理由
         rejectReason: '',
-        status: '',
-        id: ''
+        status: ''
       },
       initData: {}
     }
@@ -74,7 +73,7 @@ export default {
       this.$http({
         url: url,
         method: 'get',
-        params: { ids: this.dataForm.id, status: this.dataForm.status, reason: this.dataForm.rejectReason }
+        params: { ids: this.dataForm.overtimeId || this.dataForm.dayoffId, status: this.dataForm.status, reason: this.dataForm.rejectReason }
       }).then((result) => {
         if (result.data.success) {
           this.cancelDialog()

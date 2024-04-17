@@ -78,7 +78,7 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="selectTableData">查询</el-button>
+            <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="selectTableData">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
@@ -95,7 +95,7 @@
               <span v-else>节假日加班</span>
             </template>
             <template v-slot:isRemoteWork="row">
-              <span v-if="row.item.isRemoteWork == 0">是</span>
+              <span v-if="row.item.isRemoteWork == 1">是</span>
               <span v-else>否</span>
             </template>
             <template v-slot:status="row">
@@ -187,9 +187,9 @@ export default {
           { label: '归属团队', prop: 'teamName' },
           { label: '加班开始时间', prop: 'startTime' },
           { label: '加班结束时间', prop: 'endTime' },
-          { label: '加班类型', prop: 'overtimeType' },
-          { label: '加班时长', prop: 'overtimeHours' },
-          { label: '是否居家办公', prop: 'isRemoteWork' },
+          { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
+          { label: '加班时长(小时)', prop: 'overtimeHours' },
+          { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork' },
           { label: '加班原因', prop: 'reason' },
           { label: '申请时间', prop: 'createTime' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
@@ -279,15 +279,15 @@ export default {
           h('span', { style: 'color: red' }, `加班时长${row.overtimeHours}`),
           h('span', null, `,确认通过吗？`)
         ])
-        ids = [row.id]
+        ids = [row.overtimeId]
         this.open(message, ids, row)
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        ids = this.selData.filter((item) => {
-          return item.id
+        ids = this.selData.map((item) => {
+          return item.overtimeId
         })
         message = '已选中多条数据，确定批量通过吗？'
         this.open(message, ids)
