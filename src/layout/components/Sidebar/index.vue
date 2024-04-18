@@ -1,8 +1,9 @@
 <template>
-  <div :class="{'has-logo':showLogo}" id="left-tree">
-    <logo v-if="showLogo" :collapse="isCollapse"/>
+  <div :class="{ 'has-logo': showLogo }" id="left-tree">
+    <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
+        @select="handleSelect"
         :collapse="isCollapse"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
@@ -13,25 +14,25 @@
         :router="true"
         mode="vertical"
       >
-      <div v-for="(route,index) in permission_routes" >
-        <el-submenu :index="''+route.meta.menuId" v-if="route.hidden ===false">
-          <template slot="title">
-            <i :class="route.icon"></i>
-            <span>{{route.meta.title}}</span>
-          </template>
-          <div v-for="(item,i) in route.children" >
-            <el-menu-item :index="''+item.path"  style="padding-left: 60px">{{item.meta.title}}</el-menu-item>
-          </div>
-        </el-submenu>
-      </div>
-<!--          <template slot="title" >{{11111111 }}</template>-->
-<!--        </div>-->
-<!--        <sidebar-item v-for="(route,index) in permission_routes" :key="index" :item="route" :base-path="route.path"/>-->
-      </el-menu><!--平铺菜单-->
+        <div v-for="(route, index) in permission_routes">
+          <el-submenu :index="'' + route.meta.menuId" v-if="route.hidden === false">
+            <template slot="title">
+              <i :class="route.icon"></i>
+              <span>{{ route.meta.title }}</span>
+            </template>
+            <div v-for="(item, i) in route.children">
+              <el-menu-item :index="'' + item.path" style="padding-left: 60px">{{ item.meta.title }}</el-menu-item>
+            </div>
+          </el-submenu>
+        </div>
+        <!--          <template slot="title" >{{11111111 }}</template>-->
+        <!--        </div>-->
+        <!--        <sidebar-item v-for="(route,index) in permission_routes" :key="index" :item="route" :base-path="route.path"/>-->
+      </el-menu>
+      <!--平铺菜单-->
       <!--    <SidebarItemTree />-->
     </el-scrollbar>
   </div>
-
 </template>
 
 <script>
@@ -81,7 +82,13 @@ export default {
         return this.$store.state.lastMenu
       }
     }
+  },
+  methods: {
+    handleSelect(index) {
+      if (index === this.$route.path) {
+        this.$emit('reload')
+      }
+    }
   }
 }
 </script>
-

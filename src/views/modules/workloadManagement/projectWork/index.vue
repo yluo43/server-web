@@ -25,7 +25,7 @@
             </el-col>
           </el-row>
         </el-aside>
-        <el-main style="width: 100%" class="main" v-if="activeName === 'first'">
+        <el-main style="width: 100%; padding: 0" v-if="activeName === 'first'">
           <div class="management-header">
             <div class="management-item">
               <el-statistic title="我的待办">

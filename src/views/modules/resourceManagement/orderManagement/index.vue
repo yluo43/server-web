@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
-      <el-header style="height: auto">
+    <el-container style="height: 100%; width: 100%">
+      <el-header style="height: auto; padding: 0">
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="dataForm.name" placeholder="请输入项目名称" clearable></el-input>
@@ -71,21 +71,32 @@
           </el-form-item>
           <div style="display: contents; float: right">
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
-            <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+            <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
           </div>
         </el-form>
         <div class="chooseResult">
           <span>已选中{{ count }}项</span>
         </div>
       </el-header>
-      <div style="margin: 10px 0 10px 13px">
+      <div class="operate-button">
         <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
       </div>
-      <el-main>
+      <el-main style="padding: 0">
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
           <template v-slot:clientType="row">
             <!--类型插槽-->
-            <template>
+            <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom">
+              <svg-icon
+                :icon-class="'order-submission-icon'"
+                style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                @click="add(row)"
+                v-auth="'costItems:order'"
+              />
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="支出" placement="bottom">
+              <svg-icon :icon-class="'expenditure-icon'" style="height: 1.5em; width: 1.5em" @click="expenditureAdd(row)" v-auth="'costItems:expenditure'" />
+            </el-tooltip>
+            <!-- <template>
               <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom" v-auth="'costItems:order'">
                 <i class="el-icon-document" style="font-size: 1.5em; margin-right: 1em" @click="add(row)"></i>
               </el-tooltip>
@@ -94,7 +105,7 @@
               <el-tooltip class="item" effect="dark" content="支出" placement="bottom" v-auth="'costItems:expenditure'">
                 <i class="el-icon-edit-outline" style="font-size: 1.5em; margin-right: 1em" @click="expenditureAdd(row)"></i>
               </el-tooltip>
-            </template>
+            </template> -->
           </template>
         </baseTable>
       </el-main>
@@ -311,7 +322,7 @@ export default {
     //批量下载
     download() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       let form = { ...this.dataForm }
@@ -363,7 +374,7 @@ export default {
   cursor: pointer;
   /* 添加其他想要的样式 */
 }
-.chooseResult {
+/* .chooseResult {
   height: 30px;
   line-height: 30px;
   margin: 0 auto;
@@ -371,5 +382,5 @@ export default {
   background: #e9f3ff;
   border-radius: 6px;
   padding-left: 20px;
-}
+} */
 </style>

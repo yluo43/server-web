@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-main style="width: 100%" class="main">
+      <el-main class="main">
         <div class="top">
           <div class="header-title">
             <div>工作量统计:</div>
@@ -27,7 +27,7 @@
               </el-select>
             </div>
           </div>
-          <div class="row-box">
+          <div class="chooseResult" style="display: flex">
             <div>
               已选择
               <span>{{ count }}</span>
@@ -140,6 +140,9 @@ export default {
     },
     async initTable() {
       await this.selectTaskList()
+      if (!this.taskId) {
+        return
+      }
       this.selectWorkload({ taskId: this.taskId })
     },
     //获取团队
@@ -159,26 +162,41 @@ export default {
     changeSelect(params) {
       this.taskId = params
       this.handlerRadio()
-      //this.selectWorkload({ taskId: params })
     },
     //团队下拉框值改变
     search() {
       this.handlerRadio()
-      // this.selectWorkload({ taskId: this.taskId, teamIds: this.teamIds.toString() })
     },
     //查询任务列表
+    // async selectTaskList() {
+    //   let params = { empId: this.empId }
+    //   const result = await this.$http({
+    //     url: this.$http.adornUrl('/workload/selectTasks'),
+    //     method: 'get',
+    //     params: params
+    //   })
+    //   if (result.data && result.data.code === 200) {
+    //     this.workLoadStatistics = result.data.payload
+    //     if (result.data.payload.length != 0) {
+    //       this.reportWorkName = result.data.payload[0].reportWorkName
+    //       this.taskId = result.data.payload[0].taskId
+    //     }
+    //   } else {
+    //     this.$message.error(result.data.msg)
+    //   }
+    // },
     async selectTaskList() {
-      let params = { empId: this.empId }
+      let params = { empId: this.empId, status: 3, curPage: 1, pageSize: 500 }
       const result = await this.$http({
-        url: this.$http.adornUrl('/workload/selectTasks'),
+        url: this.$http.adornUrl('/workload/selectReportPage'),
         method: 'get',
         params: params
       })
       if (result.data && result.data.code === 200) {
-        this.workLoadStatistics = result.data.payload
-        if (result.data.payload.length != 0) {
-          this.reportWorkName = result.data.payload[0].reportWorkName
-          this.taskId = result.data.payload[0].taskId
+        this.workLoadStatistics = result.data.payload.list
+        if (result.data.payload.list.length != 0) {
+          this.reportWorkName = result.data.payload.list[0].reportWorkName
+          this.taskId = result.data.payload.list[0].taskId
         }
       } else {
         this.$message.error(result.data.msg)
@@ -211,7 +229,7 @@ export default {
         return item.id
       })
       if (this.ids.length === 0) {
-        this.$message.warning('请选择一条数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       let data = { ids: this.ids.toString(), status: 4 }
@@ -295,27 +313,20 @@ export default {
   line-height: 0;
 }
 .main {
+  width: 100%;
+  padding: 0;
   .top {
     background: white;
-    padding-left: 30px;
   }
   .header-title {
     font-size: 16px;
     font-weight: 600;
     display: flex;
     align-items: center;
+    padding-left: 16px;
   }
   .status {
-    padding: 20px 0;
-  }
-  .row-box {
-    display: flex;
-    align-items: center;
-    height: 40px;
-    border-radius: 5px;
-    margin-left: -20px;
-    background-color: #e8f4ff;
-    padding-left: 20px;
+    padding: 20px 16px;
   }
 }
 .table {

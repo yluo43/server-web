@@ -24,16 +24,16 @@
             </el-form-item>
           </div>
         </el-form>
-        <div style="margin: 10px 0 10px 13px">
+        <div>
           <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
-          <el-button type="primary" @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+          <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
         </div>
         <div class="chooseResult">
           <span>已选中{{ count }}项</span>
           <el-button type="text" @click="batchDelete()">批量删除</el-button>
         </div>
       </el-header>
-      <div style="margin: 10px 0 10px 13px">
+      <div class="operate-button">
         <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
         <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
       </div>
@@ -41,12 +41,19 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" />
-            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" />
+            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" />
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="alter(row)" />
+            </el-tooltip>
+            <!-- <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" />
+            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" /> -->
           </template>
         </template>
       </baseTable>
-      <el-drawer :title="title" :visible.sync="drawer" :before-close="handleClose" :direction="direction" size="26%">
+      <!-- :before-close="handleClose" -->
+      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="26%">
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="editForm">
             <el-form-item label="报销项目名称:" prop="name">
@@ -264,7 +271,7 @@ export default {
     //批量删除
     batchDelete() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       this.$confirm('已选中' + this.deleteIds.length + '条数据,确定删除吗?', '提示', {
@@ -383,17 +390,17 @@ export default {
       })
     },
     //抽屉关闭二次确认
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then((_) => {
-          done()
-        })
-        .catch((_) => {})
-    },
+    // handleClose(done) {
+    //   this.$confirm('确认关闭？')
+    //     .then((_) => {
+    //       done()
+    //     })
+    //     .catch((_) => {})
+    // },
     //批量下载
     download() {
       if (this.deleteIds.length <= 0) {
-        this.$message.error('当前未选中任何数据！')
+        this.$message.warning('请至少选择一条数据！')
         return
       }
       let form = { ...this.dataForm }
@@ -427,13 +434,13 @@ export default {
   white-space: nowrap;
   max-width: 100px;
 }
-.el-form--inline > .inputlist {
+/* .el-form--inline > .inputlist {
   display: flex;
   align-items: center;
-  /*padding-top: 20px;*/
+  padding-top: 20px;
   padding-left: 20px;
-  /*display: flex;*/
-}
+  display: flex;
+} */
 
 ::v-deep .editForm .el-form-item__label {
   width: 125px !important;
@@ -451,7 +458,7 @@ export default {
   text-align: center;
 }
 
-.chooseResult {
+/* .chooseResult {
   width: 98%;
   height: 30px;
   line-height: 30px;
@@ -460,5 +467,5 @@ export default {
   background: #e9f3ff;
   border-radius: 6px;
   padding-left: 20px;
-}
+} */
 </style>

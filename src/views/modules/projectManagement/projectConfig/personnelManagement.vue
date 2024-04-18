@@ -79,19 +79,20 @@
 
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="queryPersonnelList">查询</el-button>
-            <el-button type="primary" icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
+            <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
       </el-header>
 
       <el-main>
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr" />
-          <span style="color: blue; margin-left: 50px" @click="deletePersonnelInfo()">批量删除</span>
+          <span v-text="chooseStr" />
+          <el-button type="text" @click="deletePersonnelInfo()">批量删除</el-button>
+          <!-- <span style="color: blue; margin-left: 50px" @click="deletePersonnelInfo()">批量删除</span> -->
         </div>
 
         <!-- toolBar -->
-        <div style="margin-bottom: 10px">
+        <div class="operate-button">
           <el-button class="el-button-func" type="primary" icon="el-icon-download" style="margin-right: 10px" @click="batchDownload">批量下载</el-button>
           <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addPersonnelInfo">添加人员</el-button>
         </div>
@@ -100,8 +101,14 @@
           <template v-slot:clientType1="row">
             <!--类型插槽-->
             <template>
-              <el-link type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updatePersonnelInfo(row.item)">编辑</el-link>
-              <el-link type="primary" style="margin-left: 10px" @click="deletePersonnelInfo(row.item)">删除</el-link>
+              <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="updatePersonnelInfo(row.item)" />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="deletePersonnelInfo(row.item)" />
+              </el-tooltip>
+              <!-- <el-link type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updatePersonnelInfo(row.item)">编辑</el-link>
+              <el-link type="primary" style="margin-left: 10px" @click="deletePersonnelInfo(row.item)">删除</el-link> -->
             </template>
           </template>
         </baseTable>
@@ -284,14 +291,27 @@ export default {
     },
 
     // 查询总数
+    // getTableTotalCount() {
+    //   this.$http({
+    //     url: this.$http.adornUrl('/costItems/member/page'),
+    //     method: 'get',
+    //     params: this.$http.adornParams({ projectId: this.personnelManagementFormData.projectId })
+    //   }).then(({ data }) => {
+    //     if (data.success) {
+    //       this.projectInfo.personnelCount = data.payload.totalCount
+    //     } else {
+    //       this.$message.error('获取项目参与人数失败，请刷新后重试')
+    //     }
+    //   })
+    // },
     getTableTotalCount() {
       this.$http({
-        url: this.$http.adornUrl('/costItems/member/page'),
+        url: this.$http.adornUrl('/costItems/member/memberCount'),
         method: 'get',
         params: this.$http.adornParams({ projectId: this.personnelManagementFormData.projectId })
       }).then(({ data }) => {
         if (data.success) {
-          this.projectInfo.personnelCount = data.payload.totalCount
+          this.projectInfo.personnelCount = data.payload.memberCount
         } else {
           this.$message.error('获取项目参与人数失败，请刷新后重试')
         }
@@ -319,7 +339,7 @@ export default {
     closeEditPersonnelInfoDialog() {
       this.$refs.editPersonnelInfoDialog.hide()
       this.queryPersonnelList()
-      this.getTableTotalCount()
+      //  this.getTableTotalCount()
     },
 
     // 删除所选人员-单条/批量
@@ -356,7 +376,7 @@ export default {
             if (data.success) {
               this.$message.success('删除成功')
               this.queryPersonnelList()
-              this.getTableTotalCount()
+              //this.getTableTotalCount()
             } else {
               this.$message.error(data.msg)
             }
@@ -399,7 +419,7 @@ export default {
   color: white;
 }
 
-.chooseResult {
+/* .chooseResult {
   height: 30px;
   line-height: 30px;
   margin: 10px auto;
@@ -410,7 +430,7 @@ export default {
 
 .chooseResultStr {
   margin-left: 10px;
-}
+} */
 
 .el-button {
   margin-left: 0;

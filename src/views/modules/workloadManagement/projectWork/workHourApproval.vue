@@ -1,13 +1,13 @@
 <template>
   <div style="width: 100%; height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-main style="width: 100%">
+      <el-main style="width: 100%; padding: 0">
         <div class="table" style="height: 640px; background-color: white">
           <el-row style="display: flex; align-items: center">
             <el-col>
               <div style="display: flex; align-items: center">
-                <span style="font-size: 16px; font-weight: 600; margin-left: 10px">工作量统计：</span>
-                <el-select v-model="dataForm.taskId" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
+                <span style="font-size: 16px; font-weight: 600; margin-left: 16px">工作量统计：</span>
+                <el-select v-model="dataForm.taskId" style="width: 230px !important" @change="changeSelect">
                   <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
                 </el-select>
               </div>
@@ -16,7 +16,7 @@
           <el-row>
             <el-col>
               <el-col>
-                <span style="font-size: 16px; margin-left: 10px">状态：</span>
+                <span style="font-size: 13px; margin-left: 16px">状态：</span>
                 <el-radio-group v-model="dataForm.workStatus" @change="handlerRadio">
                   <el-radio-button :label="null">全部</el-radio-button>
                   <el-radio-button :label="1">待确认</el-radio-button>
@@ -27,8 +27,9 @@
             </el-col>
           </el-row>
           <div class="chooseResult">
-            <span class="chooseResultStr">已选择{{ count }}项</span>
-            <span style="color: blue; margin-left: 50px" @click="projectWorkOperate(null, 1)">批量确认</span>
+            <span>已选择{{ count }}项</span>
+            <el-button type="text" @click="projectWorkOperate(null, 1)">批量确认</el-button>
+            <!-- <span style="color: blue" @click="projectWorkOperate(null, 1)">批量确认</span> -->
           </div>
 
           <div class="table">
@@ -312,12 +313,12 @@ export default {
   font-size: 16px;
 }
 
-.chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 10px auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-}
+// .chooseResult {
+//   height: 30px;
+//   line-height: 30px;
+//   margin: 10px auto;
+//   display: block;
+//   background: #e9f3ff;
+//   border-radius: 6px;
+// }
 </style>

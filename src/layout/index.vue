@@ -3,7 +3,7 @@
     <el-container class="container">
       <div :class="classObj" class="app-wrapper" style="background-color: #f5f7fa">
         <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-        <sidebar class="sidebar-container" style="top: 1px; left: 1px" />
+        <sidebar class="sidebar-container" @reload="reload" style="top: 1px; left: 1px" />
         <el-container class="main-container">
           <el-header style="height: 110px">
             <navbar />
@@ -11,7 +11,7 @@
           </el-header>
 
           <el-main>
-            <app-main />
+            <app-main ref="appMain" />
           </el-main>
         </el-container>
       </div>
@@ -54,6 +54,9 @@ export default {
   methods: {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+    },
+    reload() {
+      this.$refs.appMain.reload()
     }
   }
   /*  beforeCreate(){

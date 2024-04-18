@@ -49,7 +49,7 @@
           <el-input
             type="textarea"
             :placeholder="placeholderFlag ? '请输入项目集简介，不超过50字' : ''"
-            rows="5"
+            rows="3"
             v-model="dataForm.remarks"
             maxlength="50"
             show-word-limit
@@ -72,10 +72,10 @@ export default {
         callback(new Error('请选择启动时间'))
         return
       }
-      if (this.dataForm.startDate && new Date(Date.parse(this.format())) < new Date(Date.parse(this.dataForm.startDate))) {
-        callback(new Error('启动时间应小于等于当前时间'))
-        return
-      }
+      // if (this.dataForm.startDate && new Date(Date.parse(this.format())) < new Date(Date.parse(this.dataForm.startDate))) {
+      //   callback(new Error('启动时间应小于等于当前时间'))
+      //   return
+      // }
       callback()
     }
 
@@ -247,6 +247,6 @@ export default {
 <style scoped>
 .form-item .el-select,
 .form-item .el-input {
-  width: 100%; /* 你可以根据需要调整这个值 */
+  width: 100% !important; /* 你可以根据需要调整这个值 */
 }
 </style>

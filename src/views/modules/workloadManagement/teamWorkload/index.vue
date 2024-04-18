@@ -1,14 +1,14 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-header style="padding: 0 10px 0 16px">
+      <el-header style="padding: 0">
         <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick">
           <el-tab-pane label="任务填报" name="first"></el-tab-pane>
           <el-tab-pane label="任务跟踪" name="second"></el-tab-pane>
           <el-tab-pane label="任务详情" name="third"></el-tab-pane>
         </el-tabs>
       </el-header>
-      <el-main style="width: 100%" class="main" v-if="activeName === 'first'">
+      <el-main class="main" v-if="activeName === 'first'">
         <div class="management-header">
           <div class="management-item">
             <p>我的待办</p>
@@ -249,24 +249,29 @@ export default {
   height: 20px;
   line-height: 20px;
 }
-.management-header {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: white;
-  .management-item {
-    width: 100%;
-    border-right: 1px solid lightgray;
+.main {
+  width: 100%;
+  padding: 0;
+
+  .management-header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
-    .font-bold {
-      font-size: 18px;
-      font-weight: 600;
+    background-color: white;
+    .management-item {
+      width: 100%;
+      border-right: 1px solid lightgray;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .font-bold {
+        font-size: 18px;
+        font-weight: 600;
+      }
     }
-  }
-  .border-none {
-    border-right: 0;
+    .border-none {
+      border-right: 0;
+    }
   }
 }
 .table {

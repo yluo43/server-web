@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
-      <el-header style="height: auto">
+    <el-container style="height: 100%; width: 100%">
+      <el-header style="height: 100%; padding: 0">
         <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectConfigFormData.name" placeholder="请输入项目名称" style="width: 200px" clearable />
@@ -82,20 +82,20 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="queryProjectList">查询</el-button>
-            <el-button type="primary" icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
+            <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
       </el-header>
 
-      <el-main>
+      <el-main style="padding: 0">
         <div class="chooseResult">
-          <span class="chooseResultStr" v-text="chooseStr" />
+          <span v-text="chooseStr" />
           <el-button type="text" @click="deleteProjectInfo()" v-auth="'costItems:deletes'">批量删除</el-button>
           <!-- <span v-auth="'costItems:deletes'" style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span> -->
         </div>
 
         <!-- toolBar -->
-        <div style="margin-bottom: 10px; margin-top: 15px">
+        <div class="operate-button">
           <el-button
             v-auth="'costItems:export'"
             class="el-button-func"
@@ -154,11 +154,30 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-link v-auth="'costItems:member'" type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item)">人员</el-link>
+              <el-tooltip class="item" effect="dark" content="人员" placement="bottom">
+                <svg-icon
+                  :icon-class="'person-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="editPersonnelInfo(row.item)"
+                  v-auth="'costItems:member'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                <svg-icon
+                  :icon-class="'edit-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="updateProjectInfo(row.item)"
+                  v-auth="'costItems:update'"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="deleteProjectInfo(row.item)" v-auth="'costItems:delete'" />
+              </el-tooltip>
+              <!-- <el-link v-auth="'costItems:member'" type="primary" icon="el-icon-edit" @click="editPersonnelInfo(row.item)">人员</el-link>
               <el-link v-auth="'costItems:update'" type="primary" style="margin-left: 10px" icon="el-icon-edit" @click="updateProjectInfo(row.item)">
                 编辑
               </el-link>
-              <el-link v-auth="'costItems:delete'" type="primary" style="margin-left: 10px" @click="deleteProjectInfo(row.item)">删除</el-link>
+              <el-link v-auth="'costItems:delete'" type="primary" style="margin-left: 10px" @click="deleteProjectInfo(row.item)">删除</el-link> -->
             </template>
           </template>
         </baseTable>
@@ -166,7 +185,8 @@
     </el-container>
 
     <!-- 编辑项目信息 -->
-    <base-drawer ref="editProjectInfoDrawer" :title="editDrawertitle" :handle-close="beforeCloseEditProjectDrawer">
+    <!-- :handle-close="beforeCloseEditProjectDrawer" -->
+    <base-drawer ref="editProjectInfoDrawer" :title="editDrawertitle">
       <template>
         <editProjectInfo ref="editProjectInfo" @closeDrawer="closeEditProjectInfoDrawer" />
       </template>
@@ -367,13 +387,13 @@ export default {
     },
 
     // 点击抽屉外区域时
-    beforeCloseEditProjectDrawer(done) {
-      this.$confirm('确认关闭？')
-        .then((_) => {
-          done()
-        })
-        .catch((_) => {})
-    },
+    // beforeCloseEditProjectDrawer(done) {
+    //   this.$confirm('确认关闭？')
+    //     .then((_) => {
+    //       done()
+    //     })
+    //     .catch((_) => {})
+    // },
 
     // 表格勾选时
     onSelectTableItem(selection) {
@@ -493,18 +513,18 @@ export default {
   max-width: 70% !important;
 }
 
-.chooseResult {
+/* .chooseResult {
   height: 30px;
   line-height: 30px;
   margin: 10px auto;
   display: block;
   background: #e9f3ff;
   border-radius: 6px;
-}
+} */
 
-.chooseResultStr {
+/* .chooseResultStr {
   margin-left: 10px;
-}
+} */
 
 .el-button {
   margin-left: 0;
