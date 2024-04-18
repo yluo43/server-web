@@ -113,8 +113,12 @@
             <span v-else>否</span>
           </template>
           <template v-slot:status="row">
-            <span v-if="row.item.status == 0 || row.item.status == 2">待审核</span>
-            <span v-if="row.item.status == 1 || row.item.status == 3">已驳回</span>
+            <!-- <span v-if="row.item.status == 0 || row.item.status == 2">待审核</span> -->
+            <!-- <span v-if="row.item.status == 1 || row.item.status == 3">已驳回</span> -->
+            <span v-if="row.item.status == 0">待初审</span>
+            <span v-if="row.item.status == 2">待复审</span>
+            <span v-if="row.item.status == 1">初审驳回</span>
+            <span v-if="row.item.status == 3">复审驳回</span>
             <span v-if="row.item.status == 4">已通过</span>
           </template>
           <template v-slot:clientType="row">
@@ -156,9 +160,11 @@ export default {
       projectName: '',
       count: 0,
       approvalStatus: [
-        { id: 1, name: '审批中' },
-        { id: 2, name: '已通过' },
-        { id: 3, name: '已驳回' }
+        { id: 0, name: '待初审' },
+        { id: 1, name: '初审驳回' },
+        { id: 2, name: '待复审' },
+        { id: 3, name: '复审驳回' },
+        { id: 4, name: '已通过' }
       ],
       isRemoteWorks: [
         { id: 0, name: '否' },
@@ -342,7 +348,6 @@ export default {
     resetForm() {
       this.$refs.dataForm.resetFields()
     },
-
     //通过
     pass(row) {
       const h = this.$createElement
@@ -367,6 +372,10 @@ export default {
             ids.push(item.overtimeId)
           }
         })
+        if (ids.length == 0) {
+          this.$message.warning('请选择待初审数据！')
+          return
+        }
         message = '已选中多条数据，确定批量通过吗？'
         this.open(message, ids)
       }

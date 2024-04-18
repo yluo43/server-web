@@ -76,8 +76,10 @@
         <div style="margin-top: 10px">
           <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
             <template v-slot:status="row">
-              <span v-if="row.item.status == 0 || row.item.status == 2">待审核</span>
-              <span v-if="row.item.status == 1 || row.item.status == 3">已驳回</span>
+              <span v-if="row.item.status == 0">待初审</span>
+              <span v-if="row.item.status == 2">待复审</span>
+              <span v-if="row.item.status == 1">初审驳回</span>
+              <span v-if="row.item.status == 3">复审驳回</span>
               <span v-if="row.item.status == 4">已通过</span>
             </template>
             <template v-slot:clientType="row">
@@ -120,9 +122,9 @@ export default {
       count: 0,
       remainingDays: 0,
       approvalStatus: [
-        { id: 2, name: '审批中' },
-        { id: 4, name: '已通过' },
-        { id: 3, name: '已驳回' }
+        { id: 2, name: '待复审' },
+        { id: 3, name: '复审驳回' },
+        { id: 4, name: '已通过' }
       ],
       deptList: [],
       selData: [],
@@ -267,7 +269,7 @@ export default {
       if (row) {
         message = h('p', null, [
           h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的调休申请,`),
-          h('span', { style: this.remainingDays > row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}(剩余可调休天数:${this.remainingDays})`),
+          h('span', { style: this.remainingDays > row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}天(剩余可调休天数:${this.remainingDays}天)`),
           h('span', { style: this.remainingDays > row.days ? 'display:none' : 'display:inline-block;color:red' }, `,已超出剩余可调休天数`),
           h('span', null, `,确认通过吗？`)
         ])
@@ -283,6 +285,10 @@ export default {
             ids.push(item.dayoffId)
           }
         })
+        if (ids.length == 0) {
+          this.$message.warning('请选择待复审数据！')
+          return
+        }
         message = '已选中多条数据，确定批量通过吗？'
         this.open(message, ids)
       }

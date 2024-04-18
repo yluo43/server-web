@@ -140,11 +140,14 @@ export default {
   props: {},
   data() {
     const validateoverTimeStartTime = (rule, value, callback) => {
+      if (this.overtimeDataForm.overtimeType === '') {
+        callback(new Error('请先选择加班类型'))
+      }
       if (!value) {
         callback(new Error('请选择加班开始时间'))
-      } else if (this.overtimeDataForm.overtimeType == 0 && new Date(this.overtimeDataForm.overTimeStartTime).getHours() < 19) {
+      } else if (this.overtimeDataForm.overtimeType === 0 && new Date(this.overtimeDataForm.overTimeStartTime).getHours() < 19) {
         callback(new Error('加班开始时间不得小于19点'))
-      } else if (this.overtimeDataForm.overtimeType == 1 && new Date(this.overtimeDataForm.overTimeStartTime).getHours() < 9) {
+      } else if (this.overtimeDataForm.overtimeType === 1 && new Date(this.overtimeDataForm.overTimeStartTime).getHours() < 9) {
         callback(new Error('加班开始时间不得小于9点'))
       } else {
         callback()
@@ -220,6 +223,8 @@ export default {
         this.overtimeProjects.map((item) => {
           if (item.id == value) {
             this.overtimeDataForm.projectManager = item.managerName
+          } else {
+            this.overtimeDataForm.projectManager = ''
           }
         })
       }
@@ -326,7 +331,7 @@ export default {
           reason: this.overtimeDataForm.overtimeReason
         }
         Object.keys(data).map((key) => {
-          if (!data[key] && data[key] != 0) {
+          if (!data[key] && data[key] !== 0) {
             delete data[key]
           }
         })
