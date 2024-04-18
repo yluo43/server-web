@@ -22,12 +22,13 @@
                 <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
+              <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+            </el-form-item>
           </div>
         </el-form>
-        <div>
-          <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
-          <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
-        </div>
+
         <div class="chooseResult">
           <span>已选中{{ count }}项</span>
           <el-button type="text" @click="batchDelete()">批量删除</el-button>
@@ -41,12 +42,13 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" />
-            </el-tooltip>
             <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
-              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="alter(row)" />
+              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="alter(row)" />
             </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="deleteList(row)" />
+            </el-tooltip>
+
             <!-- <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" />
             <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" /> -->
           </template>

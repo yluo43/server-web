@@ -69,10 +69,10 @@
                 end-placeholder="年/月/日"
               ></el-date-picker>
             </el-form-item>
-            <div style="display: contents">
-              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
+            <el-form-item>
+              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
-            </div>
+            </el-form-item>
           </div>
         </el-form>
       </el-header>
@@ -98,17 +98,13 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-              <svg-icon
-                :icon-class="'delete-icon'"
-                style="height: 1.5em; width: 1.5em; margin-right: 2em"
-                @click="deleteList(row)"
-                v-auth="'dailyCost:delete'"
-              />
-            </el-tooltip>
             <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
-              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'dailyCost:update'" />
+              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="alter(row)" v-auth="'dailyCost:update'" />
             </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="deleteList(row)" v-auth="'dailyCost:delete'" />
+            </el-tooltip>
+
             <!-- <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'dailyCost:delete'" />
             <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'dailyCost:update'" /> -->
           </template>

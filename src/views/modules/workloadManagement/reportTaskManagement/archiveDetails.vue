@@ -49,10 +49,10 @@
                   <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <div style="margin-bottom: 10px">
-                <el-button type="primary" icon="el-icon-search" @click="selectData">查询</el-button>
+              <el-form-item>
+                <el-button type="primary" icon="el-icon-search" @click="selectData" style="margin-right: 10px">查询</el-button>
                 <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
-              </div>
+              </el-form-item>
             </el-form>
           </div>
           <div class="chooseResult" style="display: flex">
