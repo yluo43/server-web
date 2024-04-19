@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <div>
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="加班明细" name="first"></el-tab-pane>
         <el-tab-pane label="调休明细" name="second"></el-tab-pane>
         <el-tab-pane label="补贴明细" name="third"></el-tab-pane>
@@ -10,7 +10,7 @@
     <div>
       <!-- 加班明细-->
       <div v-if="activeName === 'first'">
-        <overtimeDetials ref="overtimeDetials" :empId="empId"></overtimeDetials>
+        <overtimeDetials ref="overtimeDetials"></overtimeDetials>
       </div>
       <!-- 调休明细-->
       <div v-if="activeName === 'second'">
@@ -45,6 +45,16 @@ export default {
   methods: {
     init(initData) {
       this.empId = initData.empId
+      this.$nextTick(() => {
+        this.$refs.overtimeDetials.init(this.empId)
+      })
+    },
+    handleClick() {
+      if (this.activeName == 'first') {
+        this.$nextTick(() => {
+          this.$refs.overtimeDetials.init(this.empId)
+        })
+      }
     }
   }
 }

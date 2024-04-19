@@ -6,7 +6,7 @@
           <el-form-item label="补贴项目:" prop="projectId" style="width: 70%">
             <el-table :data="tableData" ref="refsTable" border @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column prop="name" label="项目列表"></el-table-column>
+              <el-table-column prop="name" label="项目名称"></el-table-column>
               <el-table-column prop="days" label="调休天数"></el-table-column>
             </el-table>
           </el-form-item>
@@ -54,7 +54,7 @@ export default {
       //已补贴天数
       subsidizedDays: '',
       //剩余可调休天数
-      remainingDays: 3,
+      remainingDays: '',
       checkedProject: [],
       tableData: [],
       dataForm: {
@@ -76,6 +76,7 @@ export default {
   methods: {
     init(initData) {
       this.empId = initData.empId
+      this.remainingDays = initData.dayoffDays
       this.getCompensatoryLeaveInfo()
     },
 
@@ -91,7 +92,7 @@ export default {
           this.totalDays = data.payload.totalDays
           this.compensatedLeaveDays = data.payload.dayoffDays
           this.subsidizedDays = data.payload.subsidyDays
-          this.remainingDays = this.totalDays - this.compensatedLeaveDays - this.subsidizedDays
+          //  this.remainingDays = this.totalDays - this.compensatedLeaveDays - this.subsidizedDays
         } else {
           this.$message.error(data.msg)
         }

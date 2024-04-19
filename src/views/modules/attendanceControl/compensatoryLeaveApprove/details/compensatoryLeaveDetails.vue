@@ -11,7 +11,7 @@ export default {
   components: { baseTable },
   props: {
     empId: {
-      type: String,
+      type: Number,
       required: true
     }
   },
@@ -25,7 +25,7 @@ export default {
           { label: '申请时间', prop: 'createTime' },
           { label: '审批通过时间', prop: 'reTrialTime' }
         ],
-        url: '/attendance/dayoffAudit'
+        url: '/attendance/dayoffDetailByEmp'
       }
     }
   },
@@ -36,7 +36,7 @@ export default {
   methods: {
     //表格查询
     selectTableData() {
-      this.$refs.table.refresh(this.empId)
+      this.$refs.table.refresh({ empId: this.empId })
     }
   }
 }

@@ -86,8 +86,8 @@ export default {
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
           { label: '团队负责人', prop: 'teamManager' },
-          { label: '累计加班时长', prop: 'overtimeHours' },
-          { label: '可调休天数', prop: 'dayoffDays' },
+          { label: '累计加班时长(小时)', prop: 'overtimeHours' },
+          { label: '可调休天数(天)', prop: 'dayoffDays' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         url: '/attendance/overtimeStats'

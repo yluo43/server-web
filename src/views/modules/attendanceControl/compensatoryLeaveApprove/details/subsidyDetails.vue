@@ -11,7 +11,7 @@ export default {
   components: { baseTable },
   props: {
     empId: {
-      type: String,
+      type: Number,
       required: true
     }
   },
@@ -34,7 +34,8 @@ export default {
   methods: {
     //表格查询
     selectTableData() {
-      this.$refs.table.refresh(this.empId)
+      console.log(this.empId)
+      this.$refs.table.refresh({ empId: this.empId })
     }
   }
 }

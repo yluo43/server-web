@@ -57,14 +57,14 @@ export default {
         return
       }
       let formData = new FormData()
-      formData.set('uploadFile', this.uploadFileList[0].raw)
+      formData.append('MultipartFile', this.uploadFileList[0].raw)
       this.$http({
         url: this.$http.adornUrl('/attendance/import'),
         method: 'post',
-        data: formData
-        // headers: {
-        //   'Content-Type': 'multipart/form-data; charset=utf-8' // 设置请求头为multipart/form-data
-        // }
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data; charset=utf-8' // 设置请求头为multipart/form-data
+        }
       }).then(({ data }) => {
         if (data.success) {
           this.$message.success(data.msg)
