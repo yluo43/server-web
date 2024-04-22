@@ -128,7 +128,7 @@ export default {
   top: 5px;
 }
 ::v-deep .el-step__title.is-finish {
-  color: #c0c4cc;
+  color: rgba(0, 0, 0, 0.42745098039215684);
 }
 ::v-deep .el-step__head.is-process {
   border-color: #409eff;
@@ -143,6 +143,6 @@ export default {
   height: 13px;
 }
 ::v-deep .el-step__description.is-finish {
-  color: #c0c4cc;
+  color: rgba(0, 0, 0, 0.42745098039215684);
 }
 </style>

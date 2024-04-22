@@ -131,7 +131,7 @@ export default {
         userName: '',
         empId: '',
         teamId: '',
-        teamIds: [],
+        //  teamIds: [],
         status: '',
         compensatoryLeaveStartTime: [],
         compensatoryLeaveEndTime: [],
@@ -228,11 +228,11 @@ export default {
     },
     //通过
     async pass(row) {
-      await this.getRemainingDays(row.empId)
       const h = this.$createElement
       let message = ''
       let ids = []
       if (row) {
+        await this.getRemainingDays(row.empId)
         message = h('p', null, [
           h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的调休申请,`),
           h('span', { style: this.remainingDays > row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}天(剩余可调休天数:${this.remainingDays}天)`),

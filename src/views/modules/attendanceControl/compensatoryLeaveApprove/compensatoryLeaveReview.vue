@@ -9,7 +9,17 @@
           <el-form-item label="工号:" prop="empId">
             <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
           </el-form-item>
-          <el-form-item label="归属部门:" prop="deptIds">
+          <el-form-item label="归属部门:" prop="deptId">
+            <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="归属团队:" prop="teamId">
+            <el-select v-model="dataForm.teamId" placeholder="请选择归属团队" clearable>
+              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <!-- <el-form-item label="归属部门:" prop="deptIds">
             <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
             </el-select>
@@ -23,7 +33,7 @@
             <el-select v-model="dataForm.teamLeader" placeholder="请选择团队负责人" multiple collapse-tags clearable>
               <el-option v-for="item in teamLeaders" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="审批状态:" prop="status">
             <el-select v-model="dataForm.status" placeholder="请选择审批状态" clearable>
               <el-option v-for="item in approvalStatus" :key="item.id" :label="item.name" :value="item.id" />
@@ -134,9 +144,11 @@ export default {
         operatorName: '',
         userName: '',
         empId: '',
-        deptIds: [],
-        teamIds: [],
-        teamLeader: [],
+        deptId: '',
+        teamId: '',
+        // deptIds: [],
+        // teamIds: [],
+        // teamLeader: [],
         status: '',
         compensatoryLeaveStartTime: [],
         compensatoryLeaveEndTime: [],
@@ -262,11 +274,11 @@ export default {
     },
     //通过
     async pass(row) {
-      await this.getRemainingDays(row.empId)
       const h = this.$createElement
       let message = ''
       let ids = []
       if (row) {
+        await this.getRemainingDays(row.empId)
         message = h('p', null, [
           h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的调休申请,`),
           h('span', { style: this.remainingDays > row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}天(剩余可调休天数:${this.remainingDays}天)`),
