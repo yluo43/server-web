@@ -32,7 +32,7 @@ export default {
           { label: '加班开始时间', prop: 'startTime' },
           { label: '加班结束时间', prop: 'endTime' },
           { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
-          { label: '加班时长', prop: 'overtimeHours' },
+          { label: '加班时长(小时)', prop: 'overtimeHours' },
           { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork' },
           { label: '申请时间', prop: 'createTime' },
           { label: '审批通过时间', prop: 'reTrialTime' }

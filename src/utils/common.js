@@ -107,3 +107,10 @@ export function getShareTableColor(costName) {
 
   return colors
 }
+
+export function hasPermission(perms) {
+  let flag = false
+  const permissions = JSON.parse(localStorage.getItem('buttons') || '')
+  flag = permissions.includes(perms)
+  return flag
+}

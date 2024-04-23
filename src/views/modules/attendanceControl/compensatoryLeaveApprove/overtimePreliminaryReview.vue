@@ -50,6 +50,7 @@
 
           <el-form-item label="申请时间:" prop="applyTime">
             <el-date-picker
+              style="width: 200px"
               v-model="dataForm.applyTime"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -66,6 +67,7 @@
           </el-form-item>
           <el-form-item label="加班开始时间:" prop="startTime">
             <el-date-picker
+              style="width: 200px"
               v-model="dataForm.startTime"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -77,6 +79,7 @@
           </el-form-item>
           <el-form-item label="加班结束时间:" prop="endTime">
             <el-date-picker
+              style="width: 200px"
               v-model="dataForm.endTime"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"

@@ -5,6 +5,7 @@
         <el-form ref="dataForm" :inline="true" :model="dataForm">
           <el-form-item label="日期:" prop="dateRange">
             <el-date-picker
+              style="width: 200px"
               v-model="dataForm.dateRange"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"

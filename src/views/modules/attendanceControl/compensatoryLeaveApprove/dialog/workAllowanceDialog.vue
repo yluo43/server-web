@@ -47,6 +47,7 @@ export default {
   data() {
     return {
       empId: '',
+      auditor: '',
       //总天数
       totalDays: '',
       //已调休天数
@@ -72,11 +73,12 @@ export default {
     }
   },
   mounted() {},
-  created() {},
+  created() {
+    this.auditor = this.$store.state.user.empId
+  },
   methods: {
     init(initData) {
       this.empId = initData.empId
-      this.remainingDays = initData.dayoffDays
       this.getCompensatoryLeaveInfo()
     },
 
@@ -92,7 +94,11 @@ export default {
           this.totalDays = data.payload.totalDays
           this.compensatedLeaveDays = data.payload.dayoffDays
           this.subsidizedDays = data.payload.subsidyDays
-          //  this.remainingDays = this.totalDays - this.compensatedLeaveDays - this.subsidizedDays
+          if (data.payload.lastYearOffdays < 0) {
+            this.remainingDays = this.totalDays - this.compensatedLeaveDays - this.subsidizedDays + data.payload.lastYearOffdays
+          } else {
+            this.remainingDays = this.totalDays - this.compensatedLeaveDays - this.subsidizedDays
+          }
         } else {
           this.$message.error(data.msg)
         }
@@ -131,6 +137,7 @@ export default {
         let data = {
           days: this.dataForm.subsidyDays,
           empId: this.empId,
+          auditor: this.auditor,
           money: this.dataForm.subsidyAmount,
           projectId: this.dataForm.projectId
         }

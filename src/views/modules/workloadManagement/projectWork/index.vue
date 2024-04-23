@@ -26,10 +26,10 @@
           </el-row>
         </el-aside>
         <el-main style="width: 100%; padding: 0" v-if="activeName === 'first'">
-          <div class="management-header">
+          <!-- <div class="management-header">
             <div class="management-item">
               <el-statistic title="我的待办">
-                <template slot="formatter">{{ myTaskCount.waitCount }}个任务</template>
+                <template slot="formatter" class="font-bold">{{ myTaskCount.waitCount }}个任务</template>
               </el-statistic>
             </div>
             <div class="management-item">
@@ -41,6 +41,29 @@
               <el-statistic title="本年完成任务数">
                 <template slot="formatter">{{ myTaskCount.yearCount }}个任务</template>
               </el-statistic>
+            </div>
+          </div> -->
+          <div class="management-header">
+            <div class="management-item">
+              <p>我的待办</p>
+              <p class="font-bold">
+                <span>{{ myTaskCount.waitCount }}</span>
+                个任务
+              </p>
+            </div>
+            <div class="management-item">
+              <p>本月完成任务数</p>
+              <p class="font-bold">
+                <span>{{ myTaskCount.monthCount }}</span>
+                个任务
+              </p>
+            </div>
+            <div class="management-item border-none">
+              <p>本年完成任务数</p>
+              <p class="font-bold">
+                <span>{{ myTaskCount.yearCount }}</span>
+                个任务
+              </p>
             </div>
           </div>
           <div class="table">
@@ -152,13 +175,13 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '200px' },
           { label: '简介', prop: 'intro' },
-          { label: '创建人', prop: 'managerName' },
+          { label: '创建人', prop: 'managerName', width: '80px' },
           { label: '开始确认时间', prop: 'startConfirmTime' },
-          { label: '确认天数', prop: 'affirmDay' },
-          { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
+          { label: '确认天数', prop: 'affirmDay', width: '80px' },
+          { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus', width: '80px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '160px' }
         ],
         url: '/projectWork/projectTaskList'
       },
@@ -384,12 +407,35 @@ export default {
   align-items: center;
   background-color: white;
   height: 100px;
-
   .management-item {
     width: 100%;
+    height: 100%;
     border-right: 1px solid lightgray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .font-bold {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+  .border-none {
+    border-right: 0;
   }
 }
+// .management-header {
+//   display: flex;
+//   justify-content: space-around;
+//   align-items: center;
+//   background-color: white;
+//   height: 100px;
+
+//   .management-item {
+//     width: 100%;
+//     border-right: 1px solid lightgray;
+//   }
+// }
 
 .table {
   background-color: white;
@@ -397,15 +443,20 @@ export default {
 }
 
 ::v-deep .small-badge .el-badge__content {
-  font-size: 10px; /* 设置你想要的字体大小 */
+  font-size: 12px; /* 设置你想要的字体大小 */
 }
 
 ::v-deep .small-badge .el-badge__content.is-fixed {
-  top: 16px;
+  top: 20px;
   right: 0;
 }
 
 ::v-deep .badge-table .el-badge__content.is-fixed {
   top: 8px;
+}
+::v-deep .el-badge__content {
+  border-radius: 4px;
+
+  padding: 0 10px;
 }
 </style>

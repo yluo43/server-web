@@ -6,9 +6,9 @@
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
-          <el-form-item label="工号:" prop="empId">
+          <!-- <el-form-item label="工号:" prop="empId">
             <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="归属部门:" prop="deptId">
             <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
@@ -39,7 +39,7 @@
               <el-option v-for="item in approvalStatus" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <el-form-item label="调休开始时间:" prop="compensatoryLeaveStartTime">
+          <!-- <el-form-item label="调休开始时间:" prop="compensatoryLeaveStartTime">
             <el-date-picker
               v-model="dataForm.compensatoryLeaveStartTime"
               value-format="yyyy-MM-dd"
@@ -71,7 +71,7 @@
               start-placeholder="年/月/日"
               end-placeholder="年/月/日"
             />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="selectTableData">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
@@ -262,12 +262,12 @@ export default {
     //获取剩余可调休天数
     async getRemainingDays(empId) {
       const { data } = await this.$http({
-        url: this.$http.adornUrl('/attendance/getSubsidyInfo'),
+        url: this.$http.adornUrl('/attendance/getEmpDayoffCount'),
         method: 'get',
         params: { empId: empId }
       })
       if (data && data.code === 200) {
-        this.remainingDays = data.payload.totalDays - data.payload.subsidyDays - data.payload.dayoffDays
+        this.remainingDays = data.payload.days
       } else {
         this.$message.error(data.msg)
       }

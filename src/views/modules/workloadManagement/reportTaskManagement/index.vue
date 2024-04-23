@@ -68,12 +68,6 @@
                 </div>
                 <div v-else>{{ row.item.reportWorkName }}</div>
               </template>
-              <template v-slot:createTime="row">
-                <div>{{ format(row.item.createTime) }}</div>
-              </template>
-              <template v-slot:reportStartTime="row">
-                <div>{{ format(row.item.reportStartTime) }}</div>
-              </template>
               <template v-slot:taskStatus="row">
                 <template v-if="row.item.taskStatus == 0">
                   <span>待开始</span>
@@ -158,15 +152,15 @@ export default {
       reportTaskTitle: '',
       taskList: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '190px' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '200px' },
           { label: '简介', prop: 'intro' },
-          { label: '创建人', prop: 'managerName' },
-          { label: '创建时间', prop: 'createTime', slotName: 'createTime' },
-          { label: '开始填报时间', prop: 'reportStartTime', slotName: 'reportStartTime' },
-          { label: '填报天数', prop: 'reportDay' },
-          { label: '提醒频率', prop: 'frequency' },
-          { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '创建人', prop: 'managerName', width: '80px' },
+          { label: '创建时间', prop: 'createTime' },
+          { label: '开始填报时间', prop: 'reportStartTime' },
+          { label: '填报天数', prop: 'reportDay', width: '80px' },
+          { label: '提醒频率', prop: 'frequency', width: '80px' },
+          { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus', width: '80px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '300px' }
         ],
         url: '/workload/selectReportPage'
       }
@@ -260,16 +254,6 @@ export default {
         this.$refs.addOrUpdateReportTask.init({ operate: 'edit' }, row.item)
       })
     },
-    //日期格式化
-    format(date) {
-      var date = new Date(date)
-      var year = date.getFullYear()
-      var month = date.getMonth() + 1
-      month = (month < 10 ? '0' : '') + month
-      var datee = date.getDate()
-      datee = (datee < 10 ? '0' : '') + datee
-      return year + '-' + month + '-' + datee
-    },
     //去归档
     goToArchive(row) {
       this.activeName = 'second'
@@ -330,7 +314,6 @@ export default {
                   type: 'success'
                 })
                 this.handlerRadio()
-                // this.selectTaskList({ empId: this.empId })
                 this.selectTaskAmount()
               } else {
                 this.$message.error(data.msg)
@@ -356,6 +339,7 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .el-button {
   min-width: 0;
+  width: auto;
 }
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
