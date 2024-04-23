@@ -120,7 +120,7 @@
               <svg-icon
                 :icon-class="'delete-icon'"
                 style="height: 1.5em; width: 1.5em; margin-right: 2em"
-                @click="deleteList(row)"
+                @click="deleteList(row.item)"
                 v-auth="'tripCost:delete'"
               />
             </el-tooltip>
@@ -529,8 +529,9 @@ export default {
     },
     deleteList(row) {
       this.deleteIds = []
-      this.deleteIds.push(row.item.id)
-      this.$confirm(`您确定删除吗?`, '提示', {
+      this.deleteIds.push(row.id)
+      const message = `【确定删除[${row.deptName}-${row.account}]${row.startDate}至${row.backDate}前往${row.backCity}的出差记录吗？删除后将无法恢复!】`
+      this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

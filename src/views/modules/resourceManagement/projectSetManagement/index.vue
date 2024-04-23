@@ -347,13 +347,13 @@ export default {
         data = [row.item.id]
         switch (row.item.state) {
           case 0:
-            message = '该项目集正在交付中,您确定删除吗?'
+            message = '【该项目集正在交付中,确定删除吗?删除后项目集下项目将被移除!】'
             break
           case 1:
-            message = '该项目集已交付,您确定删除吗?'
+            message = '【该项目集已交付,确定删除吗?删除后项目集下项目将被移除!】'
             break
           case 2:
-            message = '该项目集已关闭,您确定删除吗?'
+            message = '【该项目集已关闭,确定删除吗?删除后项目集下项目将被移除!】'
             break
         }
       } else {

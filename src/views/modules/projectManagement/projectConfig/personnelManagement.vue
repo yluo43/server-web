@@ -349,12 +349,24 @@ export default {
       if (row) {
         // 删除单条数据时
         data = [row.id]
-        message = '确定删除吗？'
+        let supportState = ''
+        switch (row.state) {
+          case 1:
+            supportState = '正在支撑中'
+            break
+          case 2:
+            supportState = '待开始支撑'
+            break
+          case 3:
+            supportState = '已结束支撑'
+            break
+        }
+        message = `【"${row.name}"${supportState},确定删除吗?删除后将无法恢复!】`
       } else {
         // 批量删除时
         const list = this.$refs.personnelManagementTable.getSelectRow()
         if (list.length === 0) {
-          this.$message.warning('请至少选择一条数据！')
+          this.$message.warning('请至少选择一条数据!')
           return
         }
         message = '已选中' + list.length + '个人员，确认批量删除吗？'

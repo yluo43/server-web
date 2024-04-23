@@ -32,7 +32,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="加班原因" prop="overtimeReason">
-              <el-input v-model="overtimeDataForm.overtimeReason" maxlength="50" show-word-limit></el-input>
+              <el-input v-model="overtimeDataForm.overtimeReason" placeholder="请输入加班原因,不超过50字" maxlength="50" show-word-limit></el-input>
             </el-form-item>
           </el-col>
         </el-row>

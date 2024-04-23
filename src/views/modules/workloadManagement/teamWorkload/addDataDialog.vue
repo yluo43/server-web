@@ -4,18 +4,18 @@
       <div style="width: 100%">
         <el-form ref="formData" label-width="110px" :rules="rules" :model="formData">
           <el-form-item label="姓名:" prop="empId">
-            <el-select v-model="formData.empId" placeholder="请选择成员" clearable>
-              <el-option v-for="item in users" :key="item.empId" :label="item.name" :value="item.empId" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="报工类别:" prop="workloadType">
-            <el-select v-model="formData.workloadType" placeholder="请选择报工类别" clearable>
-              <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
+            <el-select v-model="formData.empId" filterable placeholder="请选择成员" clearable>
+              <el-option v-for="item in users" :key="item.empId" :label="item.name + '(' + item.empId + ')'" :value="item.empId" />
             </el-select>
           </el-form-item>
           <el-form-item label="成本项目:" prop="projectId">
             <el-select v-model="formData.projectId" placeholder="请选择成本项目" clearable>
               <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="报工类别:" prop="workloadType">
+            <el-select v-model="formData.workloadType" placeholder="请选择报工类别" clearable>
+              <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="实际投入:" prop="realityRate" style="margin-top: 10px">
@@ -98,13 +98,6 @@ export default {
       this.data = initData
       this.teamId = teamId
       this.getTeamManager()
-      // let newArrId = []
-      // initData.pmsWorkloadVoList.map((item) => {
-      //   if (newArrId.indexOf(item.empId) === -1) {
-      //     newArrId.push(item.empId)
-      //     this.users.push({ empId: item.empId, name: item.name })
-      //   }
-      // })
     },
     //获取成员
     getTeamManager() {
