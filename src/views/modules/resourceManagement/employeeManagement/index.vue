@@ -101,10 +101,10 @@
               </el-select>
             </el-form-item>
 
-            <div style="display: contents">
-              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
-              <el-button @click="resetForm()" icon="el-icon-search" style="margin-right: 20px">重置</el-button>
-            </div>
+            <el-form-item>
+              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
+              <el-button @click="resetForm()" icon="el-icon-search">重置</el-button>
+            </el-form-item>
           </div>
         </el-form>
         <div class="chooseResult">
@@ -141,17 +141,18 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
               <svg-icon
-                :icon-class="'delete-icon'"
+                :icon-class="'edit-icon'"
                 style="height: 1.5em; width: 1.5em; margin-right: 2em"
-                @click="deleteList(row)"
-                v-auth="'employee:deleteEmployee'"
+                @click="alter(row)"
+                v-auth="'employee:updateEmployee'"
               />
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
-              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'employee:updateEmployee'" />
+            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="deleteList(row)" v-auth="'employee:deleteEmployee'" />
             </el-tooltip>
+
             <!-- <svg-icon
               :icon-class="'delete'"
               style="height: 1.5em; width: 1.5em; margin-right: 2em"

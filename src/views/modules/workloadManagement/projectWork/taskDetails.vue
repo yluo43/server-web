@@ -45,10 +45,10 @@
                           <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
-                      <div style="display: contents; float: right">
+                      <el-form-item>
                         <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
                         <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
-                      </div>
+                      </el-form-item>
                     </el-form>
                   </el-header>
                 </el-col>

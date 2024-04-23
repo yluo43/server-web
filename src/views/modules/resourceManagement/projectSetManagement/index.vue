@@ -57,10 +57,10 @@
               <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
-          <div style="display: contents; float: right">
+          <el-form-item>
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
             <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
-          </div>
+          </el-form-item>
         </el-form>
       </el-header>
       <el-main style="padding: 0">
@@ -98,17 +98,13 @@
                   v-auth="'projectSet:addProject'"
                 />
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-                <svg-icon
-                  :icon-class="'delete-icon'"
-                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
-                  @click="deleteList(row)"
-                  v-auth="'projectSet:delete'"
-                />
-              </el-tooltip>
               <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
-                <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em" @click="update(row)" v-auth="'projectSet:update'" />
+                <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="update(row)" v-auth="'projectSet:update'" />
               </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="deleteList(row)" v-auth="'projectSet:delete'" />
+              </el-tooltip>
+
               <!-- <el-tooltip class="item" effect="dark" content="查看项目" placement="bottom" v-auth="'projectSet:showProject'">
                 <i class="el-icon-document" style="font-size: 1.5em; margin-right: 1em" @click="view(row)"></i>
               </el-tooltip>
