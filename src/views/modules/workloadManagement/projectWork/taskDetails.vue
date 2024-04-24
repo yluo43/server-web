@@ -18,30 +18,30 @@
               <el-col>
                 <el-col>
                   <el-header style="height: auto">
-                    <el-form :inline="true" :model="dataForm" ref="dataForm">
-                      <el-form-item label="用户名姓名:" prop="empName">
-                        <el-input v-model="dataForm.empName" placeholder="请输入关键字" clearable></el-input>
+                    <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
+                      <el-form-item label="用户姓名:" prop="empName">
+                        <el-input style="width: 200px" v-model="dataForm.empName" placeholder="请输入用户姓名" clearable></el-input>
                       </el-form-item>
                       <el-form-item label="工号:" prop="empId">
-                        <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable></el-input>
+                        <el-input style="width: 200px" v-model="dataForm.empId" placeholder="请输入工号" clearable></el-input>
                       </el-form-item>
                       <el-form-item label="归属部门:">
-                        <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择">
+                        <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
                           <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
                       <el-form-item label="归属团队:">
-                        <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">
+                        <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
                           <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
                       <el-form-item label="团队负责人:">
-                        <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
+                        <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择团队负责人">
                           <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
                       <el-form-item label="报工类别:">
-                        <el-select v-model="workloadType" multiple collapse-tags placeholder="请选择">
+                        <el-select v-model="workloadType" multiple collapse-tags placeholder="请选择报工类别">
                           <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
@@ -387,12 +387,12 @@ export default {
   font-size: 16px;
 }
 
-.chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 10px auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-}
+// .chooseResult {
+//   height: 30px;
+//   line-height: 30px;
+//   margin: 10px auto;
+//   display: block;
+//   background: #e9f3ff;
+//   border-radius: 6px;
+// }
 </style>

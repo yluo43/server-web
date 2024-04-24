@@ -1,8 +1,8 @@
 <template>
   <div style="height: 100%">
     <el-container>
-      <el-header style="height: 130px">
-        <el-form :inline="true" :model="dataForm" ref="dataForm">
+      <el-header style="height: 100%">
+        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="团队名称:" prop="teamName">
               <el-input v-model="dataForm.teamName" placeholder="输入关键字" clearable maxlength="50"></el-input>
@@ -24,14 +24,7 @@
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptIds">
               <el-select v-model="dataForm.deptIds" placeholder="请选择" multiple :collapse-tags="true">
-                <el-option
-                  v-for="dept in deptList"
-                  :key="dept.id"
-                  :label="dept.name"
-                  :value="dept.id"
-                  multiple
-                  :disabled="dept.name == '新讯数字科技有限公司'"
-                ></el-option>
+                <el-option v-for="dept in deptList" :key="dept.id" :label="dept.name" :value="dept.id" multiple></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="状态:" prop="state">
@@ -42,7 +35,7 @@
             </el-form-item>
             <el-form-item label="创建时间:" prop="createTime" style="width: 290px !important">
               <el-date-picker
-                style="width: 220px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="createTime"
@@ -127,13 +120,7 @@
 
             <el-form-item label="归属部门:" prop="deptId" :rules="[{ required: true, message: '归属部门不能为空' }]">
               <el-select clearable v-model="editDataForm.deptId" placeholder="请选择" @change="changeManagerList">
-                <el-option
-                  v-for="dept in onwerDeptList"
-                  :key="dept.id"
-                  :label="dept.name"
-                  :value="dept.id"
-                  :disabled="dept.name == '新讯数字科技有限公司'"
-                ></el-option>
+                <el-option v-for="dept in onwerDeptList" :key="dept.id" :label="dept.name" :value="dept.id"></el-option>
               </el-select>
             </el-form-item>
 
@@ -154,14 +141,8 @@
             </el-form-item>
             <el-row>
               <el-form-item label="团队成员:" prop="teamMembers">
-                <el-button type="primary" style="width: 120px" plain @click="chooseTeamMember">选择团队成员</el-button>
-                <!-- <el-transfer
-                :titles="['所有成员', '团队成员']"
-                filterable
-                filter-placeholder="请输入团队成员姓名"
-                v-model="value"
-                :data="teamMembers"
-              ></el-transfer> -->
+                <el-button type="primary" style="width: 200px" plain @click="chooseTeamMember">选择团队成员</el-button>
+
                 <!-- <el-select  clearable v-model="editDataForm.teamMembers"
                          filterable
                          placeholder="请选择" multiple
@@ -178,7 +159,7 @@
             </el-row>
             <el-form-item label="创建时间:" prop="createTime" :rules="[{ required: true, message: '创建不能为空' }]">
               <el-date-picker
-                style="width: 130px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.createTime"
@@ -188,7 +169,7 @@
             </el-form-item>
 
             <el-form-item label="状态:" prop="state" v-if="departStatusNameShow">
-              <el-select clearable v-model="editDataForm.state" placeholder="请选择">
+              <el-select clearable v-model="editDataForm.state" placeholder="请选择状态">
                 <el-option key="0" label="正常" value="0"></el-option>
                 <el-option key="1" label="解散" value="1"></el-option>
               </el-select>
@@ -198,7 +179,7 @@
 
             <div style="display: flex; justify-content: flex-end; margin-right: 10px; margin-top: 30px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
-              <el-button type="primary" @click="drawer = false">取消</el-button>
+              <el-button @click="drawer = false">取消</el-button>
             </div>
           </el-form>
         </div>
@@ -669,7 +650,9 @@ export default {
   color: #333;
   padding: 0 0;
 }
-
+.el-input {
+  width: 200px;
+}
 /* .el-form--inline > .inputlist {
   padding-top: 20px;
   padding-left: 20px;

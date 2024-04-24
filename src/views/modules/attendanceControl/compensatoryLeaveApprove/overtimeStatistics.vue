@@ -47,7 +47,7 @@
             <template v-slot:clientType="row">
               <template>
                 <el-button type="text" @click="viewDetails(row.item)">查看明细</el-button>
-                <el-button type="text" @click="workAllowance(row.item)">工时补贴</el-button>
+                <el-button type="text" v-auth="'attendance:subsidy'" @click="workAllowance(row.item)">工时补贴</el-button>
               </template>
             </template>
           </baseTable>
@@ -207,14 +207,9 @@ export default {
 </script>
 
 <style scoped>
-.el-select {
-  width: 200px !important;
+.el-input {
+  width: 200px;
 }
-
-::v-deep .el-select .el-tag {
-  max-width: 70% !important;
-}
-
 .el-button {
   margin-left: 0;
   width: auto;

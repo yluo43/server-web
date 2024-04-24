@@ -1,8 +1,8 @@
 <template>
   <div style="height: 100%">
     <el-container>
-      <el-header style="height: 165px">
-        <el-form :inline="true" :model="dataForm" ref="dataForm">
+      <el-header style="height: 100%">
+        <el-form :inline="true" label-width="65px" label-position="left" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="姓名:" prop="name">
               <el-input v-model="dataForm.name" placeholder="请输入员工姓名" clearable maxlength="50"></el-input>
@@ -42,7 +42,7 @@
             </el-form-item>
             <el-form-item label="入职时间:" prop="entryDate">
               <el-date-picker
-                style="width: 220px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="entryDate"
@@ -54,7 +54,7 @@
             </el-form-item>
             <el-form-item label="离职时间:" prop="departDate">
               <el-date-picker
-                style="width: 220px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="departDate"
@@ -234,7 +234,7 @@
 
             <el-form-item label="入职时间:" prop="entryDate">
               <el-date-picker
-                style="width: 190px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.entryDate"
@@ -262,7 +262,7 @@
             </el-form-item>
             <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 10px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit">确定</el-button>
-              <el-button type="primary" @click="drawer = false">取消</el-button>
+              <el-button @click="drawer = false">取消</el-button>
             </div>
           </el-form>
         </div>
@@ -685,6 +685,9 @@ export default {
 .el-header {
   color: #333;
   padding: 0 0;
+}
+.el-input {
+  width: 200px;
 }
 /* .el-form--inline > .inputlist {
   padding-top: 20px;

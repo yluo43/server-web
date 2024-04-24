@@ -2,12 +2,12 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: 100%; padding: 0">
-        <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData">
+        <el-form ref="projectConfigForm" label-width="80px" label-position="left" :inline="true" :model="projectConfigFormData">
           <el-form-item label="项目名称:" prop="name">
-            <el-input v-model="projectConfigFormData.name" placeholder="请输入项目名称" style="width: 200px" clearable />
+            <el-input v-model="projectConfigFormData.name" placeholder="请输入项目名称" clearable />
           </el-form-item>
           <el-form-item label="项目编码:" prop="projectId">
-            <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" style="width: 200px" clearable />
+            <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" clearable />
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerIds">
             <el-select v-model="projectConfigFormData.managerIds" multiple collapse-tags clearable placeholder="请选择项目经理">
@@ -16,6 +16,7 @@
           </el-form-item>
           <el-form-item label="立项时间:" prop="approvalDate">
             <el-date-picker
+              style="width: 200px"
               v-model="projectConfigFormData.approvalDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -36,16 +37,17 @@
             </el-select>
           </el-form-item>
           <el-form-item label="甲方名称:" prop="firstParty">
-            <el-input v-model="projectConfigFormData.firstParty" placeholder="请输入甲方名称" style="width: 200px" clearable />
+            <el-input v-model="projectConfigFormData.firstParty" placeholder="请输入甲方名称" clearable />
           </el-form-item>
           <el-form-item label="合同名称:" prop="contractName">
-            <el-input v-model="projectConfigFormData.contractName" placeholder="请输入合同名称" style="width: 200px" clearable />
+            <el-input v-model="projectConfigFormData.contractName" placeholder="请输入合同名称" clearable />
           </el-form-item>
           <el-form-item label="合同编号:" prop="contractNo">
-            <el-input v-model="projectConfigFormData.contractNo" placeholder="请输入合同编号" style="width: 200px" clearable />
+            <el-input v-model="projectConfigFormData.contractNo" placeholder="请输入合同编号" clearable />
           </el-form-item>
           <el-form-item label="交付时间:" prop="deliveryDate">
             <el-date-picker
+              style="width: 200px"
               v-model="projectConfigFormData.deliveryDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -81,7 +83,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="queryProjectList">查询</el-button>
+            <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="queryProjectList">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
@@ -505,13 +507,16 @@ export default {
 </script>
 
 <style scoped>
-.el-select {
+.el-input {
+  width: 200px;
+}
+/* .el-select {
   width: 200px !important;
-}
+} */
 
-::v-deep .el-select .el-tag {
+/* ::v-deep .el-select .el-tag {
   max-width: 70% !important;
-}
+} */
 
 /* .chooseResult {
   height: 30px;

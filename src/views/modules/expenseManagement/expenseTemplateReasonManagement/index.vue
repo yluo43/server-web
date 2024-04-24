@@ -59,7 +59,7 @@
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="editForm">
             <el-form-item label="报销项目名称:" prop="name">
-              <el-input style="width: 230px" v-model="editDataForm.name" placeholder="请输入事由名称" clearable></el-input>
+              <el-input v-model="editDataForm.name" placeholder="请输入事由名称" clearable></el-input>
             </el-form-item>
             <el-form-item label="报销项目归属部门:" prop="deptName">
               <el-select v-model="editDataForm.deptName" placeholder="请选择">
@@ -72,7 +72,7 @@
               </el-select>
             </el-form-item> -->
             <el-form-item label="关联项目:" prop="value">
-              <el-cascader clearable :append-to-body="false" style="width: 230px" v-model="editDataForm.value" :options="options"></el-cascader>
+              <el-cascader clearable :append-to-body="false" style="width: 200px" v-model="editDataForm.value" :options="options"></el-cascader>
             </el-form-item>
             <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">保存</el-button>
@@ -423,19 +423,26 @@ export default {
 ::v-deep .el-drawer__body {
   overflow: hidden;
 }
+.el-input {
+  width: 200px;
+}
 /* ::v-deep .el-cascader-menu {
   width: 190px;
 } */
 
-::v-deep .el-select {
+/* ::v-deep .el-select {
   width: 230px !important;
+} */
+
+/* ::v-deep .el-select__tags {
+  max-width: none !important;
 }
 ::v-deep .el-select__tags-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 100px;
-}
+  max-width: 80px;
+} */
 /* .el-form--inline > .inputlist {
   display: flex;
   align-items: center;

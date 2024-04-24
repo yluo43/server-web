@@ -10,7 +10,7 @@
     </el-aside>
     <div>
       <div style="margin-left: 16px">
-        <el-form ref="dataForm" :inline="true" :model="dataForm">
+        <el-form ref="dataForm" label-width="90px" label-position="left" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
@@ -455,6 +455,9 @@ export default {
   min-width: 60px;
   margin-left: 0;
   width: auto;
+}
+.el-input {
+  width: 200px;
 }
 </style>
 <style lang="scss">

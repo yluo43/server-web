@@ -20,7 +20,7 @@
                   <i class="el-icon-info"></i>
                 </el-tooltip>
               </template>
-              <el-select v-model="overtimeDataForm.projectId" placeholder="请选择加班项目" clearable>
+              <el-select v-model="overtimeDataForm.projectId" placeholder="请选择加班项目">
                 <el-option v-for="item in overtimeProjects" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -140,9 +140,9 @@ export default {
   props: {},
   data() {
     const validateoverTimeStartTime = (rule, value, callback) => {
-      if (this.overtimeDataForm.overtimeType === '') {
-        callback(new Error('请先选择加班类型'))
-      }
+      // if (this.overtimeDataForm.overtimeType === '') {
+      //   callback(new Error('请先选择加班类型'))
+      // }
       if (!value) {
         callback(new Error('请选择加班开始时间'))
       } else if (this.overtimeDataForm.overtimeType === 0 && new Date(this.overtimeDataForm.overTimeStartTime).getHours() < 19) {
@@ -186,11 +186,11 @@ export default {
     return {
       overtimeProjects: [],
       overtimeDataForm: {
-        overtimeType: '',
+        overtimeType: 0,
         projectId: '',
         projectManager: '',
         overtimeReason: '',
-        isRemoteWork: '',
+        isRemoteWork: 1,
         overTimeStartTime: '',
         overTimeEndTime: '',
         overtimeDuration: 0
@@ -205,7 +205,7 @@ export default {
         days: 0
       },
       overtimeRules: {
-        overtimeType: [{ required: true, message: '请选择加班类型', trigger: 'change' }],
+        //  overtimeType: [{ required: true, message: '请选择加班类型', trigger: 'change' }],
         projectId: [{ required: true, message: '请选择加班项目', trigger: 'change' }],
         overtimeReason: [{ required: true, message: '请输入加班原因', trigger: 'blur' }],
         overTimeStartTime: [{ required: true, validator: validateoverTimeStartTime, trigger: 'change' }],
@@ -223,8 +223,6 @@ export default {
         this.overtimeProjects.map((item) => {
           if (item.id == value) {
             this.overtimeDataForm.projectManager = item.managerName
-          } else {
-            this.overtimeDataForm.projectManager = ''
           }
         })
       }

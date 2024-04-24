@@ -2,52 +2,38 @@
   <div style="height: 100%">
     <el-container>
       <el-header style="height: 100%">
-        <el-form :inline="true" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="65px" label-position="left" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="用户姓名:" prop="account">
-              <el-input v-model="dataForm.account" placeholder="输入关键字" clearable></el-input>
+              <el-input v-model="dataForm.account" placeholder="请输入用户姓名" clearable></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="dataForm.empId" placeholder="输入关键字" clearable></el-input>
+              <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable></el-input>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptNames">
-              <el-select v-model="dataForm.deptNames" placeholder="请选择" :multiple="true" :collapse-tags="true">
-                <el-option
-                  v-for="dept in deptNames"
-                  :key="dept.id"
-                  :label="dept.deptName"
-                  :value="dept.id"
-                  multiple="true"
-                  :disabled="dept.deptName == '新讯数字科技有限公司'"
-                ></el-option>
+              <el-select v-model="dataForm.deptNames" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
+                <el-option v-for="dept in deptNames" :key="dept.id" :label="dept.deptName" :value="dept.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamNames">
-              <el-select v-model="dataForm.teamNames" placeholder="请选择" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.teamNames" placeholder="请选择归属团队" :multiple="true" :collapse-tags="true">
                 <el-option v-for="team in teamNames" :key="team.id" :label="team.name" :value="team.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="成本中心:" prop="costCenters">
-              <el-select v-model="dataForm.costCenters" placeholder="请选择" :multiple="true" :collapse-tags="true">
-                <el-option
-                  v-for="costCenter in deptNames"
-                  :key="costCenter.id"
-                  :label="costCenter.deptName"
-                  :value="costCenter.id"
-                  multiple="true"
-                  :disabled="costCenter.deptName == '新讯数字科技有限公司'"
-                ></el-option>
+              <el-select v-model="dataForm.costCenters" placeholder="请选择成本中心" :multiple="true" :collapse-tags="true">
+                <el-option v-for="costCenter in deptNames" :key="costCenter.id" :label="costCenter.deptName" :value="costCenter.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <br />
             <el-form-item label="费用名称:" prop="costNames">
-              <el-select v-model="dataForm.costNames" :multiple="true" :collapse-tags="true">
+              <el-select v-model="dataForm.costNames" placeholder="请选择费用名称" :multiple="true" :collapse-tags="true">
                 <el-option v-for="costName in costNames" :key="costName" :label="costName" :value="costName" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="日期:" prop="createTime">
               <el-date-picker
-                style="width: 220px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="costDate"
@@ -59,7 +45,7 @@
             </el-form-item>
             <el-form-item label="导入日期:" prop="createTime">
               <el-date-picker
-                style="width: 220px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="createTime"
@@ -138,7 +124,6 @@
                   :key="costCenter.id"
                   :label="costCenter.deptName"
                   :value="costCenter.id"
-                  :disabled="costCenter.deptName == '新讯数字科技有限公司'"
                   multiple="true"
                 ></el-option>
               </el-select>
@@ -148,16 +133,6 @@
             </el-form-item>
             <el-form-item label="事由:" prop="reason">
               <el-input v-model="editDataForm.reason" clearable maxlength="50" show-word-limit></el-input>
-
-              <!--              <el-select  v-model="editDataForm.reason"  >-->
-              <!--                <el-option      v-for="item in reason"-->
-              <!--                                :key="item"-->
-              <!--                                :label="item"-->
-              <!--                                :value="item"-->
-              <!--                                multiple="true"-->
-              <!--                >-->
-              <!--                </el-option>-->
-              <!--              </el-select>-->
             </el-form-item>
 
             <el-form-item label="费用名称:" prop="backCitys">
@@ -248,15 +223,15 @@ export default {
       reasonByDept: [],
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'account' },
-          { label: '工号', prop: 'empId' },
+          { label: '用户姓名', prop: 'account', width: '80px;' },
+          { label: '工号', prop: 'empId', width: '80px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
           { label: '成本中心', prop: 'costCenter' },
           { label: '日期', prop: 'costDate' },
           { label: '事由', prop: 'reason' },
           { label: '费用名称', prop: 'costName' },
-          { label: '单据张数', prop: 'documentNum' },
+          { label: '单据张数', prop: 'documentNum', width: '80px' },
           { label: '报销金额（元）', prop: 'totalMoney' },
           { label: '成本项目', prop: 'costItemsName' },
           { label: '导入时间', prop: 'createTime' },
@@ -278,8 +253,8 @@ export default {
       method: 'get'
     }).then(({ data }) => {
       if (data && data.code === 200) {
-        this.costCenters = data.payload
-        this.deptNames = data.payload
+        this.costCenters = data.payload.filter((item) => item.id != 0)
+        this.deptNames = data.payload.filter((item) => item.id != 0)
       } else {
         this.$message.error(data.msg)
       }
@@ -509,7 +484,9 @@ export default {
   color: #333;
   padding: 0 0;
 }
-
+.el-input {
+  width: 200px;
+}
 /* .el-form--inline > .inputlist {
   padding-top: 20px;
   padding-left: 20px;
@@ -522,9 +499,9 @@ export default {
 ::v-deep .editForm .el-form-item {
   width: 100% !important;
 }
-.el-input {
+/* .el-input {
   width: 190px;
-}
+} */
 
 .el-button-func {
   width: 86px;

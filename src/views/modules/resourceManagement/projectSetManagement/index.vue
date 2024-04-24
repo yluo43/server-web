@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: auto; padding: 0">
-        <el-form :inline="true" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
           <el-form-item label="项目集名称:" prop="psName">
             <el-input v-model="dataForm.psName" placeholder="请输入项目集名称" clearable></el-input>
           </el-form-item>
@@ -16,13 +16,7 @@
           </el-form-item>
           <el-form-item label="归属部门:">
             <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
-              <el-option
-                v-for="item in deptList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                :disabled="item.name == '新讯数字科技有限公司'"
-              ></el-option>
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="归属团队:">
@@ -32,6 +26,7 @@
           </el-form-item>
           <el-form-item label="启动时间:">
             <el-date-picker
+              style="width: 200px"
               v-model="startDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -43,6 +38,7 @@
           </el-form-item>
           <el-form-item label="结束时间:">
             <el-date-picker
+              style="width: 200px"
               v-model="endDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -409,7 +405,9 @@ export default {
   margin-left: 0;
   width: auto;
 }
-
+.el-input {
+  width: 200px;
+}
 /* .chooseResult {
   height: 30px;
   line-height: 30px;

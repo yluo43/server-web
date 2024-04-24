@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <div style="margin-left: 16px">
-        <el-form ref="dataForm" :inline="true" :model="dataForm">
+        <el-form ref="dataForm" label-width="90px" label-position="left" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
@@ -46,6 +46,7 @@
           </el-form-item>
           <el-form-item label="申请时间:" prop="applyTime">
             <el-date-picker
+              style="width: 200px"
               v-model="dataForm.applyTime"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -57,6 +58,7 @@
           </el-form-item>
           <el-form-item label="加班开始时间:" prop="startTime">
             <el-date-picker
+              style="width: 200px"
               v-model="dataForm.startTime"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -68,6 +70,7 @@
           </el-form-item>
           <el-form-item label="加班结束时间:" prop="endTime">
             <el-date-picker
+              style="width: 200px"
               v-model="dataForm.endTime"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -373,6 +376,9 @@ export default {
   min-width: 60px;
   margin-left: 0;
   width: auto;
+}
+.el-input {
+  width: 200px;
 }
 </style>
 <style lang="scss">

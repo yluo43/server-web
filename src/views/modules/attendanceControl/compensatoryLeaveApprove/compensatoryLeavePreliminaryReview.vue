@@ -327,12 +327,8 @@ export default {
 </script>
 
 <style scoped>
-.el-select {
-  width: 200px !important;
-}
-
-::v-deep .el-select .el-tag {
-  max-width: 70% !important;
+.el-input {
+  width: 200px;
 }
 
 .el-button {

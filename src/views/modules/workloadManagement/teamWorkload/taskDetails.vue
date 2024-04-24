@@ -14,10 +14,10 @@
           <div style="margin-bottom: 10px; padding-left: 16px">
             <el-form ref="formData" :inline="true" label-width="65px" :label-position="labelposition" :model="formData">
               <el-form-item label="用户姓名:" prop="userName">
-                <el-input v-model="formData.userName" placeholder="请输入用户姓名" clearable />
+                <el-input style="width: 200px" v-model="formData.userName" placeholder="请输入用户姓名" clearable />
               </el-form-item>
               <el-form-item label="工号:" prop="empId">
-                <el-input v-model="formData.empId" placeholder="请输入工号" clearable />
+                <el-input style="width: 200px" v-model="formData.empId" placeholder="请输入工号" clearable />
               </el-form-item>
               <el-form-item label="报工类别:" prop="workLoadIds">
                 <el-select v-model="formData.workLoadIds" multiple collapse-tags placeholder="请选择报工类别" clearable>
@@ -385,9 +385,7 @@ export default {
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }
-::v-deep .el-form-item__content {
-  width: 180px;
-}
+
 ::v-deep.el-table::before {
   display: none !important;
 }

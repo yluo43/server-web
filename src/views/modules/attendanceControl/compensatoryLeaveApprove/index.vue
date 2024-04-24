@@ -3,12 +3,11 @@
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-header style="padding: 0">
         <el-tabs v-model="activeName" type="border-card">
-          <!-- v-if="hasPermission('overtime:firstReview')" -->
-          <el-tab-pane label="加班初审" name="first"></el-tab-pane>
-          <el-tab-pane label="加班复审" name="second"></el-tab-pane>
-          <el-tab-pane label="调休初审" name="third"></el-tab-pane>
-          <el-tab-pane label="调休复审" name="fourth"></el-tab-pane>
-          <el-tab-pane label="加班统计" name="fifth"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:overtimeFirst')" label="加班初审" name="first"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:overtimeRe')" label="加班复审" name="second"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:dayoffFirst')" label="调休初审" name="third"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:dayoffRe')" label="调休复审" name="fourth"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:count')" label="加班统计" name="fifth"></el-tab-pane>
         </el-tabs>
       </el-header>
       <el-container style="background: #ffffff">

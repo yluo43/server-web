@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: auto; padding: 0">
-        <el-form :inline="true" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="dataForm.name" placeholder="请输入项目名称" clearable></el-input>
           </el-form-item>
@@ -18,6 +18,7 @@
           </el-form-item>
           <el-form-item label="立项时间:">
             <el-date-picker
+              style="width: 200px"
               v-model="approvalDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -44,13 +45,7 @@
           </el-form-item>
           <el-form-item label="归属部门:">
             <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
-              <el-option
-                v-for="item in deptList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                :disabled="item.name == '新讯数字科技有限公司'"
-              ></el-option>
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="结算周期:">
@@ -60,6 +55,7 @@
           </el-form-item>
           <el-form-item label="交付时间:">
             <el-date-picker
+              style="width: 200px"
               v-model="deliveryDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -69,10 +65,10 @@
               end-placeholder="年/月/日"
             ></el-date-picker>
           </el-form-item>
-          <div style="display: contents; float: right">
+          <el-form-item>
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
             <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
-          </div>
+          </el-form-item>
         </el-form>
         <div class="chooseResult">
           <span>已选中{{ count }}项</span>
@@ -368,7 +364,9 @@ export default {
   margin-left: 0;
   width: auto;
 }
-
+.el-input {
+  width: 200px;
+}
 .el-icon-document:hover,
 .el-icon-circle-plus:hover {
   cursor: pointer;
