@@ -20,40 +20,41 @@
             </div>
           </el-descriptions-item>
         </el-descriptions>
-        <el-form ref="personnelManagementForm" :inline="true" :model="personnelManagementFormData" label-width="auto">
+        <el-form ref="personnelManagementForm" :inline="true" label-width="90px" label-position="left" :model="personnelManagementFormData">
           <el-form-item label="姓名:" prop="name">
-            <el-input v-model="personnelManagementFormData.name" placeholder="请输入关键字" style="width: 190px" clearable />
+            <el-input v-model="personnelManagementFormData.name" placeholder="请输入姓名" clearable />
           </el-form-item>
           <el-form-item label="工号:" prop="empId">
-            <el-input v-model="personnelManagementFormData.empId" placeholder="请输入工号" style="width: 190px" clearable />
+            <el-input v-model="personnelManagementFormData.empId" placeholder="请输入工号" clearable />
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamIds">
-            <el-select v-model="personnelManagementFormData.teamIds" multiple collapse-tags clearable>
+            <el-select v-model="personnelManagementFormData.teamIds" multiple collapse-tags placeholder="请选择归属团队" clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="驻地:" prop="stationIds">
-            <el-select v-model="personnelManagementFormData.stationIds" multiple collapse-tags clearable>
+            <el-select v-model="personnelManagementFormData.stationIds" placeholder="请选择驻地" multiple collapse-tags clearable>
               <el-option v-for="item in stationList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="状态:" prop="states">
-            <el-select v-model="personnelManagementFormData.states" multiple collapse-tags clearable>
+            <el-select v-model="personnelManagementFormData.states" placeholder="请选择状态" multiple collapse-tags clearable>
               <el-option v-for="item in stateList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="技术级别:" prop="empLevels">
-            <el-select v-model="personnelManagementFormData.empLevels" multiple collapse-tags clearable>
+            <el-select v-model="personnelManagementFormData.empLevels" placeholder="请选择技术级别" multiple collapse-tags clearable>
               <el-option v-for="item in empLevelList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="岗位类型:" prop="positionTypes">
-            <el-select v-model="personnelManagementFormData.positionTypes" multiple collapse-tags clearable>
+            <el-select v-model="personnelManagementFormData.positionTypes" placeholder="请选择岗位类型" multiple collapse-tags clearable>
               <el-option v-for="item in positionTypeList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="开始支撑时间:" prop="supportDate">
             <el-date-picker
+              style="width: 200px"
               v-model="personnelManagementFormData.supportDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -66,6 +67,7 @@
           </el-form-item>
           <el-form-item label="结束支撑时间:" prop="endSupportDate">
             <el-date-picker
+              style="width: 200px"
               v-model="personnelManagementFormData.endSupportDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -76,9 +78,8 @@
               clearable
             />
           </el-form-item>
-
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="queryPersonnelList">查询</el-button>
+            <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="queryPersonnelList">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
@@ -421,16 +422,18 @@ export default {
   color: #409eff; /* 设置描述项label字体颜色为绿色 */
 }
 
-::v-deep .el-select .el-tag {
+/* ::v-deep .el-select .el-tag {
   max-width: 70% !important;
-}
+} */
 
 ::v-deep .el-step__head.is-process .el-step__icon.is-text {
   border-color: #409eff;
   background: #409eff;
   color: white;
 }
-
+.el-input {
+  width: 200px;
+}
 /* .chooseResult {
   height: 30px;
   line-height: 30px;

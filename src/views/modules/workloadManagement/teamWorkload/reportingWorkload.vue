@@ -107,7 +107,7 @@
                     oninput="this.value = this.value.replace(/[^0-9]/g, '');if(value > 100) value = 100; "
                     ref="realityRate"
                     clearable
-                    v-model.number="scope.row.realityRate || 0"
+                    v-model.number="scope.row.realityRate"
                   ></el-input>
                 </template>
               </el-table-column>
@@ -265,6 +265,9 @@ export default {
             if (!item.workloadName) {
               item.workloadName = '项目工作'
               item.workloadType = 1
+            }
+            if (!item.realityRate) {
+              item.realityRate = 0
             }
           })
           this.tableData = [...data.payload.pmsWorkloadVoList]

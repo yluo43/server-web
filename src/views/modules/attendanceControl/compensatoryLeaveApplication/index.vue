@@ -160,6 +160,11 @@ export default {
         callback(new Error('加班结束时间不能小于加班开始时间'))
       } else if (new Date(this.overtimeDataForm.overTimeEndTime).getTime() > this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 9, 2)) {
         callback(new Error('加班结束时间不能大于加班开始时间的次日9:00'))
+      } else if (
+        this.overtimeDataForm.overtimeType === 0 &&
+        new Date(this.overtimeDataForm.overTimeEndTime).getTime() < this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 21, 1)
+      ) {
+        callback(new Error('加班结束时间不能小于21:00'))
       } else {
         callback()
       }
@@ -304,15 +309,15 @@ export default {
         if (!valid) {
           return
         }
-        if (this.overtimeDataForm.overtimeType == 1) {
-          if (this.overtimeDataForm.overtimeDuration < 2) {
-            this.$message.warning('加班时长不能小于2小时')
-            return
-          } else if (this.overtimeDataForm.overtimeDuration > 24) {
-            this.$message.warning('加班时长不能大于24小时')
-            return
-          }
+        //  if (this.overtimeDataForm.overtimeType == 1) {
+        if (this.overtimeDataForm.overtimeDuration < 2) {
+          this.$message.warning('加班时长不能小于2小时')
+          return
+        } else if (this.overtimeDataForm.overtimeDuration > 24) {
+          this.$message.warning('加班时长不能大于24小时')
+          return
         }
+        //   }
         if (new Date().getTime() - 72 * 60 * 60 * 1000 > new Date(this.overtimeDataForm.overTimeStartTime).getTime()) {
           this.$message.warning('加班已超过72小时，不可申请')
           return
@@ -467,10 +472,14 @@ export default {
           return 0
         }
       } else {
-        if (eighteen <= endTime && nineteen > endTime) {
+        if (startTime < eighteen && eighteen <= endTime && nineteen > endTime) {
           return endTime - eighteen
-        } else if (endTime >= nineteen) {
+        } else if (startTime >= eighteen && eighteen <= endTime && nineteen > endTime) {
+          return endTime - startTime
+        } else if (startTime < eighteen && endTime >= nineteen) {
           return 60 * 60 * 1000
+        } else if (nineteen > startTime && startTime >= eighteen && endTime >= nineteen) {
+          return nineteen - startTime
         } else {
           return 0
         }

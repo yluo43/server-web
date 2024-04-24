@@ -92,7 +92,7 @@
     <!-- 驳回 -->
     <base-dialog ref="rejectDialog" title="调休申请驳回" :width="'500px'">
       <template>
-        <rejectDialog ref="reject" :cancelDialog="closeDialog" @refrshTable="selectTableData"></rejectDialog>
+        <rejectDialog ref="reject" :closeDialog="closeDialog" @refrshTable="refrshTable"></rejectDialog>
       </template>
     </base-dialog>
     <!-- 审批流程 -->
@@ -168,6 +168,18 @@ export default {
     this.dataForm.operatorName = getCName()
   },
   methods: {
+    //刷新页面并打开弹窗
+    refrshTable(initData, rejectFlag) {
+      this.selectTableData()
+      this.$refs.approvalProcessDialog.show()
+      this.$nextTick(() => {
+        if (rejectFlag == 1 || rejectFlag == 2) {
+          this.$refs.approvalProcess.init(initData, 1)
+        } else {
+          this.$refs.approvalProcess.init(initData, 2)
+        }
+      })
+    },
     //获取团队
     getTeam() {
       this.$http({
@@ -235,8 +247,8 @@ export default {
         await this.getRemainingDays(row.empId)
         message = h('p', null, [
           h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的调休申请,`),
-          h('span', { style: this.remainingDays > row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}天(剩余可调休天数:${this.remainingDays}天)`),
-          h('span', { style: this.remainingDays > row.days ? 'display:none' : 'display:inline-block;color:red' }, `,已超出剩余可调休天数`),
+          h('span', { style: this.remainingDays >= row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}天(剩余可调休天数:${this.remainingDays}天)`),
+          h('span', { style: this.remainingDays >= row.days ? 'display:none' : 'display:inline-block;color:red' }, `,已超出剩余可调休天数`),
           h('span', null, `,确认通过吗？`)
         ])
         ids = [row.dayoffId]

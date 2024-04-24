@@ -74,13 +74,7 @@
 
             <el-form-item label="岗位类型:" prop="positionTypes">
               <el-select v-model="dataForm.positionTypes" placeholder="请选择岗位类型" :multiple="true" :collapse-tags="true">
-                <el-option key="1" label="A岗" :value="1"></el-option>
-                <el-option key="2" label="B岗" :value="2"></el-option>
-                <el-option key="7" label="C岗" :value="7"></el-option>
-                <el-option key="3" label="外包" :value="3"></el-option>
-                <el-option key="4" label="学生" :value="4"></el-option>
-                <el-option key="5" label="实习" :value="5"></el-option>
-                <el-option key="6" label="兼职" :value="6"></el-option>
+                <el-option v-for="item in positions" :key="item.id" :label="item.positionName" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
 
@@ -205,13 +199,7 @@
 
             <el-form-item label="岗位类型:" prop="positionType">
               <el-select clearable v-model="editDataForm.positionType" placeholder="请选择岗位类型">
-                <el-option key="1" label="A岗" :value="1"></el-option>
-                <el-option key="2" label="B岗" :value="2"></el-option>
-                <el-option key="7" label="C岗" :value="7"></el-option>
-                <el-option key="3" label="外包" :value="3"></el-option>
-                <el-option key="4" label="学生" :value="4"></el-option>
-                <el-option key="5" label="实习" :value="5"></el-option>
-                <el-option key="6" label="兼职" :value="6"></el-option>
+                <el-option v-for="item in positions" :key="item.id" :label="item.positionName" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
 
@@ -339,6 +327,7 @@ export default {
         empLevel: '',
         departStatus: ''
       },
+      positions: [],
       teamNamesByDept: [],
       deptNames: [],
       onwerDeptNames: [],
@@ -385,6 +374,8 @@ export default {
   mounted() {
     this.$refs.table.refresh(this.dataForm)
 
+    //初始化岗位类型
+    this.getPosition()
     //初始化成本中心/部门
     this.$http({
       url: this.$http.adornUrl('/common/getDept'),
@@ -444,6 +435,20 @@ export default {
     })
   },
   methods: {
+    //获取岗位类型
+    getPosition() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getPosition'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.positions = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+
     changeTeamByDept() {
       //刷新团队
       this.$http({

@@ -13,27 +13,18 @@
           </el-form-item>
         </el-form>
         <div class="btn-group">
-          <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
+          <el-button plain style="margin: 0 10px" @click="closeDialog">取消</el-button>
           <el-button type="primary" @click="confirm">确认</el-button>
         </div>
       </div>
     </el-container>
-    <!-- 审批流程 -->
-    <base-dialog ref="approvalProcessDialog" title="查看审批流程" :width="'800px'">
-      <template>
-        <approvalProcessDialog ref="approvalProcess" :cancelDialog="closeApprovalProcessDialog"></approvalProcessDialog>
-      </template>
-    </base-dialog>
   </div>
 </template>
 
 <script>
-import baseDialog from '@/views/modules/base/baseDialog.vue'
-import approvalProcessDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/approvalProcessDialog.vue'
 export default {
-  components: { baseDialog, approvalProcessDialog },
   props: {
-    cancelDialog: {
+    closeDialog: {
       type: Function
     }
   },
@@ -59,7 +50,9 @@ export default {
   created() {},
   methods: {
     init(initData, rejectFlag) {
+      console.log(initData)
       this.rejectFlag = rejectFlag
+      this.initData = initData
       Object.assign(this.dataForm, initData)
     },
     //确认
@@ -82,23 +75,20 @@ export default {
         url = this.$http.adornUrl('/attendance/dayoffAudit')
         params = { ids: this.dataForm.dayoffId, status: 3, reason: this.dataForm.rejectReason }
       }
+      Object.keys(params).map((key) => {
+        if (!params[key] && params[key] !== 0) {
+          delete params[key]
+        }
+      })
       this.$http({
         url: url,
         method: 'get',
         params: params
       }).then((result) => {
         if (result.data.success) {
-          this.cancelDialog()
           this.$message.success('驳回成功')
-          this.$emit('refrshTable')
-          this.$refs.approvalProcessDialog.show()
-          this.$nextTick(() => {
-            if (this.rejectFlag == 1 || this.rejectFlag == 2) {
-              this.$refs.approvalProcess.init(this.initData, 1)
-            } else {
-              this.$refs.approvalProcess.init(this.initData, 2)
-            }
-          })
+          this.$emit('refrshTable', this.initData, this.rejectFlag)
+          this.closeDialog()
         } else {
           this.$message.error('驳回失败：' + result.data.msg)
         }

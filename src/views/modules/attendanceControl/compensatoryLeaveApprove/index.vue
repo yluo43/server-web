@@ -56,10 +56,22 @@ export default {
   props: {},
   data() {
     return {
-      activeName: 'first'
+      activeName: ''
     }
   },
-  mounted() {},
+  mounted() {
+    if (this.hasPermission('attendance:overtimeFirst')) {
+      this.activeName = 'first'
+    } else if (this.hasPermission('attendance:overtimeRe')) {
+      this.activeName = 'second'
+    } else if (this.hasPermission('attendance:dayoffFirst')) {
+      this.activeName = 'third'
+    } else if (this.hasPermission('attendance:dayoffRe')) {
+      this.activeName = 'fourth'
+    } else if (this.hasPermission('attendance:count')) {
+      this.activeName = 'fifth'
+    }
+  },
   methods: {}
 }
 </script>

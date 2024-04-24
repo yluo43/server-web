@@ -122,7 +122,7 @@
     <!-- 驳回加班时长 -->
     <base-dialog ref="rejectDialog" title="加班时长驳回" :width="'500px'">
       <template>
-        <rejectDialog ref="reject" :cancelDialog="closeDialog" @refrshTable="selectTableData"></rejectDialog>
+        <rejectDialog ref="reject" :closeDialog="closeDialog" @refrshTable="refrshTable"></rejectDialog>
       </template>
     </base-dialog>
     <!-- 审批流程 -->
@@ -214,6 +214,18 @@ export default {
     this.dataForm.operatorName = getCName()
   },
   methods: {
+    //刷新页面并打开弹窗
+    refrshTable(initData, rejectFlag) {
+      this.selectTableData()
+      this.$refs.approvalProcessDialog.show()
+      this.$nextTick(() => {
+        if (rejectFlag == 1 || rejectFlag == 2) {
+          this.$refs.approvalProcess.init(initData, 1)
+        } else {
+          this.$refs.approvalProcess.init(initData, 2)
+        }
+      })
+    },
     //获取部门
     getDept() {
       this.$http({
