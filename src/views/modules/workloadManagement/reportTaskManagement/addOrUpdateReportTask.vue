@@ -80,18 +80,18 @@ export default {
         callback(new Error('请选择开始填报时间'))
         return
       }
-      if (this.formData.reportStartTime && new Date(Date.parse(this.format())) > new Date(Date.parse(this.formData.reportStartTime))) {
-        callback(new Error('开始填报时间应大于等于当前时间'))
-        return
-      }
-      if (
-        this.formData.reportStartTime &&
-        this.formData.timePeriod[1] &&
-        new Date(Date.parse(this.formData.timePeriod[1])) > new Date(Date.parse(this.formData.reportStartTime))
-      ) {
-        callback(new Error('开始填报时间应大于等于统计时间段截止时间'))
-        return
-      }
+      // if (this.formData.reportStartTime && new Date(Date.parse(this.format())) > new Date(Date.parse(this.formData.reportStartTime))) {
+      //   callback(new Error('开始填报时间应大于等于当前时间'))
+      //   return
+      // }
+      // if (
+      //   this.formData.reportStartTime &&
+      //   this.formData.timePeriod[1] &&
+      //   new Date(Date.parse(this.formData.timePeriod[1])) > new Date(Date.parse(this.formData.reportStartTime))
+      // ) {
+      //   callback(new Error('开始填报时间应大于等于统计时间段截止时间'))
+      //   return
+      // }
       callback()
     }
     return {

@@ -241,7 +241,7 @@ export default {
     deleteList(row) {
       this.deleteIds = []
       this.deleteIds.push(row.item.id)
-      this.$confirm(`确定删除吗?`, '提示', {
+      this.$confirm(`【确定删除"${row.item.name}"吗？删除后将无法恢复!】`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

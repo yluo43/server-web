@@ -7,7 +7,7 @@
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
           <!-- <el-form-item label="工号:" prop="empId">
-            <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
+            <el-input v-model="dataForm.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
           </el-form-item> -->
           <el-form-item label="归属部门:" prop="deptId">
             <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>

@@ -17,7 +17,13 @@
                 <el-input style="width: 200px" v-model="formData.name" placeholder="请输入用户姓名" clearable />
               </el-form-item>
               <el-form-item label="工号:" prop="empId">
-                <el-input style="width: 200px" v-model="formData.empId" placeholder="请输入工号" clearable />
+                <el-input
+                  style="width: 200px"
+                  v-model="formData.empId"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  placeholder="请输入工号"
+                  clearable
+                />
               </el-form-item>
               <el-form-item label="归属部门:" prop="deptIds">
                 <el-select v-model="formData.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>

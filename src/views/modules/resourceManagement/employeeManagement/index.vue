@@ -8,7 +8,13 @@
               <el-input v-model="dataForm.name" placeholder="请输入员工姓名" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable maxlength="50"></el-input>
+              <el-input
+                v-model="dataForm.empId"
+                placeholder="请输入工号"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                clearable
+                maxlength="50"
+              ></el-input>
             </el-form-item>
             <el-form-item label="邮箱:" prop="mailbox">
               <el-input v-model="dataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
@@ -164,7 +170,14 @@
               <el-input v-model="editDataForm.name" placeholder="请输入员工姓名" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="editDataForm.empId" placeholder="请输入员工工号" clearable maxlength="50" :disabled="disabled"></el-input>
+              <el-input
+                v-model="editDataForm.empId"
+                placeholder="请输入员工工号"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                clearable
+                maxlength="50"
+                :disabled="disabled"
+              ></el-input>
             </el-form-item>
             <el-form-item label="邮箱:" prop="mailbox">
               <el-input v-model="editDataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
@@ -240,7 +253,7 @@
 
             <el-form-item label="离职时间:" prop="departDate" v-if="entryDateShow" :rules="[{ required: entryDateInput, message: '岗位为空' }]">
               <el-date-picker
-                style="width: 190px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.departDate"

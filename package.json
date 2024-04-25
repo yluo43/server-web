@@ -19,6 +19,7 @@
     "core-js": "^3.6.5",
     "crypto-js": "^4.1.1",
     "echarts": "^5.2.1",
+    "el-tree-transfer": "^2.4.7",
     "element-react": "^1.4.34",
     "element-resize-detector": "^1.2.4",
     "element-theme-default": "^1.4.13",

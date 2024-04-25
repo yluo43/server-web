@@ -2,24 +2,33 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <div style="width: 100%">
-        <el-form ref="dataForm" label-width="110px" :rules="rules" :model="dataForm">
-          <el-form-item label="补贴项目:" prop="projectId" style="width: 70%">
+        <el-form ref="dataForm" label-width="90px" label-position="left" :rules="rules" :model="dataForm">
+          <el-form-item prop="projectId">
+            <template slot="label">
+              补贴项目
+              <el-tooltip class="item" effect="dark" content="只可补贴复审通过的加班工时!" placement="top-start">
+                <i class="el-icon-info"></i>
+                :
+              </el-tooltip>
+            </template>
             <el-table :data="tableData" ref="refsTable" border @selection-change="handleSelectionChange">
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column prop="name" label="项目名称"></el-table-column>
-              <el-table-column prop="days" label="调休天数"></el-table-column>
+              <el-table-column prop="days" label="可补贴天数"></el-table-column>
             </el-table>
           </el-form-item>
-          <el-form-item style="width: 70%">
+          <el-form-item>
             <i class="el-icon-warning-outline" style="color: #faad14"></i>
             <span>
-              该员工总调休天数{{ totalDays }}天，其中已调休{{ compensatedLeaveDays }}天，已补贴{{ subsidizedDays }}天，剩余可调休天数
+              该员工总调休天数{{ totalDays }}天，其中已调休{{ compensatedLeaveDays }}天，已补贴{{ subsidizedDays }}天，剩余可补贴天数
               <span style="color: #70b603">{{ remainingDays }}天。</span>
             </span>
           </el-form-item>
           <el-form-item label="补贴天数:" prop="subsidyDays">
-            <el-input v-model="dataForm.subsidyDays" placeholder="请输入补贴天数"></el-input>
+            <el-input-number v-model="dataForm.subsidyDays" :precision="1" step-strictly :step="0.5" :min="0.5"></el-input-number>
             天
+            <!-- <el-input v-model="dataForm.subsidyDays" placeholder="请输入补贴天数"></el-input>
+            天 -->
           </el-form-item>
           <el-form-item label="补贴金额:" prop="subsidyAmount">
             <el-input v-model="dataForm.subsidyAmount" placeholder="请输入补贴金额"></el-input>
@@ -45,6 +54,18 @@ export default {
     }
   },
   data() {
+    const validateSubsidyAmount = (rule, value, callback) => {
+      var reg = /^[0-9]+([.]{1}[0-9]+){0,1}$/
+      if (!value) {
+        callback(new Error('请填写补贴金额'))
+      } else if (value <= 0) {
+        callback(new Error('补贴金额需大于等于0'))
+      } else if (!reg.test(value)) {
+        callback(new Error('补贴金额只能为整数或小数'))
+      } else {
+        callback()
+      }
+    }
     return {
       empId: '',
       auditor: '',
@@ -68,7 +89,7 @@ export default {
       },
       rules: {
         subsidyDays: [{ required: true, message: '请填写补贴天数', trigger: 'blur' }],
-        subsidyAmount: [{ required: true, message: '请填写补贴金额', trigger: 'blur' }]
+        subsidyAmount: [{ required: true, validator: validateSubsidyAmount, trigger: 'blur' }]
       }
     }
   },
@@ -162,7 +183,14 @@ export default {
 
 <style scoped>
 .el-input {
-  width: 190px;
+  width: 200px;
+}
+.el-input-number {
+  width: 200px;
+  line-height: 26px;
+}
+::v-deep .el-dialog__body {
+  padding: 35px 50px 2px 30px;
 }
 ::v-deep .el-form-item__label:before {
   content: '*';

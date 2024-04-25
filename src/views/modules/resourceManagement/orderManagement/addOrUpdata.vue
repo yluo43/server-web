@@ -321,7 +321,7 @@ export default {
       })
     },
     deleteOrder(item) {
-      this.$confirm('确定删除该订单信息吗？', '提示', {
+      this.$confirm(`【确定删除"${item.orderName}"吗?删除后将无法恢复!】`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

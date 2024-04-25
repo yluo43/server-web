@@ -25,7 +25,7 @@
             <el-input v-model="personnelManagementFormData.name" placeholder="请输入姓名" clearable />
           </el-form-item>
           <el-form-item label="工号:" prop="empId">
-            <el-input v-model="personnelManagementFormData.empId" placeholder="请输入工号" clearable />
+            <el-input v-model="personnelManagementFormData.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamIds">
             <el-select v-model="personnelManagementFormData.teamIds" multiple collapse-tags placeholder="请选择归属团队" clearable>

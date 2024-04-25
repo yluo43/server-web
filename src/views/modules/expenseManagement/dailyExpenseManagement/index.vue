@@ -8,7 +8,7 @@
               <el-input v-model="dataForm.account" placeholder="请输入用户姓名" clearable></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable></el-input>
+              <el-input v-model="dataForm.empId" placeholder="请输入工号" oninput="this.value = this.value.replace(/[^0-9]/g, '')" clearable></el-input>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptNames">
               <el-select v-model="dataForm.deptNames" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
@@ -109,7 +109,7 @@
               <el-input v-model="editDataForm.account" clearable disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="editDataForm.empId" clearable disabled="disabled"></el-input>
+              <el-input v-model="editDataForm.empId" clearable oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptName">
               <el-input v-model="editDataForm.deptName" clearable disabled="disabled"></el-input>

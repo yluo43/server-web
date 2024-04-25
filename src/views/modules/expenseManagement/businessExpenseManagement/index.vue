@@ -36,7 +36,13 @@
             </el-form-item>
 
             <el-form-item label="工号:" prop="empId" class="empId">
-              <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable maxlength="50"></el-input>
+              <el-input
+                v-model="dataForm.empId"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                placeholder="请输入工号"
+                clearable
+                maxlength="50"
+              ></el-input>
             </el-form-item>
 
             <el-form-item label="目的城市:" prop="backCitys">
@@ -173,7 +179,13 @@
               <el-input v-model="editDataForm.account" clearable disabled="disabled" maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="editDataForm.empId" clearable disabled="disabled" maxlength="50"></el-input>
+              <el-input
+                v-model="editDataForm.empId"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                clearable
+                disabled="disabled"
+                maxlength="50"
+              ></el-input>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptName">
               <el-input v-model="editDataForm.deptName" clearable disabled="disabled"></el-input>
