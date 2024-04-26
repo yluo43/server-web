@@ -34,7 +34,14 @@
 
         <div class="table">
           <div>
-            <el-table :data="tableData" border style="width: 100%; height: 425px; max-height: 425px; overflow-y: scroll" :span-method="objectSpanMethod">
+            <el-table
+              :data="tableData"
+              :header-cell-style="{ 'text-align': 'center' }"
+              :cell-style="{ 'text-align': 'center' }"
+              border
+              style="width: 100%; height: 425px; overflow-y: scroll"
+              :span-method="objectSpanMethod"
+            >
               <el-table-column prop="name" label="团队成员"></el-table-column>
               <el-table-column prop="empId" label="工号"></el-table-column>
               <el-table-column prop="startTime" label="开始时间"></el-table-column>
@@ -79,7 +86,7 @@
           </div>
           <div style="display: flex; justify-content: center">
             <el-pagination
-              :page-sizes="[10, 15, 20, 25, 30]"
+              :page-sizes="[20, 50, 100]"
               :page-size="pageSize"
               :current-page="curPage"
               layout="total, sizes, prev, pager, next, jumper"
@@ -110,9 +117,9 @@ export default {
   data() {
     return {
       //总条数
-      total: 10,
+      total: '',
       curPage: 1,
-      pageSize: 10,
+      pageSize: 20,
       //任务Id
       taskId: '',
       teamId: '',

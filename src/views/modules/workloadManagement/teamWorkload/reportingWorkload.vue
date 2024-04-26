@@ -48,6 +48,7 @@
                     v-model="scope.row.workloadName"
                     @change="handlerWorkLoadName(scope.row, scope.column)"
                     ref="workloadName"
+                    filterable
                     placeholder="请选择报工类别"
                   >
                     <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.name"></el-option>
@@ -56,15 +57,18 @@
               </el-table-column>
               <el-table-column prop="projectName" label="成本项目" width="160px" align="center">
                 <template slot-scope="scope">
-                  <el-select
-                    style="width: 120px !important"
-                    placeholder="请选择成本项目"
-                    v-model="scope.row.projectName"
-                    @change="handlerSel(scope.row, scope.column)"
-                    ref="projectName"
-                  >
-                    <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name"></el-option>
-                  </el-select>
+                  <el-tooltip class="item" :disabled="!scope.row.projectName" :content="scope.row.projectName" placement="top-end">
+                    <el-select
+                      style="width: 120px !important"
+                      placeholder="请选择成本项目"
+                      filterable
+                      v-model="scope.row.projectName"
+                      @change="handlerSel(scope.row, scope.column)"
+                      ref="projectName"
+                    >
+                      <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name"></el-option>
+                    </el-select>
+                  </el-tooltip>
                 </template>
               </el-table-column>
               <!-- <el-table-column prop="workloadName" label="报工类别">

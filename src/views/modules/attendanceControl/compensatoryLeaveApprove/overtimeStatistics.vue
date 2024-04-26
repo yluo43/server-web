@@ -11,7 +11,7 @@
           </el-form-item>
           <el-form-item label="归属部门:" prop="deptId">
             <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamId">
@@ -116,7 +116,7 @@ export default {
     //获取部门
     getDept() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {

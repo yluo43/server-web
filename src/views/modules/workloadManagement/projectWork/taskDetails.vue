@@ -70,7 +70,9 @@
                 <el-table
                   :data="tableData"
                   border
-                  style="width: 100%; height: 425px; max-height: 425px; overflow-y: scroll"
+                  :header-cell-style="{ 'text-align': 'center' }"
+                  :cell-style="{ 'text-align': 'center' }"
+                  style="width: 100%; height: 425px; overflow-y: scroll"
                   @selection-change="selChange"
                   :span-method="objectSpanMethod"
                 >
@@ -91,7 +93,7 @@
               </div>
               <div style="display: flex; justify-content: center">
                 <el-pagination
-                  :page-sizes="[10, 15, 20, 25, 30]"
+                  :page-sizes="[20, 50, 100]"
                   :page-size="pageSize"
                   :current-page="curPage"
                   layout="total, sizes, prev, pager, next, jumper"
@@ -123,9 +125,9 @@ export default {
       keyword: '',
       tableData: [],
       //总条数
-      total: 10,
+      total: '',
       curPage: 1,
-      pageSize: 10,
+      pageSize: 20,
       spanArr: [],
       pos: 0,
       checkedData: [],

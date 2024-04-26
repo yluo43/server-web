@@ -277,10 +277,10 @@ export default {
     days() {
       let diffDay1 = this.getDaysBetweenDates(new Date(this.compensatoryLeaveDataForm.endDate), new Date(this.compensatoryLeaveDataForm.startDate))
       let diffDay2 = this.getTimeDays()
-      if (diffDay1 || diffDay2) {
-        return diffDay1 + diffDay2
-      } else {
+      if (diffDay1 === -1 || diffDay2 === -1) {
         return 0
+      } else {
+        return diffDay1 + diffDay2
       }
     }
   },
@@ -431,9 +431,14 @@ export default {
     },
     //计算两个日期之间的天数
     getDaysBetweenDates(date1, date2) {
-      var oneDay = 24 * 60 * 60 * 1000 // 一天的毫秒数
-      var timeDiff = Math.abs(date2.getTime() - date1.getTime()) // 两个日期的差值的毫秒数
-      var diffDays = Math.floor(timeDiff / oneDay) // 差值的天数
+      var diffDays = 0
+      if (!date1.getTime() || !date2.getTime()) {
+        diffDays = -1
+      } else {
+        var oneDay = 24 * 60 * 60 * 1000 // 一天的毫秒数
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime()) // 两个日期的差值的毫秒数
+        diffDays = Math.floor(timeDiff / oneDay) // 差值的天数
+      }
       return diffDays
     },
     //计算两个时间段之间的天数
@@ -447,6 +452,8 @@ export default {
         diffDay = 0
       } else if (this.compensatoryLeaveDataForm.startTime == '12:00' && this.compensatoryLeaveDataForm.endTime == '18:00') {
         diffDay = 0.5
+      } else {
+        diffDay = -1
       }
       return diffDay
     },

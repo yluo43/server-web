@@ -26,14 +26,7 @@
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptIds">
               <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
-                <el-option
-                  v-for="dept in deptNames"
-                  :key="dept.id"
-                  :label="dept.name"
-                  :value="dept.id"
-                  multiple="true"
-                  :disabled="dept.name == '新讯数字科技有限公司'"
-                ></el-option>
+                <el-option v-for="dept in deptNames" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamIds">
@@ -189,14 +182,7 @@
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptId">
               <el-select clearable v-model="editDataForm.deptId" placeholder="请选择归属部门" @change="changeTeamByDept">
-                <el-option
-                  v-for="dept in onwerDeptNames"
-                  :key="dept.id"
-                  :label="dept.name"
-                  :value="dept.id"
-                  multiple="true"
-                  :disabled="dept.name == '新讯数字科技有限公司'"
-                ></el-option>
+                <el-option v-for="dept in onwerDeptNames" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamId">

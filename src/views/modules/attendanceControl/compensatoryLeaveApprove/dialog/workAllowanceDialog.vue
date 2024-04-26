@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <div style="width: 100%">
-        <el-form ref="dataForm" label-width="90px" label-position="left" :rules="rules" :model="dataForm">
+        <el-form ref="dataForm" style="padding: 15px 30px 0 10px" label-width="90px" label-position="left" :rules="rules" :model="dataForm">
           <el-form-item prop="projectId">
             <template slot="label">
               补贴项目
@@ -36,7 +36,7 @@
           </el-form-item>
         </el-form>
         <div class="btn-group">
-          <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
+          <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
           <el-button type="primary" @click="confirm('dataForm')">确认</el-button>
         </div>
       </div>
@@ -189,23 +189,13 @@ export default {
   width: 200px;
   line-height: 26px;
 }
-::v-deep .el-dialog__body {
-  padding: 35px 50px 2px 30px;
-}
+
 ::v-deep .el-form-item__label:before {
   content: '*';
   color: #f56c6c;
   margin-right: 4px;
 }
-.btn-group {
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border-top: 1px solid lightgray;
-  margin-top: 20px;
-}
+
 ::v-deep .el-table__header-wrapper .el-table__header .el-checkbox {
   display: none;
 }

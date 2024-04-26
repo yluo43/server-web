@@ -40,11 +40,10 @@
           </el-input>
         </el-form-item>
       </el-form>
-
-      <el-row style="display: flex; justify-content: right; margin: 20px 10px">
+      <div class="btn-group">
+        <el-button plain style="margin-right: 10px" @click="cancel()">取消</el-button>
         <el-button type="primary" @click="saveCheck">确认</el-button>
-        <el-button @click="cancel()">取消</el-button>
-      </el-row>
+      </div>
     </el-container>
   </div>
 </template>

@@ -29,7 +29,7 @@
       <el-step v-else status="error" title="已驳回"></el-step>
     </el-steps>
     <div class="btn-group">
-      <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
+      <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
       <el-button type="primary" @click="cancelDialog">确认</el-button>
     </div>
   </div>
@@ -110,15 +110,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.btn-group {
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border-top: 1px solid lightgray;
-  margin-top: 20px;
-}
 ::v-deep .el-step__icon-inner {
   display: none;
 }

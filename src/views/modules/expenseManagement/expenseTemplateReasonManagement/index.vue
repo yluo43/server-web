@@ -63,7 +63,7 @@
             </el-form-item>
             <el-form-item label="报销项目归属部门:" prop="deptName">
               <el-select v-model="editDataForm.deptName" placeholder="请选择">
-                <el-option v-for="dept in onwerDeptNames" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
+                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <!-- <el-form-item label="关联项目:" prop="projectName">
@@ -101,7 +101,6 @@ export default {
       //成本项目
       costItems: [],
       departments: [],
-      onwerDeptNames: [],
       deleteIds: [],
       drawer: false,
       direction: 'rtl',
@@ -141,7 +140,6 @@ export default {
     this.getProject()
     //初始化部门
     this.getDept()
-    this.getOwnDept()
     //查询
     this.refresh()
     //初始化关联项目
@@ -189,23 +187,11 @@ export default {
         }
       })
     },
-    getOwnDept() {
-      this.$http({
-        url: this.$http.adornUrl('/common/getDeptByRole'),
-        method: 'get'
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.onwerDeptNames = data.payload.filter((item) => item.id !== 0)
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
 
     //获取部门
     getDept() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {

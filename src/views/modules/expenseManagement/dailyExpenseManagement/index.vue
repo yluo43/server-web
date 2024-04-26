@@ -3,10 +3,20 @@
     <el-container>
       <el-header style="height: 100%">
         <el-form :inline="true" label-width="65px" label-position="left" :model="dataForm" ref="dataForm">
-          <div class="inputlist">
-            <el-form-item label="用户姓名:" prop="account">
-              <el-input v-model="dataForm.account" placeholder="请输入用户姓名" clearable></el-input>
-            </el-form-item>
+          <el-form-item label="用户姓名:" prop="account">
+            <el-input v-model="dataForm.account" placeholder="请输入用户姓名" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="归属团队:" prop="teamNames">
+            <el-select v-model="dataForm.teamNames" placeholder="请选择归属团队" :multiple="true" :collapse-tags="true">
+              <el-option v-for="team in teamNames" :key="team.id" :label="team.name" :value="team.id" multiple="true"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="费用名称:" prop="costNames">
+            <el-select v-model="dataForm.costNames" placeholder="请选择费用名称" :multiple="true" :collapse-tags="true">
+              <el-option v-for="costName in costNames" :key="costName" :label="costName" :value="costName" multiple="true"></el-option>
+            </el-select>
+          </el-form-item>
+          <div v-if="showFlag" style="display: contents">
             <el-form-item label="工号:" prop="empId">
               <el-input v-model="dataForm.empId" placeholder="请输入工号" oninput="this.value = this.value.replace(/[^0-9]/g, '')" clearable></el-input>
             </el-form-item>
@@ -15,20 +25,9 @@
                 <el-option v-for="dept in deptNames" :key="dept.id" :label="dept.deptName" :value="dept.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="归属团队:" prop="teamNames">
-              <el-select v-model="dataForm.teamNames" placeholder="请选择归属团队" :multiple="true" :collapse-tags="true">
-                <el-option v-for="team in teamNames" :key="team.id" :label="team.name" :value="team.id" multiple="true"></el-option>
-              </el-select>
-            </el-form-item>
             <el-form-item label="成本中心:" prop="costCenters">
               <el-select v-model="dataForm.costCenters" placeholder="请选择成本中心" :multiple="true" :collapse-tags="true">
                 <el-option v-for="costCenter in deptNames" :key="costCenter.id" :label="costCenter.deptName" :value="costCenter.id" multiple="true"></el-option>
-              </el-select>
-            </el-form-item>
-            <br />
-            <el-form-item label="费用名称:" prop="costNames">
-              <el-select v-model="dataForm.costNames" placeholder="请选择费用名称" :multiple="true" :collapse-tags="true">
-                <el-option v-for="costName in costNames" :key="costName" :label="costName" :value="costName" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="日期:" prop="createTime">
@@ -55,11 +54,16 @@
                 end-placeholder="年/月/日"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
-              <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
-            </el-form-item>
           </div>
+          <el-form-item>
+            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+              <span v-if="showFlag" style="color: #2462f9">收起</span>
+              <span v-else style="color: #2462f9">展开</span>
+            </div>
+            <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
+            <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+          </el-form-item>
         </el-form>
       </el-header>
 
@@ -142,8 +146,6 @@
             </el-form-item>
 
             <el-form-item label="成本项目:" prop="costItems">
-              <!--              <el-input v-model="editDataForm.costItems" clearable></el-input>-->
-
               <el-select clearable v-model="editDataForm.costItems">
                 <el-option v-for="item in reasonByDept" :key="item.id" :label="item.name" :value="item.id" multiple="true"></el-option>
               </el-select>
@@ -175,6 +177,7 @@ import { getCName } from '@/utils/auth'
 export default {
   data() {
     return {
+      showFlag: true,
       chooseStr: '已选择 0 项',
       drawer: false,
       direction: 'rtl',
