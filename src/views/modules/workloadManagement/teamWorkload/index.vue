@@ -137,7 +137,7 @@ export default {
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName', width: '80px' },
           { label: '填报团队', prop: 'teamName' },
-          { label: '开始填报时间', prop: 'reportStartTime' },
+          { label: '开始填报时间', prop: 'reportStartTime', width: '100px' },
           { label: '填报天数', prop: 'reportDay', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }

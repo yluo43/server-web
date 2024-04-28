@@ -25,7 +25,7 @@
             </el-col>
           </el-row>
         </el-aside>
-        <el-main style="width: 100%; padding: 0" v-if="activeName === 'first'">
+        <el-main style="width: calc(100% - 200px); padding: 0" v-if="activeName === 'first'">
           <!-- <div class="management-header">
             <div class="management-item">
               <el-statistic title="我的待办">
@@ -144,11 +144,11 @@
           </div>
         </el-main>
         <!-- 工时审批 -->
-        <div v-if="activeName === 'second'">
+        <div v-if="activeName === 'second'" style="width: calc(100% - 200px)">
           <workerHourApproval ref="workerHourApproval" @projectListRefresh="projectListRefresh"></workerHourApproval>
         </div>
         <!-- 任务详情 -->
-        <div v-if="activeName === 'third'">
+        <div v-if="activeName === 'third'" style="width: calc(100% - 200px)">
           <taskDetails ref="taskDetails"></taskDetails>
         </div>
       </el-container>
@@ -178,7 +178,7 @@ export default {
           { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '200px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName', width: '80px' },
-          { label: '开始确认时间', prop: 'startConfirmTime' },
+          { label: '开始确认时间', prop: 'startConfirmTime', width: '100px' },
           { label: '确认天数', prop: 'affirmDay', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus', width: '80px' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '160px' }

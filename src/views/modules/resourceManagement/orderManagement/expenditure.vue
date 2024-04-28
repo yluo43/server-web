@@ -1,32 +1,41 @@
 <template>
-  <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-descriptions>
-        <template v-slot:title>
-          <span class="title">● {{ order.name }}</span>
-        </template>
-        <el-descriptions-item label="项目编码">{{ order.projectId }}</el-descriptions-item>
-        <el-descriptions-item label="项目经理">{{ order.managerName }}</el-descriptions-item>
-        <el-descriptions-item label="立项时间">{{ order.approvalDate }}</el-descriptions-item>
-        <el-descriptions-item label="合同类型">{{ order.contractTypeName }}</el-descriptions-item>
-        <el-descriptions-item label="支出合计">{{ order.expenditureAmount }}元</el-descriptions-item>
-        <el-descriptions-item label="计划交付时间">{{ order.deliveryDate }}</el-descriptions-item>
-        <el-descriptions-item label="项目状态">
-          <div style="width: 80%">
-            <!--            0交付中 1已交付 2关闭 3已回款-->
-            <el-steps :active="order.state">
-              <el-step title="交付中"></el-step>
-              <el-step title="已交付"></el-step>
-              <el-step title="关闭"></el-step>
-              <el-step title="已回款"></el-step>
-            </el-steps>
-          </div>
-        </el-descriptions-item>
-      </el-descriptions>
+  <div class="container-box">
+    <el-container direction="vertical">
+      <div class="header-box">
+        <div class="header-title">项目信息</div>
+        <i class="el-icon-close" @click="handlerFlag"></i>
+      </div>
       <div>
+        <el-descriptions>
+          <template v-slot:title>
+            <div style="display: flex; align-items: center; padding: 16px 0 0 20px">
+              <div class="circular"></div>
+              <span class="title">{{ order.name }}</span>
+            </div>
+          </template>
+          <el-descriptions-item label="项目编码">{{ order.projectId }}</el-descriptions-item>
+          <el-descriptions-item label="项目经理">{{ order.managerName }}</el-descriptions-item>
+          <el-descriptions-item label="立项时间">{{ order.approvalDate }}</el-descriptions-item>
+          <el-descriptions-item label="合同类型">{{ order.contractTypeName }}</el-descriptions-item>
+          <el-descriptions-item label="支出合计">{{ order.expenditureAmount }}元</el-descriptions-item>
+          <el-descriptions-item label="计划交付时间">{{ order.deliveryDate }}</el-descriptions-item>
+          <el-descriptions-item label="项目状态">
+            <div style="width: 80%">
+              <!--            0交付中 1已交付 2关闭 3已回款-->
+              <el-steps :active="order.state">
+                <el-step title="交付中"></el-step>
+                <el-step title="已交付"></el-step>
+                <el-step title="关闭"></el-step>
+                <el-step title="已回款"></el-step>
+              </el-steps>
+            </div>
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+      <div style="padding: 20px">
         <span style="font-weight: bold; font-size: medium">支出统计</span>
         <div class="chooseResult">
-          <i class="el-icon-info" style="color: #108ee9"></i>
+          <!-- <i class="el-icon-info" style="color: #108ee9"></i> -->
           <span class="chooseResultStr" v-html="chooseStr"></span>
         </div>
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect" :hidePage="true">
@@ -82,8 +91,7 @@
         </baseTable>
         <div class="center-button-container">
           <el-button
-            class="el-button-func"
-            style="width: 500px; background-color: #f5fbff; border: solid 1px #008aff"
+            style="width: 160px; margin-top: 15px; color: #2462f9"
             @click="addSettlement()"
             icon="el-icon-circle-plus-outline"
             :disabled="viewDisabled || editFlag"
@@ -91,6 +99,10 @@
             添加
           </el-button>
         </div>
+      </div>
+      <div class="bottom-btn">
+        <el-button type="primary" style="margin-right: 10px" @click="handlerFlag">确定</el-button>
+        <el-button @click="handlerFlag">取消</el-button>
       </div>
     </el-container>
   </div>
@@ -144,6 +156,9 @@ export default {
     }
   },
   methods: {
+    handlerFlag() {
+      this.$emit('changeFlag', 1)
+    },
     init(data) {
       if (data) {
         Object.assign(this.order, data)
@@ -311,14 +326,46 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.container-box {
+  height: 100%;
+  background: white;
+  .header-box {
+    height: 60px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f0f1f3;
+    .header-title {
+      font-size: 16px;
+    }
+  }
+  .circular {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(311deg, #3d6ce1 0%, #4d82ff 100%);
+  }
+  .bottom-btn {
+    height: 60px;
+    padding-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-shadow: 0px -3px 12px 0px rgba(0, 0, 0, 0.1);
+  }
+}
 .title {
-  color: #008aff; /* 设置标题字体颜色为红色 */
+  /*color: #008aff;*/ /* 设置标题字体颜色为红色 */
   font-size: 20px;
+  margin-left: 10px;
 }
 
 ::v-deep .el-descriptions-item__label {
-  color: #008aff; /* 设置描述项label字体颜色为绿色 */
+  /* color: #008aff;*/ /* 设置描述项label字体颜色为绿色 */
+  color: #4e5969;
+  font-size: 14px;
 }
 ::v-deep .el-input__icon {
   line-height: 30px;
@@ -345,5 +392,24 @@ export default {
 
 .el-select {
   width: 100px !important;
+}
+::v-deep .el-descriptions__body {
+  padding-left: 42px;
+}
+::v-deep .el-step__head.is-success {
+  color: #2462f9;
+  border-color: #2462f9;
+}
+::v-deep .el-step__title.is-success {
+  color: #c0c4cc;
+}
+::v-deep .el-step__head.is-process {
+  color: #2462f9;
+  border-color: #2462f9;
+}
+::v-deep .el-step__head.is-process .el-step__icon.is-text {
+  border-color: #2462f9;
+  background: #2462f9;
+  color: white;
 }
 </style>

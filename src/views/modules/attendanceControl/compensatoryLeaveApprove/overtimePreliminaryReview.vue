@@ -8,7 +8,7 @@
         </el-col>
       </el-row>
     </el-aside>
-    <div>
+    <div style="width: calc(100% - 200px)">
       <div style="margin-left: 16px">
         <el-form ref="dataForm" label-width="90px" label-position="left" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
@@ -206,18 +206,18 @@ export default {
       tableData: {
         theads: [
           { label: '用户姓名', prop: 'userName', width: '70px' },
-          { label: '工号', prop: 'empId', width: '70px' },
+          { label: '工号', prop: 'empId', width: '60px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '加班开始时间', prop: 'startTime' },
-          { label: '加班结束时间', prop: 'endTime' },
+          { label: '加班开始时间', prop: 'startTime', width: '140px' },
+          { label: '加班结束时间', prop: 'endTime', width: '140px' },
           { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
           { label: '加班时长(小时)', prop: 'overtimeHours' },
           { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork' },
           { label: '加班原因', prop: 'reason' },
           { label: '申请时间', prop: 'createTime' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
         ],
         url: '/attendance/getOvertimeList'
       },

@@ -37,7 +37,7 @@
           </div>
           <div class="status">
             <p>任务状态:</p>
-            <div style="width: 60%">
+            <div style="width: 70%">
               <el-steps :active="active" finish-status="success">
                 <el-step title="待填报"></el-step>
                 <el-step title="填报中"></el-step>
@@ -164,5 +164,21 @@ export default {
     padding-left: 20px;
     font-weight: 600;
   }
+}
+::v-deep .el-step__head.is-success {
+  color: #2462f9;
+  border-color: #2462f9;
+}
+::v-deep .el-step__title.is-success {
+  color: #c0c4cc;
+}
+::v-deep .el-step__head.is-process {
+  color: #2462f9;
+  border-color: #2462f9;
+}
+::v-deep .el-step__head.is-process .el-step__icon.is-text {
+  border-color: #2462f9;
+  background: #2462f9;
+  color: white;
 }
 </style>

@@ -44,13 +44,13 @@
             >
               <el-table-column prop="name" label="团队成员"></el-table-column>
               <el-table-column prop="empId" label="工号"></el-table-column>
-              <el-table-column prop="startTime" label="开始时间"></el-table-column>
-              <el-table-column prop="overTime" label="结束时间"></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" width="90px"></el-table-column>
+              <el-table-column prop="overTime" label="结束时间" width="90px"></el-table-column>
               <el-table-column prop="workloadName" label="报工类别"></el-table-column>
-              <el-table-column prop="projectName" label="成本项目"></el-table-column>
+              <el-table-column prop="projectName" label="成本项目" width="210px"></el-table-column>
               <el-table-column prop="managerName" label="项目经理"></el-table-column>
               <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
-              <el-table-column prop="commitTime" label="提交时间"></el-table-column>
+              <el-table-column prop="commitTime" label="提交时间" width="90px"></el-table-column>
               <el-table-column prop="workStatus" label="确认状态">
                 <template slot-scope="scope">
                   <template v-if="scope.row.workStatus == 0">
@@ -77,7 +77,7 @@
                   </template>
                 </template>
               </el-table-column>
-              <el-table-column label="操作">
+              <el-table-column label="操作" width="100px">
                 <template slot-scope="scope">
                   <el-button @click="edit(scope.row)" type="text">编辑</el-button>
                 </template>

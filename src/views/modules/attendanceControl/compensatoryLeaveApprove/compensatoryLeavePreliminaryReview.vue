@@ -149,12 +149,12 @@ export default {
           { label: '用户姓名', prop: 'userName' },
           { label: '工号', prop: 'empId' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '调休开始时间', prop: 'startTime' },
-          { label: '调休结束时间', prop: 'endTime' },
+          { label: '调休开始时间', prop: 'startTime', width: '140px' },
+          { label: '调休结束时间', prop: 'endTime', width: '140px' },
           { label: '调休天数(天)', prop: 'days' },
-          { label: '申请时间', prop: 'createTime' },
+          { label: '申请时间', prop: 'createTime', width: '140px' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '150px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
         ],
         url: '/attendance/getDayoffList'
       }

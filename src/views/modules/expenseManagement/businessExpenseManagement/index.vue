@@ -301,20 +301,20 @@ export default {
       reasonByDept: [],
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'account', width: '80px' },
-          { label: '工号', prop: 'empId', width: '80px' },
+          { label: '用户姓名', prop: 'account', width: '70px' },
+          { label: '工号', prop: 'empId', width: '70px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
           { label: '成本中心', prop: 'costCenter' },
-          { label: '出发日期', prop: 'startDate' },
-          { label: '返回日期', prop: 'backDate' },
-          { label: '目的城市', prop: 'backCity', width: '80px' },
+          { label: '出发日期', prop: 'startDate', width: '90px' },
+          { label: '返回日期', prop: 'backDate', width: '90px' },
+          { label: '目的城市', prop: 'backCity', width: '70px' },
           { label: '事由', prop: 'reasonName' },
           { label: '商旅100', prop: 'businesTravel', width: '80px' },
           { label: '宾馆名称', prop: 'hotelName' },
           { label: '出差合计(元)', prop: 'totalMoney', slotName: 'totalMoney' },
-          { label: '导入时间', prop: 'createTime' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType' }
+          { label: '导入时间', prop: 'createTime', width: '140px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         url: '/tripCost/tripCostListPage'
       }

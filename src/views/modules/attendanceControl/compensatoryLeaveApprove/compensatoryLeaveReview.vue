@@ -78,7 +78,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div>
+      <el-main>
         <div class="chooseResult">
           <span>已选择{{ count }}项</span>
           <el-button type="text" @click="pass()">批量通过</el-button>
@@ -101,7 +101,7 @@
             </template>
           </baseTable>
         </div>
-      </div>
+      </el-main>
     </el-container>
     <!-- 调休申请驳回 -->
     <base-dialog ref="rejectDialog" title="调休申请驳回" :width="'500px'">
@@ -166,12 +166,12 @@ export default {
           { label: '用户姓名', prop: 'userName' },
           { label: '工号', prop: 'empId' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '调休开始时间', prop: 'startTime' },
-          { label: '调休结束时间', prop: 'endTime' },
+          { label: '调休开始时间', prop: 'startTime', width: '140px' },
+          { label: '调休结束时间', prop: 'endTime', width: '140px' },
           { label: '调休天数', prop: 'days' },
           { label: '申请时间', prop: 'createTime' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '150px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
         ],
         url: '/attendance/getDayoffList'
       }

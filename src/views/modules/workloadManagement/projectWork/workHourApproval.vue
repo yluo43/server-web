@@ -49,8 +49,8 @@
                 <el-table-column prop="deptName" label="归属部门"></el-table-column>
                 <el-table-column prop="teamName" label="归属团队"></el-table-column>
                 <el-table-column prop="teamManagerName" label="团队负责人"></el-table-column>
-                <el-table-column prop="startTime" label="开始时间"></el-table-column>
-                <el-table-column prop="overTime" label="结束时间"></el-table-column>
+                <el-table-column prop="startTime" label="开始时间" width="90px"></el-table-column>
+                <el-table-column prop="overTime" label="结束时间" width="90px"></el-table-column>
                 <el-table-column prop="workloadName" label="报工类别"></el-table-column>
                 <el-table-column prop="planRate" label="计划投入(%)"></el-table-column>
                 <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>

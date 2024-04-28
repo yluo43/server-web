@@ -134,16 +134,16 @@ export default {
           { label: '工号', prop: 'empId' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '开始时间', prop: 'startTime' },
-          { label: '结束时间', prop: 'overTime' },
+          { label: '开始时间', prop: 'startTime', width: '90px' },
+          { label: '结束时间', prop: 'overTime', width: '90px' },
           { label: '报工类别', prop: 'workloadName' },
-          { label: '成本项目', prop: 'projectName' },
+          { label: '成本项目', prop: 'projectName', width: '210px' },
           { label: '项目经理', prop: 'projectManagerName' },
           { label: '计划投入(%)', prop: 'investRate' },
           { label: '实际投入(%)', prop: 'realityRate' },
-          { label: '提交时间', prop: 'commitTime' },
-          { label: '审批时间', prop: 'approveTime' },
-          { label: '归档时间', prop: 'updateTime' }
+          { label: '提交时间', prop: 'commitTime', width: '140px' },
+          { label: '审批时间', prop: 'approveTime', width: '140px' },
+          { label: '归档时间', prop: 'updateTime', width: '140px' }
         ],
         url: '/workload/pigeonholeTaskList'
       }

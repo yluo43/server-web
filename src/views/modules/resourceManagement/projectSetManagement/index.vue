@@ -175,8 +175,8 @@ export default {
           { label: '项目数量', prop: 'projectNum', width: '80px' },
           { label: '已完成项目数', prop: 'completeNum' },
           { label: '简介', prop: 'remarks' },
-          { label: '启动时间', prop: 'startDate' },
-          { label: '结束时间', prop: 'endDate', slotName: 'endDate' },
+          { label: '启动时间', prop: 'startDate', width: '90px' },
+          { label: '结束时间', prop: 'endDate', slotName: 'endDate', width: '90px' },
           { label: '状态', prop: 'stateName' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],

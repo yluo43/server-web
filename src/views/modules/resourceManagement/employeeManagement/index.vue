@@ -344,10 +344,10 @@ export default {
           { label: '角色', prop: 'roleName' },
           { label: '技术级别', prop: 'empLevel' },
           { label: '岗位类型', prop: 'positionTypeName' },
-          { label: '入职时间', prop: 'entryDate' },
-          { label: '离职时间', prop: 'departDate' },
+          { label: '入职时间', prop: 'entryDate', width: '90px' },
+          { label: '离职时间', prop: 'departDate', width: '90px' },
           { label: '状态', prop: 'departStatusName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         url: '/employee/selectEmployeeListWithPage'
       },

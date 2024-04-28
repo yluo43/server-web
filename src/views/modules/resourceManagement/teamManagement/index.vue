@@ -265,9 +265,9 @@ export default {
           { label: '驻地', prop: 'stationName' },
           { label: '归属部门', prop: 'deptName' },
           { label: '团队成员', prop: 'teamNum' },
-          { label: '创建时间', prop: 'createTime' },
+          { label: '创建时间', prop: 'createTime', width: '140px' },
           { label: '状态', prop: 'stateName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         url: '/team/selectTeamPage'
       }

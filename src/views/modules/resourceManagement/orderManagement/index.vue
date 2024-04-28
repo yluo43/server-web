@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div v-if="flag == 1" style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: auto; padding: 0">
         <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
@@ -106,16 +106,22 @@
         </baseTable>
       </el-main>
     </el-container>
-    <base-dialog :title="title" ref="addOrUpdateDrawer">
+    <!-- <base-dialog :title="title" ref="addOrUpdateDrawer">
       <template>
         <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate"></addOrUpdate>
       </template>
-    </base-dialog>
-    <base-dialog :title="title" ref="expenditureDrawer">
+    </base-dialog> -->
+    <!-- <base-dialog :title="title" ref="expenditureDrawer">
       <template>
         <expenditure @refreshDataList="refresh" ref="expenditure"></expenditure>
       </template>
-    </base-dialog>
+    </base-dialog> -->
+  </div>
+  <div v-else-if="flag == 2">
+    <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate" @changeFlag="handlerFlag"></addOrUpdate>
+  </div>
+  <div v-else>
+    <expenditure @refreshDataList="refresh" ref="expenditure" @changeFlag="handlerFlag"></expenditure>
   </div>
 </template>
 <script>
@@ -127,6 +133,7 @@ import expenditure from '@/views/modules/resourceManagement/orderManagement/expe
 export default {
   data() {
     return {
+      flag: 1,
       title: '',
       managerIdList: [],
       deptIdList: [],
@@ -156,7 +163,7 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '项目名称', prop: 'name', width: '100px' },
+          { label: '项目名称', prop: 'name', width: '210px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
           { label: '归属项目集', prop: 'psName' },
@@ -295,6 +302,12 @@ export default {
     })
   },
   methods: {
+    handlerFlag(f) {
+      this.flag = f
+      this.$nextTick(() => {
+        this.refresh()
+      })
+    },
     refresh() {
       this.$refs.dataForm.validate((valid) => {
         if (!valid) {
@@ -331,15 +344,17 @@ export default {
       this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), this.$http.adornParams(form), this)
     },
     add(row) {
-      this.title = '项目订单'
-      this.$refs.addOrUpdateDrawer.show()
+      //this.title = '项目订单'
+      // this.$refs.addOrUpdateDrawer.show()
+      this.flag = 2
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(row.item)
       })
     },
     expenditureAdd(row) {
-      this.title = '项目支出'
-      this.$refs.expenditureDrawer.show()
+      // this.title = '项目支出'
+      // this.$refs.expenditureDrawer.show()
+      this.flag = 3
       this.$nextTick(() => {
         this.$refs.expenditure.init(row.item)
       })

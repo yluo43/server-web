@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div v-if="flag" style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: 100%; padding: 0">
         <el-form ref="projectConfigForm" label-width="80px" label-position="left" :inline="true" :model="projectConfigFormData">
@@ -195,11 +195,14 @@
     </base-drawer>
 
     <!-- 编辑人员信息 -->
-    <base-dialog ref="personnelManagementDialog" title="人员信息">
+    <!-- <base-dialog ref="personnelManagementDialog" title="人员信息">
       <template>
         <personnel-management ref="personnelManagement"></personnel-management>
       </template>
-    </base-dialog>
+    </base-dialog> -->
+  </div>
+  <div v-else style="height: 100%">
+    <personnel-management ref="personnelManagement" @changeFlag="handlerFlag"></personnel-management>
   </div>
 </template>
 
@@ -217,6 +220,7 @@ export default {
   props: {},
   data() {
     return {
+      flag: true,
       projectConfigFormData: {
         name: '',
         projectId: '',
@@ -249,11 +253,11 @@ export default {
       chooseStr: '已选择 0 项',
       projectTableData: {
         theads: [
-          { label: '项目名称', prop: 'name', slotName: 'name' },
+          { label: '项目名称', prop: 'name', slotName: 'name', width: '210px' },
           { label: '项目经理', prop: 'managerName' },
           { label: '项目类型', prop: 'projectTypeName' },
-          { label: '立项时间', prop: 'approvalDate' },
-          { label: '计划交付时间', prop: 'deliveryDate' },
+          { label: '立项时间', prop: 'approvalDate', width: '90px' },
+          { label: '计划交付时间', prop: 'deliveryDate', width: '100px;' },
           { label: '合同类型', prop: 'contractTypeName', slotName: 'contractTypeName' },
           { label: '结算周期', prop: 'settlementCycle', slotName: 'settlementCycle' },
           { label: '合同金额(元)', prop: 'contractAmount', slotName: 'contractAmount', width: '100px' },
@@ -261,7 +265,7 @@ export default {
           { label: '结算单金额(元)', prop: 'settlementAmount', width: '120px' },
           { label: '回款金额(元)', prop: 'returnAmount', width: '100px' },
           { label: '状态', prop: 'stateName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '180px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '160px' }
         ],
         url: '/costItems/list'
       },
@@ -276,6 +280,12 @@ export default {
   },
   created() {},
   methods: {
+    handlerFlag(f) {
+      this.flag = f
+      this.$nextTick(() => {
+        this.queryProjectList()
+      })
+    },
     //查询项目标签枚举
     selectItemLabes() {
       this.$http({
@@ -408,7 +418,8 @@ export default {
 
     // 编辑人员信息
     editPersonnelInfo(row) {
-      this.$refs.personnelManagementDialog.show()
+      // this.$refs.personnelManagementDialog.show()
+      this.flag = false
       this.$nextTick(() => {
         this.$refs.personnelManagement.initPersonnelList(row)
       })

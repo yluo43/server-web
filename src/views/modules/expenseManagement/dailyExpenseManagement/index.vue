@@ -226,19 +226,19 @@ export default {
       reasonByDept: [],
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'account', width: '80px;' },
-          { label: '工号', prop: 'empId', width: '80px' },
-          { label: '归属部门', prop: 'deptName' },
-          { label: '归属团队', prop: 'teamName' },
-          { label: '成本中心', prop: 'costCenter' },
-          { label: '日期', prop: 'costDate' },
+          { label: '用户姓名', prop: 'account', width: '70px;' },
+          { label: '工号', prop: 'empId', width: '70px' },
+          { label: '归属部门', prop: 'deptName', width: '100px' },
+          { label: '归属团队', prop: 'teamName', width: '100px' },
+          { label: '成本中心', prop: 'costCenter', width: '100px' },
+          { label: '日期', prop: 'costDate', width: '90px' },
           { label: '事由', prop: 'reason' },
           { label: '费用名称', prop: 'costName' },
-          { label: '单据张数', prop: 'documentNum', width: '80px' },
+          { label: '单据张数', prop: 'documentNum', width: '70px' },
           { label: '报销金额（元）', prop: 'totalMoney' },
-          { label: '成本项目', prop: 'costItemsName' },
-          { label: '导入时间', prop: 'createTime' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType' }
+          { label: '成本项目', prop: 'costItemsName', width: '210px' },
+          { label: '导入时间', prop: 'createTime', width: '140px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         url: '/dailyCost/dailyCostListPage'
       }
