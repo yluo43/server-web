@@ -2,7 +2,7 @@
   <div class="container-box">
     <el-container direction="vertical">
       <div class="header-box">
-        <div class="header-title">项目信息</div>
+        <div class="header-title">项目支出</div>
         <i class="el-icon-close" @click="handlerFlag"></i>
       </div>
       <div>
@@ -35,7 +35,7 @@
       <div style="padding: 20px">
         <span style="font-weight: bold; font-size: medium">支出统计</span>
         <div class="chooseResult">
-          <!-- <i class="el-icon-info" style="color: #108ee9"></i> -->
+          <i class="el-icon-info" style="color: #108ee9"></i>
           <span class="chooseResultStr" v-html="chooseStr"></span>
         </div>
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect" :hidePage="true">
@@ -91,6 +91,8 @@
         </baseTable>
         <div class="center-button-container">
           <el-button
+            type="primary"
+            plain
             style="width: 160px; margin-top: 15px; color: #2462f9"
             @click="addSettlement()"
             icon="el-icon-circle-plus-outline"

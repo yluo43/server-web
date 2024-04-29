@@ -107,9 +107,9 @@
       </baseTable>
 
       <el-drawer title="编辑" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 20px">
+        <div style="padding-left: 40px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
-            <el-form-item label="姓名:" prop="account">
+            <el-form-item label="用户姓名:" prop="account">
               <el-input v-model="editDataForm.account" clearable disabled="disabled"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
@@ -177,14 +177,13 @@ import { getCName } from '@/utils/auth'
 export default {
   data() {
     return {
-      showFlag: true,
+      showFlag: false,
       chooseStr: '已选择 0 项',
       drawer: false,
       direction: 'rtl',
       deleteIds: [],
       createTime: '' || undefined,
       costDate: '' || undefined,
-
       dataForm: {
         costNames: [] || undefined,
         account: '' || undefined,
@@ -490,11 +489,6 @@ export default {
 .el-input {
   width: 200px;
 }
-/* .el-form--inline > .inputlist {
-  padding-top: 20px;
-  padding-left: 20px;
-  display: flex;
-} */
 
 ::v-deep .editForm .el-form-item__label {
   width: 80px !important;
@@ -502,9 +496,6 @@ export default {
 ::v-deep .editForm .el-form-item {
   width: 100% !important;
 }
-/* .el-input {
-  width: 190px;
-} */
 
 .el-button-func {
   width: 86px;
@@ -514,16 +505,4 @@ export default {
 ::v-deep .el-table__cell {
   text-align: center;
 }
-
-/* .chooseResult {
-  width: 98%;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  margin-top: 15px;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
 </style>

@@ -54,8 +54,7 @@
           </template>
         </template>
       </baseTable>
-      <!-- :before-close="handleClose" -->
-      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="26%">
+      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="23%">
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="editForm">
             <el-form-item label="报销项目名称:" prop="name">
@@ -429,13 +428,6 @@ export default {
   white-space: nowrap;
   max-width: 80px;
 } */
-/* .el-form--inline > .inputlist {
-  display: flex;
-  align-items: center;
-  padding-top: 20px;
-  padding-left: 20px;
-  display: flex;
-} */
 
 ::v-deep .editForm .el-form-item__label {
   width: 125px !important;
@@ -452,15 +444,4 @@ export default {
 ::v-deep .el-table__cell {
   text-align: center;
 }
-
-/* .chooseResult {
-  width: 98%;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
 </style>

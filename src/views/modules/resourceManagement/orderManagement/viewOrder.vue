@@ -10,9 +10,10 @@
         <el-descriptions-item label="订单描述">{{ dataForm.remarks }}</el-descriptions-item>
         <el-descriptions-item label="上传订单">{{ dataForm.fileName }}</el-descriptions-item>
       </el-descriptions>
-      <el-row style="display: flex; justify-content: right; margin: 20px auto">
-        <el-button @click="cancel()">取消</el-button>
-      </el-row>
+      <div class="btn-group">
+        <el-button plain style="margin-right: 10px" @click="cancel()">取消</el-button>
+        <el-button type="primary" @click="cancel()">确认</el-button>
+      </div>
     </el-container>
   </div>
 </template>

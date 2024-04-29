@@ -7,21 +7,9 @@
             <el-form-item label="用户姓名:" prop="account" class="name">
               <el-input v-model="dataForm.account" placeholder="请输入用户姓名" clearable maxlength="50"></el-input>
             </el-form-item>
-
-            <el-form-item label="成本中心:" prop="costCenters">
-              <el-select v-model="dataForm.costCenters" placeholder="请选择成本中心" :multiple="true" :collapse-tags="true">
-                <el-option
-                  v-for="costCenter in costCenters"
-                  :key="costCenter.id"
-                  :label="costCenter.deptName"
-                  :value="costCenter.id"
-                  multiple="true"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="归属部门:" prop="deptNames">
-              <el-select v-model="dataForm.deptNames" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
-                <el-option v-for="dept in deptNames" :key="dept.id" :label="dept.deptName" :value="dept.id" multiple="true"></el-option>
+            <el-form-item label="归属团队:" prop="teamNames">
+              <el-select v-model="dataForm.teamNames" placeholder="请选择归属团队" :multiple="true" :collapse-tags="true">
+                <el-option v-for="team in teamNames" :key="team.id" :label="team.name" :value="team.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="事由:" prop="reason">
@@ -29,64 +17,80 @@
                 <el-option v-for="item in reason" :key="item.id" :label="item.name + '(' + item.deptName + ')'" :value="item.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="归属团队:" prop="teamNames">
-              <el-select v-model="dataForm.teamNames" placeholder="请选择归属团队" :multiple="true" :collapse-tags="true">
-                <el-option v-for="team in teamNames" :key="team.id" :label="team.name" :value="team.id" multiple="true"></el-option>
-              </el-select>
-            </el-form-item>
-
-            <el-form-item label="工号:" prop="empId" class="empId">
-              <el-input
-                v-model="dataForm.empId"
-                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                placeholder="请输入工号"
-                clearable
-                maxlength="50"
-              ></el-input>
-            </el-form-item>
-
             <el-form-item label="目的城市:" prop="backCitys">
               <el-select v-model="dataForm.backCitys" filterable clearable placeholder="请选择目的城市" :multiple="true" :collapse-tags="true">
                 <el-option v-for="location in empLocations" :key="location.name" :label="location.name" :value="location.name"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="出发日期:" prop="startDate">
-              <el-date-picker
-                style="width: 200px"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                v-model="startDate"
-                type="daterange"
-                range-separator="~"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              ></el-date-picker>
-            </el-form-item>
-            <el-form-item label="返回日期:" prop="backDate">
-              <el-date-picker
-                style="width: 200px"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                v-model="backDate"
-                type="daterange"
-                range-separator="~"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              ></el-date-picker>
-            </el-form-item>
-            <el-form-item label="导入日期:" prop="createTime">
-              <el-date-picker
-                style="width: 200px"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                v-model="createTime"
-                type="daterange"
-                range-separator="~"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              ></el-date-picker>
-            </el-form-item>
+            <div v-if="showFlag" style="display: contents">
+              <el-form-item label="工号:" prop="empId" class="empId">
+                <el-input
+                  v-model="dataForm.empId"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  placeholder="请输入工号"
+                  clearable
+                  maxlength="50"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="成本中心:" prop="costCenters">
+                <el-select v-model="dataForm.costCenters" placeholder="请选择成本中心" :multiple="true" :collapse-tags="true">
+                  <el-option
+                    v-for="costCenter in costCenters"
+                    :key="costCenter.id"
+                    :label="costCenter.deptName"
+                    :value="costCenter.id"
+                    multiple="true"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="归属部门:" prop="deptNames">
+                <el-select v-model="dataForm.deptNames" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
+                  <el-option v-for="dept in deptNames" :key="dept.id" :label="dept.deptName" :value="dept.id" multiple="true"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="出发日期:" prop="startDate">
+                <el-date-picker
+                  style="width: 200px"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  v-model="startDate"
+                  type="daterange"
+                  range-separator="~"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                ></el-date-picker>
+              </el-form-item>
+              <el-form-item label="返回日期:" prop="backDate">
+                <el-date-picker
+                  style="width: 200px"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  v-model="backDate"
+                  type="daterange"
+                  range-separator="~"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                ></el-date-picker>
+              </el-form-item>
+              <el-form-item label="导入日期:" prop="createTime">
+                <el-date-picker
+                  style="width: 200px"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  v-model="createTime"
+                  type="daterange"
+                  range-separator="~"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                ></el-date-picker>
+              </el-form-item>
+            </div>
             <el-form-item>
+              <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+                <span v-if="showFlag" style="color: #2462f9">收起</span>
+                <span v-else style="color: #2462f9">展开</span>
+              </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
             </el-form-item>
@@ -172,8 +176,8 @@
         </template>
       </baseTable>
 
-      <el-drawer title="编辑" :visible.sync="drawer" :direction="direction" size="22%">
-        <div style="padding-left: 20px">
+      <el-drawer title="编辑" :visible.sync="drawer" :direction="direction" size="23%">
+        <div style="padding-left: 40px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
             <el-form-item label="姓名:" prop="account">
               <el-input v-model="editDataForm.account" clearable disabled="disabled" maxlength="50"></el-input>
@@ -248,6 +252,7 @@ import { getCName } from '@/utils/auth'
 export default {
   data() {
     return {
+      showFlag: false,
       chooseStr: '已选择 0 项',
       deleteIds: [],
       drawer: false,
@@ -255,7 +260,6 @@ export default {
       createTime: '',
       startDate: '',
       backDate: '',
-
       dataForm: {
         account: '' || undefined,
         backDateStart: '' || undefined,
@@ -587,11 +591,6 @@ export default {
 .el-input {
   width: 200px;
 }
-/* .el-form--inline > .inputlist {
-  padding-top: 20px;
-  padding-left: 20px;
-  display: flex;
-} */
 
 ::v-deep .editForm .el-form-item__label {
   width: 80px !important;
@@ -614,18 +613,4 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* .el-input {
-  width: 190px;
-} */
-/* .chooseResult {
-  width: 98%;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  margin-top: 10px;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
 </style>

@@ -6,46 +6,19 @@
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="dataForm.name" placeholder="请输入项目名称" clearable></el-input>
           </el-form-item>
-          <el-form-item label="归属团队:">
-            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="项目经理:">
             <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择项目经理">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="立项时间:">
-            <el-date-picker
-              style="width: 200px"
-              v-model="approvalDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            ></el-date-picker>
+          <el-form-item label="归属团队:">
+            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
+              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="合同类型:">
             <el-select v-model="contractTypeList" multiple collapse-tags placeholder="请选择合同类型">
               <el-option v-for="item in contractTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="状态:">
-            <el-select v-model="stateList" multiple collapse-tags placeholder="请选择状态">
-              <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属项目集:">
-            <el-select v-model="psIdsList" multiple collapse-tags placeholder="请选择归属项目集">
-              <el-option v-for="item in psIdOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属部门:">
-            <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="结算周期:">
@@ -53,19 +26,53 @@
               <el-option v-for="item in 12" :key="item" :label="item + '月'" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="交付时间:">
-            <el-date-picker
-              style="width: 200px"
-              v-model="deliveryDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            ></el-date-picker>
+          <el-form-item label="状态:">
+            <el-select v-model="stateList" multiple collapse-tags placeholder="请选择状态">
+              <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
           </el-form-item>
+          <div v-if="showFlag" style="display: contents">
+            <el-form-item label="立项时间:">
+              <el-date-picker
+                style="width: 200px"
+                v-model="approvalDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item label="归属项目集:">
+              <el-select v-model="psIdsList" multiple collapse-tags placeholder="请选择归属项目集">
+                <el-option v-for="item in psIdOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属部门:">
+              <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
+                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="交付时间:">
+              <el-date-picker
+                style="width: 200px"
+                v-model="deliveryDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              ></el-date-picker>
+            </el-form-item>
+          </div>
           <el-form-item>
+            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+              <span v-if="showFlag" style="color: #2462f9">收起</span>
+              <span v-else style="color: #2462f9">展开</span>
+            </div>
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
             <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
           </el-form-item>
@@ -133,6 +140,7 @@ import expenditure from '@/views/modules/resourceManagement/orderManagement/expe
 export default {
   data() {
     return {
+      showFlag: false,
       flag: 1,
       title: '',
       managerIdList: [],
@@ -387,13 +395,4 @@ export default {
   cursor: pointer;
   /* 添加其他想要的样式 */
 }
-/* .chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
 </style>

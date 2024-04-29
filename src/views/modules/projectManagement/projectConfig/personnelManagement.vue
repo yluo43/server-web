@@ -63,7 +63,7 @@
           </el-form-item>
           <el-form-item label="岗位类型:" prop="positionTypes">
             <el-select v-model="personnelManagementFormData.positionTypes" placeholder="请选择岗位类型" multiple collapse-tags clearable>
-              <el-option v-for="item in positionTypeList" :key="item.id" :label="item.name" :value="item.id" />
+              <el-option v-for="item in positionTypeList" :key="item.id" :label="item.positionName" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="开始支撑时间:" prop="supportDate">
@@ -186,7 +186,8 @@ export default {
       stationList: [],
       stateList: [...ProjectConstants.personnelState],
       empLevelList: [...ProjectConstants.empLevel],
-      positionTypeList: [...ProjectConstants.positionType],
+      //  positionTypeList: [...ProjectConstants.positionType],
+      positionTypeList: [],
       personnelManagementTableData: {
         theads: [
           { label: '姓名', prop: 'name' },
@@ -207,9 +208,25 @@ export default {
     }
   },
   computed: {},
-  mounted() {},
+  mounted() {
+    //获取岗位类型
+    this.getPosition()
+  },
   created() {},
   methods: {
+    //获取岗位类型
+    getPosition() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getPosition'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.positionTypeList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
     //返回上一级页面
     handlerFlag() {
       this.$emit('changeFlag', true)
@@ -493,18 +510,6 @@ export default {
 .el-input {
   width: 200px;
 }
-/* .chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 10px auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-}
-
-.chooseResultStr {
-  margin-left: 10px;
-} */
 
 .el-button {
   margin-left: 0;

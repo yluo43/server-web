@@ -129,7 +129,7 @@ export default {
     //获取团队
     getTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getTeam'),
+        url: this.$http.adornUrl('/common/getTeamByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -192,15 +192,16 @@ export default {
         return
       }
       let form = { ...this.dataForm }
-      form.ids = this.selData.filter((item) => {
-        return item.id
+      form.ids = this.selData.map((item) => {
+        return item.empId
       })
       Object.keys(form).map((key) => {
         if (!form[key]) {
           delete form[key]
         }
       })
-      this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), this.$http.adornParams(form), this)
+
+      this.$http.downloadPost(this.$http.adornUrl('/attendance/export'), this.$http.adornParams(form), this)
     }
   }
 }

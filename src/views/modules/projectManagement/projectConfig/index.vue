@@ -6,70 +6,9 @@
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectConfigFormData.name" placeholder="请输入项目名称" clearable />
           </el-form-item>
-          <el-form-item label="项目编码:" prop="projectId">
-            <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" clearable />
-          </el-form-item>
           <el-form-item label="项目经理:" prop="managerIds">
             <el-select v-model="projectConfigFormData.managerIds" multiple collapse-tags clearable placeholder="请选择项目经理">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="立项时间:" prop="approvalDate">
-            <el-date-picker
-              style="width: 200px"
-              v-model="projectConfigFormData.approvalDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="合同类型:" prop="contractTypes">
-            <el-select v-model="projectConfigFormData.contractTypes" placeholder="请选择合同类型" multiple collapse-tags clearable>
-              <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属团队:" prop="teamIds">
-            <el-select v-model="projectConfigFormData.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="甲方名称:" prop="firstParty">
-            <el-input v-model="projectConfigFormData.firstParty" placeholder="请输入甲方名称" clearable />
-          </el-form-item>
-          <el-form-item label="合同名称:" prop="contractName">
-            <el-input v-model="projectConfigFormData.contractName" placeholder="请输入合同名称" clearable />
-          </el-form-item>
-          <el-form-item label="合同编号:" prop="contractNo">
-            <el-input v-model="projectConfigFormData.contractNo" placeholder="请输入合同编号" clearable />
-          </el-form-item>
-          <el-form-item label="交付时间:" prop="deliveryDate">
-            <el-date-picker
-              style="width: 200px"
-              v-model="projectConfigFormData.deliveryDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="结算周期:" prop="settlementCycles">
-            <el-select v-model="projectConfigFormData.settlementCycles" placeholder="请选择结算周期" multiple collapse-tags clearable>
-              <el-option v-for="item in settlementCycleList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属部门:" prop="deptIds">
-            <el-select v-model="projectConfigFormData.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属项目集:" prop="psIds">
-            <el-select v-model="projectConfigFormData.psIds" placeholder="请选择归属项目集" multiple collapse-tags clearable>
-              <el-option v-for="item in psList" :key="item.id" :label="item.psName" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="项目类型:" prop="projectTypes">
@@ -82,7 +21,75 @@
               <el-option v-for="item in itemLabels" :key="item.id" :label="item.labelName" :value="item.id" />
             </el-select>
           </el-form-item>
+          <div v-if="showFlag" style="display: contents">
+            <el-form-item label="项目编码:" prop="projectId">
+              <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" clearable />
+            </el-form-item>
+            <el-form-item label="立项时间:" prop="approvalDate">
+              <el-date-picker
+                style="width: 200px"
+                v-model="projectConfigFormData.approvalDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+            <el-form-item label="合同类型:" prop="contractTypes">
+              <el-select v-model="projectConfigFormData.contractTypes" placeholder="请选择合同类型" multiple collapse-tags clearable>
+                <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属团队:" prop="teamIds">
+              <el-select v-model="projectConfigFormData.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
+                <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="甲方名称:" prop="firstParty">
+              <el-input v-model="projectConfigFormData.firstParty" placeholder="请输入甲方名称" clearable />
+            </el-form-item>
+            <el-form-item label="合同名称:" prop="contractName">
+              <el-input v-model="projectConfigFormData.contractName" placeholder="请输入合同名称" clearable />
+            </el-form-item>
+            <el-form-item label="合同编号:" prop="contractNo">
+              <el-input v-model="projectConfigFormData.contractNo" placeholder="请输入合同编号" clearable />
+            </el-form-item>
+            <el-form-item label="交付时间:" prop="deliveryDate">
+              <el-date-picker
+                style="width: 200px"
+                v-model="projectConfigFormData.deliveryDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+            <el-form-item label="结算周期:" prop="settlementCycles">
+              <el-select v-model="projectConfigFormData.settlementCycles" placeholder="请选择结算周期" multiple collapse-tags clearable>
+                <el-option v-for="item in settlementCycleList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属部门:" prop="deptIds">
+              <el-select v-model="projectConfigFormData.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
+                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属项目集:" prop="psIds">
+              <el-select v-model="projectConfigFormData.psIds" placeholder="请选择归属项目集" multiple collapse-tags clearable>
+                <el-option v-for="item in psList" :key="item.id" :label="item.psName" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </div>
           <el-form-item>
+            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+              <span v-if="showFlag" style="color: #2462f9">收起</span>
+              <span v-else style="color: #2462f9">展开</span>
+            </div>
             <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="queryProjectList">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
@@ -220,6 +227,7 @@ export default {
   props: {},
   data() {
     return {
+      showFlag: false,
       flag: true,
       projectConfigFormData: {
         name: '',
@@ -521,27 +529,6 @@ export default {
 .el-input {
   width: 200px;
 }
-/* .el-select {
-  width: 200px !important;
-} */
-
-/* ::v-deep .el-select .el-tag {
-  max-width: 70% !important;
-} */
-
-/* .chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 10px auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-} */
-
-/* .chooseResultStr {
-  margin-left: 10px;
-} */
-
 .el-button {
   margin-left: 0;
   width: auto;

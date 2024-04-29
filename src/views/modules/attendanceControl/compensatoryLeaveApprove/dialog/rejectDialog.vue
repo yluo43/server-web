@@ -101,14 +101,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.el-dialog__body {
-  padding: 25px 0 2px 0;
-}
-.el-date-editor.el-input {
-  width: 190px;
-}
-.el-dialog__body {
-  width: 50%;
-}
-</style>
+<style scoped></style>

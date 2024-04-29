@@ -215,7 +215,7 @@ export default {
     //获取团队
     getTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getTeam'),
+        url: this.$http.adornUrl('/common/getTeamByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {

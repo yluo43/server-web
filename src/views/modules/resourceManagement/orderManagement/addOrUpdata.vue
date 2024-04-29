@@ -3,7 +3,7 @@
     <el-container direction="vertical">
       <div class="header-box">
         <div class="header-title">项目信息</div>
-        <i class="el-icon-close" @click="handlerFlag"></i>
+        <i class="el-icon-close" style="font-size: 14px" @click="handlerFlag"></i>
       </div>
       <div>
         <el-descriptions>
@@ -35,14 +35,14 @@
       <div class="add-box">
         <el-button class="add-btn" type="primary" @click="addOrder()" icon="el-icon-circle-plus-outline" :disabled="viewDisabled">添加订单</el-button>
       </div>
-      <div style="margin-left: 24px">
+      <div style="margin: 0 24px">
         <el-collapse v-model="activeNames" @change="handleChange">
           <template v-for="(item, index) in orderList">
             <el-collapse-item :name="index" style="margin-bottom: 16px">
               <template slot="title">
                 <div class="order-title">
                   <div style="display: flex; align-items: center">
-                    <svg-icon :icon-class="'triangle-arrow-icon'" style="height: 1.5em; width: 1.5em" />
+                    <svg-icon :icon-class="activeNames.includes(index) ? 'triangle-down-icon' : 'triangle-up-icon'" style="height: 1.3em; width: 1.3em" />
                     <span style="color: #2462f9; margin-right: 6px">订单:</span>
                     <span>{{ item.orderName }}</span>
                   </div>
@@ -54,9 +54,9 @@
                 </div>
               </template>
               <div style="padding: 0 16px">
-                <div>结算回款</div>
+                <div style="margin-top: 5px">结算回款</div>
                 <div class="chooseResult">
-                  <!-- <i class="el-icon-info" style="color: #108ee9"></i> -->
+                  <i class="el-icon-info" style="color: #108ee9"></i>
                   <span class="chooseResultStr" v-html="chooseStr"></span>
                 </div>
                 <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect" :hidePage="true">
@@ -166,6 +166,8 @@
               </div>
               <div class="center-button-container">
                 <el-button
+                  type="primary"
+                  plain
                   style="width: 160px; margin-top: 20px; color: #2462f9"
                   @click="addSettlement(index)"
                   icon="el-icon-circle-plus-outline"
@@ -183,12 +185,12 @@
         <el-button @click="handlerFlag">取消</el-button>
       </div>
     </el-container>
-    <base-dialog :title="title" ref="addOrUpdateDrawer" :width="'40%'">
+    <base-dialog :title="title" ref="addOrUpdateDrawer" :width="'500px'">
       <template>
         <add-order @refreshDataList="refresh" ref="addOrderRef"></add-order>
       </template>
     </base-dialog>
-    <base-dialog :title="title" ref="viewOrderDialog" :width="'40%'">
+    <base-dialog :title="title" ref="viewOrderDialog" :width="'500px'">
       <template>
         <view-order @refreshDataList="refresh" ref="viewOrderRef"></view-order>
       </template>
@@ -205,6 +207,7 @@ export default {
   components: { baseTable, addOrder, baseDialog, viewOrder },
   data() {
     return {
+      activeNames: [],
       chooseStr: '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款 0.00',
       title: '',
       order: {
@@ -326,7 +329,10 @@ export default {
         }
       })
     },
-    handleChange() {},
+    handleChange(activeNames) {
+      this.activeName = activeNames
+      console.log(activeNames)
+    },
     viewOrder(item) {
       this.title = '订单详情'
       this.$refs.viewOrderDialog.show()

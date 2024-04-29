@@ -12,19 +12,9 @@
                 <el-option v-for="manager in managerList" :key="manager.id" :label="manager.name + '(' + manager.id + ')'" :value="manager.id"></el-option>
               </el-select>
             </el-form-item>
-
-            <el-form-item label="团队编码:" prop="teamId">
-              <el-input v-model="dataForm.teamId" placeholder="输入关键字" clearable maxlength="50"></el-input>
-            </el-form-item>
-
             <el-form-item label="驻地:" prop="stationIds">
               <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择" multiple :collapse-tags="true">
                 <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="归属部门:" prop="deptIds">
-              <el-select v-model="dataForm.deptIds" placeholder="请选择" multiple :collapse-tags="true">
-                <el-option v-for="dept in deptList" :key="dept.id" :label="dept.name" :value="dept.id" multiple></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="状态:" prop="state">
@@ -33,19 +23,34 @@
                 <el-option key="1" label="解散" value="1"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="创建时间:" prop="createTime" style="width: 290px !important">
-              <el-date-picker
-                style="width: 200px"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                v-model="createTime"
-                type="daterange"
-                range-separator="~"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              ></el-date-picker>
-            </el-form-item>
+            <div v-if="showFlag" style="display: contents">
+              <el-form-item label="团队编码:" prop="teamId">
+                <el-input v-model="dataForm.teamId" placeholder="输入关键字" clearable maxlength="50"></el-input>
+              </el-form-item>
+              <el-form-item label="归属部门:" prop="deptIds">
+                <el-select v-model="dataForm.deptIds" placeholder="请选择" multiple :collapse-tags="true">
+                  <el-option v-for="dept in deptList" :key="dept.id" :label="dept.name" :value="dept.id" multiple></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="创建时间:" prop="createTime" style="width: 290px !important">
+                <el-date-picker
+                  style="width: 200px"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  v-model="createTime"
+                  type="daterange"
+                  range-separator="~"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                ></el-date-picker>
+              </el-form-item>
+            </div>
             <el-form-item>
+              <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+                <span v-if="showFlag" style="color: #2462f9">收起</span>
+                <span v-else style="color: #2462f9">展开</span>
+              </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
             </el-form-item>
@@ -100,7 +105,7 @@
       </baseTable>
 
       <el-drawer class="drawer" :title="title" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 20px">
+        <div style="padding-left: 30px">
           <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
             <el-form-item label="团队名称:" prop="teamName" :rules="[{ required: true, message: '团队不能为空' }]">
               <el-input v-model="editDataForm.teamName" clearable maxlength="50"></el-input>
@@ -210,6 +215,7 @@ import { getCName } from '@/utils/auth'
 export default {
   data() {
     return {
+      showFlag: false,
       teamMembers: [],
       value: [],
       showParentRule: false,
@@ -678,9 +684,8 @@ export default {
   border-radius: 6px;
   padding-left: 20px;
 } */
-
-::v-deep .drawer .el-form--inline .el-form-item__label {
-  width: 85px !important;
+::v-deep .editForm .el-form-item__label {
+  width: 90px !important;
 }
 
 ::v-deep .drawer .el-form-item {

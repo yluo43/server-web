@@ -6,19 +6,17 @@
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
-          <el-form-item label="工号:" prop="empId">
-            <el-input v-model="dataForm.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
-          </el-form-item>
-          <el-form-item label="归属部门:" prop="deptId">
-            <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
           <el-form-item label="归属团队:" prop="teamId">
             <el-select v-model="dataForm.teamId" placeholder="请选择归属团队" clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
+          <el-form-item label="审批状态:" prop="status">
+            <el-select v-model="dataForm.status" placeholder="请选择审批状态" clearable>
+              <el-option v-for="item in approvalStatus" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+
           <!-- <el-form-item label="归属部门:" prop="deptIds">
             <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
@@ -29,58 +27,68 @@
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item> -->
-          <el-form-item label="审批状态:" prop="status">
-            <el-select v-model="dataForm.status" placeholder="请选择审批状态" clearable>
-              <el-option v-for="item in approvalStatus" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="是否居家办公:" prop="isRemoteWork">
-            <el-select v-model="dataForm.isRemoteWork" placeholder="请选择是否居家办公" clearable>
-              <el-option v-for="item in isRemoteWorks" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="加班类型:" prop="overtimeType">
-            <el-select v-model="dataForm.overtimeType" placeholder="请选择加班类型" clearable>
-              <el-option v-for="item in overtimeTypes" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="申请时间:" prop="applyTime">
-            <el-date-picker
-              style="width: 200px"
-              v-model="dataForm.applyTime"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="加班开始时间:" prop="startTime">
-            <el-date-picker
-              style="width: 200px"
-              v-model="dataForm.startTime"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="加班结束时间:" prop="endTime">
-            <el-date-picker
-              style="width: 200px"
-              v-model="dataForm.endTime"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
+          <div v-if="showFlag" style="display: contents">
+            <el-form-item label="工号:" prop="empId">
+              <el-input v-model="dataForm.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
+            </el-form-item>
+            <el-form-item label="归属部门:" prop="deptId">
+              <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
+                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="是否居家办公:" prop="isRemoteWork">
+              <el-select v-model="dataForm.isRemoteWork" placeholder="请选择是否居家办公" clearable>
+                <el-option v-for="item in isRemoteWorks" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="加班类型:" prop="overtimeType">
+              <el-select v-model="dataForm.overtimeType" placeholder="请选择加班类型" clearable>
+                <el-option v-for="item in overtimeTypes" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="申请时间:" prop="applyTime">
+              <el-date-picker
+                style="width: 200px"
+                v-model="dataForm.applyTime"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+            <el-form-item label="加班开始时间:" prop="startTime">
+              <el-date-picker
+                style="width: 200px"
+                v-model="dataForm.startTime"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+            <el-form-item label="加班结束时间:" prop="endTime">
+              <el-date-picker
+                style="width: 200px"
+                v-model="dataForm.endTime"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+          </div>
           <el-form-item>
+            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+              <span v-if="showFlag" style="color: #2462f9">收起</span>
+              <span v-else style="color: #2462f9">展开</span>
+            </div>
             <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="selectTableData">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
@@ -145,6 +153,7 @@ export default {
   props: {},
   data() {
     return {
+      showFlag: false,
       count: 0,
       deptList: [],
       teamList: [],
@@ -187,7 +196,7 @@ export default {
       tableData: {
         theads: [
           { label: '用户姓名', prop: 'userName' },
-          { label: '工号', prop: 'empId', width: '60px' },
+          { label: '工号', prop: 'empId', width: '70px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
           { label: '加班开始时间', prop: 'startTime', width: '140px' },
@@ -242,7 +251,7 @@ export default {
     //获取团队
     getTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getTeam'),
+        url: this.$http.adornUrl('/common/getTeamByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {

@@ -133,7 +133,7 @@ export default {
       yearCount: '',
       taskList: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '200px' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '260px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName', width: '80px' },
           { label: '填报团队', prop: 'teamName' },

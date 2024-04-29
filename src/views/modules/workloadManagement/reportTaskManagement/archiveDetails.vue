@@ -16,28 +16,9 @@
               <el-form-item label="用户姓名:" prop="name">
                 <el-input style="width: 200px" v-model="formData.name" placeholder="请输入用户姓名" clearable />
               </el-form-item>
-              <el-form-item label="工号:" prop="empId">
-                <el-input
-                  style="width: 200px"
-                  v-model="formData.empId"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                  placeholder="请输入工号"
-                  clearable
-                />
-              </el-form-item>
-              <el-form-item label="归属部门:" prop="deptIds">
-                <el-select v-model="formData.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
-                  <el-option v-for="item in belongingDepartments" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-              </el-form-item>
               <el-form-item label="归属团队:" prop="teamIds">
                 <el-select v-model="formData.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
                   <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="团队负责人:" prop="teamLeader">
-                <el-select v-model="formData.teamLeader" placeholder="请选择团队负责人" multiple collapse-tags clearable>
-                  <el-option v-for="item in teamLeaders" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
                 </el-select>
               </el-form-item>
               <el-form-item label="报工类别:" prop="workLoadIds">
@@ -50,12 +31,38 @@
                   <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="项目经理:" prop="projectManager">
-                <el-select v-model="formData.projectManager" placeholder="请选择项目经理" multiple collapse-tags clearable>
-                  <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
-                </el-select>
-              </el-form-item>
+              <div v-if="showFlag" style="display: contents">
+                <el-form-item label="工号:" prop="empId">
+                  <el-input
+                    style="width: 200px"
+                    v-model="formData.empId"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                    placeholder="请输入工号"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="归属部门:" prop="deptIds">
+                  <el-select v-model="formData.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
+                    <el-option v-for="item in belongingDepartments" :key="item.id" :label="item.name" :value="item.id" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="团队负责人:" prop="teamLeader">
+                  <el-select v-model="formData.teamLeader" placeholder="请选择团队负责人" multiple collapse-tags clearable>
+                    <el-option v-for="item in teamLeaders" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="项目经理:" prop="projectManager">
+                  <el-select v-model="formData.projectManager" placeholder="请选择项目经理" multiple collapse-tags clearable>
+                    <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
+                  </el-select>
+                </el-form-item>
+              </div>
               <el-form-item>
+                <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+                  <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+                  <span v-if="showFlag" style="color: #2462f9">收起</span>
+                  <span v-else style="color: #2462f9">展开</span>
+                </div>
                 <el-button type="primary" icon="el-icon-search" @click="selectData" style="margin-right: 10px">查询</el-button>
                 <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
               </el-form-item>
@@ -90,6 +97,7 @@ export default {
   props: {},
   data() {
     return {
+      showFlag: false,
       taskId: '',
       count: 0,
       empId: '1260',

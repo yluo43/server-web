@@ -18,12 +18,7 @@
 import baseTable from '@/views/modules/base/baseTable.vue'
 export default {
   components: { baseTable },
-  // props: {
-  //   empId: {
-  //     type: Number,
-  //     required: true
-  //   }
-  // },
+
   data() {
     return {
       tableData: {
