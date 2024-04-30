@@ -53,10 +53,8 @@
           :from_data="leftData"
           :to_data="rightData"
           :defaultProps="{ label: 'label' }"
-          :title="['未加入项目成员', '已加入项目成员']"
+          :title="['团队成员', '将加入项目成员']"
           placeholder="请输入成员姓名或工号"
-          @add-btn="add"
-          @remove-btn="remove"
           filter
         ></tree-transfer>
         <div style="width: 100%; margin: 20px 0; display: flex; justify-content: flex-end">
@@ -111,41 +109,7 @@ export default {
       }
     }
     return {
-      leftData: [
-        {
-          id: '11',
-          label: '团队A',
-          children: [
-            {
-              id: '1111',
-              pid: '11',
-              label: '郭xx'
-            },
-            {
-              id: '1112',
-              pid: '11',
-              label: '张xx'
-            }
-          ]
-        },
-        {
-          id: '12',
-          label: '团队B',
-          children: [
-            {
-              id: '2222',
-              pid: '12',
-              label: '李xx'
-              //  disabled: true,
-            },
-            {
-              id: '2223',
-              pid: '12',
-              label: '赵xx'
-            }
-          ]
-        }
-      ],
+      leftData: [],
       rightData: [],
       empIds: [],
       operateType: 'add',
@@ -163,104 +127,50 @@ export default {
         supportDate: [{ required: true, validator: validateSupportDate, trigger: 'change' }],
         endSupportDate: [{ required: true, validator: validateEndSupportDate, trigger: 'change' }],
         investRate: [{ required: true, validator: validateInvestRate, trigger: ['blur', 'change'] }]
-      },
-      treeData: [
-        {
-          teamId: '11',
-          teamName: '团队A',
-          children: [
-            {
-              empId: '11',
-              empName: 'zhang--'
-            },
-            {
-              empId: '22',
-              empName: 'li--'
-            }
-          ]
-        },
-        {
-          teamId: '12',
-          teamName: '团队B',
-          children: [
-            {
-              empId: '12',
-              empName: 'guo--'
-            },
-            {
-              empId: '23',
-              empName: 'zhu--'
-            }
-          ]
-        }
-      ]
+      }
     }
   },
   watch: {
-    empIds(val) {
-      this.editPersonnelInfoFormData.empId = val.toString()
+    rightData: {
+      handler(val) {
+        this.empIds = []
+        if (val.length > 0) {
+          val.map((item) => {
+            if (item.children && item.children.length > 0) {
+              item.children.map((ele) => {
+                if (ele.children && ele.children.length > 0) {
+                  ele.children.map((e) => {
+                    this.empIds.push(e.id)
+                  })
+                } else {
+                  this.empIds.push(ele.id)
+                }
+              })
+            }
+          })
+        }
+        this.editPersonnelInfoFormData.empId = this.empIds.toString()
+      },
+      deep: true
     }
+    // rightData(val) {
+    //   this.empIds = []
+    //   if (val.length > 0) {
+    //     this.rightData.map((item) => {
+    //       if (item.children && item.children.length > 0) {
+    //         item.children.map((ele) => {
+    //           this.empIds.push(ele.id)
+    //         })
+    //       }
+    //     })
+    //   }
+    //   console.log(this.rightData)
+    //   this.editPersonnelInfoFormData.empId = this.empIds.toString()
+    // }
   },
   mounted() {},
   created() {},
   methods: {
-    confirm() {
-      this.$refs.transferDialog.hide()
-      this.empIds = []
-      if (this.rightData.length > 0) {
-        this.rightData.map((item) => {
-          //this.deptIds.push(item.id)
-          if (item.children && item.children.length > 0) {
-            item.children.map((ele) => {
-              this.empIds.push(ele.id)
-            })
-          }
-        })
-      }
-      console.log(this.empIds)
-    },
-
-    //穿梭框打开
-    chooseTeamMember() {
-      this.$refs.transferDialog.show()
-    },
-    add() {},
-    remove() {},
-    //获取团队及团队下成员
-    getTeamAndTeamMember() {
-      this.$http({
-        url: this.$http.adornUrl(''),
-        method: 'get'
-      }).then(({ data }) => {
-        if (data && data.code == 200) {
-          data.payload.map((item) => {
-            if (item.children && item.children.length > 0) {
-              let childrenArr = []
-              item.children.map((ele) => {
-                childrenArr.push({
-                  id: ele.empId,
-                  pid: item.teamId,
-                  label: ele.empName
-                })
-              })
-              this.leftData.push({
-                id: item.teamId,
-                label: item.teamName,
-                children: childrenArr
-              })
-            } else {
-              this.leftData.push({
-                id: item.teamId,
-                label: item.teamName
-              })
-            }
-          })
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
-
     // 初始化
     initPersonnelInfo(initData) {
       this.operateType = initData.operateType
@@ -268,7 +178,73 @@ export default {
       if (initData.rowData) {
         Object.assign(this.editPersonnelInfoFormData, initData.rowData)
       }
-      this.queryEmpList()
+      if (this.operateType == 'add') {
+        this.getTeamAndTeamMember()
+      } else {
+        this.queryEmpList()
+      }
+    },
+    //获取团队及团队下成员
+    getTeamAndTeamMember() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamTree'),
+        method: 'get'
+      }).then(({ data }) => {
+        this.changeTreeData(data.payload)
+        if (data && data.code == 200) {
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    changeTreeData(treeData) {
+      treeData.map((item) => {
+        if (item.children && item.children.length > 0) {
+          let childrenArr = []
+          item.children.map((ele) => {
+            let arrs = []
+            if (ele.children && ele.children.length > 0) {
+              ele.children.map((e) => {
+                arrs.push({
+                  id: e.id,
+                  pid: ele.id,
+                  label: e.name + '(' + e.id + ')'
+                })
+              })
+              childrenArr.push({
+                id: ele.id,
+                pid: item.id,
+                label: ele.name,
+                children: arrs
+              })
+            } else {
+              childrenArr.push({
+                id: ele.id,
+                pid: item.id,
+                label: ele.name + '(' + ele.id + ')'
+              })
+            }
+          })
+          this.leftData.push({
+            id: item.id,
+            label: item.name,
+            children: childrenArr
+          })
+        } else {
+          this.leftData.push({
+            id: item.id,
+            label: item.name
+          })
+        }
+      })
+    },
+    //穿梭框确认
+    confirm() {
+      this.$refs.transferDialog.hide()
+    },
+    //穿梭框打开
+    chooseTeamMember() {
+      this.$refs.transferDialog.show()
     },
 
     // 获取人员信息
@@ -305,30 +281,29 @@ export default {
           this.$message.warning('请选择要添加的人员!')
           return
         }
-        url = '/costItems/member/add'
+        url = '/costItems/member/batchAdd'
+        // url = '/costItems/member/add'
         method = 'post'
         params = JSON.parse(JSON.stringify(this.editPersonnelInfoFormData))
         delete params.empId
         params.empIds = this.empIds
-        console.log(params)
       } else {
         url = '/costItems/member/update'
         method = 'put'
         params = this.$http.adornData(this.editPersonnelInfoFormData)
       }
-
-      // this.$http({
-      //   url: this.$http.adornUrl(url),
-      //   method: method,
-      //   data: params
-      // }).then(({ data }) => {
-      //   if (data.success) {
-      //     this.cancel()
-      //     this.$message.success('操作成功')
-      //   } else {
-      //     this.$message.error(data.msg)
-      //   }
-      // })
+      this.$http({
+        url: this.$http.adornUrl(url),
+        method: method,
+        data: params
+      }).then(({ data }) => {
+        if (data.success) {
+          this.cancel()
+          this.$message.success('操作成功')
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
     },
 
     // 取消

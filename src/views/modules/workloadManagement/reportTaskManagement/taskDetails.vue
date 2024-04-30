@@ -78,7 +78,8 @@ export default {
           { label: '团队编码', prop: 'teamId' },
           { label: '驻地', prop: 'stationName' },
           { label: '归属部门', prop: 'deptName' },
-          { label: '团队成员', prop: 'teamNum' }
+          { label: '团队成员', prop: 'teamNum' },
+          { label: '团队状态', prop: 'teamStatus' }
         ],
         // url: '/team/selectTeamPage'
         url: '/team/selectTeamWithStatus'
