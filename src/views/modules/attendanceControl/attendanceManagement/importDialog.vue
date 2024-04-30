@@ -67,11 +67,11 @@ export default {
         }
       }).then(({ data }) => {
         if (data.success) {
-          this.$message.success(data.msg)
+          this.$message.success('导入成功!')
           this.cancelDialog()
           this.$emit('refreshTableData')
         } else {
-          this.$message.error(data.msg)
+          this.$message.error('导入失败!')
         }
       })
     }

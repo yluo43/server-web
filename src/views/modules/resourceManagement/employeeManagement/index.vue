@@ -541,6 +541,7 @@ export default {
       this.clear(this.editDataForm)
       this.disabled = false
       this.departStatusNameShow = false
+      this.entryDateShow = false
     },
 
     refresh() {

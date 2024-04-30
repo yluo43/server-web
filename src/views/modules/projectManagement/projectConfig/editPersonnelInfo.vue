@@ -190,13 +190,14 @@ export default {
         url: this.$http.adornUrl('/common/getTeamTree'),
         method: 'get'
       }).then(({ data }) => {
-        this.changeTreeData(data.payload)
         if (data && data.code == 200) {
+          this.changeTreeData(data.payload)
         } else {
           this.$message.error(data.msg)
         }
       })
     },
+
     changeTreeData(treeData) {
       treeData.map((item) => {
         if (item.children && item.children.length > 0) {
