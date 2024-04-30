@@ -1,6 +1,6 @@
 <template>
   <el-container style="height: 100%; width: 100%">
-    <el-aside style="width: 200px; background-color: #ffffff; height: 600px; margin-top: 4px">
+    <el-aside :class="showFlag ? 'asideHeight' : 'leftHeight'" style="width: 200px">
       <el-row>
         <el-col>
           <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
@@ -168,7 +168,6 @@ export default {
   props: {},
   data() {
     return {
-      leftHeight: '',
       showFlag: false,
       projectName: '',
       count: 0,
@@ -238,6 +237,7 @@ export default {
       }
     }
   },
+
   created() {
     this.dataForm.operatorName = getCName()
   },
@@ -480,6 +480,16 @@ export default {
 }
 .el-input {
   width: 200px;
+}
+.asideHeight {
+  height: 625px;
+  background-color: #ffffff;
+  margin-top: 4px;
+}
+.leftHeight {
+  height: 550px;
+  background-color: #ffffff;
+  margin-top: 4px;
 }
 </style>
 <style lang="scss">

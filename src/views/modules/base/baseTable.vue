@@ -132,7 +132,7 @@ export default {
         expendHtml: null,
         theads: [],
         curPage: 1,
-        pageSize: parseInt('10'),
+        pageSize: parseInt('20'),
         order: null,
         orderKey: null,
         count: 0,

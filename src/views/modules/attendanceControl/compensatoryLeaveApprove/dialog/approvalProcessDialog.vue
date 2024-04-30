@@ -7,19 +7,19 @@
           <div>{{ approveInfo.createTime }}</div>
         </template>
       </el-step>
-      <el-step v-if="flag == 1" title="项目初审">
+      <el-step v-if="flag == 1" title="项目初审" :class="approveInfo.status === 1 ? 'style2' : 'style1'">
         <template slot="description">
           <div>{{ approveInfo.firstAuditor }}</div>
           <div>{{ approveInfo.firstTrialTime }}</div>
         </template>
       </el-step>
-      <el-step v-else title="团队初审">
+      <el-step v-else title="团队初审" :class="approveInfo.status === 1 ? 'style2' : 'style1'">
         <template slot="description">
           <div>{{ approveInfo.firstAuditor }}</div>
           <div>{{ approveInfo.firstTrialTime }}</div>
         </template>
       </el-step>
-      <el-step v-if="approveInfo.status != 1" title="部门复审">
+      <el-step v-if="approveInfo.status != 1" title="部门复审" :class="approveInfo.status != 1 && approveInfo.status != 3 ? 'style1' : 'style2'">
         <template slot="description">
           <div>{{ approveInfo.reAuditor }}</div>
           <div>{{ approveInfo.reTrialTime }}</div>
@@ -110,6 +110,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .is-finish {
+  .el-step__line {
+    background-color: #409eff;
+  }
+}
+.style1 {
+  ::v-deep .is-finish {
+    .el-step__line {
+      background-color: #409eff;
+    }
+  }
+}
+.style2 {
+  ::v-deep .is-finish {
+    .el-step__line {
+      background-color: red;
+    }
+  }
+}
+
 ::v-deep .el-step__icon-inner {
   display: none;
 }
@@ -122,7 +142,7 @@ export default {
   color: rgba(0, 0, 0, 0.42745098039215684);
 }
 ::v-deep .el-step__head.is-process {
-  border-color: #409eff;
+  border-color: #409eff; //#2462f9
   color: #409eff;
   .el-step__icon {
     width: 13px;

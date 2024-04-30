@@ -100,7 +100,7 @@ export default {
       showFlag: false,
       taskId: '',
       count: 0,
-      empId: '1260',
+      empId: '',
       //工作量统计
       reportWorkName: '',
       workLoadStatistics: [],

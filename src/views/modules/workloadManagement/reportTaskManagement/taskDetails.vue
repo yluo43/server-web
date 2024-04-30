@@ -80,7 +80,8 @@ export default {
           { label: '归属部门', prop: 'deptName' },
           { label: '团队成员', prop: 'teamNum' }
         ],
-        url: '/team/selectTeamPage'
+        // url: '/team/selectTeamPage'
+        url: '/team/selectTeamWithStatus'
       }
     }
   },
@@ -95,12 +96,14 @@ export default {
         this.active = initData.taskStatus
       }
       Object.assign(this.taskInfo, initData)
+      console.log(this.taskInfo)
       this.selectPersonCount({ deptIds: this.taskInfo.deptIds, curPage: 1, pageSize: 10 })
       this.selectTableData()
     },
     //查询表格数据
     selectTableData() {
-      this.$refs.taskDetialTable.refresh({ deptIds: this.taskInfo.deptIds })
+      //this.$refs.taskDetialTable.refresh({ deptIds: this.taskInfo.deptIds })
+      this.$refs.taskDetialTable.refresh({ taskId: this.taskInfo.taskId, taskStatus: this.taskInfo.taskStatus })
     },
     //查询部门下的总人数
     selectPersonCount(params) {
@@ -116,6 +119,7 @@ export default {
         }
       })
     },
+
     afterTeamListQuery() {
       let data = this.$refs.taskDetialTable.options.data.payload
       this.teamCount = data.totalCount

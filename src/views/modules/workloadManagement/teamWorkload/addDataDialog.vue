@@ -9,7 +9,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="成本项目:" prop="projectId">
-            <el-select v-model="formData.projectId" placeholder="请选择成本项目" clearable>
+            <el-select v-model="formData.projectId" placeholder="请选择成本项目" filterable clearable>
               <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>

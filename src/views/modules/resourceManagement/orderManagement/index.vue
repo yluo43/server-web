@@ -11,11 +11,6 @@
               <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="归属团队:">
-            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="合同类型:">
             <el-select v-model="contractTypeList" multiple collapse-tags placeholder="请选择合同类型">
               <el-option v-for="item in contractTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -32,6 +27,11 @@
             </el-select>
           </el-form-item>
           <div v-if="showFlag" style="display: contents">
+            <el-form-item label="归属团队:">
+              <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
+                <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="立项时间:">
               <el-date-picker
                 style="width: 200px"

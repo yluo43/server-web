@@ -154,12 +154,12 @@
                   <template v-slot:clientType="scope">
                     <!--类型插槽-->
                     <template v-if="scope.item.row.clientTypeShow">
-                      <el-link type="primary" @click="editSettlement(scope, index)" :disabled="viewDisabled">编辑 |</el-link>
-                      <el-link type="primary" @click="deleteSettlement(scope, index)" :disabled="viewDisabled">删除</el-link>
+                      <el-link :underline="false" type="primary" @click="editSettlement(scope, index)" :disabled="viewDisabled">编辑 |</el-link>
+                      <el-link :underline="false" type="primary" @click="deleteSettlement(scope, index)" :disabled="viewDisabled">删除</el-link>
                     </template>
                     <template v-else>
-                      <el-link type="primary" @click="updateSettlement(scope, item, index)" :disabled="viewDisabled">保存 |</el-link>
-                      <el-link type="primary" @click="cancelSettlement(scope, index)" :disabled="viewDisabled">取消</el-link>
+                      <el-link :underline="false" type="primary" @click="updateSettlement(scope, item, index)" :disabled="viewDisabled">保存 |</el-link>
+                      <el-link :underline="false" type="primary" @click="cancelSettlement(scope, index)" :disabled="viewDisabled">取消</el-link>
                     </template>
                   </template>
                 </baseTable>
@@ -230,7 +230,7 @@ export default {
           { label: '回款时间', prop: 'returnDate', slotName: 'returnDate', width: '112px' },
           { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount', width: '80px' },
           { label: '回款单', prop: 'returnFile', slotName: 'returnFile', width: '80px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '80px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
         ],
         height: '150px',
         minHeight: '180px',
