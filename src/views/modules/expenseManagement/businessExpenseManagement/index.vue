@@ -591,7 +591,9 @@ export default {
 .el-input {
   width: 200px;
 }
-
+::v-deep .el-drawer__body {
+  overflow: hidden;
+}
 ::v-deep .editForm .el-form-item__label {
   width: 80px !important;
 }
