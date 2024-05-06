@@ -472,19 +472,19 @@ export default {
         data = [row.id]
         switch (row.state) {
           case 0:
-            message = `【该项目正在交付中,确定删除吗?删除后将无法恢复!】`
+            message = `该项目正在交付中,确定删除吗?删除后将无法恢复!`
             break
           case 1:
-            message = `【该项目已交付,确定删除吗?删除后将无法恢复!】`
+            message = `该项目已交付,确定删除吗?删除后将无法恢复!`
             break
           case 2:
-            message = `【该项目已关闭,确定删除吗?删除后将无法恢复!】`
+            message = `该项目已关闭,确定删除吗?删除后将无法恢复!`
             break
           case 3:
-            message = `【该项目已回款,确定删除吗?删除后将无法恢复!】`
+            message = `该项目已回款,确定删除吗?删除后将无法恢复!`
             break
           default:
-            message = '【确定删除该项目吗?删除后将无法恢复!】'
+            message = '确定删除该项目吗?删除后将无法恢复!'
         }
       } else {
         // 批量删除时
@@ -501,7 +501,8 @@ export default {
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({

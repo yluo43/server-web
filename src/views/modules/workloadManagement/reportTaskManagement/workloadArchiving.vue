@@ -239,7 +239,8 @@ export default {
       this.$confirm('确认批量归档吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -268,7 +269,8 @@ export default {
       this.$confirm('确认归档吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({

@@ -243,8 +243,9 @@ export default {
   },
   mounted() {
     this.getProjectList()
-    this.getDept()
-    this.getTeam()
+    // this.getDept()
+    // this.getTeam()
+    this.getOvertimeListDeptAndTeam()
     this.selectTableData()
   },
   methods: {
@@ -260,33 +261,47 @@ export default {
         }
       })
     },
-    //获取部门
-    getDept() {
+    //获取列表中部门和团队
+    getOvertimeListDeptAndTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDeptByRole'),
+        url: this.$http.adornUrl('/attendance/getOvertimeListDeptAndTeam'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          this.deptList = data.payload.filter((item) => item.id !== 0)
+          this.deptList = data.payload.deptDtoSet
+          this.teamList = data.payload.teamDtoSet
         } else {
           this.$message.error(data.msg)
         }
       })
     },
+    //获取部门
+    // getDept() {
+    //   this.$http({
+    //     url: this.$http.adornUrl('/common/getDeptByRole'),
+    //     method: 'get'
+    //   }).then(({ data }) => {
+    //     if (data && data.code === 200) {
+    //       this.deptList = data.payload.filter((item) => item.id !== 0)
+    //     } else {
+    //       this.$message.error(data.msg)
+    //     }
+    //   })
+    // },
 
     //获取团队
-    getTeam() {
-      this.$http({
-        url: this.$http.adornUrl('/common/getTeamByRole'),
-        method: 'get'
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.teamList = data.payload
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
+    // getTeam() {
+    //   this.$http({
+    //     url: this.$http.adornUrl('/common/getTeamByRole'),
+    //     method: 'get'
+    //   }).then(({ data }) => {
+    //     if (data && data.code === 200) {
+    //       this.teamList = data.payload
+    //     } else {
+    //       this.$message.error(data.msg)
+    //     }
+    //   })
+    // },
     //获取项目树
     getProjectList() {
       let params
@@ -407,11 +422,13 @@ export default {
     },
     open(message, ids, row) {
       this.$msgbox({
+        title: '提示',
         message: message,
         showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
+        center: true,
         customClass: 'msgClass'
       })
         .then(() => {
@@ -494,9 +511,8 @@ export default {
 </style>
 <style lang="scss">
 .msgClass {
-  padding: 20px;
   .el-message-box__content {
-    padding: 0 0 20px 0;
+    padding: 0 27px 20px 48px;
     font-size: 16px;
   }
 }

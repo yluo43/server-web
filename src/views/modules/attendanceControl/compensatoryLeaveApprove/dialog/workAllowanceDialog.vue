@@ -120,6 +120,9 @@ export default {
           } else {
             this.remainingDays = this.totalDays - this.compensatedLeaveDays - this.subsidizedDays
           }
+          if (this.remainingDays < 0) {
+            this.remainingDays = 0
+          }
         } else {
           this.$message.error(data.msg)
         }

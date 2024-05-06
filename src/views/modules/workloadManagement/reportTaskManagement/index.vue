@@ -282,25 +282,26 @@ export default {
         let data = { deptIds: row.item.deptIds, deleteFlag: 1, taskId: row.item.taskId }
         switch (row.item.taskStatus) {
           case 0:
-            message = '【该任务待开始填报,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务待开始填报,确定删除吗?删除后该任务下的报工将作废!'
             break
           case 1:
-            message = '【该任务正在填报中,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务正在填报中,确定删除吗?删除后该任务下的报工将作废!'
             break
           case 2:
-            message = '【该任务正在确认中,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务正在确认中,确定删除吗?删除后该任务下的报工将作废!'
             break
           case 3:
-            message = '【该任务待归档,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务待归档,确定删除吗?删除后该任务下的报工将作废!'
             break
           case 4:
-            message = '【该任务已归档,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务已归档,确定删除吗?删除后该任务下的报工将作废!'
             break
         }
         this.$confirm(message, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         })
           .then(() => {
             this.$http({

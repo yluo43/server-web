@@ -388,7 +388,8 @@ export default {
       this.$confirm('已选中' + this.deleteIds.length + '条报销数据,您确定删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -440,11 +441,12 @@ export default {
     deleteList(row) {
       this.deleteIds = []
       this.deleteIds.push(row.id)
-      const message = `【确定删除[${row.deptName}-${row.account}]${row.costDate}的日常费用(${row.reason}:${row.costName}:${row.totalMoney})记录吗？删除后将无法恢复!】`
+      const message = `确定删除[${row.deptName}-${row.account}]${row.costDate}的日常费用(${row.reason}:${row.costName}:${row.totalMoney})记录吗？删除后将无法恢复!`
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({

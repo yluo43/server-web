@@ -352,7 +352,8 @@ export default {
       this.$confirm('确定删除该订单信息吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -464,7 +465,8 @@ export default {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           if (scope.item.row.id) {
@@ -592,6 +594,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .is-success {
+  .el-step__line {
+    background-color: #2462f9;
+  }
+}
 .container-box {
   height: 100%;
   background: white;
@@ -645,8 +652,12 @@ export default {
   color: #2462f9;
   border-color: #2462f9;
 }
+
 ::v-deep .el-step__title.is-success {
-  color: #c0c4cc;
+  color: #262b39;
+}
+::v-deep .el-step__title.is-process {
+  color: #2462f9;
 }
 ::v-deep .el-step__head.is-process {
   color: #2462f9;

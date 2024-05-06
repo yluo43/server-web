@@ -347,13 +347,13 @@ export default {
         data = [row.item.id]
         switch (row.item.state) {
           case 0:
-            message = '【该项目集正在交付中,确定删除吗?删除后项目集下项目将被移除!】'
+            message = '该项目集正在交付中,确定删除吗?删除后项目集下项目将被移除!'
             break
           case 1:
-            message = '【该项目集已交付,确定删除吗?删除后项目集下项目将被移除!】'
+            message = '该项目集已交付,确定删除吗?删除后项目集下项目将被移除!'
             break
           case 2:
-            message = '【该项目集已关闭,确定删除吗?删除后项目集下项目将被移除!】'
+            message = '该项目集已关闭,确定删除吗?删除后项目集下项目将被移除!'
             break
         }
       } else {
@@ -370,7 +370,8 @@ export default {
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({

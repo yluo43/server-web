@@ -22,7 +22,7 @@
           <el-descriptions-item label="项目状态">
             <div style="width: 80%">
               <!--            0交付中 1已交付 2关闭 3已回款-->
-              <el-steps :active="order.state">
+              <el-steps :active="order.state" finish-status="success">
                 <el-step title="交付中"></el-step>
                 <el-step title="已交付"></el-step>
                 <el-step title="关闭"></el-step>
@@ -248,7 +248,8 @@ export default {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           if (scope.item.row.id) {
@@ -398,12 +399,21 @@ export default {
 ::v-deep .el-descriptions__body {
   padding-left: 42px;
 }
+::v-deep .is-success {
+  .el-step__line {
+    background-color: #2462f9;
+  }
+}
 ::v-deep .el-step__head.is-success {
   color: #2462f9;
   border-color: #2462f9;
 }
+
 ::v-deep .el-step__title.is-success {
-  color: #c0c4cc;
+  color: #262b39;
+}
+::v-deep .el-step__title.is-process {
+  color: #2462f9;
 }
 ::v-deep .el-step__head.is-process {
   color: #2462f9;

@@ -112,24 +112,27 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .is-finish {
   .el-step__line {
-    background-color: #409eff;
+    background-color: #2462f9;
   }
 }
 .style1 {
   ::v-deep .is-finish {
     .el-step__line {
-      background-color: #409eff;
+      background-color: #2462f9;
     }
   }
 }
 .style2 {
   ::v-deep .is-finish {
     .el-step__line {
-      background-color: red;
+      background-color: #f56c6c;
     }
   }
 }
-
+::v-deep .el-step__head.is-finish {
+  color: #2462f9;
+  border-color: #2462f9;
+}
 ::v-deep .el-step__icon-inner {
   display: none;
 }
@@ -138,12 +141,15 @@ export default {
   height: 10px;
   top: 5px;
 }
+::v-deep .el-step__title.is-process {
+  color: #2462f9;
+}
 ::v-deep .el-step__title.is-finish {
-  color: rgba(0, 0, 0, 0.42745098039215684);
+  color: #262b39;
 }
 ::v-deep .el-step__head.is-process {
-  border-color: #409eff; //#2462f9
-  color: #409eff;
+  border-color: #2462f9; //#2462f9
+  color: #2462f9;
   .el-step__icon {
     width: 13px;
     height: 13px;
@@ -154,6 +160,6 @@ export default {
   height: 13px;
 }
 ::v-deep .el-step__description.is-finish {
-  color: rgba(0, 0, 0, 0.42745098039215684);
+  color: #262b39;
 }
 </style>

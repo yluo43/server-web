@@ -244,6 +244,7 @@ export default {
       } else {
         this.activeIndex = this.stepTitleList.findIndex((item) => item.id === Number(this.projectInfo.state))
       }
+
       this.queryEnumList()
       this.queryPersonnelList()
     },
@@ -401,7 +402,7 @@ export default {
             supportState = '已结束支撑'
             break
         }
-        message = `【"${row.name}"${supportState},确定删除吗?删除后将无法恢复!】`
+        message = `"${row.name}"${supportState},确定删除吗?删除后将无法恢复!`
       } else {
         // 批量删除时
         const list = this.$refs.personnelManagementTable.getSelectRow()
@@ -417,7 +418,8 @@ export default {
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -480,12 +482,20 @@ export default {
 ::v-deep .el-descriptions__body {
   padding-left: 42px;
 }
+::v-deep .is-success {
+  .el-step__line {
+    background-color: #2462f9;
+  }
+}
 ::v-deep .el-step__head.is-success {
   color: #2462f9;
   border-color: #2462f9;
 }
 ::v-deep .el-step__title.is-success {
-  color: #c0c4cc;
+  color: #262b39;
+}
+::v-deep .el-step__title.is-process {
+  color: #2462f9;
 }
 ::v-deep .el-step__head.is-process {
   color: #2462f9;

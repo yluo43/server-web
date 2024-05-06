@@ -273,11 +273,13 @@ export default {
     },
     open(message, ids, row) {
       this.$msgbox({
+        title: '提示',
         message: message,
         showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
+        center: true,
         customClass: 'msgClass'
       })
         .then(() => {
@@ -347,14 +349,5 @@ export default {
   min-width: 60px;
   margin-left: 0;
   width: auto;
-}
-</style>
-<style lang="scss">
-.msgClass {
-  padding: 20px;
-  .el-message-box__content {
-    padding: 0 0 20px 0;
-    font-size: 16px;
-  }
 }
 </style>

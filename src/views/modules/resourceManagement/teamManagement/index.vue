@@ -552,10 +552,11 @@ export default {
     deleteList(row) {
       this.deleteIds = []
       this.deleteIds.push(row.item.id)
-      this.$confirm(`【确定删除"${row.item.teamName}"吗?删除后团队下成员将被移除!】`, '提示', {
+      this.$confirm(`确定删除"${row.item.teamName}"吗?删除后团队下成员将被移除!`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -602,7 +603,8 @@ export default {
       this.$confirm('已选中' + this.deleteIds.length + '个团队,确认批量删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({

@@ -111,7 +111,12 @@ export default {
     },
     beforeRemove(file, fileList) {
       this.dataForm.orderFile = ''
-      return this.$confirm(`确定移除 ${file.name}？`)
+      return this.$confirm(`确定移除 ${file.name}？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      })
     },
     addCheck() {
       this.$refs.dataFormRef.validate((valid) => {

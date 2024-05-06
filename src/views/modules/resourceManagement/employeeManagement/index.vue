@@ -586,10 +586,11 @@ export default {
       })
     },
     deleteList(row) {
-      this.$confirm(`【确定删除"${row.item.name}"吗?删除后将无法恢复!】`, '提示', {
+      this.$confirm(`确定删除"${row.item.name}"吗?删除后将无法恢复!`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -635,7 +636,8 @@ export default {
       this.$confirm('已选中' + this.deleteIds.length + '位成员,确认批量删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
