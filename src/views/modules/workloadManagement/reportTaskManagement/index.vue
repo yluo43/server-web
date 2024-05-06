@@ -152,11 +152,11 @@ export default {
       reportTaskTitle: '',
       taskList: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '200px' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '260px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName', width: '80px' },
-          { label: '创建时间', prop: 'createTime' },
-          { label: '开始填报时间', prop: 'reportStartTime' },
+          { label: '创建时间', prop: 'createTime', width: '90px' },
+          { label: '开始填报时间', prop: 'reportStartTime', width: '100px' },
           { label: '填报天数', prop: 'reportDay', width: '80px' },
           { label: '提醒频率', prop: 'frequency', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus', width: '80px' },
@@ -282,13 +282,13 @@ export default {
         let data = { deptIds: row.item.deptIds, deleteFlag: 1, taskId: row.item.taskId }
         switch (row.item.taskStatus) {
           case 0:
-            message = '【该项目任务任务待开始填报,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '【该任务待开始填报,确定删除吗?删除后该任务下的报工将作废!】'
             break
           case 1:
-            message = '【该项目任务正在填报中,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '【该任务正在填报中,确定删除吗?删除后该任务下的报工将作废!】'
             break
           case 2:
-            message = '【该项目任务正在确认中,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '【该任务正在确认中,确定删除吗?删除后该任务下的报工将作废!】'
             break
           case 3:
             message = '【该任务待归档,确定删除吗?删除后该任务下的报工将作废!】'

@@ -3,33 +3,32 @@
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-header style="padding: 0">
         <el-tabs v-model="activeName" type="border-card">
-          <!-- v-if="hasPermission('overtime:firstReview')" -->
-          <el-tab-pane label="加班初审" name="first"></el-tab-pane>
-          <el-tab-pane label="加班复审" name="second"></el-tab-pane>
-          <el-tab-pane label="调休初审" name="third"></el-tab-pane>
-          <el-tab-pane label="调休复审" name="fourth"></el-tab-pane>
-          <el-tab-pane label="加班统计" name="fifth"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:overtimeFirst')" label="加班初审" name="first"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:overtimeRe')" label="加班复审" name="second"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:dayoffFirst')" label="调休初审" name="third"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:dayoffRe')" label="调休复审" name="fourth"></el-tab-pane>
+          <el-tab-pane v-if="hasPermission('attendance:count')" label="加班统计" name="fifth"></el-tab-pane>
         </el-tabs>
       </el-header>
       <el-container style="background: #ffffff">
         <!-- 加班初审-->
-        <div v-if="activeName === 'first'">
+        <div v-if="activeName === 'first'" style="width: 100%">
           <overtimePreliminaryReview ref="overtimePreliminaryReview"></overtimePreliminaryReview>
         </div>
         <!-- 加班复审 -->
-        <div v-if="activeName === 'second'">
+        <div v-if="activeName === 'second'" style="width: 100%">
           <overtimeReview ref="overtimeReview"></overtimeReview>
         </div>
         <!-- 调休初审 -->
-        <div v-if="activeName === 'third'">
+        <div v-if="activeName === 'third'" style="width: 100%">
           <compensatoryLeavePreliminaryReview ref="compensatoryLeavePreliminaryReview"></compensatoryLeavePreliminaryReview>
         </div>
         <!-- 调休复审 -->
-        <div v-if="activeName === 'fourth'">
+        <div v-if="activeName === 'fourth'" style="width: 100%">
           <compensatoryLeaveReview ref="compensatoryLeaveReview"></compensatoryLeaveReview>
         </div>
         <!-- 加班统计 -->
-        <div v-if="activeName === 'fifth'">
+        <div v-if="activeName === 'fifth'" style="width: 100%">
           <overtimeStatistics ref="overtimeStatistics"></overtimeStatistics>
         </div>
       </el-container>
@@ -57,10 +56,22 @@ export default {
   props: {},
   data() {
     return {
-      activeName: 'first'
+      activeName: ''
     }
   },
-  mounted() {},
+  mounted() {
+    if (this.hasPermission('attendance:overtimeFirst')) {
+      this.activeName = 'first'
+    } else if (this.hasPermission('attendance:overtimeRe')) {
+      this.activeName = 'second'
+    } else if (this.hasPermission('attendance:dayoffFirst')) {
+      this.activeName = 'third'
+    } else if (this.hasPermission('attendance:dayoffRe')) {
+      this.activeName = 'fourth'
+    } else if (this.hasPermission('attendance:count')) {
+      this.activeName = 'fifth'
+    }
+  },
   methods: {}
 }
 </script>

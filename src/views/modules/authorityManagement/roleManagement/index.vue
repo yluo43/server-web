@@ -22,7 +22,7 @@
       </baseTable>
     </el-container>
 
-    <baseDialog ref="addOrViewOrUpdateDialog" :title="addOrViewOrUpdateDialogTitle" :width="'400px'">
+    <baseDialog ref="addOrViewOrUpdateDialog" :title="addOrViewOrUpdateDialogTitle" :width="'450px'">
       <template>
         <addOrUpdate ref="addOrViewOrUpdate" :close-dialog="closeAddOrViewOrUpdateDialog" />
       </template>

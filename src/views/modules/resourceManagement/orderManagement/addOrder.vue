@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-form :rules="rules" :model="dataForm" ref="dataFormRef" label-width="100px" style="width: 80%" class="form-item">
+      <el-form :rules="rules" :model="dataForm" ref="dataFormRef" label-width="100px" style="padding-right: 30px" class="form-item">
         <el-form-item label="订单名称:" prop="orderName">
           <el-input v-model="dataForm.orderName" placeholder="请输入订单名称" clearable></el-input>
         </el-form-item>
@@ -21,7 +21,7 @@
           <el-input
             type="textarea"
             placeholder="请输入订单描述，不超过50字"
-            rows="5"
+            rows="3"
             v-model="dataForm.remarks"
             maxlength="50"
             show-word-limit
@@ -43,11 +43,16 @@
             <div slot="tip" class="el-upload__tip">支持扩展名：.pdf</div>
           </el-upload>
         </el-form-item>
-        <el-row style="display: flex; justify-content: right; margin-top: 20px">
+
+        <!-- <el-row style="display: flex; justify-content: right; margin-top: 20px">
           <el-button type="primary" @click="addCheck">确认</el-button>
           <el-button @click="cancel()">取消</el-button>
-        </el-row>
+        </el-row> -->
       </el-form>
+      <div class="btn-group">
+        <el-button plain style="margin-right: 10px" @click="cancel()">取消</el-button>
+        <el-button type="primary" @click="addCheck">确认</el-button>
+      </div>
     </el-container>
   </div>
 </template>

@@ -1,10 +1,11 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
-      <div>
+      <div style="width: 100%">
         <el-form ref="formData" :model="formData" label-width="auto" :rules="rules">
           <el-form-item label="统计时间段:" prop="timePeriod">
             <el-date-picker
+              style="width: 200px"
               :disabled="flag === 'edit'"
               v-model="formData.timePeriod"
               value-format="yyyy-MM-dd"
@@ -27,7 +28,14 @@
           </el-form-item>
 
           <el-form-item label="开始填报时间:" prop="reportStartTime">
-            <el-date-picker v-model="formData.reportStartTime" type="date" value-format="yyyy-MM-dd" placeholder="开始填报时间" clearable />
+            <el-date-picker
+              style="width: 200px"
+              v-model="formData.reportStartTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="开始填报时间"
+              clearable
+            />
           </el-form-item>
           <el-form-item label="填报天数:" prop="reportDay">
             <el-select v-model="formData.reportDay" clearable>
@@ -54,13 +62,20 @@
             小时(9:00-18:00)
           </el-form-item>
           <el-form-item label="描述:" prop="intro" style="margin-top: 10px">
-            <el-input type="textarea" show-word-limit maxlength="50" v-model="formData.intro" placeholder="请输入任务描述,不超过50字"></el-input>
-          </el-form-item>
-          <el-form-item style="display: flex; justify-content: right">
-            <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
-            <el-button type="primary" @click="confirm('formData')">确认</el-button>
+            <el-input
+              style="width: 300px"
+              type="textarea"
+              show-word-limit
+              maxlength="50"
+              v-model="formData.intro"
+              placeholder="请输入任务描述,不超过50字"
+            ></el-input>
           </el-form-item>
         </el-form>
+        <div class="btn-group">
+          <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
+          <el-button type="primary" @click="confirm('formData')">确认</el-button>
+        </div>
       </div>
     </el-container>
   </div>
@@ -80,18 +95,18 @@ export default {
         callback(new Error('请选择开始填报时间'))
         return
       }
-      if (this.formData.reportStartTime && new Date(Date.parse(this.format())) > new Date(Date.parse(this.formData.reportStartTime))) {
-        callback(new Error('开始填报时间应大于等于当前时间'))
-        return
-      }
-      if (
-        this.formData.reportStartTime &&
-        this.formData.timePeriod[1] &&
-        new Date(Date.parse(this.formData.timePeriod[1])) > new Date(Date.parse(this.formData.reportStartTime))
-      ) {
-        callback(new Error('开始填报时间应大于等于统计时间段截止时间'))
-        return
-      }
+      // if (this.formData.reportStartTime && new Date(Date.parse(this.format())) > new Date(Date.parse(this.formData.reportStartTime))) {
+      //   callback(new Error('开始填报时间应大于等于当前时间'))
+      //   return
+      // }
+      // if (
+      //   this.formData.reportStartTime &&
+      //   this.formData.timePeriod[1] &&
+      //   new Date(Date.parse(this.formData.timePeriod[1])) > new Date(Date.parse(this.formData.reportStartTime))
+      // ) {
+      //   callback(new Error('开始填报时间应大于等于统计时间段截止时间'))
+      //   return
+      // }
       callback()
     }
     return {
@@ -350,10 +365,6 @@ export default {
 </script>
 
 <style scoped>
-.el-date-editor.el-input {
-  width: 190px;
-}
-
 .el-button {
   margin-left: 0;
   width: auto;

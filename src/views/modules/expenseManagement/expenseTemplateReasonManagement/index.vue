@@ -54,16 +54,15 @@
           </template>
         </template>
       </baseTable>
-      <!-- :before-close="handleClose" -->
-      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="26%">
+      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="23%">
         <div style="padding-left: 20px">
           <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="editForm">
             <el-form-item label="报销项目名称:" prop="name">
-              <el-input style="width: 230px" v-model="editDataForm.name" placeholder="请输入事由名称" clearable></el-input>
+              <el-input v-model="editDataForm.name" placeholder="请输入事由名称" clearable></el-input>
             </el-form-item>
             <el-form-item label="报销项目归属部门:" prop="deptName">
               <el-select v-model="editDataForm.deptName" placeholder="请选择">
-                <el-option v-for="dept in onwerDeptNames" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
+                <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <!-- <el-form-item label="关联项目:" prop="projectName">
@@ -72,7 +71,7 @@
               </el-select>
             </el-form-item> -->
             <el-form-item label="关联项目:" prop="value">
-              <el-cascader clearable :append-to-body="false" style="width: 230px" v-model="editDataForm.value" :options="options"></el-cascader>
+              <el-cascader clearable :append-to-body="false" style="width: 200px" v-model="editDataForm.value" :options="options"></el-cascader>
             </el-form-item>
             <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">保存</el-button>
@@ -101,7 +100,6 @@ export default {
       //成本项目
       costItems: [],
       departments: [],
-      onwerDeptNames: [],
       deleteIds: [],
       drawer: false,
       direction: 'rtl',
@@ -141,7 +139,6 @@ export default {
     this.getProject()
     //初始化部门
     this.getDept()
-    this.getOwnDept()
     //查询
     this.refresh()
     //初始化关联项目
@@ -189,23 +186,11 @@ export default {
         }
       })
     },
-    getOwnDept() {
-      this.$http({
-        url: this.$http.adornUrl('/common/getDeptByRole'),
-        method: 'get'
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.onwerDeptNames = data.payload.filter((item) => item.id !== 0)
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
 
     //获取部门
     getDept() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -241,7 +226,7 @@ export default {
     deleteList(row) {
       this.deleteIds = []
       this.deleteIds.push(row.item.id)
-      this.$confirm(`确定删除吗?`, '提示', {
+      this.$confirm(`【确定删除"${row.item.name}"吗？删除后将无法恢复!】`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -423,25 +408,25 @@ export default {
 ::v-deep .el-drawer__body {
   overflow: hidden;
 }
+.el-input {
+  width: 200px;
+}
 /* ::v-deep .el-cascader-menu {
   width: 190px;
 } */
 
-::v-deep .el-select {
+/* ::v-deep .el-select {
   width: 230px !important;
+} */
+
+/* ::v-deep .el-select__tags {
+  max-width: none !important;
 }
 ::v-deep .el-select__tags-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 100px;
-}
-/* .el-form--inline > .inputlist {
-  display: flex;
-  align-items: center;
-  padding-top: 20px;
-  padding-left: 20px;
-  display: flex;
+  max-width: 80px;
 } */
 
 ::v-deep .editForm .el-form-item__label {
@@ -459,15 +444,4 @@ export default {
 ::v-deep .el-table__cell {
   text-align: center;
 }
-
-/* .chooseResult {
-  width: 98%;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
 </style>

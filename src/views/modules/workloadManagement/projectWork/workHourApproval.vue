@@ -37,7 +37,9 @@
               <el-table
                 :data="tableData"
                 border
-                style="width: 100%; height: 425px; max-height: 425px; overflow-y: scroll"
+                :header-cell-style="{ 'text-align': 'center' }"
+                :cell-style="{ 'text-align': 'center' }"
+                style="width: 100%; height: 425px; overflow-y: scroll"
                 @selection-change="selChange"
                 :span-method="objectSpanMethod"
               >
@@ -47,8 +49,8 @@
                 <el-table-column prop="deptName" label="归属部门"></el-table-column>
                 <el-table-column prop="teamName" label="归属团队"></el-table-column>
                 <el-table-column prop="teamManagerName" label="团队负责人"></el-table-column>
-                <el-table-column prop="startTime" label="开始时间"></el-table-column>
-                <el-table-column prop="overTime" label="结束时间"></el-table-column>
+                <el-table-column prop="startTime" label="开始时间" width="90px"></el-table-column>
+                <el-table-column prop="overTime" label="结束时间" width="90px"></el-table-column>
                 <el-table-column prop="workloadName" label="报工类别"></el-table-column>
                 <el-table-column prop="planRate" label="计划投入(%)"></el-table-column>
                 <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
@@ -63,7 +65,7 @@
             </div>
             <div style="display: flex; justify-content: center">
               <el-pagination
-                :page-sizes="[10, 15, 20, 25, 30]"
+                :page-sizes="[20, 50, 100]"
                 :page-size="pageSize"
                 :current-page="curPage"
                 layout="total, sizes, prev, pager, next, jumper"
@@ -94,9 +96,9 @@ export default {
   data() {
     return {
       //总条数
-      total: 10,
+      total: '',
       curPage: 1,
-      pageSize: 10,
+      pageSize: 20,
       spanArr: [],
       pos: 0,
       checkedData: [],

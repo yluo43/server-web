@@ -20,7 +20,7 @@
                   <i class="el-icon-info"></i>
                 </el-tooltip>
               </template>
-              <el-select v-model="overtimeDataForm.projectId" placeholder="请选择加班项目" clearable>
+              <el-select v-model="overtimeDataForm.projectId" placeholder="请选择加班项目">
                 <el-option v-for="item in overtimeProjects" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -140,9 +140,9 @@ export default {
   props: {},
   data() {
     const validateoverTimeStartTime = (rule, value, callback) => {
-      if (this.overtimeDataForm.overtimeType === '') {
-        callback(new Error('请先选择加班类型'))
-      }
+      // if (this.overtimeDataForm.overtimeType === '') {
+      //   callback(new Error('请先选择加班类型'))
+      // }
       if (!value) {
         callback(new Error('请选择加班开始时间'))
       } else if (this.overtimeDataForm.overtimeType === 0 && new Date(this.overtimeDataForm.overTimeStartTime).getHours() < 19) {
@@ -160,6 +160,11 @@ export default {
         callback(new Error('加班结束时间不能小于加班开始时间'))
       } else if (new Date(this.overtimeDataForm.overTimeEndTime).getTime() > this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 9, 2)) {
         callback(new Error('加班结束时间不能大于加班开始时间的次日9:00'))
+      } else if (
+        this.overtimeDataForm.overtimeType === 0 &&
+        new Date(this.overtimeDataForm.overTimeEndTime).getTime() < this.calNextDayTimeStamp(this.overtimeDataForm.overTimeStartTime, 21, 1)
+      ) {
+        callback(new Error('加班结束时间不能小于21:00'))
       } else {
         callback()
       }
@@ -186,11 +191,11 @@ export default {
     return {
       overtimeProjects: [],
       overtimeDataForm: {
-        overtimeType: '',
+        overtimeType: 0,
         projectId: '',
         projectManager: '',
         overtimeReason: '',
-        isRemoteWork: '',
+        isRemoteWork: 1,
         overTimeStartTime: '',
         overTimeEndTime: '',
         overtimeDuration: 0
@@ -205,7 +210,7 @@ export default {
         days: 0
       },
       overtimeRules: {
-        overtimeType: [{ required: true, message: '请选择加班类型', trigger: 'change' }],
+        //  overtimeType: [{ required: true, message: '请选择加班类型', trigger: 'change' }],
         projectId: [{ required: true, message: '请选择加班项目', trigger: 'change' }],
         overtimeReason: [{ required: true, message: '请输入加班原因', trigger: 'blur' }],
         overTimeStartTime: [{ required: true, validator: validateoverTimeStartTime, trigger: 'change' }],
@@ -223,8 +228,6 @@ export default {
         this.overtimeProjects.map((item) => {
           if (item.id == value) {
             this.overtimeDataForm.projectManager = item.managerName
-          } else {
-            this.overtimeDataForm.projectManager = ''
           }
         })
       }
@@ -274,10 +277,10 @@ export default {
     days() {
       let diffDay1 = this.getDaysBetweenDates(new Date(this.compensatoryLeaveDataForm.endDate), new Date(this.compensatoryLeaveDataForm.startDate))
       let diffDay2 = this.getTimeDays()
-      if (diffDay1 || diffDay2) {
-        return diffDay1 + diffDay2
-      } else {
+      if (diffDay1 === -1 || diffDay2 === -1) {
         return 0
+      } else {
+        return diffDay1 + diffDay2
       }
     }
   },
@@ -306,15 +309,15 @@ export default {
         if (!valid) {
           return
         }
-        if (this.overtimeDataForm.overtimeType == 1) {
-          if (this.overtimeDataForm.overtimeDuration < 2) {
-            this.$message.warning('加班时长不能小于2小时')
-            return
-          } else if (this.overtimeDataForm.overtimeDuration > 24) {
-            this.$message.warning('加班时长不能大于24小时')
-            return
-          }
+        //  if (this.overtimeDataForm.overtimeType == 1) {
+        if (this.overtimeDataForm.overtimeDuration < 2) {
+          this.$message.warning('加班时长不能小于2小时')
+          return
+        } else if (this.overtimeDataForm.overtimeDuration > 24) {
+          this.$message.warning('加班时长不能大于24小时')
+          return
         }
+        //   }
         if (new Date().getTime() - 72 * 60 * 60 * 1000 > new Date(this.overtimeDataForm.overTimeStartTime).getTime()) {
           this.$message.warning('加班已超过72小时，不可申请')
           return
@@ -428,9 +431,14 @@ export default {
     },
     //计算两个日期之间的天数
     getDaysBetweenDates(date1, date2) {
-      var oneDay = 24 * 60 * 60 * 1000 // 一天的毫秒数
-      var timeDiff = Math.abs(date2.getTime() - date1.getTime()) // 两个日期的差值的毫秒数
-      var diffDays = Math.floor(timeDiff / oneDay) // 差值的天数
+      var diffDays = 0
+      if (!date1.getTime() || !date2.getTime()) {
+        diffDays = -1
+      } else {
+        var oneDay = 24 * 60 * 60 * 1000 // 一天的毫秒数
+        var timeDiff = Math.abs(date2.getTime() - date1.getTime()) // 两个日期的差值的毫秒数
+        diffDays = Math.floor(timeDiff / oneDay) // 差值的天数
+      }
       return diffDays
     },
     //计算两个时间段之间的天数
@@ -444,6 +452,8 @@ export default {
         diffDay = 0
       } else if (this.compensatoryLeaveDataForm.startTime == '12:00' && this.compensatoryLeaveDataForm.endTime == '18:00') {
         diffDay = 0.5
+      } else {
+        diffDay = -1
       }
       return diffDay
     },
@@ -469,10 +479,14 @@ export default {
           return 0
         }
       } else {
-        if (eighteen <= endTime && nineteen > endTime) {
+        if (startTime < eighteen && eighteen <= endTime && nineteen > endTime) {
           return endTime - eighteen
-        } else if (endTime >= nineteen) {
+        } else if (startTime >= eighteen && eighteen <= endTime && nineteen > endTime) {
+          return endTime - startTime
+        } else if (startTime < eighteen && endTime >= nineteen) {
           return 60 * 60 * 1000
+        } else if (nineteen > startTime && startTime >= eighteen && endTime >= nineteen) {
+          return nineteen - startTime
         } else {
           return 0
         }

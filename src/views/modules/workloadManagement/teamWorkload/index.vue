@@ -85,13 +85,11 @@
               </template>
               <!-- 操作 -->
               <template v-slot:clientType="row">
-                <template>
-                  <el-button :disabled="row.item.taskStatus != 1" type="text" @click="goToReportingWorkload(row)">填报工作量</el-button>
-                  <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 4" type="text" @click="goToTrack(row)">
-                    去跟踪
-                  </el-button>
-                  <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1" type="text" @click="goToShowDetails(row)">查看详情</el-button>
-                </template>
+                <el-button :disabled="row.item.taskStatus != 1" type="text" @click="goToReportingWorkload(row)">填报工作量</el-button>
+                <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 4" type="text" @click="goToTrack(row)">
+                  去跟踪
+                </el-button>
+                <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1" type="text" @click="goToShowDetails(row)">查看详情</el-button>
               </template>
             </baseTable>
           </div>
@@ -135,11 +133,11 @@ export default {
       yearCount: '',
       taskList: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '200px' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '260px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName', width: '80px' },
           { label: '填报团队', prop: 'teamName' },
-          { label: '开始填报时间', prop: 'reportStartTime' },
+          { label: '开始填报时间', prop: 'reportStartTime', width: '100px' },
           { label: '填报天数', prop: 'reportDay', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }

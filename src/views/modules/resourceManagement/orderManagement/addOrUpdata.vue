@@ -1,175 +1,196 @@
 <template>
-  <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-descriptions>
-        <template v-slot:title>
-          <span class="title">● {{ order.name }}</span>
-        </template>
-        <el-descriptions-item label="项目编码">{{ order.projectId }}</el-descriptions-item>
-        <el-descriptions-item label="项目经理">{{ order.managerName }}</el-descriptions-item>
-        <el-descriptions-item label="立项时间">{{ order.approvalDate }}</el-descriptions-item>
-        <el-descriptions-item label="合同类型">{{ order.contractTypeName }}</el-descriptions-item>
-        <el-descriptions-item label="结算周期">{{ order.settlementCycle }}</el-descriptions-item>
-        <el-descriptions-item label="计划交付时间">{{ order.deliveryDate }}</el-descriptions-item>
-        <el-descriptions-item label="项目状态">
-          <div style="width: 80%">
-            <!--            0交付中 1已交付 2关闭 3已回款-->
-            <el-steps :active="order.state" finish-status="success">
-              <el-step title="交付中"></el-step>
-              <el-step title="已交付"></el-step>
-              <el-step title="关闭"></el-step>
-              <el-step title="已回款"></el-step>
-            </el-steps>
-          </div>
-        </el-descriptions-item>
-      </el-descriptions>
-      <el-button
-        class="el-button-func"
-        style="width: 500px; background-color: #f5fbff; margin: 30px auto; border: solid 1px #008aff"
-        @click="addOrder()"
-        icon="el-icon-circle-plus-outline"
-        :disabled="viewDisabled"
-      >
-        添加订单
-      </el-button>
-      <el-collapse v-model="activeNames" @change="handleChange">
-        <template v-for="(item, index) in orderList">
-          <div style="display: flex; justify-content: right">
-            <el-link type="primary" @click="viewOrder(item)">查看详情 |</el-link>
-            <el-link type="primary" @click="updateOrder(item)" :disabled="viewDisabled">编辑 |</el-link>
-            <el-link type="primary" @click="deleteOrder(item)" :disabled="viewDisabled" style="margin-right: 30px">删除</el-link>
-          </div>
-          <el-collapse-item :title="item.orderName" :name="index">
-            <span style="font-weight: bold; font-size: medium">结算回款</span>
-            <div class="chooseResult">
-              <i class="el-icon-info" style="color: #108ee9"></i>
-              <span class="chooseResultStr" v-html="chooseStr"></span>
+  <div class="container-box">
+    <el-container direction="vertical">
+      <div class="header-box">
+        <div class="header-title">项目信息</div>
+        <i class="el-icon-close" style="font-size: 14px" @click="handlerFlag"></i>
+      </div>
+      <div>
+        <el-descriptions>
+          <template v-slot:title>
+            <div style="display: flex; align-items: center; padding: 16px 0 0 20px">
+              <div class="circular"></div>
+              <span class="title">{{ order.name }}</span>
             </div>
-            <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect" :hidePage="true">
-              <template v-slot:settlementDate="scope">
-                <el-date-picker
-                  v-model="scope.item.row.settlementDate"
-                  value-format="yyyy-MM-dd"
-                  format="yyyy-MM-dd"
-                  type="date"
-                  style="width: 100%"
-                  placeholder="选择日期"
-                  :disabled="scope.item.row.clientTypeShow"
-                ></el-date-picker>
-              </template>
-              <template v-slot:settlementAcount="scope">
-                <el-input v-model="scope.item.row.settlementAcount" :disabled="scope.item.row.clientTypeShow" placeholder="请输入"></el-input>
-              </template>
-              <template v-slot:settlementFile="scope">
-                <el-upload
-                  :disabled="scope.item.row.clientTypeShow"
-                  class="upload-demo"
-                  action="#"
-                  :limit="1"
-                  :accept="'.pdf,.PDF'"
-                  :auto-upload="false"
-                  :on-remove="(file, fileList) => handleFirstRemove(file, fileList, scope, index)"
-                  :on-change="
-                    (file, fileList) => {
-                      handleFileChange(file, fileList, scope, index)
-                    }
-                  "
-                  :file-list="scope.item.row.settlementFileList"
-                >
-                  <el-button icon="el-icon-upload2" :disabled="scope.item.row.clientTypeShow" style="width: 100px">上传文件</el-button>
-                  <div v-if="scope.item.row.settlementFileShow" slot="tip" class="el-upload__tip">支持扩展名：.pdf</div>
-                </el-upload>
-              </template>
-              <template v-slot:expectReturnDate="scope">
-                <el-date-picker
-                  v-model="scope.item.row.expectReturnDate"
-                  value-format="yyyy-MM-dd"
-                  format="yyyy-MM-dd"
-                  type="date"
-                  style="width: 100%"
-                  placeholder="选择日期"
-                  :disabled="scope.item.row.clientTypeShow"
-                ></el-date-picker>
-              </template>
-              <template v-slot:state="scope">
-                <el-select v-model="scope.item.row.state" placeholder="请选择" :disabled="scope.item.row.clientTypeShow" @change="stateChange(scope)">
-                  <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-                </el-select>
-              </template>
-              <template v-slot:returnDate="scope">
-                <el-date-picker
-                  v-model="scope.item.row.returnDate"
-                  value-format="yyyy-MM-dd"
-                  format="yyyy-MM-dd"
-                  type="date"
-                  style="width: 100%"
-                  placeholder="选择日期"
-                  :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
-                ></el-date-picker>
-              </template>
-              <template v-slot:returnAcount="scope">
-                <el-input
-                  v-model="scope.item.row.returnAcount"
-                  placeholder="请输入"
-                  clearable
-                  :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
-                ></el-input>
-              </template>
-              <template v-slot:returnFile="scope">
-                <el-upload
-                  :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
-                  class="upload-demo"
-                  action="#"
-                  :limit="1"
-                  :accept="'.pdf,.PDF'"
-                  :auto-upload="false"
-                  :on-remove="(file, fileList) => handleSecondRemove(file, fileList, scope, index)"
-                  :on-change="
-                    (file, fileList) => {
-                      returnFileShowChange(file, fileList, scope, index)
-                    }
-                  "
-                  :file-list="scope.item.row.returnFileList"
-                >
-                  <el-button icon="el-icon-upload2" :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow" style="width: 100px">
-                    上传文件
-                  </el-button>
-                  <div slot="tip" v-if="scope.item.row.returnFileShow" class="el-upload__tip">支持扩展名：.pdf</div>
-                </el-upload>
-              </template>
-              <template v-slot:clientType="scope">
-                <!--类型插槽-->
-                <template v-if="scope.item.row.clientTypeShow">
-                  <el-link type="primary" @click="editSettlement(scope, index)" :disabled="viewDisabled">编辑 |</el-link>
-                  <el-link type="primary" @click="deleteSettlement(scope, index)" :disabled="viewDisabled">删除</el-link>
-                </template>
-                <template v-else>
-                  <el-link type="primary" @click="updateSettlement(scope, item, index)" :disabled="viewDisabled">保存 |</el-link>
-                  <el-link type="primary" @click="cancelSettlement(scope, index)" :disabled="viewDisabled">取消</el-link>
-                </template>
-              </template>
-            </baseTable>
-            <div class="center-button-container">
-              <el-button
-                class="el-button-func"
-                style="width: 500px; background-color: #f5fbff; border: solid 1px #008aff"
-                @click="addSettlement(index)"
-                icon="el-icon-circle-plus-outline"
-                :disabled="viewDisabled"
-              >
-                添加结算回款
-              </el-button>
+          </template>
+          <el-descriptions-item label="项目编码">{{ order.projectId }}</el-descriptions-item>
+          <el-descriptions-item label="项目经理">{{ order.managerName }}</el-descriptions-item>
+          <el-descriptions-item label="立项时间">{{ order.approvalDate }}</el-descriptions-item>
+          <el-descriptions-item label="合同类型">{{ order.contractTypeName }}</el-descriptions-item>
+          <el-descriptions-item label="结算周期">{{ order.settlementCycle }}</el-descriptions-item>
+          <el-descriptions-item label="计划交付时间">{{ order.deliveryDate }}</el-descriptions-item>
+          <el-descriptions-item label="项目状态">
+            <div style="width: 80%">
+              <!--            0交付中 1已交付 2关闭 3已回款-->
+              <el-steps :active="order.state" finish-status="success">
+                <el-step title="交付中"></el-step>
+                <el-step title="已交付"></el-step>
+                <el-step title="关闭"></el-step>
+                <el-step title="已回款"></el-step>
+              </el-steps>
             </div>
-          </el-collapse-item>
-        </template>
-      </el-collapse>
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+      <div class="add-box">
+        <el-button class="add-btn" type="primary" @click="addOrder()" icon="el-icon-circle-plus-outline" :disabled="viewDisabled">添加订单</el-button>
+      </div>
+      <div style="margin: 0 24px">
+        <el-collapse v-model="activeNames" @change="handleChange">
+          <template v-for="(item, index) in orderList">
+            <el-collapse-item :name="index" style="margin-bottom: 16px">
+              <template slot="title">
+                <div class="order-title">
+                  <div style="display: flex; align-items: center">
+                    <svg-icon :icon-class="activeNames.includes(index) ? 'triangle-down-icon' : 'triangle-up-icon'" style="height: 1.3em; width: 1.3em" />
+                    <span style="color: #2462f9; margin-right: 6px">订单:</span>
+                    <span>{{ item.orderName }}</span>
+                  </div>
+                  <div style="display: flex">
+                    <el-link type="primary" @click.stop="viewOrder(item)">查看详情 |</el-link>
+                    <el-link type="primary" @click.stop="updateOrder(item)" :disabled="viewDisabled">编辑 |</el-link>
+                    <el-link type="primary" @click.stop="deleteOrder(item)" :disabled="viewDisabled" style="margin-right: 30px">删除</el-link>
+                  </div>
+                </div>
+              </template>
+              <div style="padding: 0 16px">
+                <div style="margin-top: 5px">结算回款</div>
+                <div class="chooseResult">
+                  <i class="el-icon-info" style="color: #108ee9"></i>
+                  <span class="chooseResultStr" v-html="chooseStr"></span>
+                </div>
+                <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect" :hidePage="true">
+                  <template v-slot:settlementDate="scope">
+                    <el-date-picker
+                      v-model="scope.item.row.settlementDate"
+                      value-format="yyyy-MM-dd"
+                      format="yyyy-MM-dd"
+                      type="date"
+                      style="width: 100%"
+                      placeholder="选择日期"
+                      :disabled="scope.item.row.clientTypeShow"
+                    ></el-date-picker>
+                  </template>
+                  <template v-slot:settlementAcount="scope">
+                    <el-input v-model="scope.item.row.settlementAcount" :disabled="scope.item.row.clientTypeShow" placeholder="请输入"></el-input>
+                  </template>
+                  <template v-slot:settlementFile="scope">
+                    <el-upload
+                      :disabled="scope.item.row.clientTypeShow"
+                      class="upload-demo"
+                      action="#"
+                      :limit="1"
+                      :accept="'.pdf,.PDF'"
+                      :auto-upload="false"
+                      :on-remove="(file, fileList) => handleFirstRemove(file, fileList, scope, index)"
+                      :on-change="
+                        (file, fileList) => {
+                          handleFileChange(file, fileList, scope, index)
+                        }
+                      "
+                      :file-list="scope.item.row.settlementFileList"
+                    >
+                      <el-button icon="el-icon-upload2" :disabled="scope.item.row.clientTypeShow" style="width: 100px">上传文件</el-button>
+                      <div v-if="scope.item.row.settlementFileShow" slot="tip" class="el-upload__tip">支持扩展名：.pdf</div>
+                    </el-upload>
+                  </template>
+                  <template v-slot:expectReturnDate="scope">
+                    <el-date-picker
+                      v-model="scope.item.row.expectReturnDate"
+                      value-format="yyyy-MM-dd"
+                      format="yyyy-MM-dd"
+                      type="date"
+                      style="width: 100%"
+                      placeholder="选择日期"
+                      :disabled="scope.item.row.clientTypeShow"
+                    ></el-date-picker>
+                  </template>
+                  <template v-slot:state="scope">
+                    <el-select v-model="scope.item.row.state" placeholder="请选择" :disabled="scope.item.row.clientTypeShow" @change="stateChange(scope)">
+                      <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                  </template>
+                  <template v-slot:returnDate="scope">
+                    <el-date-picker
+                      v-model="scope.item.row.returnDate"
+                      value-format="yyyy-MM-dd"
+                      format="yyyy-MM-dd"
+                      type="date"
+                      style="width: 100%"
+                      placeholder="选择日期"
+                      :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
+                    ></el-date-picker>
+                  </template>
+                  <template v-slot:returnAcount="scope">
+                    <el-input
+                      v-model="scope.item.row.returnAcount"
+                      placeholder="请输入"
+                      clearable
+                      :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
+                    ></el-input>
+                  </template>
+                  <template v-slot:returnFile="scope">
+                    <el-upload
+                      :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow"
+                      class="upload-demo"
+                      action="#"
+                      :limit="1"
+                      :accept="'.pdf,.PDF'"
+                      :auto-upload="false"
+                      :on-remove="(file, fileList) => handleSecondRemove(file, fileList, scope, index)"
+                      :on-change="
+                        (file, fileList) => {
+                          returnFileShowChange(file, fileList, scope, index)
+                        }
+                      "
+                      :file-list="scope.item.row.returnFileList"
+                    >
+                      <el-button icon="el-icon-upload2" :disabled="scope.item.row.clientTypeShow || scope.item.row.returnShow" style="width: 100px">
+                        上传文件
+                      </el-button>
+                      <div slot="tip" v-if="scope.item.row.returnFileShow" class="el-upload__tip">支持扩展名：.pdf</div>
+                    </el-upload>
+                  </template>
+                  <template v-slot:clientType="scope">
+                    <!--类型插槽-->
+                    <template v-if="scope.item.row.clientTypeShow">
+                      <el-link :underline="false" type="primary" @click="editSettlement(scope, index)" :disabled="viewDisabled">编辑 |</el-link>
+                      <el-link :underline="false" type="primary" @click="deleteSettlement(scope, index)" :disabled="viewDisabled">删除</el-link>
+                    </template>
+                    <template v-else>
+                      <el-link :underline="false" type="primary" @click="updateSettlement(scope, item, index)" :disabled="viewDisabled">保存 |</el-link>
+                      <el-link :underline="false" type="primary" @click="cancelSettlement(scope, index)" :disabled="viewDisabled">取消</el-link>
+                    </template>
+                  </template>
+                </baseTable>
+              </div>
+              <div class="center-button-container">
+                <el-button
+                  type="primary"
+                  plain
+                  style="width: 160px; margin-top: 20px; color: #2462f9"
+                  @click="addSettlement(index)"
+                  icon="el-icon-circle-plus-outline"
+                  :disabled="viewDisabled"
+                >
+                  添加结算回款
+                </el-button>
+              </div>
+            </el-collapse-item>
+          </template>
+        </el-collapse>
+      </div>
+      <div class="bottom-btn">
+        <el-button type="primary" style="margin-right: 10px" @click="handlerFlag">确定</el-button>
+        <el-button @click="handlerFlag">取消</el-button>
+      </div>
     </el-container>
-    <base-dialog :title="title" ref="addOrUpdateDrawer" :width="'40%'">
+    <base-dialog :title="title" ref="addOrUpdateDrawer" :width="'500px'">
       <template>
         <add-order @refreshDataList="refresh" ref="addOrderRef"></add-order>
       </template>
     </base-dialog>
-    <base-dialog :title="title" ref="viewOrderDialog" :width="'40%'">
+    <base-dialog :title="title" ref="viewOrderDialog" :width="'500px'">
       <template>
         <view-order @refreshDataList="refresh" ref="viewOrderRef"></view-order>
       </template>
@@ -186,6 +207,7 @@ export default {
   components: { baseTable, addOrder, baseDialog, viewOrder },
   data() {
     return {
+      activeNames: [],
       chooseStr: '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款 0.00',
       title: '',
       order: {
@@ -208,7 +230,7 @@ export default {
           { label: '回款时间', prop: 'returnDate', slotName: 'returnDate', width: '112px' },
           { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount', width: '80px' },
           { label: '回款单', prop: 'returnFile', slotName: 'returnFile', width: '80px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '80px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
         ],
         height: '150px',
         minHeight: '180px',
@@ -239,6 +261,9 @@ export default {
     }
   },
   methods: {
+    handlerFlag() {
+      this.$emit('changeFlag', 1)
+    },
     init(data) {
       if (data) {
         Object.assign(this.order, data)
@@ -304,7 +329,10 @@ export default {
         }
       })
     },
-    handleChange() {},
+    handleChange(activeNames) {
+      this.activeName = activeNames
+      console.log(activeNames)
+    },
     viewOrder(item) {
       this.title = '订单详情'
       this.$refs.viewOrderDialog.show()
@@ -563,28 +591,85 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.container-box {
+  height: 100%;
+  background: white;
+  .header-box {
+    height: 60px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f0f1f3;
+    .header-title {
+      font-size: 16px;
+    }
+  }
+  .circular {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(311deg, #3d6ce1 0%, #4d82ff 100%);
+  }
+  .add-box {
+    margin: 0 0 16px 24px;
+    .add-btn {
+      width: 110px;
+    }
+  }
+  .order-title {
+    width: 100%;
+    padding-left: 8px;
+    background: #f5f7fa;
+    display: flex;
+    justify-content: space-between;
+  }
+  .bottom-btn {
+    height: 60px;
+    padding-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-shadow: 0px -3px 12px 0px rgba(0, 0, 0, 0.1);
+  }
+}
+::v-deep .el-collapse-item__arrow {
+  display: none;
+  margin: 0;
+}
+::v-deep .el-collapse-item {
+  border: 1px solid #dddfe6;
+}
 ::v-deep .el-step__head.is-success {
-  color: #008aff;
-  border-color: #008aff;
+  color: #2462f9;
+  border-color: #2462f9;
 }
 ::v-deep .el-step__title.is-success {
   color: #c0c4cc;
 }
 ::v-deep .el-step__head.is-process {
-  color: #008aff;
-  border-color: #008aff;
+  color: #2462f9;
+  border-color: #2462f9;
+}
+::v-deep .el-step__head.is-process .el-step__icon.is-text {
+  border-color: #2462f9;
+  background: #2462f9;
+  color: white;
 }
 ::v-deep .el-input__icon {
   line-height: 30px;
 }
 .title {
-  color: #008aff; /* 设置标题字体颜色为红色 */
+  /* color: #008aff;  */
   font-size: 20px;
+  margin-left: 10px;
 }
 
 ::v-deep .el-descriptions-item__label {
-  color: #008aff; /* 设置描述项label字体颜色为绿色 */
+  /*color: #008aff;  设置描述项label字体颜色为绿色 */
+  color: #4e5969;
+  font-size: 14px;
 }
 
 .el-link {
@@ -608,5 +693,8 @@ export default {
 
 .el-select {
   width: 100px !important;
+}
+::v-deep .el-descriptions__body {
+  padding-left: 42px;
 }
 </style>

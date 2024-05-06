@@ -37,7 +37,7 @@
           </div>
           <div class="status">
             <p>任务状态:</p>
-            <div style="width: 60%">
+            <div style="width: 70%">
               <el-steps :active="active" finish-status="success">
                 <el-step title="待填报"></el-step>
                 <el-step title="填报中"></el-step>
@@ -78,9 +78,11 @@ export default {
           { label: '团队编码', prop: 'teamId' },
           { label: '驻地', prop: 'stationName' },
           { label: '归属部门', prop: 'deptName' },
-          { label: '团队成员', prop: 'teamNum' }
+          { label: '团队成员', prop: 'teamNum' },
+          { label: '团队状态', prop: 'teamStatus' }
         ],
-        url: '/team/selectTeamPage'
+        // url: '/team/selectTeamPage'
+        url: '/team/selectTeamWithStatus'
       }
     }
   },
@@ -95,12 +97,14 @@ export default {
         this.active = initData.taskStatus
       }
       Object.assign(this.taskInfo, initData)
+      console.log(this.taskInfo)
       this.selectPersonCount({ deptIds: this.taskInfo.deptIds, curPage: 1, pageSize: 10 })
       this.selectTableData()
     },
     //查询表格数据
     selectTableData() {
-      this.$refs.taskDetialTable.refresh({ deptIds: this.taskInfo.deptIds })
+      //this.$refs.taskDetialTable.refresh({ deptIds: this.taskInfo.deptIds })
+      this.$refs.taskDetialTable.refresh({ taskId: this.taskInfo.taskId, taskStatus: this.taskInfo.taskStatus })
     },
     //查询部门下的总人数
     selectPersonCount(params) {
@@ -116,6 +120,7 @@ export default {
         }
       })
     },
+
     afterTeamListQuery() {
       let data = this.$refs.taskDetialTable.options.data.payload
       this.teamCount = data.totalCount
@@ -164,5 +169,21 @@ export default {
     padding-left: 20px;
     font-weight: 600;
   }
+}
+::v-deep .el-step__head.is-success {
+  color: #2462f9;
+  border-color: #2462f9;
+}
+::v-deep .el-step__title.is-success {
+  color: #c0c4cc;
+}
+::v-deep .el-step__head.is-process {
+  color: #2462f9;
+  border-color: #2462f9;
+}
+::v-deep .el-step__head.is-process .el-step__icon.is-text {
+  border-color: #2462f9;
+  background: #2462f9;
+  color: white;
 }
 </style>

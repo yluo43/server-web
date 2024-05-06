@@ -19,11 +19,11 @@
             <el-input v-model="dataForm.name" placeholder="请输入用户姓名" clearable />
           </el-form-item>
           <el-form-item label="工号:" prop="empId">
-            <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
+            <el-input v-model="dataForm.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
           </el-form-item>
           <el-form-item label="归属部门:" prop="deptId">
             <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamId">
@@ -111,10 +111,10 @@ export default {
   },
   created() {},
   methods: {
-    //获取部门
+    //获取所属部门
     getDept() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -124,10 +124,11 @@ export default {
         }
       })
     },
+
     //获取团队
     getTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getTeam'),
+        url: this.$http.adornUrl('/common/getTeamByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -172,4 +173,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.el-input {
+  width: 200px;
+}
+</style>

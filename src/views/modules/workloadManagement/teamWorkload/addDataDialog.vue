@@ -9,7 +9,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="成本项目:" prop="projectId">
-            <el-select v-model="formData.projectId" placeholder="请选择成本项目" clearable>
+            <el-select v-model="formData.projectId" placeholder="请选择成本项目" filterable clearable>
               <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
@@ -31,7 +31,7 @@
           </el-form-item>
         </el-form>
         <div class="btn-group">
-          <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
+          <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
           <el-button type="primary" @click="confirm('formData')">确认</el-button>
         </div>
       </div>
@@ -203,15 +203,5 @@ export default {
 .el-dialog__body {
   padding: 25px 0 2px 0;
   width: 50%;
-}
-
-.btn-group {
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border-top: 1px solid lightgray;
-  margin-top: 20px;
 }
 </style>

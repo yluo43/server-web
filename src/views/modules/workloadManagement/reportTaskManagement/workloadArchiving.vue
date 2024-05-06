@@ -12,7 +12,7 @@
             </div>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center">
-            <div class="status">
+            <!-- <div class="status">
               状态：
               <el-radio-group v-model="radio" @change="handlerRadio">
                 <el-radio-button label="1">全部</el-radio-button>
@@ -20,7 +20,8 @@
                 <el-radio-button label="3">被驳回</el-radio-button>
                 <el-radio-button label="4">已归档</el-radio-button>
               </el-radio-group>
-            </div>
+            </div> -->
+            <div></div>
             <div>
               <el-select v-model="teamIds" placeholder="请选择" multiple collapse-tags clearable @change="search">
                 <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
@@ -109,27 +110,28 @@ export default {
           { label: '工号', prop: 'empId' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '开始时间', prop: 'startTime' },
-          { label: '结束时间', prop: 'overTime' },
+          { label: '开始时间', prop: 'startTime', width: '90px' },
+          { label: '结束时间', prop: 'overTime', width: '90px' },
           { label: '报工类别', prop: 'workloadName' },
-          { label: '成本项目', prop: 'projectName' },
+          { label: '成本项目', prop: 'projectName', width: '210px' },
           { label: '项目经理', prop: 'projectManagerName' },
           { label: '计划投入(%)', prop: 'investRate' },
           { label: '实际投入(%)', prop: 'realityRate' },
-          { label: '提交时间', prop: 'commitTime' },
-          { label: '审批时间', prop: 'approveTime' },
+          { label: '提交时间', prop: 'commitTime', width: '140px' },
+          { label: '审批时间', prop: 'approveTime', width: '140px' },
           { label: '归档状态', prop: 'workStatus', slotName: 'workStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '160px' }
         ],
         url: '/workload/pigeonholeTaskList'
       }
     }
   },
   mounted() {
-    this.empId = this.$store.state.user.empId
     this.getTeam()
   },
-  created() {},
+  created() {
+    this.empId = this.$store.state.user.empId
+  },
   methods: {
     //初始化数据
     async init(initData) {

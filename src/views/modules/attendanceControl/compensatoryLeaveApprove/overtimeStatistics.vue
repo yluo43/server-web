@@ -7,11 +7,11 @@
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
           <el-form-item label="工号:" prop="empId">
-            <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
+            <el-input v-model="dataForm.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
           </el-form-item>
           <el-form-item label="归属部门:" prop="deptId">
             <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamId">
@@ -47,7 +47,7 @@
             <template v-slot:clientType="row">
               <template>
                 <el-button type="text" @click="viewDetails(row.item)">查看明细</el-button>
-                <el-button type="text" @click="workAllowance(row.item)">工时补贴</el-button>
+                <el-button type="text" v-auth="'attendance:subsidy'" @click="workAllowance(row.item)">工时补贴</el-button>
               </template>
             </template>
           </baseTable>
@@ -61,7 +61,7 @@
       </template>
     </base-dialog>
     <!-- 工时补贴 -->
-    <base-dialog ref="workAllowanceDialog" title="工时补贴" :width="'600px'">
+    <base-dialog ref="workAllowanceDialog" title="工时补贴" :width="'500px'">
       <template>
         <workAllowanceDialog ref="workAllowance" :cancelDialog="closeWorkAllowanceDialog" @selectTableData="selectTableData"></workAllowanceDialog>
       </template>
@@ -100,7 +100,7 @@ export default {
           { label: '团队负责人', prop: 'teamManager' },
           { label: '累计加班时长(小时)', prop: 'overtimeHours' },
           { label: '可调休天数(天)', prop: 'dayoffDays' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
         ],
         url: '/attendance/overtimeStats'
       }
@@ -116,7 +116,7 @@ export default {
     //获取部门
     getDept() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -129,7 +129,7 @@ export default {
     //获取团队
     getTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getTeam'),
+        url: this.$http.adornUrl('/common/getTeamByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -192,29 +192,25 @@ export default {
         return
       }
       let form = { ...this.dataForm }
-      form.ids = this.selData.filter((item) => {
-        return item.id
+      form.ids = this.selData.map((item) => {
+        return item.empId
       })
       Object.keys(form).map((key) => {
         if (!form[key]) {
           delete form[key]
         }
       })
-      this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), this.$http.adornParams(form), this)
+
+      this.$http.downloadPost(this.$http.adornUrl('/attendance/export'), this.$http.adornParams(form), this)
     }
   }
 }
 </script>
 
 <style scoped>
-.el-select {
-  width: 200px !important;
+.el-input {
+  width: 200px;
 }
-
-::v-deep .el-select .el-tag {
-  max-width: 70% !important;
-}
-
 .el-button {
   margin-left: 0;
   width: auto;

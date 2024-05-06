@@ -7,7 +7,7 @@
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
           <!-- <el-form-item label="工号:" prop="empId">
-            <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
+            <el-input v-model="dataForm.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
           </el-form-item> -->
           <el-form-item label="归属团队:" prop="teamId">
             <el-select v-model="dataForm.teamId" placeholder="请选择归属团队" clearable>
@@ -92,7 +92,7 @@
     <!-- 驳回 -->
     <base-dialog ref="rejectDialog" title="调休申请驳回" :width="'500px'">
       <template>
-        <rejectDialog ref="reject" :cancelDialog="closeDialog" @refrshTable="selectTableData"></rejectDialog>
+        <rejectDialog ref="reject" :closeDialog="closeDialog" @refrshTable="refrshTable"></rejectDialog>
       </template>
     </base-dialog>
     <!-- 审批流程 -->
@@ -149,12 +149,12 @@ export default {
           { label: '用户姓名', prop: 'userName' },
           { label: '工号', prop: 'empId' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '调休开始时间', prop: 'startTime' },
-          { label: '调休结束时间', prop: 'endTime' },
+          { label: '调休开始时间', prop: 'startTime', width: '140px' },
+          { label: '调休结束时间', prop: 'endTime', width: '140px' },
           { label: '调休天数(天)', prop: 'days' },
-          { label: '申请时间', prop: 'createTime' },
+          { label: '申请时间', prop: 'createTime', width: '140px' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '150px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
         ],
         url: '/attendance/getDayoffList'
       }
@@ -168,10 +168,22 @@ export default {
     this.dataForm.operatorName = getCName()
   },
   methods: {
+    //刷新页面并打开弹窗
+    refrshTable(initData, rejectFlag) {
+      this.selectTableData()
+      this.$refs.approvalProcessDialog.show()
+      this.$nextTick(() => {
+        if (rejectFlag == 1 || rejectFlag == 2) {
+          this.$refs.approvalProcess.init(initData, 1)
+        } else {
+          this.$refs.approvalProcess.init(initData, 2)
+        }
+      })
+    },
     //获取团队
     getTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getTeam'),
+        url: this.$http.adornUrl('/common/getTeamByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -235,8 +247,8 @@ export default {
         await this.getRemainingDays(row.empId)
         message = h('p', null, [
           h('span', null, `${row.userName}在${row.startTime}至${row.endTime}的调休申请,`),
-          h('span', { style: this.remainingDays > row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}天(剩余可调休天数:${this.remainingDays}天)`),
-          h('span', { style: this.remainingDays > row.days ? 'display:none' : 'display:inline-block;color:red' }, `,已超出剩余可调休天数`),
+          h('span', { style: this.remainingDays >= row.days ? 'color:#70B603' : 'color:red' }, `调休天数${row.days}天(剩余可调休天数:${this.remainingDays}天)`),
+          h('span', { style: this.remainingDays >= row.days ? 'display:none' : 'display:inline-block;color:red' }, `,已超出剩余可调休天数`),
           h('span', null, `,确认通过吗？`)
         ])
         ids = [row.dayoffId]
@@ -327,12 +339,8 @@ export default {
 </script>
 
 <style scoped>
-.el-select {
-  width: 200px !important;
-}
-
-::v-deep .el-select .el-tag {
-  max-width: 70% !important;
+.el-input {
+  width: 200px;
 }
 
 .el-button {

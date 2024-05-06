@@ -46,7 +46,7 @@
           </el-row> -->
         </el-form>
         <div class="btn-group">
-          <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
+          <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
           <el-button type="primary" @click="confirm">确认</el-button>
         </div>
       </div>
@@ -241,18 +241,5 @@ export default {
 .el-dialog__body {
   padding: 25px 0 2px 0;
   width: 50%;
-}
-/* .el-date-editor.el-input {
-    width: 190px;
-  } */
-
-.btn-group {
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border-top: 1px solid lightgray;
-  margin-top: 20px;
 }
 </style>

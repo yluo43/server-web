@@ -14,10 +14,16 @@
           <div style="margin-bottom: 10px; padding-left: 16px">
             <el-form ref="formData" :inline="true" label-width="65px" :label-position="labelposition" :model="formData">
               <el-form-item label="用户姓名:" prop="userName">
-                <el-input v-model="formData.userName" placeholder="请输入用户姓名" clearable />
+                <el-input style="width: 200px" v-model="formData.userName" placeholder="请输入用户姓名" clearable />
               </el-form-item>
               <el-form-item label="工号:" prop="empId">
-                <el-input v-model="formData.empId" placeholder="请输入工号" clearable />
+                <el-input
+                  style="width: 200px"
+                  v-model="formData.empId"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  placeholder="请输入工号"
+                  clearable
+                />
               </el-form-item>
               <el-form-item label="报工类别:" prop="workLoadIds">
                 <el-select v-model="formData.workLoadIds" multiple collapse-tags placeholder="请选择报工类别" clearable>
@@ -66,26 +72,28 @@
             <el-table
               :data="tableData"
               border
-              style="width: 100%; height: 425px; max-height: 425px; overflow-y: scroll"
+              :header-cell-style="{ 'text-align': 'center' }"
+              :cell-style="{ 'text-align': 'center' }"
+              style="width: 100%; height: 425px; overflow-y: scroll"
               @selection-change="selChange"
               :span-method="objectSpanMethod"
             >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column prop="name" label="团队成员"></el-table-column>
               <el-table-column prop="empId" label="工号"></el-table-column>
-              <el-table-column prop="startTime" label="开始时间"></el-table-column>
-              <el-table-column prop="overTime" label="结束时间"></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" width="90px"></el-table-column>
+              <el-table-column prop="overTime" label="结束时间" width="90px"></el-table-column>
               <el-table-column prop="workloadName" label="报工类别"></el-table-column>
-              <el-table-column prop="projectName" label="成本项目"></el-table-column>
+              <el-table-column prop="projectName" label="成本项目" width="210px"></el-table-column>
               <el-table-column prop="managerName" label="项目经理"></el-table-column>
               <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
-              <el-table-column prop="commitTime" label="提交时间"></el-table-column>
+              <el-table-column prop="commitTime" label="提交时间" width="90px"></el-table-column>
               <el-table-column prop="workStatusName" label="确认状态"></el-table-column>
             </el-table>
           </div>
           <div style="display: flex; justify-content: center">
             <el-pagination
-              :page-sizes="[10, 15, 20, 25, 30]"
+              :page-sizes="[20, 50, 100]"
               :page-size="pageSize"
               :current-page="curPage"
               layout="total, sizes, prev, pager, next, jumper"
@@ -109,13 +117,13 @@ export default {
   data() {
     return {
       //总条数
-      total: 10,
+      total: '',
       taskId: '',
       teamId: '',
       curPage: 1,
-      pageSize: 10,
+      pageSize: 20,
       count: 0,
-      empId: '1260',
+      empId: '',
       //工作量统计
       reportWorkName: '',
       workLoadStatistics: [],
@@ -385,9 +393,7 @@ export default {
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }
-::v-deep .el-form-item__content {
-  width: 180px;
-}
+
 ::v-deep.el-table::before {
   display: none !important;
 }

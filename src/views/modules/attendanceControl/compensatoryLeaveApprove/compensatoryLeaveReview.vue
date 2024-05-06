@@ -7,11 +7,11 @@
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
           <!-- <el-form-item label="工号:" prop="empId">
-            <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
+            <el-input v-model="dataForm.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
           </el-form-item> -->
           <el-form-item label="归属部门:" prop="deptId">
             <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
+              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamId">
@@ -78,7 +78,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <div>
+      <el-main>
         <div class="chooseResult">
           <span>已选择{{ count }}项</span>
           <el-button type="text" @click="pass()">批量通过</el-button>
@@ -101,12 +101,12 @@
             </template>
           </baseTable>
         </div>
-      </div>
+      </el-main>
     </el-container>
     <!-- 调休申请驳回 -->
     <base-dialog ref="rejectDialog" title="调休申请驳回" :width="'500px'">
       <template>
-        <rejectDialog ref="reject" :cancelDialog="closeDialog" @refrshTable="selectTableData"></rejectDialog>
+        <rejectDialog ref="reject" :closeDialog="closeDialog" @refrshTable="refrshTable"></rejectDialog>
       </template>
     </base-dialog>
     <!-- 审批流程 -->
@@ -166,12 +166,12 @@ export default {
           { label: '用户姓名', prop: 'userName' },
           { label: '工号', prop: 'empId' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '调休开始时间', prop: 'startTime' },
-          { label: '调休结束时间', prop: 'endTime' },
+          { label: '调休开始时间', prop: 'startTime', width: '140px' },
+          { label: '调休结束时间', prop: 'endTime', width: '140px' },
           { label: '调休天数', prop: 'days' },
           { label: '申请时间', prop: 'createTime' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '150px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
         ],
         url: '/attendance/getDayoffList'
       }
@@ -187,10 +187,22 @@ export default {
     this.dataForm.operatorName = getCName()
   },
   methods: {
+    //刷新页面并打开弹窗
+    refrshTable(initData, rejectFlag) {
+      this.selectTableData()
+      this.$refs.approvalProcessDialog.show()
+      this.$nextTick(() => {
+        if (rejectFlag == 1 || rejectFlag == 2) {
+          this.$refs.approvalProcess.init(initData, 1)
+        } else {
+          this.$refs.approvalProcess.init(initData, 2)
+        }
+      })
+    },
     //获取部门
     getDept() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -203,7 +215,7 @@ export default {
     //获取团队
     getTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getTeam'),
+        url: this.$http.adornUrl('/common/getTeamByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -373,12 +385,8 @@ export default {
 </script>
 
 <style scoped>
-.el-select {
-  width: 200px !important;
-}
-
-::v-deep .el-select .el-tag {
-  max-width: 70% !important;
+.el-input {
+  width: 200px;
 }
 
 .el-button {

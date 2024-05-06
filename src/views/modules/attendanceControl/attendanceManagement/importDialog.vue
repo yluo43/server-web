@@ -22,7 +22,7 @@
       </el-form-item>
     </el-form>
     <div class="btn-group">
-      <el-button plain style="margin: 0 10px" @click="cancelDialog">取消</el-button>
+      <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
       <el-button type="primary" @click="submitUpload">确认</el-button>
     </div>
   </div>
@@ -67,11 +67,11 @@ export default {
         }
       }).then(({ data }) => {
         if (data.success) {
-          this.$message.success(data.msg)
+          this.$message.success('导入成功!')
           this.cancelDialog()
           this.$emit('refreshTableData')
         } else {
-          this.$message.error(data.msg)
+          this.$message.error('导入失败!')
         }
       })
     }
@@ -79,14 +79,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.btn-group {
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border-top: 1px solid lightgray;
-  margin-top: 20px;
-}
-</style>
+<style scoped></style>

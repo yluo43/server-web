@@ -1,38 +1,20 @@
 <template>
   <div style="height: 100%">
     <el-container>
-      <el-header style="height: 165px">
-        <el-form :inline="true" :model="dataForm" ref="dataForm">
+      <el-header style="height: 100%">
+        <el-form :inline="true" label-width="65px" label-position="left" :model="dataForm" ref="dataForm">
           <div class="inputlist">
-            <el-form-item label="姓名:" prop="name">
-              <el-input v-model="dataForm.name" placeholder="请输入员工姓名" clearable maxlength="50"></el-input>
-            </el-form-item>
-            <el-form-item label="工号:" prop="empId">
-              <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable maxlength="50"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱:" prop="mailbox">
-              <el-input v-model="dataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
-            </el-form-item>
-            <el-form-item label="驻地:" prop="stationIds">
-              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择驻地" :multiple="true" :collapse-tags="true">
-                <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="归属部门:" prop="deptIds">
-              <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
-                <el-option
-                  v-for="dept in deptNames"
-                  :key="dept.id"
-                  :label="dept.name"
-                  :value="dept.id"
-                  multiple="true"
-                  :disabled="dept.name == '新讯数字科技有限公司'"
-                ></el-option>
-              </el-select>
+            <el-form-item label="用户姓名:" prop="name">
+              <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamIds">
               <el-select v-model="dataForm.teamIds" placeholder="请选择归属团队" :multiple="true" :collapse-tags="true">
                 <el-option v-for="team in teamNames" :key="team.id" :label="team.name" :value="team.id" multiple="true"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="岗位类型:" prop="positionTypes">
+              <el-select v-model="dataForm.positionTypes" placeholder="请选择岗位类型" :multiple="true" :collapse-tags="true">
+                <el-option v-for="item in positions" :key="item.id" :label="item.positionName" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="角色:" prop="roleIds">
@@ -40,68 +22,83 @@
                 <el-option v-for="role in roleNames" :key="role.id" :label="role.name" :value="role.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="入职时间:" prop="entryDate">
-              <el-date-picker
-                style="width: 220px"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                v-model="entryDate"
-                type="daterange"
-                range-separator="~"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              ></el-date-picker>
-            </el-form-item>
-            <el-form-item label="离职时间:" prop="departDate">
-              <el-date-picker
-                style="width: 220px"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                v-model="departDate"
-                type="daterange"
-                range-separator="~"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              ></el-date-picker>
-            </el-form-item>
+            <div v-if="showFlag" style="display: contents">
+              <el-form-item label="工号:" prop="empId">
+                <el-input
+                  v-model="dataForm.empId"
+                  placeholder="请输入工号"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  clearable
+                  maxlength="50"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="邮箱:" prop="mailbox">
+                <el-input v-model="dataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
+              </el-form-item>
+              <el-form-item label="驻地:" prop="stationIds">
+                <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择驻地" :multiple="true" :collapse-tags="true">
+                  <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="归属部门:" prop="deptIds">
+                <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
+                  <el-option v-for="dept in deptNames" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="入职时间:" prop="entryDate">
+                <el-date-picker
+                  style="width: 200px"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  v-model="entryDate"
+                  type="daterange"
+                  range-separator="~"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                ></el-date-picker>
+              </el-form-item>
+              <el-form-item label="离职时间:" prop="departDate">
+                <el-date-picker
+                  style="width: 200px"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  v-model="departDate"
+                  type="daterange"
+                  range-separator="~"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                ></el-date-picker>
+              </el-form-item>
+              <el-form-item label="状态:" prop="departStatus">
+                <el-select v-model="dataForm.departStatus" placeholder="请选择状态" @change="showEntryDate">
+                  <el-option key="1" label="在职" value="1"></el-option>
+                  <el-option key="0" label="离职" value="0"></el-option>
+                </el-select>
+              </el-form-item>
 
-            <el-form-item label="状态:" prop="departStatus">
-              <el-select v-model="dataForm.departStatus" placeholder="请选择状态" @change="showEntryDate">
-                <el-option key="1" label="在职" value="1"></el-option>
-                <el-option key="0" label="离职" value="0"></el-option>
-              </el-select>
-            </el-form-item>
-
-            <el-form-item label="岗位类型:" prop="positionTypes">
-              <el-select v-model="dataForm.positionTypes" placeholder="请选择岗位类型" :multiple="true" :collapse-tags="true">
-                <el-option key="1" label="A岗" :value="1"></el-option>
-                <el-option key="2" label="B岗" :value="2"></el-option>
-                <el-option key="7" label="C岗" :value="7"></el-option>
-                <el-option key="3" label="外包" :value="3"></el-option>
-                <el-option key="4" label="学生" :value="4"></el-option>
-                <el-option key="5" label="实习" :value="5"></el-option>
-                <el-option key="6" label="兼职" :value="6"></el-option>
-              </el-select>
-            </el-form-item>
-
-            <el-form-item label="技术级别:" prop="empLevels">
-              <el-select v-model="dataForm.empLevels" placeholder="请选择技术级别" :multiple="true" :collapse-tags="true">
-                <el-option key="0" label="0" value="0"></el-option>
-                <el-option key="1" label="1" value="1"></el-option>
-                <el-option key="2" label="2" value="2"></el-option>
-                <el-option key="3" label="3" value="3"></el-option>
-                <el-option key="4" label="4" value="4"></el-option>
-                <el-option key="5" label="5" value="5"></el-option>
-                <el-option key="6-" label="6-" value="6-"></el-option>
-                <el-option key="6" label="6" value="6"></el-option>
-                <el-option key="6+" label="6+" value="6+"></el-option>
-                <el-option key="7" label="7" value="7"></el-option>
-                <el-option key="8" label="8" value="8"></el-option>
-                <el-option key="9" label="9" value="9"></el-option>
-              </el-select>
-            </el-form-item>
-
+              <el-form-item label="技术级别:" prop="empLevels">
+                <el-select v-model="dataForm.empLevels" placeholder="请选择技术级别" :multiple="true" :collapse-tags="true">
+                  <el-option key="0" label="0" value="0"></el-option>
+                  <el-option key="1" label="1" value="1"></el-option>
+                  <el-option key="2" label="2" value="2"></el-option>
+                  <el-option key="3" label="3" value="3"></el-option>
+                  <el-option key="4" label="4" value="4"></el-option>
+                  <el-option key="5" label="5" value="5"></el-option>
+                  <el-option key="6-" label="6-" value="6-"></el-option>
+                  <el-option key="6" label="6" value="6"></el-option>
+                  <el-option key="6+" label="6+" value="6+"></el-option>
+                  <el-option key="7" label="7" value="7"></el-option>
+                  <el-option key="8" label="8" value="8"></el-option>
+                  <el-option key="9" label="9" value="9"></el-option>
+                </el-select>
+              </el-form-item>
+            </div>
             <el-form-item>
+              <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+                <span v-if="showFlag" style="color: #2462f9">收起</span>
+                <span v-else style="color: #2462f9">展开</span>
+              </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-search">重置</el-button>
             </el-form-item>
@@ -163,14 +160,21 @@
           </template>
         </template>
       </baseTable>
-      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="25%">
-        <div style="padding-left: 20px">
+      <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="23%">
+        <div style="padding-left: 40px">
           <el-form :inline="true" :rules="rules" :model="editDataForm" ref="editdataForm" class="editForm">
-            <el-form-item label="姓名:" prop="name">
-              <el-input v-model="editDataForm.name" placeholder="请输入员工姓名" clearable maxlength="50"></el-input>
+            <el-form-item label="用户姓名:" prop="name">
+              <el-input v-model="editDataForm.name" placeholder="请输入用户姓名" clearable maxlength="50"></el-input>
             </el-form-item>
             <el-form-item label="工号:" prop="empId">
-              <el-input v-model="editDataForm.empId" placeholder="请输入员工工号" clearable maxlength="50" :disabled="disabled"></el-input>
+              <el-input
+                v-model="editDataForm.empId"
+                placeholder="请输入工号"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                clearable
+                maxlength="50"
+                :disabled="disabled"
+              ></el-input>
             </el-form-item>
             <el-form-item label="邮箱:" prop="mailbox">
               <el-input v-model="editDataForm.mailbox" placeholder="请输入邮箱前缀" clearable maxlength="50"></el-input>
@@ -182,14 +186,7 @@
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptId">
               <el-select clearable v-model="editDataForm.deptId" placeholder="请选择归属部门" @change="changeTeamByDept">
-                <el-option
-                  v-for="dept in onwerDeptNames"
-                  :key="dept.id"
-                  :label="dept.name"
-                  :value="dept.id"
-                  multiple="true"
-                  :disabled="dept.name == '新讯数字科技有限公司'"
-                ></el-option>
+                <el-option v-for="dept in onwerDeptNames" :key="dept.id" :label="dept.name" :value="dept.id" multiple="true"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="归属团队:" prop="teamId">
@@ -202,19 +199,11 @@
                 <el-option v-for="role in roleNames" :key="role.id" :label="role.name" :value="role.id"></el-option>
               </el-select>
             </el-form-item>
-
             <el-form-item label="岗位类型:" prop="positionType">
               <el-select clearable v-model="editDataForm.positionType" placeholder="请选择岗位类型">
-                <el-option key="1" label="A岗" :value="1"></el-option>
-                <el-option key="2" label="B岗" :value="2"></el-option>
-                <el-option key="7" label="C岗" :value="7"></el-option>
-                <el-option key="3" label="外包" :value="3"></el-option>
-                <el-option key="4" label="学生" :value="4"></el-option>
-                <el-option key="5" label="实习" :value="5"></el-option>
-                <el-option key="6" label="兼职" :value="6"></el-option>
+                <el-option v-for="item in positions" :key="item.id" :label="item.positionName" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-
             <el-form-item label="技术级别:" prop="empLevel">
               <el-select clearable v-model="editDataForm.empLevel" placeholder="请选择技术级别">
                 <el-option key="0" label="0" value="0"></el-option>
@@ -234,7 +223,7 @@
 
             <el-form-item label="入职时间:" prop="entryDate">
               <el-date-picker
-                style="width: 190px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.entryDate"
@@ -252,7 +241,7 @@
 
             <el-form-item label="离职时间:" prop="departDate" v-if="entryDateShow" :rules="[{ required: entryDateInput, message: '岗位为空' }]">
               <el-date-picker
-                style="width: 190px"
+                style="width: 200px"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.departDate"
@@ -262,7 +251,7 @@
             </el-form-item>
             <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 10px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit">确定</el-button>
-              <el-button type="primary" @click="drawer = false">取消</el-button>
+              <el-button @click="drawer = false">取消</el-button>
             </div>
           </el-form>
         </div>
@@ -291,6 +280,7 @@ export default {
     }
 
     return {
+      showFlag: false,
       // mailRule: [
       //   { required: false, message: '邮箱不能为空', trigger: 'blur' },
       //   { validator: validEmail, trigger: 'change' }
@@ -339,6 +329,7 @@ export default {
         empLevel: '',
         departStatus: ''
       },
+      positions: [],
       teamNamesByDept: [],
       deptNames: [],
       onwerDeptNames: [],
@@ -356,10 +347,10 @@ export default {
           { label: '角色', prop: 'roleName' },
           { label: '技术级别', prop: 'empLevel' },
           { label: '岗位类型', prop: 'positionTypeName' },
-          { label: '入职时间', prop: 'entryDate' },
-          { label: '离职时间', prop: 'departDate' },
+          { label: '入职时间', prop: 'entryDate', width: '90px' },
+          { label: '离职时间', prop: 'departDate', width: '90px' },
           { label: '状态', prop: 'departStatusName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         url: '/employee/selectEmployeeListWithPage'
       },
@@ -385,6 +376,8 @@ export default {
   mounted() {
     this.$refs.table.refresh(this.dataForm)
 
+    //初始化岗位类型
+    this.getPosition()
     //初始化成本中心/部门
     this.$http({
       url: this.$http.adornUrl('/common/getDept'),
@@ -444,6 +437,20 @@ export default {
     })
   },
   methods: {
+    //获取岗位类型
+    getPosition() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getPosition'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.positions = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+
     changeTeamByDept() {
       //刷新团队
       this.$http({
@@ -534,6 +541,7 @@ export default {
       this.clear(this.editDataForm)
       this.disabled = false
       this.departStatusNameShow = false
+      this.entryDateShow = false
     },
 
     refresh() {
@@ -686,6 +694,9 @@ export default {
   color: #333;
   padding: 0 0;
 }
+.el-input {
+  width: 200px;
+}
 /* .el-form--inline > .inputlist {
   padding-top: 20px;
   padding-left: 20px;
@@ -715,18 +726,5 @@ export default {
 }
 ::v-deep .editForm .el-form-item {
   width: 95% !important;
-}
-
-::v-deep .editForm .el-form-item__content {
-  width: 190px !important;
-}
-
-::v-deep .editForm .el-select__tags {
-  width: 190px !important;
-  max-width: 210px !important;
-}
-
-::v-deep .el-date-editor .el-input__inner {
-  padding-left: 30px !important;
 }
 </style>

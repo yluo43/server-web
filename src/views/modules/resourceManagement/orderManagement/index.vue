@@ -1,56 +1,19 @@
 <template>
-  <div style="height: 100%">
+  <div v-if="flag == 1" style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: auto; padding: 0">
-        <el-form :inline="true" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="dataForm.name" placeholder="请输入项目名称" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="归属团队:">
-            <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
           </el-form-item>
           <el-form-item label="项目经理:">
             <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择项目经理">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="立项时间:">
-            <el-date-picker
-              v-model="approvalDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            ></el-date-picker>
-          </el-form-item>
           <el-form-item label="合同类型:">
             <el-select v-model="contractTypeList" multiple collapse-tags placeholder="请选择合同类型">
               <el-option v-for="item in contractTypeOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="状态:">
-            <el-select v-model="stateList" multiple collapse-tags placeholder="请选择状态">
-              <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属项目集:">
-            <el-select v-model="psIdsList" multiple collapse-tags placeholder="请选择归属项目集">
-              <el-option v-for="item in psIdOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属部门:">
-            <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
-              <el-option
-                v-for="item in deptList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                :disabled="item.name == '新讯数字科技有限公司'"
-              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="结算周期:">
@@ -58,21 +21,61 @@
               <el-option v-for="item in 12" :key="item" :label="item + '月'" :value="item"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="交付时间:">
-            <el-date-picker
-              v-model="deliveryDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            ></el-date-picker>
+          <el-form-item label="状态:">
+            <el-select v-model="stateList" multiple collapse-tags placeholder="请选择状态">
+              <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
           </el-form-item>
-          <div style="display: contents; float: right">
+          <div v-if="showFlag" style="display: contents">
+            <el-form-item label="归属团队:">
+              <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
+                <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="立项时间:">
+              <el-date-picker
+                style="width: 200px"
+                v-model="approvalDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item label="归属项目集:">
+              <el-select v-model="psIdsList" multiple collapse-tags placeholder="请选择归属项目集">
+                <el-option v-for="item in psIdOptions" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属部门:">
+              <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
+                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="交付时间:">
+              <el-date-picker
+                style="width: 200px"
+                v-model="deliveryDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              ></el-date-picker>
+            </el-form-item>
+          </div>
+          <el-form-item>
+            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+              <span v-if="showFlag" style="color: #2462f9">收起</span>
+              <span v-else style="color: #2462f9">展开</span>
+            </div>
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
             <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
-          </div>
+          </el-form-item>
         </el-form>
         <div class="chooseResult">
           <span>已选中{{ count }}项</span>
@@ -110,16 +113,22 @@
         </baseTable>
       </el-main>
     </el-container>
-    <base-dialog :title="title" ref="addOrUpdateDrawer">
+    <!-- <base-dialog :title="title" ref="addOrUpdateDrawer">
       <template>
         <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate"></addOrUpdate>
       </template>
-    </base-dialog>
-    <base-dialog :title="title" ref="expenditureDrawer">
+    </base-dialog> -->
+    <!-- <base-dialog :title="title" ref="expenditureDrawer">
       <template>
         <expenditure @refreshDataList="refresh" ref="expenditure"></expenditure>
       </template>
-    </base-dialog>
+    </base-dialog> -->
+  </div>
+  <div v-else-if="flag == 2">
+    <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate" @changeFlag="handlerFlag"></addOrUpdate>
+  </div>
+  <div v-else>
+    <expenditure @refreshDataList="refresh" ref="expenditure" @changeFlag="handlerFlag"></expenditure>
   </div>
 </template>
 <script>
@@ -131,6 +140,8 @@ import expenditure from '@/views/modules/resourceManagement/orderManagement/expe
 export default {
   data() {
     return {
+      showFlag: false,
+      flag: 1,
       title: '',
       managerIdList: [],
       deptIdList: [],
@@ -160,7 +171,7 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '项目名称', prop: 'name', width: '100px' },
+          { label: '项目名称', prop: 'name', width: '210px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
           { label: '归属项目集', prop: 'psName' },
@@ -299,6 +310,12 @@ export default {
     })
   },
   methods: {
+    handlerFlag(f) {
+      this.flag = f
+      this.$nextTick(() => {
+        this.refresh()
+      })
+    },
     refresh() {
       this.$refs.dataForm.validate((valid) => {
         if (!valid) {
@@ -335,15 +352,17 @@ export default {
       this.$http.downloadPost(this.$http.adornUrl('/costItems/export'), this.$http.adornParams(form), this)
     },
     add(row) {
-      this.title = '项目订单'
-      this.$refs.addOrUpdateDrawer.show()
+      //this.title = '项目订单'
+      // this.$refs.addOrUpdateDrawer.show()
+      this.flag = 2
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(row.item)
       })
     },
     expenditureAdd(row) {
-      this.title = '项目支出'
-      this.$refs.expenditureDrawer.show()
+      // this.title = '项目支出'
+      // this.$refs.expenditureDrawer.show()
+      this.flag = 3
       this.$nextTick(() => {
         this.$refs.expenditure.init(row.item)
       })
@@ -368,19 +387,12 @@ export default {
   margin-left: 0;
   width: auto;
 }
-
+.el-input {
+  width: 200px;
+}
 .el-icon-document:hover,
 .el-icon-circle-plus:hover {
   cursor: pointer;
   /* 添加其他想要的样式 */
 }
-/* .chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
 </style>

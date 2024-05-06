@@ -1,10 +1,17 @@
 <template>
-  <div style="height: 100%">
-    <el-container style="height: 100%; width: 100%; border: 1px solid #eee">
-      <el-header style="height: auto; margin: 10px 10px 0 10px">
+  <div class="container-box">
+    <el-container>
+      <div class="header-box">
+        <div class="header-title">人员信息</div>
+        <i class="el-icon-close" @click="handlerFlag"></i>
+      </div>
+      <el-header style="height: auto; padding: 0">
         <el-descriptions>
           <template v-slot:title>
-            <span class="title">● {{ projectInfo.name }}</span>
+            <div style="display: flex; align-items: center; padding: 16px 0 0 20px">
+              <div class="circular"></div>
+              <span class="title">{{ projectInfo.name }}</span>
+            </div>
           </template>
           <el-descriptions-item label="项目编码">{{ projectInfo.projectId }}</el-descriptions-item>
           <el-descriptions-item label="项目经理">{{ projectInfo.managerName }}</el-descriptions-item>
@@ -20,40 +27,48 @@
             </div>
           </el-descriptions-item>
         </el-descriptions>
-        <el-form ref="personnelManagementForm" :inline="true" :model="personnelManagementFormData" label-width="auto">
+        <el-form
+          style="padding-left: 42px"
+          ref="personnelManagementForm"
+          :inline="true"
+          label-width="90px"
+          label-position="left"
+          :model="personnelManagementFormData"
+        >
           <el-form-item label="姓名:" prop="name">
-            <el-input v-model="personnelManagementFormData.name" placeholder="请输入关键字" style="width: 190px" clearable />
+            <el-input v-model="personnelManagementFormData.name" placeholder="请输入姓名" clearable />
           </el-form-item>
           <el-form-item label="工号:" prop="empId">
-            <el-input v-model="personnelManagementFormData.empId" placeholder="请输入工号" style="width: 190px" clearable />
+            <el-input v-model="personnelManagementFormData.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamIds">
-            <el-select v-model="personnelManagementFormData.teamIds" multiple collapse-tags clearable>
+            <el-select v-model="personnelManagementFormData.teamIds" multiple collapse-tags placeholder="请选择归属团队" clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="驻地:" prop="stationIds">
-            <el-select v-model="personnelManagementFormData.stationIds" multiple collapse-tags clearable>
+            <el-select v-model="personnelManagementFormData.stationIds" placeholder="请选择驻地" multiple collapse-tags clearable>
               <el-option v-for="item in stationList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="状态:" prop="states">
-            <el-select v-model="personnelManagementFormData.states" multiple collapse-tags clearable>
+            <el-select v-model="personnelManagementFormData.states" placeholder="请选择状态" multiple collapse-tags clearable>
               <el-option v-for="item in stateList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="技术级别:" prop="empLevels">
-            <el-select v-model="personnelManagementFormData.empLevels" multiple collapse-tags clearable>
+            <el-select v-model="personnelManagementFormData.empLevels" placeholder="请选择技术级别" multiple collapse-tags clearable>
               <el-option v-for="item in empLevelList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="岗位类型:" prop="positionTypes">
-            <el-select v-model="personnelManagementFormData.positionTypes" multiple collapse-tags clearable>
-              <el-option v-for="item in positionTypeList" :key="item.id" :label="item.name" :value="item.id" />
+            <el-select v-model="personnelManagementFormData.positionTypes" placeholder="请选择岗位类型" multiple collapse-tags clearable>
+              <el-option v-for="item in positionTypeList" :key="item.id" :label="item.positionName" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="开始支撑时间:" prop="supportDate">
             <el-date-picker
+              style="width: 200px"
               v-model="personnelManagementFormData.supportDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -66,6 +81,7 @@
           </el-form-item>
           <el-form-item label="结束支撑时间:" prop="endSupportDate">
             <el-date-picker
+              style="width: 200px"
               v-model="personnelManagementFormData.endSupportDate"
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
@@ -76,15 +92,14 @@
               clearable
             />
           </el-form-item>
-
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="queryPersonnelList">查询</el-button>
+            <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="queryPersonnelList">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
       </el-header>
 
-      <el-main>
+      <el-main style="padding: 0 20px 20px 20px">
         <div class="chooseResult">
           <span v-text="chooseStr" />
           <el-button type="text" @click="deletePersonnelInfo()">批量删除</el-button>
@@ -113,6 +128,10 @@
           </template>
         </baseTable>
       </el-main>
+      <div class="bottom-btn">
+        <el-button type="primary" style="margin-right: 10px" @click="handlerFlag">确定</el-button>
+        <el-button @click="handlerFlag">取消</el-button>
+      </div>
     </el-container>
 
     <base-dialog ref="editPersonnelInfoDialog" :title="personnelInfoDialogTitle" :width="'500px'">
@@ -167,7 +186,8 @@ export default {
       stationList: [],
       stateList: [...ProjectConstants.personnelState],
       empLevelList: [...ProjectConstants.empLevel],
-      positionTypeList: [...ProjectConstants.positionType],
+      //  positionTypeList: [...ProjectConstants.positionType],
+      positionTypeList: [],
       personnelManagementTableData: {
         theads: [
           { label: '姓名', prop: 'name' },
@@ -188,9 +208,29 @@ export default {
     }
   },
   computed: {},
-  mounted() {},
+  mounted() {
+    //获取岗位类型
+    this.getPosition()
+  },
   created() {},
   methods: {
+    //获取岗位类型
+    getPosition() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getPosition'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.positionTypeList = data.payload
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    //返回上一级页面
+    handlerFlag() {
+      this.$emit('changeFlag', true)
+    },
     // 初始化
     initPersonnelList(initData) {
       this.personnelManagementFormData.projectId = initData.id
@@ -402,47 +442,74 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.container-box {
+  height: 100%;
+  background: white;
+  .header-box {
+    height: 60px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f0f1f3;
+    .header-title {
+      font-size: 16px;
+    }
+  }
+  .circular {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(311deg, #3d6ce1 0%, #4d82ff 100%);
+  }
+  .bottom-btn {
+    height: 60px;
+    padding-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-shadow: 0px -3px 12px 0px rgba(0, 0, 0, 0.1);
+  }
+}
 .title {
-  color: #409eff; /* 设置标题字体颜色为蓝色 */
+  /* color: #409eff;*/ /* 设置标题字体颜色为蓝色 */
   font-size: 20px;
+  margin-left: 10px;
 }
-
-::v-deep .el-step__title.is-success {
-  color: #909399;
+::v-deep .el-descriptions__body {
+  padding-left: 42px;
 }
-
 ::v-deep .el-step__head.is-success {
-  color: #409eff;
-  border-color: #409eff;
+  color: #2462f9;
+  border-color: #2462f9;
 }
-
-::v-deep .el-descriptions-item__label {
-  color: #409eff; /* 设置描述项label字体颜色为绿色 */
+::v-deep .el-step__title.is-success {
+  color: #c0c4cc;
 }
-
-::v-deep .el-select .el-tag {
-  max-width: 70% !important;
+::v-deep .el-step__head.is-process {
+  color: #2462f9;
+  border-color: #2462f9;
 }
-
 ::v-deep .el-step__head.is-process .el-step__icon.is-text {
-  border-color: #409eff;
-  background: #409eff;
+  border-color: #2462f9;
+  background: #2462f9;
   color: white;
 }
 
-/* .chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 10px auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
+::v-deep .el-descriptions-item__label {
+  color: #4e5969;
+  font-size: 14px;
+  /*color: #409eff; */ /* 设置描述项label字体颜色为绿色 */
 }
 
-.chooseResultStr {
-  margin-left: 10px;
+/* ::v-deep .el-select .el-tag {
+  max-width: 70% !important;
 } */
+
+.el-input {
+  width: 200px;
+}
 
 .el-button {
   margin-left: 0;

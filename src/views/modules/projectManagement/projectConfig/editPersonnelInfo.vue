@@ -4,15 +4,17 @@
       <el-form ref="editPersonnelInfoForm" :rules="editPersonnelInfoFormRules" :model="editPersonnelInfoFormData" label-width="auto" class="form-item">
         <el-form-item label="人员姓名:" prop="empId">
           <el-select
-            clearable
+            v-if="operateType == 'update'"
             v-model="editPersonnelInfoFormData.empId"
             :disabled="operateType == 'update'"
             filterable
             style="width: 80% !important"
             placeholder="请选择人员姓名"
+            clearable
           >
             <el-option v-for="item in personnelList" :key="item.empId" :label="item.empId + '-' + item.name" :value="item.empId"></el-option>
           </el-select>
+          <el-button v-else style="width: 290px" type="primary" plain @click="chooseTeamMember">选择人员</el-button>
         </el-form-item>
         <el-form-item label="开始支撑时间:" prop="supportDate">
           <el-date-picker
@@ -40,18 +42,34 @@
           </el-input>
         </el-form-item>
       </el-form>
-
-      <el-row style="display: flex; justify-content: right; margin: 20px 10px">
+      <div class="btn-group">
+        <el-button plain style="margin-right: 10px" @click="cancel()">取消</el-button>
         <el-button type="primary" @click="saveCheck">确认</el-button>
-        <el-button @click="cancel()">取消</el-button>
-      </el-row>
+      </div>
     </el-container>
+    <base-dialog ref="transferDialog" title="选择人员" :width="'700px'">
+      <template>
+        <tree-transfer
+          :from_data="leftData"
+          :to_data="rightData"
+          :defaultProps="{ label: 'label' }"
+          :title="['团队成员', '将加入项目成员']"
+          placeholder="请输入成员姓名或工号"
+          filter
+        ></tree-transfer>
+        <div style="width: 100%; margin: 20px 0; display: flex; justify-content: flex-end">
+          <el-button type="primary" @click="confirm">确认</el-button>
+        </div>
+      </template>
+    </base-dialog>
   </div>
 </template>
 
 <script>
+import treeTransfer from 'el-tree-transfer'
+import baseDialog from '@/views/modules/base/baseDialog.vue'
 export default {
-  components: {},
+  components: { treeTransfer, baseDialog },
   props: {},
   data() {
     const validateInvestRate = (rule, value, callback) => {
@@ -91,6 +109,9 @@ export default {
       }
     }
     return {
+      leftData: [],
+      rightData: [],
+      empIds: [],
       operateType: 'add',
       personnelList: [],
       editPersonnelInfoFormData: {
@@ -109,18 +130,122 @@ export default {
       }
     }
   },
+  watch: {
+    rightData: {
+      handler(val) {
+        this.empIds = []
+        if (val.length > 0) {
+          val.map((item) => {
+            if (item.children && item.children.length > 0) {
+              item.children.map((ele) => {
+                if (ele.children && ele.children.length > 0) {
+                  ele.children.map((e) => {
+                    this.empIds.push(e.id)
+                  })
+                } else {
+                  this.empIds.push(ele.id)
+                }
+              })
+            }
+          })
+        }
+        this.editPersonnelInfoFormData.empId = this.empIds.toString()
+      },
+      deep: true
+    }
+    // rightData(val) {
+    //   this.empIds = []
+    //   if (val.length > 0) {
+    //     this.rightData.map((item) => {
+    //       if (item.children && item.children.length > 0) {
+    //         item.children.map((ele) => {
+    //           this.empIds.push(ele.id)
+    //         })
+    //       }
+    //     })
+    //   }
+    //   console.log(this.rightData)
+    //   this.editPersonnelInfoFormData.empId = this.empIds.toString()
+    // }
+  },
   mounted() {},
   created() {},
   methods: {
     // 初始化
     initPersonnelInfo(initData) {
       this.operateType = initData.operateType
-      console.log(this.operateType)
       this.editPersonnelInfoFormData.projectId = initData.projectId
       if (initData.rowData) {
         Object.assign(this.editPersonnelInfoFormData, initData.rowData)
       }
-      this.queryEmpList()
+      if (this.operateType == 'add') {
+        this.getTeamAndTeamMember()
+      } else {
+        this.queryEmpList()
+      }
+    },
+    //获取团队及团队下成员
+    getTeamAndTeamMember() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getTeamTree'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code == 200) {
+          this.changeTreeData(data.payload)
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+
+    changeTreeData(treeData) {
+      treeData.map((item) => {
+        if (item.children && item.children.length > 0) {
+          let childrenArr = []
+          item.children.map((ele) => {
+            let arrs = []
+            if (ele.children && ele.children.length > 0) {
+              ele.children.map((e) => {
+                arrs.push({
+                  id: e.id,
+                  pid: ele.id,
+                  label: e.name + '(' + e.id + ')'
+                })
+              })
+              childrenArr.push({
+                id: ele.id,
+                pid: item.id,
+                label: ele.name,
+                children: arrs
+              })
+            } else {
+              childrenArr.push({
+                id: ele.id,
+                pid: item.id,
+                label: ele.name + '(' + ele.id + ')'
+              })
+            }
+          })
+          this.leftData.push({
+            id: item.id,
+            label: item.name,
+            children: childrenArr
+          })
+        } else {
+          this.leftData.push({
+            id: item.id,
+            label: item.name
+          })
+        }
+      })
+    },
+    //穿梭框确认
+    confirm() {
+      this.$refs.transferDialog.hide()
+    },
+    //穿梭框打开
+    chooseTeamMember() {
+      this.$refs.transferDialog.show()
     },
 
     // 获取人员信息
@@ -149,16 +274,29 @@ export default {
 
     // 保存
     save() {
-      let url = '/costItems/member/add'
-      let method = 'post'
-      if (this.operateType === 'update') {
+      let url = ''
+      let method = ''
+      let params = {}
+      if (this.operateType === 'add') {
+        if (this.empIds.length <= 0) {
+          this.$message.warning('请选择要添加的人员!')
+          return
+        }
+        url = '/costItems/member/batchAdd'
+        // url = '/costItems/member/add'
+        method = 'post'
+        params = JSON.parse(JSON.stringify(this.editPersonnelInfoFormData))
+        delete params.empId
+        params.empIds = this.empIds
+      } else {
         url = '/costItems/member/update'
         method = 'put'
+        params = this.$http.adornData(this.editPersonnelInfoFormData)
       }
       this.$http({
         url: this.$http.adornUrl(url),
         method: method,
-        data: this.$http.adornData(this.editPersonnelInfoFormData)
+        data: params
       }).then(({ data }) => {
         if (data.success) {
           this.cancel()
@@ -180,5 +318,12 @@ export default {
 <style scoped>
 .el-form-item__content .el-input-group {
   vertical-align: middle;
+}
+::v-deep .el-button.is-circle {
+  border-radius: 0;
+  padding: 0;
+}
+::v-deep .transfer-title {
+  margin: 0;
 }
 </style>

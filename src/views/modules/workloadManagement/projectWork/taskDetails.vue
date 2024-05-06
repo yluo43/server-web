@@ -18,34 +18,50 @@
               <el-col>
                 <el-col>
                   <el-header style="height: auto">
-                    <el-form :inline="true" :model="dataForm" ref="dataForm">
-                      <el-form-item label="用户名姓名:" prop="empName">
-                        <el-input v-model="dataForm.empName" placeholder="请输入关键字" clearable></el-input>
-                      </el-form-item>
-                      <el-form-item label="工号:" prop="empId">
-                        <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable></el-input>
+                    <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
+                      <el-form-item label="用户姓名:" prop="empName">
+                        <el-input style="width: 200px" v-model="dataForm.empName" placeholder="请输入用户姓名" clearable></el-input>
                       </el-form-item>
                       <el-form-item label="归属部门:">
-                        <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择">
+                        <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
                           <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
                       <el-form-item label="归属团队:">
-                        <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择">
+                        <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
                           <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
-                      <el-form-item label="团队负责人:">
-                        <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择">
-                          <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
-                        </el-select>
-                      </el-form-item>
                       <el-form-item label="报工类别:">
-                        <el-select v-model="workloadType" multiple collapse-tags placeholder="请选择">
+                        <el-select v-model="workloadType" multiple collapse-tags placeholder="请选择报工类别">
                           <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
+                      <div v-if="showFlag" style="display: contents">
+                        <el-form-item label="工号:" prop="empId">
+                          <el-input
+                            style="width: 200px"
+                            v-model="dataForm.empId"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            placeholder="请输入工号"
+                            clearable
+                          ></el-input>
+                        </el-form-item>
+                        <el-form-item label="团队负责人:">
+                          <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择团队负责人">
+                            <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
+                          </el-select>
+                        </el-form-item>
+                      </div>
                       <el-form-item>
+                        <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+                          <svg-icon
+                            :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'"
+                            style="height: 1.5em; width: 1.5em; position: relative; top: 3px"
+                          />
+                          <span v-if="showFlag" style="color: #2462f9">收起</span>
+                          <span v-else style="color: #2462f9">展开</span>
+                        </div>
                         <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
                         <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
                       </el-form-item>
@@ -64,7 +80,9 @@
                 <el-table
                   :data="tableData"
                   border
-                  style="width: 100%; height: 425px; max-height: 425px; overflow-y: scroll"
+                  :header-cell-style="{ 'text-align': 'center' }"
+                  :cell-style="{ 'text-align': 'center' }"
+                  style="width: 100%; height: 425px; overflow-y: scroll"
                   @selection-change="selChange"
                   :span-method="objectSpanMethod"
                 >
@@ -74,18 +92,18 @@
                   <el-table-column prop="deptName" label="归属部门"></el-table-column>
                   <el-table-column prop="teamName" label="归属团队"></el-table-column>
                   <el-table-column prop="teamManagerName" label="团队负责人"></el-table-column>
-                  <el-table-column prop="startTime" label="开始时间"></el-table-column>
-                  <el-table-column prop="overTime" label="结束时间"></el-table-column>
+                  <el-table-column prop="startTime" label="开始时间" width="90px"></el-table-column>
+                  <el-table-column prop="overTime" label="结束时间" width="90px"></el-table-column>
                   <el-table-column prop="workloadName" label="报工类别"></el-table-column>
                   <el-table-column prop="planRate" label="计划投入(%)"></el-table-column>
                   <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
-                  <el-table-column prop="commitTime" label="提交时间"></el-table-column>
-                  <el-table-column prop="approveTime" label="审批时间"></el-table-column>
+                  <el-table-column prop="commitTime" label="提交时间" width="90px"></el-table-column>
+                  <el-table-column prop="approveTime" label="审批时间" width="90px"></el-table-column>
                 </el-table>
               </div>
               <div style="display: flex; justify-content: center">
                 <el-pagination
-                  :page-sizes="[10, 15, 20, 25, 30]"
+                  :page-sizes="[20, 50, 100]"
                   :page-size="pageSize"
                   :current-page="curPage"
                   layout="total, sizes, prev, pager, next, jumper"
@@ -111,15 +129,15 @@ export default {
   props: {},
   data() {
     return {
-      chooseStr: '已选择 0 项',
+      showFlag: false,
       command: '选择任务',
       radio: 1,
       keyword: '',
       tableData: [],
       //总条数
-      total: 10,
+      total: '',
       curPage: 1,
-      pageSize: 10,
+      pageSize: 20,
       spanArr: [],
       pos: 0,
       checkedData: [],
@@ -387,12 +405,12 @@ export default {
   font-size: 16px;
 }
 
-.chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 10px auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-}
+// .chooseResult {
+//   height: 30px;
+//   line-height: 30px;
+//   margin: 10px auto;
+//   display: block;
+//   background: #e9f3ff;
+//   border-radius: 6px;
+// }
 </style>

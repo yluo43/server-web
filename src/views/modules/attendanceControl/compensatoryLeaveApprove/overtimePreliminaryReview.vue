@@ -1,6 +1,6 @@
 <template>
   <el-container style="height: 100%; width: 100%">
-    <el-aside style="width: 200px; background-color: #ffffff; height: 625px; margin-top: 4px">
+    <el-aside :class="showFlag ? 'asideHeight' : 'leftHeight'" style="width: 200px">
       <el-row>
         <el-col>
           <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
@@ -8,26 +8,32 @@
         </el-col>
       </el-row>
     </el-aside>
-    <div>
+    <div style="width: calc(100% - 200px)">
       <div style="margin-left: 16px">
-        <el-form ref="dataForm" :inline="true" :model="dataForm">
+        <el-form ref="dataForm" label-width="90px" label-position="left" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
-          </el-form-item>
-          <el-form-item label="工号:" prop="empId">
-            <el-input v-model="dataForm.empId" placeholder="请输入工号" clearable />
-          </el-form-item>
-          <el-form-item label="归属部门:" prop="deptId">
-            <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
-            </el-select>
           </el-form-item>
           <el-form-item label="归属团队:" prop="teamId">
             <el-select v-model="dataForm.teamId" placeholder="请选择归属团队" clearable>
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
-          <!-- <el-form-item label="归属部门:" prop="deptIds">
+          <el-form-item label="审批状态:" prop="status">
+            <el-select v-model="dataForm.status" placeholder="请选择审批状态" clearable>
+              <el-option v-for="item in approvalStatus" :key="item.id" :label="item.name" :value="item.id" />
+            </el-select>
+          </el-form-item>
+          <div v-if="showFlag" style="display: contents">
+            <el-form-item label="工号:" prop="empId">
+              <el-input v-model="dataForm.empId" oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="请输入工号" clearable />
+            </el-form-item>
+            <el-form-item label="归属部门:" prop="deptId">
+              <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
+                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <!-- <el-form-item label="归属部门:" prop="deptIds">
             <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
             </el-select>
@@ -37,59 +43,61 @@
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item> -->
-          <el-form-item label="审批状态:" prop="status">
-            <el-select v-model="dataForm.status" placeholder="请选择审批状态" clearable>
-              <el-option v-for="item in approvalStatus" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="是否居家办公:" prop="isRemoteWork">
-            <el-select v-model="dataForm.isRemoteWork" placeholder="请选择是否居家办公" clearable>
-              <el-option v-for="item in isRemoteWorks" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
 
-          <el-form-item label="申请时间:" prop="applyTime">
-            <el-date-picker
-              style="width: 200px"
-              v-model="dataForm.applyTime"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="加班类型:" prop="overtimeType">
-            <el-select v-model="dataForm.overtimeType" placeholder="请选择加班类型" clearable>
-              <el-option v-for="item in overtimeTypes" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="加班开始时间:" prop="startTime">
-            <el-date-picker
-              style="width: 200px"
-              v-model="dataForm.startTime"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="加班结束时间:" prop="endTime">
-            <el-date-picker
-              style="width: 200px"
-              v-model="dataForm.endTime"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
+            <el-form-item label="是否居家办公:" prop="isRemoteWork">
+              <el-select v-model="dataForm.isRemoteWork" placeholder="请选择是否居家办公" clearable>
+                <el-option v-for="item in isRemoteWorks" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="申请时间:" prop="applyTime">
+              <el-date-picker
+                style="width: 200px"
+                v-model="dataForm.applyTime"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+            <el-form-item label="加班类型:" prop="overtimeType">
+              <el-select v-model="dataForm.overtimeType" placeholder="请选择加班类型" clearable>
+                <el-option v-for="item in overtimeTypes" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="加班开始时间:" prop="startTime">
+              <el-date-picker
+                style="width: 200px"
+                v-model="dataForm.startTime"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+            <el-form-item label="加班结束时间:" prop="endTime">
+              <el-date-picker
+                style="width: 200px"
+                v-model="dataForm.endTime"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+          </div>
           <el-form-item>
+            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+              <span v-if="showFlag" style="color: #2462f9">收起</span>
+              <span v-else style="color: #2462f9">展开</span>
+            </div>
             <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="selectTableData">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
@@ -137,7 +145,7 @@
     <!-- 驳回加班时长 -->
     <base-dialog ref="rejectDialog" title="加班时长驳回" :width="'500px'">
       <template>
-        <rejectDialog ref="reject" :cancelDialog="closeDialog" @refrshTable="selectTableData"></rejectDialog>
+        <rejectDialog ref="reject" :closeDialog="closeDialog" @refrshTable="refrshTable"></rejectDialog>
       </template>
     </base-dialog>
     <!-- 审批流程 -->
@@ -160,6 +168,7 @@ export default {
   props: {},
   data() {
     return {
+      showFlag: false,
       projectName: '',
       count: 0,
       approvalStatus: [
@@ -209,15 +218,15 @@ export default {
           { label: '工号', prop: 'empId', width: '70px' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '加班开始时间', prop: 'startTime' },
-          { label: '加班结束时间', prop: 'endTime' },
+          { label: '加班开始时间', prop: 'startTime', width: '140px' },
+          { label: '加班结束时间', prop: 'endTime', width: '140px' },
           { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
           { label: '加班时长(小时)', prop: 'overtimeHours' },
           { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork' },
           { label: '加班原因', prop: 'reason' },
-          { label: '申请时间', prop: 'createTime' },
+          { label: '申请时间', prop: 'createTime', width: '140px' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
         ],
         url: '/attendance/getOvertimeList'
       },
@@ -228,6 +237,7 @@ export default {
       }
     }
   },
+
   created() {
     this.dataForm.operatorName = getCName()
   },
@@ -238,10 +248,22 @@ export default {
     this.selectTableData()
   },
   methods: {
+    //刷新页面并打开弹窗
+    refrshTable(initData, rejectFlag) {
+      this.selectTableData()
+      this.$refs.approvalProcessDialog.show()
+      this.$nextTick(() => {
+        if (rejectFlag == 1 || rejectFlag == 2) {
+          this.$refs.approvalProcess.init(initData, 1)
+        } else {
+          this.$refs.approvalProcess.init(initData, 2)
+        }
+      })
+    },
     //获取部门
     getDept() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -255,7 +277,7 @@ export default {
     //获取团队
     getTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getTeam'),
+        url: this.$http.adornUrl('/common/getTeamByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -455,6 +477,19 @@ export default {
   min-width: 60px;
   margin-left: 0;
   width: auto;
+}
+.el-input {
+  width: 200px;
+}
+.asideHeight {
+  height: 625px;
+  background-color: #ffffff;
+  margin-top: 4px;
+}
+.leftHeight {
+  height: 550px;
+  background-color: #ffffff;
+  margin-top: 4px;
 }
 </style>
 <style lang="scss">

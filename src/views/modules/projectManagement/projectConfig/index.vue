@@ -1,73 +1,14 @@
 <template>
-  <div style="height: 100%">
+  <div v-if="flag" style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: 100%; padding: 0">
-        <el-form ref="projectConfigForm" :inline="true" :model="projectConfigFormData">
+        <el-form ref="projectConfigForm" label-width="80px" label-position="left" :inline="true" :model="projectConfigFormData">
           <el-form-item label="项目名称:" prop="name">
-            <el-input v-model="projectConfigFormData.name" placeholder="请输入项目名称" style="width: 200px" clearable />
-          </el-form-item>
-          <el-form-item label="项目编码:" prop="projectId">
-            <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" style="width: 200px" clearable />
+            <el-input v-model="projectConfigFormData.name" placeholder="请输入项目名称" clearable />
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerIds">
             <el-select v-model="projectConfigFormData.managerIds" multiple collapse-tags clearable placeholder="请选择项目经理">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="立项时间:" prop="approvalDate">
-            <el-date-picker
-              v-model="projectConfigFormData.approvalDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="合同类型:" prop="contractTypes">
-            <el-select v-model="projectConfigFormData.contractTypes" placeholder="请选择合同类型" multiple collapse-tags clearable>
-              <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属团队:" prop="teamIds">
-            <el-select v-model="projectConfigFormData.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
-              <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="甲方名称:" prop="firstParty">
-            <el-input v-model="projectConfigFormData.firstParty" placeholder="请输入甲方名称" style="width: 200px" clearable />
-          </el-form-item>
-          <el-form-item label="合同名称:" prop="contractName">
-            <el-input v-model="projectConfigFormData.contractName" placeholder="请输入合同名称" style="width: 200px" clearable />
-          </el-form-item>
-          <el-form-item label="合同编号:" prop="contractNo">
-            <el-input v-model="projectConfigFormData.contractNo" placeholder="请输入合同编号" style="width: 200px" clearable />
-          </el-form-item>
-          <el-form-item label="交付时间:" prop="deliveryDate">
-            <el-date-picker
-              v-model="projectConfigFormData.deliveryDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            />
-          </el-form-item>
-          <el-form-item label="结算周期:" prop="settlementCycles">
-            <el-select v-model="projectConfigFormData.settlementCycles" placeholder="请选择结算周期" multiple collapse-tags clearable>
-              <el-option v-for="item in settlementCycleList" :key="item.id" :label="item.name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属部门:" prop="deptIds">
-            <el-select v-model="projectConfigFormData.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
-              <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属项目集:" prop="psIds">
-            <el-select v-model="projectConfigFormData.psIds" placeholder="请选择归属项目集" multiple collapse-tags clearable>
-              <el-option v-for="item in psList" :key="item.id" :label="item.psName" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="项目类型:" prop="projectTypes">
@@ -80,8 +21,76 @@
               <el-option v-for="item in itemLabels" :key="item.id" :label="item.labelName" :value="item.id" />
             </el-select>
           </el-form-item>
+          <div v-if="showFlag" style="display: contents">
+            <el-form-item label="项目编码:" prop="projectId">
+              <el-input v-model="projectConfigFormData.projectId" placeholder="请输入编码后四位" clearable />
+            </el-form-item>
+            <el-form-item label="立项时间:" prop="approvalDate">
+              <el-date-picker
+                style="width: 200px"
+                v-model="projectConfigFormData.approvalDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+            <el-form-item label="合同类型:" prop="contractTypes">
+              <el-select v-model="projectConfigFormData.contractTypes" placeholder="请选择合同类型" multiple collapse-tags clearable>
+                <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属团队:" prop="teamIds">
+              <el-select v-model="projectConfigFormData.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
+                <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="甲方名称:" prop="firstParty">
+              <el-input v-model="projectConfigFormData.firstParty" placeholder="请输入甲方名称" clearable />
+            </el-form-item>
+            <el-form-item label="合同名称:" prop="contractName">
+              <el-input v-model="projectConfigFormData.contractName" placeholder="请输入合同名称" clearable />
+            </el-form-item>
+            <el-form-item label="合同编号:" prop="contractNo">
+              <el-input v-model="projectConfigFormData.contractNo" placeholder="请输入合同编号" clearable />
+            </el-form-item>
+            <el-form-item label="交付时间:" prop="deliveryDate">
+              <el-date-picker
+                style="width: 200px"
+                v-model="projectConfigFormData.deliveryDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+            <el-form-item label="结算周期:" prop="settlementCycles">
+              <el-select v-model="projectConfigFormData.settlementCycles" placeholder="请选择结算周期" multiple collapse-tags clearable>
+                <el-option v-for="item in settlementCycleList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属部门:" prop="deptIds">
+              <el-select v-model="projectConfigFormData.deptIds" placeholder="请选择归属部门" multiple collapse-tags clearable>
+                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" :disabled="item.name == '新讯数字科技有限公司'" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="归属项目集:" prop="psIds">
+              <el-select v-model="projectConfigFormData.psIds" placeholder="请选择归属项目集" multiple collapse-tags clearable>
+                <el-option v-for="item in psList" :key="item.id" :label="item.psName" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </div>
           <el-form-item>
-            <el-button type="primary" icon="el-icon-search" style="margin: 0 10px" @click="queryProjectList">查询</el-button>
+            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+              <span v-if="showFlag" style="color: #2462f9">收起</span>
+              <span v-else style="color: #2462f9">展开</span>
+            </div>
+            <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="queryProjectList">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
           </el-form-item>
         </el-form>
@@ -193,11 +202,14 @@
     </base-drawer>
 
     <!-- 编辑人员信息 -->
-    <base-dialog ref="personnelManagementDialog" title="人员信息">
+    <!-- <base-dialog ref="personnelManagementDialog" title="人员信息">
       <template>
         <personnel-management ref="personnelManagement"></personnel-management>
       </template>
-    </base-dialog>
+    </base-dialog> -->
+  </div>
+  <div v-else style="height: 100%">
+    <personnel-management ref="personnelManagement" @changeFlag="handlerFlag"></personnel-management>
   </div>
 </template>
 
@@ -215,6 +227,8 @@ export default {
   props: {},
   data() {
     return {
+      showFlag: false,
+      flag: true,
       projectConfigFormData: {
         name: '',
         projectId: '',
@@ -247,11 +261,11 @@ export default {
       chooseStr: '已选择 0 项',
       projectTableData: {
         theads: [
-          { label: '项目名称', prop: 'name', slotName: 'name' },
+          { label: '项目名称', prop: 'name', slotName: 'name', width: '210px' },
           { label: '项目经理', prop: 'managerName' },
           { label: '项目类型', prop: 'projectTypeName' },
-          { label: '立项时间', prop: 'approvalDate' },
-          { label: '计划交付时间', prop: 'deliveryDate' },
+          { label: '立项时间', prop: 'approvalDate', width: '90px' },
+          { label: '计划交付时间', prop: 'deliveryDate', width: '100px;' },
           { label: '合同类型', prop: 'contractTypeName', slotName: 'contractTypeName' },
           { label: '结算周期', prop: 'settlementCycle', slotName: 'settlementCycle' },
           { label: '合同金额(元)', prop: 'contractAmount', slotName: 'contractAmount', width: '100px' },
@@ -259,7 +273,7 @@ export default {
           { label: '结算单金额(元)', prop: 'settlementAmount', width: '120px' },
           { label: '回款金额(元)', prop: 'returnAmount', width: '100px' },
           { label: '状态', prop: 'stateName' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '180px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '160px' }
         ],
         url: '/costItems/list'
       },
@@ -274,6 +288,12 @@ export default {
   },
   created() {},
   methods: {
+    handlerFlag(f) {
+      this.flag = f
+      this.$nextTick(() => {
+        this.queryProjectList()
+      })
+    },
     //查询项目标签枚举
     selectItemLabes() {
       this.$http({
@@ -406,7 +426,8 @@ export default {
 
     // 编辑人员信息
     editPersonnelInfo(row) {
-      this.$refs.personnelManagementDialog.show()
+      // this.$refs.personnelManagementDialog.show()
+      this.flag = false
       this.$nextTick(() => {
         this.$refs.personnelManagement.initPersonnelList(row)
       })
@@ -451,19 +472,19 @@ export default {
         data = [row.id]
         switch (row.state) {
           case 0:
-            message = '该项目正在交付中,您确定删除吗?'
+            message = `【该项目正在交付中,确定删除吗?删除后将无法恢复!】`
             break
           case 1:
-            message = '该项目已交付,您确定删除吗?'
+            message = `【该项目已交付,确定删除吗?删除后将无法恢复!】`
             break
           case 2:
-            message = '该项目已关闭,您确定删除吗?'
+            message = `【该项目已关闭,确定删除吗?删除后将无法恢复!】`
             break
           case 3:
-            message = '该项目已回款,您确定删除吗?'
+            message = `【该项目已回款,确定删除吗?删除后将无法恢复!】`
             break
           default:
-            message = '您确定删除该项目吗?'
+            message = '【确定删除该项目吗?删除后将无法恢复!】'
         }
       } else {
         // 批量删除时
@@ -505,27 +526,9 @@ export default {
 </script>
 
 <style scoped>
-.el-select {
-  width: 200px !important;
+.el-input {
+  width: 200px;
 }
-
-::v-deep .el-select .el-tag {
-  max-width: 70% !important;
-}
-
-/* .chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 10px auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-} */
-
-/* .chooseResultStr {
-  margin-left: 10px;
-} */
-
 .el-button {
   margin-left: 0;
   width: auto;

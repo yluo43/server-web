@@ -2,27 +2,13 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: auto; padding: 0">
-        <el-form :inline="true" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
           <el-form-item label="项目集名称:" prop="psName">
             <el-input v-model="dataForm.psName" placeholder="请输入项目集名称" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="项目集ID:" prop="psId">
-            <el-input v-model="dataForm.psId" placeholder="请输入项目集ID" clearable></el-input>
           </el-form-item>
           <el-form-item label="负责人:">
             <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择负责人">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="归属部门:">
-            <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
-              <el-option
-                v-for="item in deptList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                :disabled="item.name == '新讯数字科技有限公司'"
-              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="归属团队:">
@@ -30,34 +16,51 @@
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="启动时间:">
-            <el-date-picker
-              v-model="startDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            ></el-date-picker>
-          </el-form-item>
-          <el-form-item label="结束时间:">
-            <el-date-picker
-              v-model="endDate"
-              value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="年/月/日"
-              end-placeholder="年/月/日"
-            ></el-date-picker>
-          </el-form-item>
           <el-form-item label="状态:" prop="state">
             <el-select clearable v-model="state" multiple collapse-tags placeholder="请选择状态">
               <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
+          <div v-if="showFlag" style="display: contents">
+            <el-form-item label="项目集ID:" prop="psId">
+              <el-input v-model="dataForm.psId" placeholder="请输入项目集ID" clearable></el-input>
+            </el-form-item>
+            <el-form-item label="归属部门:">
+              <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
+                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="启动时间:">
+              <el-date-picker
+                style="width: 200px"
+                v-model="startDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间:">
+              <el-date-picker
+                style="width: 200px"
+                v-model="endDate"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              ></el-date-picker>
+            </el-form-item>
+          </div>
           <el-form-item>
+            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
+              <span v-if="showFlag" style="color: #2462f9">收起</span>
+              <span v-else style="color: #2462f9">展开</span>
+            </div>
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
             <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
           </el-form-item>
@@ -149,6 +152,7 @@ import addProject from '@/views/modules/resourceManagement/projectSetManagement/
 export default {
   data() {
     return {
+      showFlag: false,
       chooseStr: '已选择 0 项',
       title: '',
       managerIdList: [],
@@ -179,8 +183,8 @@ export default {
           { label: '项目数量', prop: 'projectNum', width: '80px' },
           { label: '已完成项目数', prop: 'completeNum' },
           { label: '简介', prop: 'remarks' },
-          { label: '启动时间', prop: 'startDate' },
-          { label: '结束时间', prop: 'endDate', slotName: 'endDate' },
+          { label: '启动时间', prop: 'startDate', width: '90px' },
+          { label: '结束时间', prop: 'endDate', slotName: 'endDate', width: '90px' },
           { label: '状态', prop: 'stateName' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
@@ -409,15 +413,9 @@ export default {
   margin-left: 0;
   width: auto;
 }
-
-/* .chooseResult {
-  height: 30px;
-  line-height: 30px;
-  margin: 10px auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-} */
+.el-input {
+  width: 200px;
+}
 
 .el-icon-document:hover,
 .el-icon-circle-plus:hover {
