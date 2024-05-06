@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%">
     <div>
-      <baseTable :tableData="tableData" :type="null" ref="table">
+      <baseTable :tableData="tableData" :type="null" ref="table" propHeight="425px">
         <template v-slot:overtimeType="row">
           <span v-if="row.item.overtimeType == 0">日常加班</span>
           <span v-else>节假日加班</span>

@@ -119,6 +119,9 @@ export default {
     memberTypeFlag: {
       type: Boolean,
       default: false
+    },
+    propHeight: {
+      type: String
     }
   },
   data() {
@@ -160,14 +163,18 @@ export default {
     },
     __calculateHeight() {
       // 根据屏幕高度算表格高度
-      if (window.innerHeight < 450) {
+      if (this.propHeight) {
+        this.options.maxHeight = this.propHeight
+        this.options.height = '100%'
+        this.options.minHeight = this.propHeight
+      } else if (window.innerHeight < 450) {
         this.options.maxHeight = '300px'
         this.options.height = '100%'
-        this.options.minHeight = '515px'
+        this.options.minHeight = '300px'
       } else {
-        this.options.maxHeight = '425px'
+        this.options.maxHeight = '525px'
         this.options.height = '100%'
-        this.options.minHeight = '425px'
+        this.options.minHeight = '525px'
       }
     },
     __initTable(tableData) {

@@ -58,7 +58,7 @@
             </el-col>
           </el-row>
           <div>
-            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px">
+            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px" propHeight="425px">
               <template v-slot:reportWorkName="row">
                 <div v-if="row.item.taskStatus == 1">
                   {{ row.item.reportWorkName }}

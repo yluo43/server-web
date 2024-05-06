@@ -114,7 +114,7 @@
         </div>
       </div>
       <el-main style="padding: 0">
-        <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
+        <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable" propHeight="450px">
           <template v-slot:overtimeType="row">
             <span v-if="row.item.overtimeType == 0">日常加班</span>
             <span v-else>节假日加班</span>
@@ -482,12 +482,12 @@ export default {
   width: 200px;
 }
 .asideHeight {
-  height: 625px;
+  height: 650px;
   background-color: #ffffff;
   margin-top: 4px;
 }
 .leftHeight {
-  height: 550px;
+  height: 575px;
   background-color: #ffffff;
   margin-top: 4px;
 }

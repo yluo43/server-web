@@ -60,7 +60,7 @@
           </el-row>
           <div>
             <!-- @afterQuery="afterTaskListQuery" -->
-            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px">
+            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px" propHeight="425px">
               <template v-slot:reportWorkName="row">
                 <div v-if="row.item.taskStatus == 3">
                   {{ row.item.reportWorkName }}

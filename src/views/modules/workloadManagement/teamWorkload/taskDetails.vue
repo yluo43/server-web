@@ -74,21 +74,21 @@
               border
               :header-cell-style="{ 'text-align': 'center' }"
               :cell-style="{ 'text-align': 'center' }"
-              style="width: 100%; height: 425px; overflow-y: scroll"
+              style="width: 100%; height: 430px; overflow-y: scroll"
               @selection-change="selChange"
               :span-method="objectSpanMethod"
             >
               <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column prop="name" label="团队成员"></el-table-column>
-              <el-table-column prop="empId" label="工号"></el-table-column>
-              <el-table-column prop="startTime" label="开始时间" width="90px"></el-table-column>
-              <el-table-column prop="overTime" label="结束时间" width="90px"></el-table-column>
-              <el-table-column prop="workloadName" label="报工类别"></el-table-column>
-              <el-table-column prop="projectName" label="成本项目" width="210px"></el-table-column>
-              <el-table-column prop="managerName" label="项目经理"></el-table-column>
-              <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
-              <el-table-column prop="commitTime" label="提交时间" width="90px"></el-table-column>
-              <el-table-column prop="workStatusName" label="确认状态"></el-table-column>
+              <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="empId" label="工号" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="overTime" label="结束时间" width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="projectName" label="成本项目" width="210px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="managerName" label="项目经理" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="commitTime" label="提交时间" width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="workStatusName" label="确认状态" show-overflow-tooltip></el-table-column>
             </el-table>
           </div>
           <div style="display: flex; justify-content: center">

@@ -43,7 +43,7 @@
           <el-button class="el-button-func" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
         </div>
         <div>
-          <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
+          <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable" propHeight="467px">
             <template v-slot:clientType="row">
               <template>
                 <el-button type="text" @click="viewDetails(row.item)">查看明细</el-button>

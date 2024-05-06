@@ -98,7 +98,7 @@
               </el-col>
             </el-row>
             <div>
-              <baseTable :tableData="tableData" ref="table" :type="null" style="margin-top: 10px">
+              <baseTable :tableData="tableData" ref="table" :type="null" style="margin-top: 10px" propHeight="425px">
                 <template v-slot:reportWorkName="row">
                   <template v-if="row.item.taskStatus === 2">
                     <el-badge value="待确认" class="small-badge badge-table">

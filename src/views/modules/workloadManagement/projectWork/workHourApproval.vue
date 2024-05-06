@@ -32,29 +32,29 @@
             <!-- <span style="color: blue" @click="projectWorkOperate(null, 1)">批量确认</span> -->
           </div>
 
-          <div class="table">
+          <div style="margin-top: 10px">
             <div>
               <el-table
                 :data="tableData"
                 border
                 :header-cell-style="{ 'text-align': 'center' }"
                 :cell-style="{ 'text-align': 'center' }"
-                style="width: 100%; height: 425px; overflow-y: scroll"
+                style="width: 100%; height: 475px; overflow-y: scroll"
                 @selection-change="selChange"
                 :span-method="objectSpanMethod"
               >
-                <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column prop="name" label="团队成员"></el-table-column>
-                <el-table-column prop="empId" label="工号"></el-table-column>
-                <el-table-column prop="deptName" label="归属部门"></el-table-column>
-                <el-table-column prop="teamName" label="归属团队"></el-table-column>
-                <el-table-column prop="teamManagerName" label="团队负责人"></el-table-column>
-                <el-table-column prop="startTime" label="开始时间" width="90px"></el-table-column>
-                <el-table-column prop="overTime" label="结束时间" width="90px"></el-table-column>
-                <el-table-column prop="workloadName" label="报工类别"></el-table-column>
-                <el-table-column prop="planRate" label="计划投入(%)"></el-table-column>
-                <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
-                <el-table-column prop="workStatusName" label="确认状态"></el-table-column>
+                <el-table-column type="selection" width="55" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="empId" label="工号" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="deptName" label="归属部门" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="teamName" label="归属团队" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="teamManagerName" label="团队负责人" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="startTime" label="开始时间" width="90px" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="overTime" label="结束时间" width="90px" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="planRate" label="计划投入(%)" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="workStatusName" label="确认状态" show-overflow-tooltip></el-table-column>
                 <el-table-column label="操作" width="200px">
                   <template slot-scope="scope">
                     <el-button :disabled="scope.row.workStatusName != '待确认'" type="text" @click="projectWorkOperate(scope.row, 1)">确认</el-button>

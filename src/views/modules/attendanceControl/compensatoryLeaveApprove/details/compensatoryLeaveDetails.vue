@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%">
     <div>
-      <baseTable :tableData="tableData" ref="table" :type="null"></baseTable>
+      <baseTable :tableData="tableData" ref="table" :type="null" propHeight="425px"></baseTable>
     </div>
   </div>
 </template>
