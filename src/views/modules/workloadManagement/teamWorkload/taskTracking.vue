@@ -41,6 +41,7 @@
               border
               style="width: 100%; height: 475px; overflow-y: scroll"
               :span-method="objectSpanMethod"
+              :row-key="(row) => row.id"
             >
               <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
               <el-table-column prop="empId" label="工号" show-overflow-tooltip></el-table-column>
