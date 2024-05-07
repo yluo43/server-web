@@ -22,9 +22,9 @@
             <el-input
               oninput="this.value = this.value.replace(/[^0-9]/g, '');"
               v-model.number="formData.realityRate"
-              placeholder="请输入"
+              placeholder="请输入实际投入"
               clearable
-              style="width: 192px"
+              style="width: 200px"
             >
               <template slot="append">%</template>
             </el-input>
@@ -203,5 +203,8 @@ export default {
 .el-dialog__body {
   padding: 25px 0 2px 0;
   width: 50%;
+}
+::v-deep .el-form-item__content .el-input-group {
+  vertical-align: middle;
 }
 </style>

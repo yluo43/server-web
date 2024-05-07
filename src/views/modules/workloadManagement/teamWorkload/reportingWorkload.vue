@@ -41,20 +41,7 @@
               <el-table-column prop="empId" label="工号" width="80px" align="center"></el-table-column>
               <el-table-column prop="startTime" label="开始时间" width="100px" align="center"></el-table-column>
               <el-table-column prop="overTime" label="结束时间" width="100px" align="center"></el-table-column>
-              <el-table-column prop="workloadName" label="报工类别" width="160px" align="center">
-                <template slot-scope="scope">
-                  <el-select
-                    style="width: 120px !important"
-                    v-model="scope.row.workloadName"
-                    @change="handlerWorkLoadName(scope.row, scope.column)"
-                    ref="workloadName"
-                    filterable
-                    placeholder="请选择报工类别"
-                  >
-                    <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.name"></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
+
               <el-table-column prop="projectName" label="成本项目" width="160px" align="center">
                 <template slot-scope="scope">
                   <el-tooltip class="item" :disabled="!scope.row.projectName" :content="scope.row.projectName" placement="top-end">
@@ -69,6 +56,20 @@
                       <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name"></el-option>
                     </el-select>
                   </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column prop="workloadName" label="报工类别" width="160px" align="center">
+                <template slot-scope="scope">
+                  <el-select
+                    style="width: 120px !important"
+                    v-model="scope.row.workloadName"
+                    @change="handlerWorkLoadName(scope.row, scope.column)"
+                    ref="workloadName"
+                    filterable
+                    placeholder="请选择报工类别"
+                  >
+                    <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.name"></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
               <!-- <el-table-column prop="workloadName" label="报工类别">

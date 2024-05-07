@@ -58,7 +58,7 @@
               :type="null"
               @afterQuery="afterTeamListQuery"
               style="margin-top: 10px"
-              propHeight="425px"
+              propHeight="340px"
             ></baseTable>
           </div>
         </div>
@@ -88,7 +88,7 @@ export default {
           { label: '团队成员', prop: 'teamNum' },
           { label: '团队状态', prop: 'teamStatus' }
         ],
-        // url: '/team/selectTeamPage'
+        //url: '/team/selectTeamPage'
         url: '/team/selectTeamWithStatus'
       }
     }

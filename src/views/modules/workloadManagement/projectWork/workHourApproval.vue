@@ -96,7 +96,7 @@ export default {
   data() {
     return {
       //总条数
-      total: '',
+      total: 0,
       curPage: 1,
       pageSize: 20,
       spanArr: [],
