@@ -77,7 +77,8 @@
           </el-button>
           <el-button class="el-button-func" type="primary" @click="add()" icon="el-icon-circle-plus-outline" v-auth="'projectSet:add'">新建项目集</el-button>
         </div>
-        <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+        <!-- @select="onSelect"-->
+        <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
           <template v-slot:endDate="row">
             <div v-if="!row.item.endDate">-</div>
             <div v-else>{{ row.item.endDate }}</div>
@@ -143,7 +144,8 @@
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
+//import baseTable from '../../base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDrawer from '../../base/baseDrawer.vue'
 import addOrUpdate from './addOrUpdata.vue'
 import showProject from '@/views/modules/resourceManagement/projectSetManagement/showProject.vue'
@@ -197,7 +199,8 @@ export default {
         { value: 0, label: '交付中' },
         { value: 1, label: '已交付' },
         { value: 2, label: '关闭' }
-      ]
+      ],
+      checkData: []
     }
   },
   components: {
@@ -280,7 +283,8 @@ export default {
       })
     },
     download() {
-      const list = this.$refs.table.getSelectRow()
+      //  const list = this.$refs.table.getSelectRow()
+      const list = this.checkData
       if (list.length === 0) {
         this.$message.warning('请至少选择一条数据！')
         return
@@ -333,12 +337,20 @@ export default {
         })
       })
     },
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   if (selection.length > 0) {
+    //     this.chooseStr = '已选中' + selection.length + '项'
+    //   } else {
+    //     this.chooseStr = '已选中 0 项'
+    //   }
+    // },
+    selectData(selection) {
       if (selection.length > 0) {
         this.chooseStr = '已选中' + selection.length + '项'
       } else {
         this.chooseStr = '已选中 0 项'
       }
+      this.checkData = [...selection]
     },
     deleteList(row) {
       let message = ''
@@ -357,7 +369,8 @@ export default {
             break
         }
       } else {
-        const list = this.$refs.table.getSelectRow()
+        // const list = this.$refs.table.getSelectRow()
+        const list = this.checkData
         if (list.length === 0) {
           this.$message.warning('请至少选择一条数据！')
           return

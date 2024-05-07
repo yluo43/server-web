@@ -43,7 +43,8 @@
           <el-button class="el-button-func" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
         </div>
         <div>
-          <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable" propHeight="467px">
+          <!-- @select="checkedTable" -->
+          <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" propHeight="467px">
             <template v-slot:clientType="row">
               <template>
                 <el-button type="text" @click="viewDetails(row.item)">查看明细</el-button>
@@ -70,7 +71,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import detailsDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/detailsDialog.vue'
 import workAllowanceDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/workAllowanceDialog.vue'
@@ -181,7 +183,11 @@ export default {
     },
 
     //选择框选择
-    checkedTable(sel) {
+    // checkedTable(sel) {
+    //   this.count = sel.length
+    //   this.selData = sel
+    // },
+    selectData(sel) {
       this.count = sel.length
       this.selData = sel
     },

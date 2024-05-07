@@ -111,8 +111,8 @@
           <el-button class="el-button-func" type="primary" icon="el-icon-download" style="margin-right: 10px" @click="batchDownload">批量下载</el-button>
           <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addPersonnelInfo">添加人员</el-button>
         </div>
-
-        <baseTable ref="personnelManagementTable" :table-data="personnelManagementTableData" :multi-select="true" @select="onSelectTableItem">
+        <!-- @select="onSelectTableItem" -->
+        <baseTable ref="personnelManagementTable" :table-data="personnelManagementTableData" :multi-select="true" @selectData="selectData">
           <template v-slot:clientType1="row">
             <!--类型插槽-->
             <template>
@@ -143,7 +143,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import editPersonnelInfo from '@/views/modules/projectManagement/projectConfig/editPersonnelInfo.vue'
 import * as ArrUtil from '@/views/modules/common/arrUtil'
 import * as ProjectConstants from '@/views/modules/projectManagement/projectConstants'
@@ -204,7 +205,8 @@ export default {
           { label: '操作', prop: 'clientType', slotName: 'clientType1', width: '130px', fixed: 'right' }
         ],
         url: '/costItems/member/page'
-      }
+      },
+      checkData: []
     }
   },
   computed: {},
@@ -313,7 +315,8 @@ export default {
         params.endSupportDateEnd = params.endSupportDate[1]
       }
       let data = []
-      const list = this.$refs.personnelManagementTable.getSelectRow()
+      // const list = this.$refs.personnelManagementTable.getSelectRow()
+      const list = this.checkData
       if (list.length === 0) {
         this.$message.warning('请至少选择一条数据！')
         return
@@ -323,14 +326,21 @@ export default {
     },
 
     // 表格勾选时
-    onSelectTableItem(selection) {
+    // onSelectTableItem(selection) {
+    //   if (selection.length > 0) {
+    //     this.chooseStr = '已选中' + selection.length + '项'
+    //   } else {
+    //     this.chooseStr = '已选中 0 项'
+    //   }
+    // },
+    selectData(selection) {
       if (selection.length > 0) {
         this.chooseStr = '已选中' + selection.length + '项'
       } else {
         this.chooseStr = '已选中 0 项'
       }
+      this.checkData = [...selection]
     },
-
     // 查询总数
     // getTableTotalCount() {
     //   this.$http({
@@ -405,7 +415,8 @@ export default {
         message = `"${row.name}"${supportState},确定删除吗?删除后将无法恢复!`
       } else {
         // 批量删除时
-        const list = this.$refs.personnelManagementTable.getSelectRow()
+        // const list = this.$refs.personnelManagementTable.getSelectRow()
+        const list = this.checkData
         if (list.length === 0) {
           this.$message.warning('请至少选择一条数据!')
           return

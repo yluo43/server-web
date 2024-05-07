@@ -113,8 +113,8 @@
           批量下载
         </el-button>
       </div>
-
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+      <!-- @select="onSelect" -->
+      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
@@ -245,7 +245,8 @@
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
+//import baseTable from '../../base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '../../base/baseDialog'
 import { getCName } from '@/utils/auth'
 
@@ -523,7 +524,20 @@ export default {
       form.ids = this.deleteIds
       this.$http.downloadPost(this.$http.adornUrl('/tripCost/export'), this.$http.adornParams(form), this)
     },
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   this.deleteIds = []
+    //   let totalMoney = 0
+    //   if (selection.length > 0) {
+    //     selection.forEach((a) => {
+    //       this.deleteIds.push(a.id)
+    //       totalMoney += parseFloat(a.totalMoney)
+    //     })
+    //     this.chooseStr = '已选中' + this.deleteIds.length + '项，合计：' + totalMoney.toFixed(2) + '元'
+    //   } else {
+    //     this.chooseStr = '已选中 0 项'
+    //   }
+    // },
+    selectData(selection) {
       this.deleteIds = []
       let totalMoney = 0
       if (selection.length > 0) {

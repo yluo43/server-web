@@ -119,8 +119,8 @@
             新建项目
           </el-button>
         </div>
-
-        <baseTable ref="projectTable" :table-data="projectTableData" :multi-select="true" @select="onSelectTableItem">
+        <!-- @select="onSelectTableItem" -->
+        <baseTable ref="projectTable" :table-data="projectTableData" :multi-select="true" @selectData="selectData">
           <template v-slot:contractTypeName="row">
             <div v-if="row.item.contractTypeName">{{ row.item.contractTypeName }}</div>
             <div v-else>--</div>
@@ -214,7 +214,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDrawer from '@/views/modules/base/baseDrawer.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import editProjectInfo from '@/views/modules/projectManagement/projectConfig/editProjectInfo.vue'
@@ -278,7 +279,8 @@ export default {
         url: '/costItems/list'
       },
       editDrawertitle: '编辑项目',
-      operateType: 'add'
+      operateType: 'add',
+      checkData: []
     }
   },
   mounted() {
@@ -390,7 +392,8 @@ export default {
         params.deliveryDateEnd = params.deliveryDate[1]
       }
       let data = []
-      const list = this.$refs.projectTable.getSelectRow()
+      // const list = this.$refs.projectTable.getSelectRow()
+      const list = this.checkData
       if (list.length === 0) {
         this.$message.warning('请至少选择一条数据！')
         return
@@ -416,14 +419,21 @@ export default {
     // },
 
     // 表格勾选时
-    onSelectTableItem(selection) {
+    // onSelectTableItem(selection) {
+    //   if (selection.length > 0) {
+    //     this.chooseStr = '已选中' + selection.length + '项'
+    //   } else {
+    //     this.chooseStr = '已选中 0 项'
+    //   }
+    // },
+    selectData(selection) {
       if (selection.length > 0) {
         this.chooseStr = '已选中' + selection.length + '项'
       } else {
         this.chooseStr = '已选中 0 项'
       }
+      this.checkData = [...selection]
     },
-
     // 编辑人员信息
     editPersonnelInfo(row) {
       // this.$refs.personnelManagementDialog.show()
@@ -488,7 +498,8 @@ export default {
         }
       } else {
         // 批量删除时
-        const list = this.$refs.projectTable.getSelectRow()
+        const list = this.checkData
+        //  const list = this.$refs.projectTable.getSelectRow()
         if (list.length === 0) {
           this.$message.warning('请至少选择一条数据！')
           return

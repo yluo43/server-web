@@ -42,7 +42,8 @@
 
         <div class="table">
           <div>
-            <baseTable ref="workloadListTable" :multi-select="true" @select="onSelect" :table-data="workloadList" style="margin-top: 10px">
+            <!-- @select="onSelect" -->
+            <baseTable ref="workloadListTable" :multi-select="true" @selectData="selectData" :table-data="workloadList" style="margin-top: 10px">
               <template v-slot:workStatus="row">
                 <template v-if="row.item.workStatus == 2">
                   <span>待归档</span>
@@ -75,7 +76,8 @@
   </div>
 </template>
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import rejectDialog from '@/views/modules/workloadManagement/reportTaskManagement/rejectDialog.vue'
 export default {
@@ -97,13 +99,7 @@ export default {
       teams: [],
       empId: '1260',
       //团队选择数据
-      selectData: [],
-      selectTree: [],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      },
-      queryData: {},
+      checkedData: [],
       workloadList: {
         theads: [
           { label: '团队成员', prop: 'name' },
@@ -217,17 +213,21 @@ export default {
       }
     },
     //选中项数
-    onSelect(selection) {
-      if (selection.length > 0) {
-        this.count = selection.length
-      } else {
-        this.count = 0
-      }
+    // onSelect(selection) {
+    //   if (selection.length > 0) {
+    //     this.count = selection.length
+    //   } else {
+    //     this.count = 0
+    //   }
+    // },
+    selectData(selection) {
+      this.count = selection.length
+      this.checkedData = selection
     },
     //批量归档
     batchArchiving() {
-      const rows = this.$refs.workloadListTable.getSelectRow()
-      this.ids = rows.map((item) => {
+      // const rows = this.$refs.workloadListTable.getSelectRow()
+      this.ids = this.checkedData.map((item) => {
         return item.id
       })
       if (this.ids.length === 0) {
@@ -235,7 +235,6 @@ export default {
         return
       }
       let data = { ids: this.ids.toString(), status: 4 }
-
       this.$confirm('确认批量归档吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

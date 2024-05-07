@@ -38,7 +38,8 @@
         <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
         <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
       </div>
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+      <!-- @select="onSelect" -->
+      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
@@ -84,7 +85,8 @@
   </div>
 </template>
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import { getCName } from '@/utils/auth'
 
@@ -211,7 +213,18 @@ export default {
       this.$refs.table.refresh(params)
     },
     //表格选中
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   this.deleteIds = []
+    //   if (selection.length > 0) {
+    //     this.count = selection.length
+    //     selection.forEach((item) => {
+    //       this.deleteIds.push(item.id)
+    //     })
+    //   } else {
+    //     this.count = 0
+    //   }
+    // },
+    selectData(selection) {
       this.deleteIds = []
       if (selection.length > 0) {
         this.count = selection.length

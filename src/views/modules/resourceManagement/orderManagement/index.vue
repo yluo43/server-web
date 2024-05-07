@@ -85,7 +85,8 @@
         <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
       </div>
       <el-main style="padding: 0">
-        <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+        <!-- @select="onSelect" -->
+        <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom">
@@ -132,7 +133,8 @@
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
+//import baseTable from '../../base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '../../base/baseDialog.vue'
 import addOrUpdate from './addOrUpdata.vue'
 import expenditure from '@/views/modules/resourceManagement/orderManagement/expenditure.vue'
@@ -325,7 +327,18 @@ export default {
       })
     },
     //表格选中
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   this.deleteIds = []
+    //   if (selection.length > 0) {
+    //     this.count = selection.length
+    //     selection.forEach((item) => {
+    //       this.deleteIds.push(item.id)
+    //     })
+    //   } else {
+    //     this.count = 0
+    //   }
+    // },
+    selectData(selection) {
       this.deleteIds = []
       if (selection.length > 0) {
         this.count = selection.length

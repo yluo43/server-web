@@ -63,7 +63,7 @@
                   <span v-if="showFlag" style="color: #2462f9">收起</span>
                   <span v-else style="color: #2462f9">展开</span>
                 </div>
-                <el-button type="primary" icon="el-icon-search" @click="selectData" style="margin-right: 10px">查询</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="selectTableData" style="margin-right: 10px">查询</el-button>
                 <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
               </el-form-item>
             </el-form>
@@ -80,9 +80,8 @@
           </div>
         </div>
         <div class="table">
-          <div>
-            <baseTable ref="taskDetialTable" :multi-select="true" @select="onSelect" :table-data="taskDetial" style="margin-top: 10px"></baseTable>
-          </div>
+          <!-- @select="onSelect" -->
+          <baseTable ref="taskDetialTable" :multi-select="true" @selectData="selectData" :table-data="taskDetial" style="margin-top: 10px"></baseTable>
         </div>
       </el-main>
     </el-container>
@@ -90,7 +89,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 export default {
   components: { baseTable, baseDialog },
@@ -154,7 +154,8 @@ export default {
           { label: '归档时间', prop: 'updateTime', width: '140px' }
         ],
         url: '/workload/pigeonholeTaskList'
-      }
+      },
+      checkedData: []
     }
   },
   mounted() {
@@ -194,15 +195,14 @@ export default {
     //统计工作量下拉框改变
     changeSelect(params) {
       this.taskId = params
-      this.selectData()
-      //this.selectTaskDetial({ taskId: this.taskId, status: 4 })
+      this.selectTableData()
     },
     //查询工作量
     selectTaskDetial(params) {
       this.$refs.taskDetialTable.refresh(params)
     },
     //输入框输入查询
-    selectData() {
+    selectTableData() {
       let data = {
         taskId: this.taskId,
         status: 4,
@@ -325,22 +325,26 @@ export default {
       })
     },
     //选中项数
-    onSelect(selection) {
-      if (selection.length > 0) {
-        this.count = selection.length
-      } else {
-        this.count = 0
-      }
+    // onSelect(selection) {
+    //   if (selection.length > 0) {
+    //     this.count = selection.length
+    //   } else {
+    //     this.count = 0
+    //   }
+    // },
+    selectData(selection) {
+      this.count = selection.length
+      this.checkedData = selection
     },
     //批量下载
     batchDownLoad() {
-      const list = this.$refs.taskDetialTable.getSelectRow()
+      // const list = this.$refs.taskDetialTable.getSelectRow()
+      const list = this.checkedData
       if (list.length === 0) {
         this.$message.warning('请至少选择一条数据！')
         return
       }
       let ids = list.map((item) => item.id)
-      console.log(ids)
       this.$http.downloadPost(this.$http.adornUrl('/workload/export'), { ids: ids }, this)
     },
     //重置

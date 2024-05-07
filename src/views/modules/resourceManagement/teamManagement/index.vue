@@ -86,8 +86,8 @@
           新建团队
         </el-button>
       </div>
-
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+      <!-- @select="onSelect" -->
+      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
@@ -208,7 +208,8 @@
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
+//import baseTable from '../../base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '../../base/baseDialog'
 import { getCName } from '@/utils/auth'
 
@@ -533,7 +534,20 @@ export default {
         }
       })
     },
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   this.deleteIds = []
+    //   let totalMoney = 0
+    //   if (selection.length > 0) {
+    //     selection.forEach((a) => {
+    //       this.deleteIds.push(a.id)
+    //       totalMoney += a.totalMoney
+    //     })
+    //     this.chooseStr = '已选中' + this.deleteIds.length + '个团队'
+    //   } else {
+    //     this.chooseStr = '已选中 0 个团队'
+    //   }
+    // },
+    selectData(selection) {
       this.deleteIds = []
       let totalMoney = 0
       if (selection.length > 0) {

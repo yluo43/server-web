@@ -84,7 +84,8 @@
           <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
         <div style="margin-top: 10px">
-          <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
+          <!-- @select="checkedTable" -->
+          <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData">
             <template v-slot:status="row">
               <span v-if="row.item.status == 0">待初审</span>
               <span v-if="row.item.status == 2">待复审</span>
@@ -119,7 +120,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import { getCName } from '@/utils/auth'
 import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
@@ -378,7 +380,11 @@ export default {
       this.$refs.approvalProcessDialog.hide()
     },
     //选择框选择
-    checkedTable(sel) {
+    // checkedTable(sel) {
+    //   this.count = sel.length
+    //   this.selData = sel
+    // }
+    selectData(sel) {
       this.count = sel.length
       this.selData = sel
     }

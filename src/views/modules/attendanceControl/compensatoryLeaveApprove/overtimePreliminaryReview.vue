@@ -114,7 +114,8 @@
         </div>
       </div>
       <el-main style="padding: 0">
-        <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable" propHeight="450px">
+        <!-- @select="checkedTable" -->
+        <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" propHeight="450px">
           <template v-slot:overtimeType="row">
             <span v-if="row.item.overtimeType == 0">日常加班</span>
             <span v-else>节假日加班</span>
@@ -158,7 +159,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import { getCName } from '@/utils/auth'
 import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
@@ -481,7 +483,11 @@ export default {
       })
     },
     //选择框选择
-    checkedTable(sel) {
+    // checkedTable(sel) {
+    //   this.count = sel.length
+    //   this.selData = [...sel]
+    // },
+    selectData(sel) {
       this.count = sel.length
       this.selData = [...sel]
     }
