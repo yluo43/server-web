@@ -76,16 +76,19 @@
               <!-- <span style="color: blue; margin-left: 50px" @click="download()">批量下载</span> -->
             </div>
             <div style="margin-top: 10px">
+              <!-- @selection-change="selChange" -->
               <div>
                 <el-table
+                  ref="multipleTable"
                   :data="tableData"
                   border
                   :header-cell-style="{ 'text-align': 'center' }"
                   :cell-style="{ 'text-align': 'center' }"
                   style="width: 100%; height: 425px; overflow-y: scroll"
-                  @selection-change="selChange"
                   :span-method="objectSpanMethod"
                   :row-key="(row) => row.id"
+                  @select="handleSelect"
+                  @select-all="handleSelectionAll"
                 >
                   <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
@@ -141,7 +144,7 @@ export default {
       pageSize: 20,
       spanArr: [],
       pos: 0,
-      checkedData: [],
+      //  checkedData: [],
       count: 0,
       managerList: [],
       deptList: [],
@@ -162,7 +165,8 @@ export default {
         taskId: '',
         type: '2'
       },
-      commandList: []
+      commandList: [],
+      multipleSelection: []
     }
   },
   watch: {
@@ -274,6 +278,15 @@ export default {
           this.pos = 0
           this.spanArr = []
           this.getSpanArr(this.tableData)
+          this.$nextTick(() => {
+            let foundIndex
+            this.tableData.forEach((ele, index) => {
+              foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele))
+              if (foundIndex != -1) {
+                this.$refs.multipleTable.toggleRowSelection(this.$refs.multipleTable.data[index], true)
+              }
+            })
+          })
         } else {
           this.$message.error(data.msg)
         }
@@ -338,11 +351,45 @@ export default {
       this.teamIdList = []
       this.workloadType = []
     },
-    selChange(selection) {
-      this.count = selection.length
-      this.checkedData = [...selection]
+    // selChange(selection) {
+    //   this.count = selection.length
+    //   this.checkedData = [...selection]
+    // },
+    //单选
+    handleSelect(rows, row) {
+      let foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(row))
+      if (foundIndex !== -1) {
+        this.multipleSelection = this.multipleSelection.filter((item) => {
+          return row.empId !== item.empId
+        })
+      } else {
+        this.tableData.forEach((item) => {
+          if (item.empId === row.empId) {
+            this.multipleSelection.push(item)
+          }
+        })
+      }
+      this.count = this.multipleSelection.length
     },
-
+    // 全选
+    handleSelectionAll(val) {
+      let foundIndex
+      if (val.length) {
+        const result = []
+        this.tableData.forEach((ele) => {
+          if (this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele)) == -1) result.push(ele)
+        })
+        this.multipleSelection.push(...result)
+      } else {
+        this.tableData.forEach((ele) => {
+          foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele))
+          if (foundIndex != -1) {
+            this.multipleSelection.splice(foundIndex, 1)
+          }
+        })
+      }
+      this.count = this.multipleSelection.length
+    },
     async projectTaskListNoPage() {
       const result = await this.$http({
         url: this.$http.adornUrl('/projectWork/projectTaskListNoPage'),
@@ -369,15 +416,16 @@ export default {
         this.$message.warning('请至少选择一条数据！')
         return
       }
-      let ids = []
-      this.tableData.map((item) => {
-        this.checkedData.map((ele) => {
-          if (item.empId === ele.empId) {
-            ids.push(item.id)
-          }
-        })
-      })
-      let data = ids
+      data.ids = this.multipleSelection.map((item) => item.id)
+      // let ids = []
+      // this.tableData.map((item) => {
+      //   this.checkedData.map((ele) => {
+      //     if (item.empId === ele.empId) {
+      //       ids.push(item.id)
+      //     }
+      //   })
+      // })
+      // let data = ids
       this.$http.downloadPost(this.$http.adornUrl('/projectWork/export'), { ids: data }, this)
     }
   }

@@ -34,15 +34,18 @@
 
           <div style="margin-top: 10px">
             <div>
+              <!-- @selection-change="selChange" -->
               <el-table
+                ref="multipleTable"
                 :data="tableData"
                 border
                 :header-cell-style="{ 'text-align': 'center' }"
                 :cell-style="{ 'text-align': 'center' }"
                 style="width: 100%; height: 475px; overflow-y: scroll"
-                @selection-change="selChange"
                 :span-method="objectSpanMethod"
                 :row-key="(row) => row.id"
+                @select="handleSelect"
+                @select-all="handleSelectionAll"
               >
                 <el-table-column type="selection" width="55" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
@@ -102,7 +105,7 @@ export default {
       pageSize: 20,
       spanArr: [],
       pos: 0,
-      checkedData: [],
+      // checkedData: [],
       count: 0,
       chooseStr: '已选择 0 项',
       // command: '选择任务',
@@ -115,7 +118,8 @@ export default {
         type: '1'
       },
       tableData: [],
-      commandList: []
+      commandList: [],
+      multipleSelection: []
     }
   },
   methods: {
@@ -154,9 +158,44 @@ export default {
         this.$message.error(data.msg)
       }
     },
-    selChange(selection) {
-      this.count = selection.length
-      this.checkedData = [...selection]
+    // selChange(selection) {
+    //   this.count = selection.length
+    //   this.checkedData = [...selection]
+    // },
+    //单选
+    handleSelect(rows, row) {
+      let foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(row))
+      if (foundIndex !== -1) {
+        this.multipleSelection = this.multipleSelection.filter((item) => {
+          return row.empId !== item.empId
+        })
+      } else {
+        this.tableData.forEach((item) => {
+          if (item.empId === row.empId) {
+            this.multipleSelection.push(item)
+          }
+        })
+      }
+      this.count = this.multipleSelection.length
+    },
+    // 全选
+    handleSelectionAll(val) {
+      let foundIndex
+      if (val.length) {
+        const result = []
+        this.tableData.forEach((ele) => {
+          if (this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele)) == -1) result.push(ele)
+        })
+        this.multipleSelection.push(...result)
+      } else {
+        this.tableData.forEach((ele) => {
+          foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele))
+          if (foundIndex != -1) {
+            this.multipleSelection.splice(foundIndex, 1)
+          }
+        })
+      }
+      this.count = this.multipleSelection.length
     },
     changeSelect() {
       this.selectTaskList()
@@ -174,6 +213,15 @@ export default {
           this.pos = 0
           this.spanArr = []
           this.getSpanArr(this.tableData)
+          this.$nextTick(() => {
+            let foundIndex
+            this.tableData.forEach((ele, index) => {
+              foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele))
+              if (foundIndex != -1) {
+                this.$refs.multipleTable.toggleRowSelection(this.$refs.multipleTable.data[index], true)
+              }
+            })
+          })
         } else {
           this.$message.error(data.msg)
         }
@@ -251,13 +299,16 @@ export default {
           return
         }
         message = '已选中' + this.count + '项，批量确认吗？'
-        this.tableData.map((item) => {
-          this.checkedData.map((ele) => {
-            if (item.empId === ele.empId) {
-              ids.push(item.id)
-            }
-          })
+        this.multipleSelection.map((item) => {
+          ids.push(item.id)
         })
+        // this.tableData.map((item) => {
+        //   this.checkedData.map((ele) => {
+        //     if (item.empId === ele.empId) {
+        //       ids.push(item.id)
+        //     }
+        //   })
+        // })
       }
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',

@@ -69,15 +69,18 @@
 
         <div class="table">
           <div>
+            <!-- @selection-change="selChange" -->
             <el-table
+              ref="multipleTable"
               :data="tableData"
               border
               :header-cell-style="{ 'text-align': 'center' }"
               :cell-style="{ 'text-align': 'center' }"
               style="width: 100%; height: 430px; overflow-y: scroll"
-              @selection-change="selChange"
               :span-method="objectSpanMethod"
               :row-key="(row) => row.id"
+              @select="handleSelect"
+              @select-all="handleSelectionAll"
             >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
@@ -148,10 +151,11 @@ export default {
       tableData: [],
       spanArr: [],
       pos: '',
-      checkedData: [],
+      //  checkedData: [],
       checkTeam: [],
       teams: [],
-      categories: []
+      categories: [],
+      multipleSelection: []
     }
   },
   mounted() {
@@ -256,9 +260,44 @@ export default {
       this.selectData()
     },
     //数据选择框改变
-    selChange(sel) {
-      this.count = sel.length
-      this.checkedData = [...sel]
+    // selChange(sel) {
+    //   this.count = sel.length
+    //   this.checkedData = [...sel]
+    // },
+    //单选
+    handleSelect(rows, row) {
+      let foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(row))
+      if (foundIndex !== -1) {
+        this.multipleSelection = this.multipleSelection.filter((item) => {
+          return row.empId !== item.empId
+        })
+      } else {
+        this.tableData.forEach((item) => {
+          if (item.empId === row.empId) {
+            this.multipleSelection.push(item)
+          }
+        })
+      }
+      this.count = this.multipleSelection.length
+    },
+    // 全选
+    handleSelectionAll(val) {
+      let foundIndex
+      if (val.length) {
+        const result = []
+        this.tableData.forEach((ele) => {
+          if (this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele)) == -1) result.push(ele)
+        })
+        this.multipleSelection.push(...result)
+      } else {
+        this.tableData.forEach((ele) => {
+          foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele))
+          if (foundIndex != -1) {
+            this.multipleSelection.splice(foundIndex, 1)
+          }
+        })
+      }
+      this.count = this.multipleSelection.length
     },
     //统计工作量下拉框改变
     changeSelect(params) {
@@ -296,6 +335,15 @@ export default {
           this.total = data.payload.totalCount
           this.spanArr = []
           this.getSpanArr(this.tableData)
+          this.$nextTick(() => {
+            let foundIndex
+            this.tableData.forEach((ele, index) => {
+              foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele))
+              if (foundIndex != -1) {
+                this.$refs.multipleTable.toggleRowSelection(this.$refs.multipleTable.data[index], true)
+              }
+            })
+          })
         } else {
           this.$message.error(data.msg)
         }
@@ -369,17 +417,16 @@ export default {
         this.$message.warning('请至少选择一条数据！')
         return
       }
-
-      let ids = []
-      this.tableData.map((item) => {
-        this.checkedData.map((ele) => {
-          if (item.empId === ele.empId) {
-            console.log(item)
-            ids.push(item.id)
-          }
-        })
-      })
-      data.ids = ids
+      data.ids = this.multipleSelection.map((item) => item.id)
+      // let ids = []
+      // this.tableData.map((item) => {
+      //   this.checkedData.map((ele) => {
+      //     if (item.empId === ele.empId) {
+      //       ids.push(item.id)
+      //     }
+      //   })
+      // })
+      // data.ids = ids
       this.$http.downloadPost(this.$http.adornUrl('/teamWork/export'), data, this)
     },
     //重置
