@@ -597,7 +597,7 @@ export default {
             url: this.$http.adornUrl('/employee/deleteEmployee?id=' + row.item.id),
             method: 'get'
           }).then(({ data }) => {
-            if (data && data.code === 200) {
+            if (data.success && data.code === 200) {
               this.$message({
                 message: '删除成功',
                 type: 'success'

@@ -47,9 +47,11 @@
                     <span>{{ item.orderName }}</span>
                   </div>
                   <div style="display: flex">
-                    <el-link type="primary" @click.stop="viewOrder(item)">查看详情 |</el-link>
-                    <el-link type="primary" @click.stop="updateOrder(item)" :disabled="viewDisabled">编辑 |</el-link>
-                    <el-link type="primary" @click.stop="deleteOrder(item)" :disabled="viewDisabled" style="margin-right: 30px">删除</el-link>
+                    <el-link type="primary" :underline="false" @click.stop="viewOrder(item)">查看详情 |</el-link>
+                    <el-link type="primary" :underline="false" @click.stop="updateOrder(item)" :disabled="viewDisabled">编辑 |</el-link>
+                    <el-link type="primary" :underline="false" @click.stop="deleteOrder(item)" :disabled="viewDisabled" style="margin-right: 30px">
+                      删除
+                    </el-link>
                   </div>
                 </div>
               </template>

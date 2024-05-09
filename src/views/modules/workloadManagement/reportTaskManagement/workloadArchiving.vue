@@ -12,7 +12,7 @@
             </div>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center">
-            <!-- <div class="status">
+            <div class="status">
               状态：
               <el-radio-group v-model="radio" @change="handlerRadio">
                 <el-radio-button label="1">全部</el-radio-button>
@@ -20,8 +20,7 @@
                 <el-radio-button label="3">被驳回</el-radio-button>
                 <el-radio-button label="4">已归档</el-radio-button>
               </el-radio-group>
-            </div> -->
-            <div></div>
+            </div>
             <div>
               <el-select v-model="teamIds" placeholder="请选择" multiple collapse-tags clearable @change="search">
                 <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />

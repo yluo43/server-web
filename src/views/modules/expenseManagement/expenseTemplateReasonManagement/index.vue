@@ -238,7 +238,7 @@ export default {
             method: 'get',
             params: { ids: this.deleteIds.toString() }
           }).then(({ data }) => {
-            if (data && data.code === 200) {
+            if (data.success && data.code === 200) {
               this.$message({
                 message: '删除成功',
                 type: 'success'
