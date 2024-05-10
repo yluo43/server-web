@@ -105,7 +105,7 @@
       </div>
       <div class="chooseResult" style="display: flex; margin-bottom: 10px">
         <div>
-          已选择
+          已选中
           <span>{{ count }}</span>
           项
         </div>

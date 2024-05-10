@@ -80,7 +80,7 @@
       </div>
       <el-main style="padding: 0">
         <div class="chooseResult">
-          <span>已选择{{ count }}项</span>
+          <span>已选中 {{ count }} 项</span>
           <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
         <div style="margin-top: 10px">

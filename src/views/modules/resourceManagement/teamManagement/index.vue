@@ -106,8 +106,8 @@
       </baseTable>
 
       <el-drawer class="drawer" :title="title" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 30px">
-          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
+        <div style="padding: 0 50px">
+          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="drawerForm">
             <el-form-item label="团队名称:" prop="teamName" :rules="[{ required: true, message: '团队不能为空' }]">
               <el-input v-model="editDataForm.teamName" clearable maxlength="50"></el-input>
             </el-form-item>
@@ -147,7 +147,7 @@
             </el-form-item>
             <el-row>
               <el-form-item label="团队成员:" prop="teamMembers">
-                <el-button type="primary" style="width: 200px" plain @click="chooseTeamMember">选择团队成员</el-button>
+                <el-button type="primary" style="width: 100%" plain @click="chooseTeamMember">选择团队成员</el-button>
 
                 <!-- <el-select  clearable v-model="editDataForm.teamMembers"
                          filterable
@@ -163,9 +163,9 @@
               </el-select> -->
               </el-form-item>
             </el-row>
-            <el-form-item label="创建时间:" prop="createTime" :rules="[{ required: true, message: '创建不能为空' }]">
+            <el-form-item label="创建时间:" prop="createTime" :rules="[{ required: true, message: '创建时间不能为空' }]">
               <el-date-picker
-                style="width: 200px"
+                style="width: 100%"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.createTime"
@@ -181,7 +181,7 @@
               </el-select>
             </el-form-item>
             <br />
-            <div style="display: flex; justify-content: flex-end; margin-right: 10px; margin-top: 60px">
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
@@ -540,7 +540,7 @@ export default {
           this.deleteIds.push(a.id)
           totalMoney += a.totalMoney
         })
-        this.chooseStr = '已选中' + this.deleteIds.length + '个团队'
+        this.chooseStr = '已选中' + this.deleteIds.length + '项'
       } else {
         this.chooseStr = '已选中 0 个团队'
       }
@@ -652,7 +652,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -685,8 +685,23 @@ export default {
   border-radius: 6px;
   padding-left: 20px;
 } */
-::v-deep .editForm .el-form-item__label {
-  width: 90px !important;
+// ::v-deep .editForm .el-form-item__label {
+//   width: 90px !important;
+// }
+::v-deep .drawerForm {
+  .el-form-item__label {
+    width: 80px !important;
+  }
+  .el-form-item {
+    width: 100% !important;
+  }
+  .el-form-item__content {
+    width: calc(100% - 80px);
+  }
+  .el-input,
+  .el-select {
+    width: 100%;
+  }
 }
 
 ::v-deep .drawer .el-form-item {

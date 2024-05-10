@@ -27,7 +27,7 @@
             </el-col>
           </el-row>
           <div class="chooseResult">
-            <span>已选择{{ count }}项</span>
+            <span>已选中 {{ count }} 项</span>
             <el-button type="text" @click="projectWorkOperate(null, 1)">批量确认</el-button>
             <!-- <span style="color: blue" @click="projectWorkOperate(null, 1)">批量确认</span> -->
           </div>

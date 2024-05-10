@@ -1,7 +1,7 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%; padding: 0 30px">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-form :rules="rules" :model="dataForm" ref="dataFormRef" label-width="100px" style="width: 80%" class="form-item">
+      <el-form :rules="rules" :model="dataForm" ref="dataFormRef" label-width="90px" class="form-item">
         <el-form-item label="项目来源:" prop="projectSource">
           <el-radio-group v-model="dataForm.projectSource">
             <el-radio :label="0">添加已有项目</el-radio>
@@ -10,7 +10,7 @@
         </el-form-item>
         <template v-if="dataForm.projectSource === 0">
           <el-form-item label="项目名称:" prop="projectId">
-            <el-select v-model="dataForm.projectId" placeholder="请选择">
+            <el-select v-model="dataForm.projectId" placeholder="请选择项目名称">
               <el-option v-for="item in projectList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -24,7 +24,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="项目名称:" prop="vo.name">
-            <el-input v-model="dataForm.vo.name" clearable></el-input>
+            <el-input v-model="dataForm.vo.name" placeholder="请输入项目名称" clearable></el-input>
           </el-form-item>
           <el-form-item label="归属部门:" prop="vo.deptName">
             <el-input v-model="dataForm.vo.deptName" disabled></el-input>
@@ -39,7 +39,7 @@
             </el-select> -->
           </el-form-item>
           <el-form-item label="归属团队:" prop="vo.teamId">
-            <el-select v-model="dataForm.vo.teamId" placeholder="请选择">
+            <el-select v-model="dataForm.vo.teamId" placeholder="请选择团队">
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -47,7 +47,7 @@
             <el-input v-model="dataForm.vo.psName" disabled></el-input>
           </el-form-item>
           <el-form-item label="项目经理:" prop="vo.managerId">
-            <el-select v-model="dataForm.vo.managerId" placeholder="请选择">
+            <el-select v-model="dataForm.vo.managerId" placeholder="请选择项目经理">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -62,7 +62,7 @@
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
               type="date"
-              placeholder="选择日期"
+              placeholder="请选择立项时间"
             ></el-date-picker>
           </el-form-item>
           <el-form-item
@@ -79,7 +79,7 @@
               value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
               type="date"
-              placeholder="选择日期"
+              placeholder="请选择计划交付时间"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="甲方名称:" prop="vo.firstParty" v-if="dataForm.vo.projectType == 0">
@@ -92,7 +92,7 @@
             <el-input v-model="dataForm.vo.contractNo" placeholder="请输入合同编号" maxlength="50" show-word-limit clearable></el-input>
           </el-form-item>
           <el-form-item label="合同类型:" prop="vo.contractType" v-if="dataForm.vo.projectType === 0">
-            <el-select v-model="dataForm.vo.contractType" placeholder="请选择">
+            <el-select v-model="dataForm.vo.contractType" placeholder="请选择合同类型">
               <el-option v-for="item in contractTypeList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -122,7 +122,7 @@
             </div>
           </el-form-item>
         </template>
-        <el-row style="display: flex; justify-content: right; margin-top: 60px">
+        <el-row style="display: flex; justify-content: right; margin: 60px 40px">
           <el-button type="primary" style="margin-right: 20px" @click="addCheck">确定</el-button>
           <el-button @click="cancel()">取消</el-button>
         </el-row>

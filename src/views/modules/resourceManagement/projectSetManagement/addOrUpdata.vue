@@ -1,7 +1,7 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%; padding: 0 50px">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-form :rules="rules" :model="dataForm" ref="dataFormRef" label-width="100px" style="width: 80%" class="form-item">
+      <el-form :rules="rules" :model="dataForm" ref="dataFormRef" label-width="80px" class="form-item">
         <el-form-item label="项目集名称:" prop="psName">
           <el-input v-model="dataForm.psName" :maxlength="50" show-word-limit :placeholder="placeholderFlag ? '请输入项目集名称' : ''" clearable></el-input>
         </el-form-item>

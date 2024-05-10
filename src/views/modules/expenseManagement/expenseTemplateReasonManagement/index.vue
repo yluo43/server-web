@@ -5,7 +5,7 @@
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="报销项目名称:" prop="name">
-              <el-input v-model="dataForm.name" placeholder="请输入事由名称" clearable></el-input>
+              <el-input v-model="dataForm.name" placeholder="请输入报销项目名称" clearable></el-input>
             </el-form-item>
             <el-form-item label="报销项目归属部门:" prop="deptId">
               <el-select v-model="dataForm.deptId" placeholder="请选择报销项目归属部门" :multiple="true" :collapse-tags="true">
@@ -55,13 +55,13 @@
         </template>
       </baseTable>
       <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 20px">
-          <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="editForm">
+        <div style="padding: 0 50px">
+          <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="drawerForm">
             <el-form-item label="报销项目名称:" prop="name">
-              <el-input v-model="editDataForm.name" placeholder="请输入事由名称" clearable></el-input>
+              <el-input v-model="editDataForm.name" placeholder="请输入报销项目名称" clearable></el-input>
             </el-form-item>
             <el-form-item label="报销项目归属部门:" prop="deptName">
-              <el-select v-model="editDataForm.deptName" placeholder="请选择">
+              <el-select v-model="editDataForm.deptName" placeholder="请选择报销项目归属部门">
                 <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
               </el-select>
             </el-form-item>
@@ -71,9 +71,16 @@
               </el-select>
             </el-form-item> -->
             <el-form-item label="关联项目:" prop="value">
-              <el-cascader clearable :append-to-body="false" style="width: 200px" v-model="editDataForm.value" :options="options"></el-cascader>
+              <el-cascader
+                clearable
+                :append-to-body="false"
+                placeholder="请选择关联项目"
+                style="width: 100%"
+                v-model="editDataForm.value"
+                :options="options"
+              ></el-cascader>
             </el-form-item>
-            <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
@@ -402,7 +409,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -431,11 +438,26 @@ export default {
   max-width: 80px;
 } */
 
-::v-deep .editForm .el-form-item__label {
-  width: 125px !important;
-}
-::v-deep .editForm .el-form-item {
-  width: 100% !important;
+// ::v-deep .editForm .el-form-item__label {
+//   width: 125px !important;
+// }
+// ::v-deep .editForm .el-form-item {
+//   width: 100% !important;
+// }
+::v-deep .drawerForm {
+  .el-form-item__label {
+    width: 120px !important;
+  }
+  .el-form-item {
+    width: 100% !important;
+  }
+  .el-form-item__content {
+    width: calc(100% - 120px);
+  }
+  .el-input,
+  .el-select {
+    width: 100%;
+  }
 }
 
 .el-button-func {

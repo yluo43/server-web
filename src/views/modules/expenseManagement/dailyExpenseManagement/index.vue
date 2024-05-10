@@ -72,16 +72,7 @@
         <el-button type="text" @click="batchDelete()" v-auth="'dailyCost:deletes'">批量删除</el-button>
       </div>
       <div class="operate-button">
-        <el-button
-          style="width: 110px"
-          icon="
-          el-icon-download"
-          type="primary"
-          @click="download()"
-          v-auth="'dailyCost:export'"
-        >
-          批量下载
-        </el-button>
+        <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()" v-auth="'dailyCost:export'">批量下载</el-button>
       </div>
 
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">

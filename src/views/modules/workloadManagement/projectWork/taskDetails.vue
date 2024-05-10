@@ -71,7 +71,7 @@
               </el-col>
             </el-row>
             <div class="chooseResult">
-              <span>已选择{{ count }}项</span>
+              <span>已选中 {{ count }} 项</span>
               <el-button type="text" @click="download()">批量下载</el-button>
               <!-- <span style="color: blue; margin-left: 50px" @click="download()">批量下载</span> -->
             </div>

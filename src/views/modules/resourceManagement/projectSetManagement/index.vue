@@ -126,7 +126,7 @@
         </baseTable>
       </el-main>
     </el-container>
-    <base-drawer :title="title" ref="addOrUpdateDrawer">
+    <base-drawer :title="title" ref="addOrUpdateDrawer" size="23%">
       <template>
         <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate"></addOrUpdate>
       </template>
@@ -136,7 +136,7 @@
         <showProject @refreshDataList="refresh" ref="showProject"></showProject>
       </template>
     </base-drawer>
-    <base-drawer :title="title" ref="addProjectDrawer">
+    <base-drawer :title="title" ref="addProjectDrawer" size="24%">
       <template>
         <addProject @refreshDataList="refresh" ref="addProject"></addProject>
       </template>

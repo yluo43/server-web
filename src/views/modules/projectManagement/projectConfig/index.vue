@@ -195,7 +195,7 @@
 
     <!-- 编辑项目信息 -->
     <!-- :handle-close="beforeCloseEditProjectDrawer" -->
-    <base-drawer ref="editProjectInfoDrawer" :title="editDrawertitle">
+    <base-drawer ref="editProjectInfoDrawer" :title="editDrawertitle" size="26%">
       <template>
         <editProjectInfo ref="editProjectInfo" @closeDrawer="closeEditProjectInfoDrawer" />
       </template>

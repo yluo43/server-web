@@ -168,8 +168,8 @@
       </baseTable>
 
       <el-drawer title="编辑" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 40px">
-          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
+        <div style="padding: 0 50px">
+          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="drawerForm">
             <el-form-item label="姓名:" prop="account">
               <el-input v-model="editDataForm.account" clearable disabled="disabled" maxlength="50"></el-input>
             </el-form-item>
@@ -225,7 +225,7 @@
               <el-input v-model="editDataForm.totalMoney" clearable disabled="disabled"></el-input>
             </el-form-item>
 
-            <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
@@ -576,7 +576,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -587,11 +587,26 @@ export default {
 ::v-deep .el-drawer__body {
   overflow: hidden;
 }
-::v-deep .editForm .el-form-item__label {
-  width: 80px !important;
-}
-::v-deep .editForm .el-form-item {
-  width: 100% !important;
+// ::v-deep .editForm .el-form-item__label {
+//   width: 80px !important;
+// }
+// ::v-deep .editForm .el-form-item {
+//   width: 100% !important;
+// }
+::v-deep .drawerForm {
+  .el-form-item__label {
+    width: 60px !important;
+  }
+  .el-form-item {
+    width: 100% !important;
+  }
+  .el-form-item__content {
+    width: calc(100% - 60px);
+  }
+  .el-input,
+  .el-select {
+    width: 100%;
+  }
 }
 
 .el-button-func {

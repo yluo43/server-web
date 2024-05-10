@@ -78,7 +78,7 @@
           </el-form-item>
         </el-form>
         <div class="chooseResult">
-          <span>已选中{{ count }}项</span>
+          <span>已选中 {{ count }} 项</span>
         </div>
       </el-header>
       <div class="operate-button">
