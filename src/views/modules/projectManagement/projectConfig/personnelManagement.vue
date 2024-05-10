@@ -31,8 +31,8 @@
           style="padding-left: 42px"
           ref="personnelManagementForm"
           :inline="true"
-          label-width="90px"
-          label-position="left"
+          label-width="82px"
+          label-position="right"
           :model="personnelManagementFormData"
         >
           <el-form-item label="姓名:" prop="name">

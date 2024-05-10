@@ -27,7 +27,7 @@
             </el-col>
           </el-row>
           <div class="chooseResult">
-            <span>已选择{{ count }}项</span>
+            <span>已选中 {{ count }} 项</span>
             <el-button type="text" @click="projectWorkOperate(null, 1)">批量确认</el-button>
             <!-- <span style="color: blue" @click="projectWorkOperate(null, 1)">批量确认</span> -->
           </div>
@@ -41,7 +41,7 @@
                 border
                 :header-cell-style="{ 'text-align': 'center' }"
                 :cell-style="{ 'text-align': 'center' }"
-                style="width: 100%; height: 475px; overflow-y: scroll"
+                style="width: 100%; height: 465px; overflow-y: scroll"
                 :span-method="objectSpanMethod"
                 :row-key="(row) => row.id"
                 @select="handleSelect"
@@ -67,7 +67,7 @@
                 </el-table-column>
               </el-table>
             </div>
-            <div style="display: flex; justify-content: center">
+            <div style="display: flex; justify-content: center; margin-top: 10px">
               <el-pagination
                 :page-sizes="[20, 50, 100]"
                 :page-size="pageSize"
@@ -292,7 +292,7 @@ export default {
       let ids = []
       if (row) {
         ids = [row.id]
-        message = '您确定提交吗?'
+        message = '确认提交吗?'
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')

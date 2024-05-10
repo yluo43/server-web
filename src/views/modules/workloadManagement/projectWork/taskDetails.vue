@@ -18,7 +18,7 @@
               <el-col>
                 <el-col>
                   <el-header style="height: auto">
-                    <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
+                    <el-form :inline="true" label-width="70px" label-position="right" :model="dataForm" ref="dataForm">
                       <el-form-item label="用户姓名:" prop="empName">
                         <el-input style="width: 200px" v-model="dataForm.empName" placeholder="请输入用户姓名" clearable></el-input>
                       </el-form-item>
@@ -54,13 +54,13 @@
                         </el-form-item>
                       </div>
                       <el-form-item>
-                        <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+                        <div style="display: inline-block; margin-right: 15px" :style="showFlag ? { 'margin-left': '10px' } : ''" @click="showFlag = !showFlag">
                           <svg-icon
                             :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'"
-                            style="height: 1.5em; width: 1.5em; position: relative; top: 3px"
+                            style="height: 1.3em; width: 1.3em; position: relative; top: 3px"
                           />
-                          <span v-if="showFlag" style="color: #2462f9">收起</span>
-                          <span v-else style="color: #2462f9">展开</span>
+                          <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                          <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
                         </div>
                         <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
                         <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
@@ -71,7 +71,7 @@
               </el-col>
             </el-row>
             <div class="chooseResult">
-              <span>已选择{{ count }}项</span>
+              <span>已选中 {{ count }} 项</span>
               <el-button type="text" @click="download()">批量下载</el-button>
               <!-- <span style="color: blue; margin-left: 50px" @click="download()">批量下载</span> -->
             </div>
@@ -84,7 +84,7 @@
                   border
                   :header-cell-style="{ 'text-align': 'center' }"
                   :cell-style="{ 'text-align': 'center' }"
-                  style="width: 100%; height: 425px; overflow-y: scroll"
+                  style="width: 100%; height: 415px; overflow-y: scroll"
                   :span-method="objectSpanMethod"
                   :row-key="(row) => row.id"
                   @select="handleSelect"
@@ -105,7 +105,7 @@
                   <el-table-column prop="approveTime" label="审批时间" width="90px" show-overflow-tooltip></el-table-column>
                 </el-table>
               </div>
-              <div style="display: flex; justify-content: center">
+              <div style="display: flex; justify-content: center; margin-top: 10px">
                 <el-pagination
                   :page-sizes="[20, 50, 100]"
                   :page-size="pageSize"

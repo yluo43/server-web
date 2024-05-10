@@ -6,15 +6,15 @@
           <el-form-item label="姓名:" prop="userName">
             {{ formData.userName }}
           </el-form-item>
-          <el-form-item label="工作量:">
-            <div style="display: flex; align-items: center; justify-content: center" v-for="(item, index) in formData.workLoad" :key="index">
+          <el-form-item label="工作量填报:">
+            <div style="display: flex; align-items: center" v-for="(item, index) in formData.workLoad" :key="index">
               <el-form-item :prop="'workLoad.' + index + '.workloadName'">
-                <el-select v-model="item.workloadName" placeholder="请选择报工类别" @change="workLoadChange(item)" clearable>
+                <el-select v-model="item.workloadName" filterable placeholder="请选择报工类别" @change="workLoadChange(item)" clearable>
                   <el-option v-for="ele in categories" :key="ele.id" :label="ele.name" :value="ele.name" />
                 </el-select>
               </el-form-item>
               <el-form-item :prop="'workLoad.' + index + '.projectName'">
-                <el-select v-model="item.projectName" placeholder="请选择成本项目" @change="selectChange(item)" clearable>
+                <el-select v-model="item.projectName" filterable placeholder="请选择成本项目" @change="selectChange(item)" clearable>
                   <el-option v-for="ele in costItems" :key="ele.id" :label="ele.name" :value="ele.name" />
                 </el-select>
               </el-form-item>
@@ -22,10 +22,11 @@
                 <el-input style="width: 100px" v-model.number="item.realityRate" clearable />
                 %
               </el-form-item>
-              <i class="el-icon-delete" @click="deleteRow(item)"></i>
+              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="deleteRow(item)" />
+              <!-- <i class="el-icon-delete" @click="deleteRow(item)"></i> -->
             </div>
 
-            <el-button type="text" icon="el-icon-plus" @click="addRow">添加</el-button>
+            <el-button type="text" icon="el-icon-circle-plus-outline" style="font-size: 16px !important" @click="addRow">添加</el-button>
           </el-form-item>
           <!-- <el-row style="width: 100%" v-for="(item, index) in formData.workLoad" :key="index">
             <el-col :span="10">
@@ -47,7 +48,7 @@
         </el-form>
         <div class="btn-group">
           <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
-          <el-button type="primary" @click="confirm">确认</el-button>
+          <el-button type="primary" @click="confirm">确定</el-button>
         </div>
       </div>
     </el-container>
@@ -73,7 +74,8 @@ export default {
       },
       costItems: [],
       dataList: [],
-      categories: []
+      categories: [],
+      workLoad: []
     }
   },
   mounted() {
@@ -86,7 +88,7 @@ export default {
     init(initData) {
       Object.assign(this.formData, initData)
       this.selectInfo()
-      console.log(this.formData)
+      // console.log(this.formData)
     },
     //获取报工类别
     getWorkloadType() {
@@ -112,8 +114,8 @@ export default {
         }
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          this.formData.workLoad = data.payload.list
-          this.workLoad = data.payload.list
+          this.formData.workLoad = [...data.payload.list]
+          this.workLoad = [...data.payload.list]
         } else {
           this.$message.error(data.msg)
         }
@@ -161,24 +163,24 @@ export default {
       this.formData.workLoad.push({
         approveTime: '',
         commitTime: '',
-        deptId: this.formData.workLoad[0].deptId,
-        deptName: this.formData.workLoad[0].deptName,
+        deptId: this.workLoad[0].deptId,
+        deptName: this.workLoad[0].deptName,
         empId: this.formData.empId,
         id: '',
         managerName: '',
         name: this.formData.userName,
-        overTime: '',
+        overTime: this.workLoad[0].overTime,
         planRate: '',
         workloadName: '',
         workloadType: '',
         projectId: '',
         projectName: '',
         realityRate: '',
-        startTime: '',
+        startTime: this.workLoad[0].startTime,
         taskId: this.formData.taskId,
-        teamId: this.formData.workLoad[0].teamId,
-        teamManagerName: this.formData.workLoad[0].teamManagerName,
-        teamName: this.formData.workLoad[0].teamName,
+        teamId: this.workLoad[0].teamId,
+        teamManagerName: this.workLoad[0].teamManagerName,
+        teamName: this.workLoad[0].teamName,
         workStatus: ''
       })
     },

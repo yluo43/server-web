@@ -12,7 +12,7 @@
             </div>
           </div>
           <div style="padding-left: 16px">
-            <el-form ref="formData" :inline="true" label-width="80px" :label-position="labelposition" :model="formData">
+            <el-form ref="formData" :inline="true" label-width="70px" :label-position="labelposition" :model="formData">
               <el-form-item label="用户姓名:" prop="name">
                 <el-input style="width: 200px" v-model="formData.name" placeholder="请输入用户姓名" clearable />
               </el-form-item>
@@ -58,10 +58,10 @@
                 </el-form-item>
               </div>
               <el-form-item>
-                <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-                  <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-                  <span v-if="showFlag" style="color: #2462f9">收起</span>
-                  <span v-else style="color: #2462f9">展开</span>
+                <div style="display: inline-block; margin-right: 15px" :style="showFlag ? { 'margin-left': '10px' } : ''" @click="showFlag = !showFlag">
+                  <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                  <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                  <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
                 </div>
                 <el-button type="primary" icon="el-icon-search" @click="selectTableData" style="margin-right: 10px">查询</el-button>
                 <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
@@ -70,7 +70,7 @@
           </div>
           <div class="chooseResult" style="display: flex">
             <div>
-              已选择
+              已选中
               <span>{{ count }}</span>
               项
             </div>
@@ -105,7 +105,7 @@ export default {
       reportWorkName: '',
       workLoadStatistics: [],
       // form表单右对齐
-      labelposition: 'left',
+      labelposition: 'right',
       formData: {
         //用户姓名
         name: '',

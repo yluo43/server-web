@@ -134,8 +134,8 @@
         </el-form-item>
       </el-form>
 
-      <el-row style="display: flex; justify-content: flex-end; margin: 20px 20px 20px 0">
-        <el-button type="primary" @click="saveCheck">确认</el-button>
+      <el-row style="display: flex; justify-content: flex-end; margin: 60px 30px 60px 0">
+        <el-button type="primary" style="margin-right: 20px" @click="saveCheck">确定</el-button>
         <el-button @click="cancel()">取消</el-button>
       </el-row>
     </el-container>

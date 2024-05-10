@@ -2,19 +2,20 @@
   <div style="height: 100%">
     <el-container>
       <el-header style="height: 100%">
-        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="70px" label-position="left" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="团队名称:" prop="teamName">
               <el-input v-model="dataForm.teamName" placeholder="输入关键字" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="团队负责人:" prop="managerIds">
-              <el-select v-model="dataForm.managerIds" placeholder="请选择" multiple>
-                <el-option v-for="manager in managerList" :key="manager.id" :label="manager.name + '(' + manager.id + ')'" :value="manager.id"></el-option>
-              </el-select>
-            </el-form-item>
+
             <el-form-item label="驻地:" prop="stationIds">
               <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择" multiple :collapse-tags="true">
                 <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="团队负责人:" prop="managerIds">
+              <el-select v-model="dataForm.managerIds" placeholder="请选择" multiple>
+                <el-option v-for="manager in managerList" :key="manager.id" :label="manager.name + '(' + manager.id + ')'" :value="manager.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="状态:" prop="state">
@@ -32,7 +33,7 @@
                   <el-option v-for="dept in deptList" :key="dept.id" :label="dept.name" :value="dept.id" multiple></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="创建时间:" prop="createTime" style="width: 290px !important">
+              <el-form-item label="创建时间:" prop="createTime">
                 <el-date-picker
                   style="width: 200px"
                   value-format="yyyy-MM-dd"
@@ -47,9 +48,9 @@
             </div>
             <el-form-item>
               <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-                <span v-if="showFlag" style="color: #2462f9">收起</span>
-                <span v-else style="color: #2462f9">展开</span>
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
               </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
@@ -105,8 +106,8 @@
       </baseTable>
 
       <el-drawer class="drawer" :title="title" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 30px">
-          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
+        <div style="padding: 0 50px">
+          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="drawerForm">
             <el-form-item label="团队名称:" prop="teamName" :rules="[{ required: true, message: '团队不能为空' }]">
               <el-input v-model="editDataForm.teamName" clearable maxlength="50"></el-input>
             </el-form-item>
@@ -146,7 +147,7 @@
             </el-form-item>
             <el-row>
               <el-form-item label="团队成员:" prop="teamMembers">
-                <el-button type="primary" style="width: 200px" plain @click="chooseTeamMember">选择团队成员</el-button>
+                <el-button type="primary" style="width: 100%" plain @click="chooseTeamMember">选择团队成员</el-button>
 
                 <!-- <el-select  clearable v-model="editDataForm.teamMembers"
                          filterable
@@ -162,9 +163,9 @@
               </el-select> -->
               </el-form-item>
             </el-row>
-            <el-form-item label="创建时间:" prop="createTime" :rules="[{ required: true, message: '创建不能为空' }]">
+            <el-form-item label="创建时间:" prop="createTime" :rules="[{ required: true, message: '创建时间不能为空' }]">
               <el-date-picker
-                style="width: 200px"
+                style="width: 100%"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.createTime"
@@ -179,10 +180,8 @@
                 <el-option key="1" label="解散" value="1"></el-option>
               </el-select>
             </el-form-item>
-
             <br />
-
-            <div style="display: flex; justify-content: flex-end; margin-right: 10px; margin-top: 30px">
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
@@ -201,7 +200,7 @@
           :data="teamMembers"
         ></el-transfer>
         <div style="width: 100%; margin-bottom: 20px; display: flex; justify-content: flex-end">
-          <el-button type="primary" @click="confirm">确认</el-button>
+          <el-button type="primary" @click="confirm">确定</el-button>
         </div>
       </template>
     </base-dialog>
@@ -555,7 +554,7 @@ export default {
           this.deleteIds.push(a.id)
           totalMoney += a.totalMoney
         })
-        this.chooseStr = '已选中' + this.deleteIds.length + '个团队'
+        this.chooseStr = '已选中' + this.deleteIds.length + '项'
       } else {
         this.chooseStr = '已选中 0 个团队'
       }
@@ -667,7 +666,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -700,8 +699,23 @@ export default {
   border-radius: 6px;
   padding-left: 20px;
 } */
-::v-deep .editForm .el-form-item__label {
-  width: 90px !important;
+// ::v-deep .editForm .el-form-item__label {
+//   width: 90px !important;
+// }
+::v-deep .drawerForm {
+  .el-form-item__label {
+    width: 80px !important;
+  }
+  .el-form-item {
+    width: 100% !important;
+  }
+  .el-form-item__content {
+    width: calc(100% - 80px);
+  }
+  .el-input,
+  .el-select {
+    width: 100%;
+  }
 }
 
 ::v-deep .drawer .el-form-item {

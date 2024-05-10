@@ -30,7 +30,7 @@
     </el-steps>
     <div class="btn-group">
       <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
-      <el-button type="primary" @click="cancelDialog">确认</el-button>
+      <el-button type="primary" @click="cancelDialog">确定</el-button>
     </div>
   </div>
 </template>

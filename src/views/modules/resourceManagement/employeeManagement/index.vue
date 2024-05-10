@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container>
       <el-header style="height: 100%">
-        <el-form :inline="true" label-width="65px" label-position="left" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="60px" label-position="right" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="用户姓名:" prop="name">
               <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable maxlength="50"></el-input>
@@ -95,9 +95,9 @@
             </div>
             <el-form-item>
               <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-                <span v-if="showFlag" style="color: #2462f9">收起</span>
-                <span v-else style="color: #2462f9">展开</span>
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
               </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-search">重置</el-button>
@@ -162,8 +162,8 @@
         </template>
       </baseTable>
       <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 40px">
-          <el-form :inline="true" :rules="rules" :model="editDataForm" ref="editdataForm" class="editForm">
+        <div style="padding: 0 50px">
+          <el-form :inline="true" :rules="rules" :model="editDataForm" ref="editdataForm" class="drawerForm">
             <el-form-item label="用户姓名:" prop="name">
               <el-input v-model="editDataForm.name" placeholder="请输入用户姓名" clearable maxlength="50"></el-input>
             </el-form-item>
@@ -224,7 +224,7 @@
 
             <el-form-item label="入职时间:" prop="entryDate">
               <el-date-picker
-                style="width: 200px"
+                style="width: 100%"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.entryDate"
@@ -242,7 +242,7 @@
 
             <el-form-item label="离职时间:" prop="departDate" v-if="entryDateShow" :rules="[{ required: entryDateInput, message: '岗位为空' }]">
               <el-date-picker
-                style="width: 200px"
+                style="width: 100%"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.departDate"
@@ -250,7 +250,7 @@
                 placeholder="请选择离职时间"
               ></el-date-picker>
             </el-form-item>
-            <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 10px">
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
@@ -599,7 +599,7 @@ export default {
             url: this.$http.adornUrl('/employee/deleteEmployee?id=' + row.item.id),
             method: 'get'
           }).then(({ data }) => {
-            if (data && data.code === 200) {
+            if (data.success && data.code === 200) {
               this.$message({
                 message: '删除成功',
                 type: 'success'
@@ -706,7 +706,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -738,10 +738,25 @@ export default {
   padding-left: 20px;
 } */
 
-::v-deep .editForm .el-form-item__label {
-  width: 80px !important;
-}
-::v-deep .editForm .el-form-item {
-  width: 95% !important;
+// ::v-deep .editForm .el-form-item__label {
+//   width: 80px !important;
+// }
+// ::v-deep .editForm .el-form-item {
+//   width: 95% !important;
+// }
+::v-deep .drawerForm {
+  .el-form-item__label {
+    width: 70px !important;
+  }
+  .el-form-item {
+    width: 100% !important;
+  }
+  .el-form-item__content {
+    width: calc(100% - 70px);
+  }
+  .el-input,
+  .el-select {
+    width: 100%;
+  }
 }
 </style>

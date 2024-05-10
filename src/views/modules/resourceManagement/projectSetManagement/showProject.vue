@@ -8,8 +8,8 @@
           <el-descriptions-item label="项目编码">{{ obj.projectId }}</el-descriptions-item>
         </el-descriptions>
       </template>
-      <el-row style="display: flex; justify-content: right; margin: 20px 100px">
-        <el-button type="primary" @click="cancel()">确认</el-button>
+      <el-row style="display: flex; justify-content: right; margin: 60px 40px">
+        <el-button type="primary" @click="cancel()">确定</el-button>
       </el-row>
     </el-container>
   </div>

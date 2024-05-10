@@ -1,5 +1,5 @@
 <template>
-  <el-drawer :title="title" :visible.sync="drawer" :direction="direction" :before-close="handleClose">
+  <el-drawer :title="title" :visible.sync="drawer" :direction="direction" :size="size" :before-close="handleClose">
     <div v-if="drawer">
       <slot></slot>
     </div>
@@ -21,6 +21,10 @@ export default {
       default: function (done) {
         done()
       }
+    },
+    size: {
+      type: String,
+      default: '23%'
     }
   },
   data() {

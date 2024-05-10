@@ -298,7 +298,7 @@ export default {
     //删除
     goToDelete(row) {
       debugger
-      let message = '确认删除?'
+      let message = '确认删除吗?'
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

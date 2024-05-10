@@ -485,6 +485,9 @@
   border-top: 1px solid lightgray;
   
 }
+.el-form-item__label{
+  padding: 0 6px 0 0;
+}
 .el-select{
   width: 200px ;
 }
@@ -521,4 +524,7 @@
 }
 .el-message-box--center .el-message-box__btns{
   text-align: right;
+}
+.btn-font-size{
+  font-size: 12px;
 }

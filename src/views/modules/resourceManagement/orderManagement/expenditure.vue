@@ -80,12 +80,12 @@
           <template v-slot:clientType="scope">
             <!--类型插槽-->
             <template v-if="scope.item.row.clientTypeShow">
-              <el-link type="primary" @click="editSettlement(scope)" :disabled="viewDisabled || editFlag">编辑 |</el-link>
-              <el-link type="primary" @click="deleteSettlement(scope)" :disabled="viewDisabled">删除</el-link>
+              <el-link type="primary" :underline="false" @click="editSettlement(scope)" :disabled="viewDisabled || editFlag">编辑 |</el-link>
+              <el-link type="primary" :underline="false" @click="deleteSettlement(scope)" :disabled="viewDisabled">删除</el-link>
             </template>
             <template v-else>
-              <el-link type="primary" @click="updateSettlement(scope)" :disabled="viewDisabled">保存 |</el-link>
-              <el-link type="primary" @click="cancelSettlement(scope)" :disabled="viewDisabled">取消</el-link>
+              <el-link type="primary" :underline="false" @click="updateSettlement(scope)" :disabled="viewDisabled">保存 |</el-link>
+              <el-link type="primary" :underline="false" @click="cancelSettlement(scope)" :disabled="viewDisabled">取消</el-link>
             </template>
           </template>
         </baseTable>

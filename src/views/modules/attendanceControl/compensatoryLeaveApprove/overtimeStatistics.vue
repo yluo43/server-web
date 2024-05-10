@@ -37,7 +37,7 @@
       </div>
       <div>
         <div class="chooseResult">
-          <span>已选择{{ count }}项</span>
+          <span>已选中 {{ count }} 项</span>
         </div>
         <div class="operate-button">
           <el-button class="el-button-func" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
@@ -56,7 +56,7 @@
       </div>
     </el-container>
     <!-- 查看明细 -->
-    <base-dialog ref="detailsDialog" title="查看明细" :width="'1000px'" :speail-style="true">
+    <base-dialog ref="detailsDialog" title="查看明细" :width="'1200px'" :speail-style="true">
       <template>
         <detailsDialog ref="details" :cancelDialog="closeDetailsDialog"></detailsDialog>
       </template>
