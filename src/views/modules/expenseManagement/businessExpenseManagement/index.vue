@@ -102,7 +102,7 @@
         </div>
       </el-header>
       <div class="operate-button">
-        <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()" v-auth="'tripCost:export'">批量下载</el-button>
+        <el-button class="btn-download" icon="el-icon-download" type="primary" @click="download()" v-auth="'tripCost:export'">批量下载</el-button>
       </div>
 
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
@@ -584,15 +584,6 @@ export default {
 .el-input {
   width: 200px;
 }
-::v-deep .el-drawer__body {
-  overflow: hidden;
-}
-// ::v-deep .editForm .el-form-item__label {
-//   width: 80px !important;
-// }
-// ::v-deep .editForm .el-form-item {
-//   width: 100% !important;
-// }
 ::v-deep .drawerForm {
   .el-form-item__label {
     width: 60px !important;
@@ -607,12 +598,6 @@ export default {
   .el-select {
     width: 100%;
   }
-}
-
-.el-button-func {
-  width: 86px;
-  height: 30px;
-  text-align: center;
 }
 ::v-deep .el-table__cell {
   text-align: center;

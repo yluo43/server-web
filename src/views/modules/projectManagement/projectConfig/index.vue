@@ -105,17 +105,8 @@
 
         <!-- toolBar -->
         <div class="operate-button">
-          <el-button
-            v-auth="'costItems:export'"
-            class="el-button-func"
-            type="primary"
-            icon="el-icon-download"
-            style="margin-right: 10px"
-            @click="batchDownload"
-          >
-            批量下载
-          </el-button>
-          <el-button v-auth="'costItems:add'" class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">
+          <el-button v-auth="'costItems:export'" class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
+          <el-button v-auth="'costItems:add'" class="btn-download" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">
             新建项目
           </el-button>
         </div>
@@ -529,9 +520,5 @@ export default {
 <style scoped>
 .el-input {
   width: 200px;
-}
-.el-button {
-  margin-left: 0;
-  width: auto;
 }
 </style>

@@ -82,7 +82,7 @@
         </div>
       </el-header>
       <div class="operate-button">
-        <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
+        <el-button class="btn-download" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
       </div>
       <el-main style="padding: 0">
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
@@ -383,10 +383,6 @@ export default {
 }
 </script>
 <style scoped>
-.el-button {
-  margin-left: 0;
-  width: auto;
-}
 .el-input {
   width: 200px;
 }

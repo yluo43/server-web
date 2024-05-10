@@ -167,7 +167,7 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/teamWork/getMyTaskCount'),
         method: 'get',
-        params: { type: 0 }
+        params: { type: 1 }
       }).then(({ data }) => {
         if (data && data.code == 200) {
           this.waitCount = data.payload.waitCount

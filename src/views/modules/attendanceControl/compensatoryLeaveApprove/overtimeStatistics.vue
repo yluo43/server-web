@@ -40,7 +40,7 @@
           <span>已选中 {{ count }} 项</span>
         </div>
         <div class="operate-button">
-          <el-button class="el-button-func" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
+          <el-button class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
         </div>
         <div>
           <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable" propHeight="467px">
@@ -210,10 +210,6 @@ export default {
 <style scoped>
 .el-input {
   width: 200px;
-}
-.el-button {
-  margin-left: 0;
-  width: auto;
 }
 </style>
 <style>

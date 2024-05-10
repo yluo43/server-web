@@ -35,7 +35,7 @@
         </div>
       </el-header>
       <div class="operate-button">
-        <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
+        <el-button class="btn-download" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
         <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
       </div>
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
@@ -348,7 +348,6 @@ export default {
           this.editDataForm.projectName = item.name
         }
       })
-      // this.editDataForm.projectId = this.editDataForm.value[1]
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.title == '添加') {
@@ -420,30 +419,6 @@ export default {
 .el-input {
   width: 200px;
 }
-/* ::v-deep .el-cascader-menu {
-  width: 190px;
-} */
-
-/* ::v-deep .el-select {
-  width: 230px !important;
-} */
-
-/* ::v-deep .el-select__tags {
-  max-width: none !important;
-}
-::v-deep .el-select__tags-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 80px;
-} */
-
-// ::v-deep .editForm .el-form-item__label {
-//   width: 125px !important;
-// }
-// ::v-deep .editForm .el-form-item {
-//   width: 100% !important;
-// }
 ::v-deep .drawerForm {
   .el-form-item__label {
     width: 120px !important;
@@ -462,8 +437,7 @@ export default {
 
 .el-button-func {
   width: 86px;
-  height: 30px;
-  text-align: center;
+  height: 28px;
 }
 ::v-deep .el-table__cell {
   text-align: center;

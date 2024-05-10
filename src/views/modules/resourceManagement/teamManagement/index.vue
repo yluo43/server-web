@@ -67,7 +67,7 @@
       </el-header>
       <div class="operate-button">
         <el-button
-          style="width: 110px"
+          class="btn-download"
           icon="
           el-icon-download"
           type="primary"
@@ -77,7 +77,7 @@
           批量下载
         </el-button>
         <el-button
-          style="width: 110px"
+          class="btn-download"
           icon="
           el-icon-circle-plus-outline"
           type="primary"
@@ -540,9 +540,9 @@ export default {
           this.deleteIds.push(a.id)
           totalMoney += a.totalMoney
         })
-        this.chooseStr = '已选中' + this.deleteIds.length + '项'
+        this.chooseStr = '已选中 ' + this.deleteIds.length + ' 项'
       } else {
-        this.chooseStr = '已选中 0 个团队'
+        this.chooseStr = '已选中 0 项'
       }
     },
     clear(form) {
@@ -660,34 +660,7 @@ export default {
 .el-input {
   width: 200px;
 }
-/* .el-form--inline > .inputlist {
-  padding-top: 20px;
-  padding-left: 20px;
-  display: flex;
-} */
 
-.el-button-func {
-  width: 86px;
-  height: 30px;
-  text-align: center;
-}
-::v-deep .el-table__cell {
-  text-align: center;
-}
-
-/* .chooseResult {
-  width: 98%;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
-// ::v-deep .editForm .el-form-item__label {
-//   width: 90px !important;
-// }
 ::v-deep .drawerForm {
   .el-form-item__label {
     width: 80px !important;

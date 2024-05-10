@@ -73,10 +73,8 @@
           <el-button type="text" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</el-button>
         </div>
         <div class="operate-button">
-          <el-button class="el-button-func" type="primary" @click="download()" icon="el-icon-download" style="margin-right: 10px" v-auth="'projectSet:export'">
-            批量下载
-          </el-button>
-          <el-button class="el-button-func" type="primary" @click="add()" icon="el-icon-circle-plus-outline" v-auth="'projectSet:add'">新建项目集</el-button>
+          <el-button type="primary" @click="download()" icon="el-icon-download" class="btn-download" v-auth="'projectSet:export'">批量下载</el-button>
+          <el-button class="btn-download" type="primary" @click="add()" icon="el-icon-circle-plus-outline" v-auth="'projectSet:add'">新建项目集</el-button>
         </div>
         <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
           <template v-slot:endDate="row">
@@ -411,10 +409,6 @@ export default {
 }
 </script>
 <style scoped>
-.el-button {
-  margin-left: 0;
-  width: auto;
-}
 .el-input {
   width: 200px;
 }
