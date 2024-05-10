@@ -72,8 +72,8 @@
           </el-form>
 
           <div style="display: flex; justify-content: center; margin: 30px 0 0 280px">
-            <el-button @click="drawer = false" style="margin-right: 24px">取消</el-button>
             <el-button v-if="!isDisabled" type="primary" @click="editSubmit()">确定</el-button>
+            <el-button @click="drawer = false" style="margin-right: 24px">取消</el-button>
           </div>
         </div>
         <div v-else style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center">

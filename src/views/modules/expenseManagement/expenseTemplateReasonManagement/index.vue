@@ -30,7 +30,7 @@
         </el-form>
 
         <div class="chooseResult">
-          <span>已选中{{ count }}项</span>
+          <span>已选中 {{ count }} 项</span>
           <el-button type="text" @click="batchDelete()">批量删除</el-button>
         </div>
       </el-header>
@@ -74,7 +74,7 @@
               <el-cascader clearable :append-to-body="false" style="width: 200px" v-model="editDataForm.value" :options="options"></el-cascader>
             </el-form-item>
             <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
-              <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">保存</el-button>
+              <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
           </el-form>

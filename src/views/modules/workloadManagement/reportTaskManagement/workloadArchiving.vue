@@ -41,7 +41,7 @@
 
         <div class="table">
           <div>
-            <baseTable ref="workloadListTable" :multi-select="true" @select="onSelect" :table-data="workloadList" style="margin-top: 10px">
+            <baseTable ref="workloadListTable" :multi-select="true" @select="onSelect" :table-data="workloadList" style="margin-top: 10px" propHeight="500px">
               <template v-slot:workStatus="row">
                 <template v-if="row.item.workStatus == 2">
                   <span>待归档</span>
@@ -334,7 +334,7 @@ export default {
 }
 .table {
   background-color: white;
-  margin-top: 10px;
+  // margin-top: 10px;
 }
 
 .setstyle {

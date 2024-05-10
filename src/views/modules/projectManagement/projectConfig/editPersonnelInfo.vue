@@ -44,7 +44,7 @@
       </el-form>
       <div class="btn-group">
         <el-button plain style="margin-right: 10px" @click="cancel()">取消</el-button>
-        <el-button type="primary" @click="saveCheck">确认</el-button>
+        <el-button type="primary" @click="saveCheck">确定</el-button>
       </div>
     </el-container>
     <base-dialog ref="transferDialog" title="选择人员" :width="'700px'">
@@ -58,7 +58,7 @@
           filter
         ></tree-transfer>
         <div style="width: 100%; margin: 20px 0; display: flex; justify-content: flex-end">
-          <el-button type="primary" @click="confirm">确认</el-button>
+          <el-button type="primary" @click="confirm">确定</el-button>
         </div>
       </template>
     </base-dialog>

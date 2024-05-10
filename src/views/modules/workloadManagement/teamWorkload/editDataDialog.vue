@@ -48,7 +48,7 @@
         </el-form>
         <div class="btn-group">
           <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
-          <el-button type="primary" @click="confirm">确认</el-button>
+          <el-button type="primary" @click="confirm">确定</el-button>
         </div>
       </div>
     </el-container>

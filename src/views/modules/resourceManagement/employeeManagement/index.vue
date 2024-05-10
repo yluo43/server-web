@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container>
       <el-header style="height: 100%">
-        <el-form :inline="true" label-width="65px" label-position="left" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="60px" label-position="right" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="用户姓名:" prop="name">
               <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable maxlength="50"></el-input>
@@ -95,9 +95,9 @@
             </div>
             <el-form-item>
               <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-                <span v-if="showFlag" style="color: #2462f9">收起</span>
-                <span v-else style="color: #2462f9">展开</span>
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
               </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-search">重置</el-button>

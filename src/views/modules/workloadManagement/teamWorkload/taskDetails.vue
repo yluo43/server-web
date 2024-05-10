@@ -12,7 +12,7 @@
             </div>
           </div>
           <div style="margin-bottom: 10px; padding-left: 16px">
-            <el-form ref="formData" :inline="true" label-width="65px" :label-position="labelposition" :model="formData">
+            <el-form ref="formData" :inline="true" label-width="60px" :label-position="labelposition" :model="formData">
               <el-form-item label="用户姓名:" prop="userName">
                 <el-input style="width: 200px" v-model="formData.userName" placeholder="请输入用户姓名" clearable />
               </el-form-item>
@@ -92,7 +92,7 @@
               <el-table-column prop="workStatusName" label="确认状态" show-overflow-tooltip></el-table-column>
             </el-table>
           </div>
-          <div style="display: flex; justify-content: center">
+          <div style="display: flex; justify-content: center; margin-top: 10px">
             <el-pagination
               :page-sizes="[20, 50, 100]"
               :page-size="pageSize"

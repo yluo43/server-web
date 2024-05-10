@@ -2,19 +2,20 @@
   <div style="height: 100%">
     <el-container>
       <el-header style="height: 100%">
-        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="70px" label-position="left" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="团队名称:" prop="teamName">
               <el-input v-model="dataForm.teamName" placeholder="输入关键字" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="团队负责人:" prop="managerIds">
-              <el-select v-model="dataForm.managerIds" placeholder="请选择" multiple>
-                <el-option v-for="manager in managerList" :key="manager.id" :label="manager.name + '(' + manager.id + ')'" :value="manager.id"></el-option>
-              </el-select>
-            </el-form-item>
+
             <el-form-item label="驻地:" prop="stationIds">
               <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择" multiple :collapse-tags="true">
                 <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="团队负责人:" prop="managerIds">
+              <el-select v-model="dataForm.managerIds" placeholder="请选择" multiple>
+                <el-option v-for="manager in managerList" :key="manager.id" :label="manager.name + '(' + manager.id + ')'" :value="manager.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="状态:" prop="state">
@@ -32,7 +33,7 @@
                   <el-option v-for="dept in deptList" :key="dept.id" :label="dept.name" :value="dept.id" multiple></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="创建时间:" prop="createTime" style="width: 290px !important">
+              <el-form-item label="创建时间:" prop="createTime">
                 <el-date-picker
                   style="width: 200px"
                   value-format="yyyy-MM-dd"
@@ -47,9 +48,9 @@
             </div>
             <el-form-item>
               <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-                <span v-if="showFlag" style="color: #2462f9">收起</span>
-                <span v-else style="color: #2462f9">展开</span>
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
               </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
@@ -179,10 +180,8 @@
                 <el-option key="1" label="解散" value="1"></el-option>
               </el-select>
             </el-form-item>
-
             <br />
-
-            <div style="display: flex; justify-content: flex-end; margin-right: 10px; margin-top: 30px">
+            <div style="display: flex; justify-content: flex-end; margin-right: 10px; margin-top: 60px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
@@ -201,7 +200,7 @@
           :data="teamMembers"
         ></el-transfer>
         <div style="width: 100%; margin-bottom: 20px; display: flex; justify-content: flex-end">
-          <el-button type="primary" @click="confirm">确认</el-button>
+          <el-button type="primary" @click="confirm">确定</el-button>
         </div>
       </template>
     </base-dialog>

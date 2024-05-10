@@ -85,7 +85,7 @@
               </el-table-column>
             </el-table>
           </div>
-          <div style="display: flex; justify-content: center">
+          <div style="display: flex; justify-content: center; margin-top: 10px">
             <el-pagination
               :page-sizes="[20, 50, 100]"
               :page-size="pageSize"

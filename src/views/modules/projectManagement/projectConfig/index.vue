@@ -2,7 +2,7 @@
   <div v-if="flag" style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: 100%; padding: 0">
-        <el-form ref="projectConfigForm" label-width="80px" label-position="left" :inline="true" :model="projectConfigFormData">
+        <el-form ref="projectConfigForm" label-width="70px" label-position="right" :inline="true" :model="projectConfigFormData">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectConfigFormData.name" placeholder="请输入项目名称" clearable />
           </el-form-item>
@@ -86,9 +86,9 @@
           </div>
           <el-form-item>
             <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-              <span v-if="showFlag" style="color: #2462f9">收起</span>
-              <span v-else style="color: #2462f9">展开</span>
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+              <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+              <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
             </div>
             <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="queryProjectList">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
