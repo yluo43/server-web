@@ -58,7 +58,7 @@
               :type="null"
               @afterQuery="afterTeamListQuery"
               style="margin-top: 10px"
-              propHeight="325px"
+              propHeight="315px"
             ></baseTable>
           </div>
         </div>

@@ -355,8 +355,8 @@ export default {
         url: '/employee/selectEmployeeListWithPage'
       },
       rules: {
-        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        empId: [{ required: true, message: '请输入工号', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入姓名', trigger: 'change' || 'blur' }],
+        empId: [{ required: true, message: '请输入工号', trigger: 'change' || 'blur' }],
         mailbox: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { validator: validEmail, trigger: 'change' }
@@ -452,6 +452,11 @@ export default {
     },
 
     changeTeamByDept() {
+      if (!this.editDataForm.deptId && this.editDataForm.deptId !== 0) {
+        this.teamNamesByDept = []
+        this.editDataForm.teamId = ''
+        return
+      }
       //刷新团队
       this.$http({
         url: this.$http.adornUrl('/common/getTeamByDept?deptId=' + this.editDataForm.deptId),
@@ -476,7 +481,6 @@ export default {
       if (!go) {
         return
       }
-
       let user = getCName()
       this.editDataForm.createUser = user
       if (this.editDataForm.departDate == '-') {
@@ -549,7 +553,6 @@ export default {
         if (!valid) {
           return false
         }
-
         if (this.departDate != null && this.departDate != '') {
           this.dataForm.departDateStart = this.departDate[0]
           this.dataForm.departDateEnd = this.departDate[1]
@@ -685,8 +688,20 @@ export default {
 
       this.$refs.dataForm.resetFields()
     },
+    // clear(form) {
+    //   Object.keys(form).forEach((key) => (form[key] = ''))
+    // }
     clear(form) {
-      Object.keys(form).forEach((key) => (form[key] = ''))
+      Object.keys(form).forEach((key) => {
+        if (Array.isArray(form[key])) {
+          form[key] = []
+        } else {
+          form[key] = ''
+        }
+      })
+      this.$nextTick(() => {
+        this.$refs.editdataForm.clearValidate()
+      })
     }
   }
 }

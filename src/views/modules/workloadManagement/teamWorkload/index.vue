@@ -85,11 +85,18 @@
               </template>
               <!-- 操作 -->
               <template v-slot:clientType="row">
-                <el-button :disabled="row.item.taskStatus != 1" type="text" @click="goToReportingWorkload(row)">填报工作量</el-button>
-                <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 4" type="text" @click="goToTrack(row)">
+                <el-button :disabled="row.item.taskStatus != 1" type="text" @click="goToReportingWorkload(row)" style="width: 100px">填报工作量</el-button>
+                <el-button
+                  :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 4"
+                  type="text"
+                  style="width: 100px"
+                  @click="goToTrack(row)"
+                >
                   去跟踪
                 </el-button>
-                <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1" type="text" @click="goToShowDetails(row)">查看详情</el-button>
+                <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1" type="text" style="width: 100px" @click="goToShowDetails(row)">
+                  查看详情
+                </el-button>
               </template>
             </baseTable>
           </div>
@@ -247,10 +254,7 @@ export default {
   height: 20px;
   line-height: 20px;
 }
-::v-deep .el-button {
-  min-width: 0;
-  width: auto;
-}
+
 .main {
   width: 100%;
   padding: 0;

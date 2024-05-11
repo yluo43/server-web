@@ -143,8 +143,8 @@
         </div>
       </el-main>
       <div class="btnGroup">
-        <el-button @click="cancelDialog">取消</el-button>
-        <el-button type="primary" @click="save">保存</el-button>
+        <el-button @click="cancelDialog" style="margin-right: 10px">取消</el-button>
+        <el-button type="primary" style="margin-right: 10px" @click="save">保存</el-button>
         <el-button type="primary" @click="submitData">提交</el-button>
       </div>
     </el-container>
