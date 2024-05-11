@@ -3,7 +3,7 @@
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-container>
         <el-main style="width: 100%; padding: 0">
-          <div class="table" style="height: 640px; background-color: white">
+          <div class="table" style="height: 650px; background-color: white">
             <el-row style="display: flex; align-items: center">
               <el-col>
                 <div style="display: flex; align-items: center">
@@ -82,7 +82,7 @@
                   border
                   :header-cell-style="{ 'text-align': 'center' }"
                   :cell-style="{ 'text-align': 'center' }"
-                  style="width: 100%; height: 415px; overflow-y: scroll"
+                  style="width: 100%; height: 425px; overflow-y: scroll"
                   @selection-change="selChange"
                   :span-method="objectSpanMethod"
                   :row-key="(row) => row.id"

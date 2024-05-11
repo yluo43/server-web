@@ -395,11 +395,6 @@ export default {
 </script>
 
 <style scoped>
-::v-deep .el-button {
-  min-width: 60px;
-  margin-left: 0;
-  width: auto;
-}
 .el-input {
   width: 200px;
 }
