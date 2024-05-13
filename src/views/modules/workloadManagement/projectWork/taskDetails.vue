@@ -238,18 +238,20 @@ export default {
       })
     },
     async init(data) {
-      await this.projectTaskListNoPage()
       if (data) {
         Object.assign(this.dataForm, data)
       }
-      if (this.dataForm.projectId == null) {
-        return
+      await this.projectTaskListNoPage()
+      if (this.dataForm.projectId && this.dataForm.taskId) {
+        this.selectTaskList()
       }
-      this.selectTaskList()
     },
     initData(params) {
       if (params) {
         Object.assign(this.dataForm, params)
+      }
+      if (!this.dataForm.taskId) {
+        return
       }
       this.selectTaskList()
     },

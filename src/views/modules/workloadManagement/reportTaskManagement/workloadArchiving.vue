@@ -119,7 +119,7 @@ export default {
           { label: '提交时间', prop: 'commitTime', width: '140px' },
           { label: '审批时间', prop: 'approveTime', width: '140px' },
           { label: '归档状态', prop: 'workStatus', slotName: 'workStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '160px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
         url: '/workload/pigeonholeTaskList'
       }

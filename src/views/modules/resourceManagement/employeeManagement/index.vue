@@ -626,7 +626,7 @@ export default {
           this.deleteIds.push(a.id)
           totalMoney += a.totalMoney
         })
-        this.chooseStr = '已选中' + this.deleteIds.length + '位成员'
+        this.chooseStr = '已选中 ' + this.deleteIds.length + ' 项'
       } else {
         this.chooseStr = '已选中 0 项'
       }
