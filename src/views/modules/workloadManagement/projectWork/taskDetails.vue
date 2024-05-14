@@ -3,7 +3,7 @@
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-container>
         <el-main style="width: 100%; padding: 0">
-          <div class="table" style="height: 640px; background-color: white">
+          <div class="table" style="height: 650px; background-color: white">
             <el-row style="display: flex; align-items: center">
               <el-col>
                 <div style="display: flex; align-items: center">
@@ -84,7 +84,7 @@
                   border
                   :header-cell-style="{ 'text-align': 'center' }"
                   :cell-style="{ 'text-align': 'center' }"
-                  style="width: 100%; height: 415px; overflow-y: scroll"
+                  style="width: 100%; height: 425px; overflow-y: scroll"
                   :span-method="objectSpanMethod"
                   :row-key="(row) => row.id"
                   @select="handleSelect"
@@ -242,18 +242,20 @@ export default {
       })
     },
     async init(data) {
-      await this.projectTaskListNoPage()
       if (data) {
         Object.assign(this.dataForm, data)
       }
-      if (this.dataForm.projectId == null) {
-        return
+      await this.projectTaskListNoPage()
+      if (this.dataForm.projectId && this.dataForm.taskId) {
+        this.selectTaskList()
       }
-      this.selectTaskList()
     },
     initData(params) {
       if (params) {
         Object.assign(this.dataForm, params)
+      }
+      if (!this.dataForm.taskId) {
+        return
       }
       this.selectTaskList()
     },

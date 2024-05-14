@@ -18,7 +18,15 @@
             />
           </el-form-item>
           <el-form-item label="统计部门:" prop="department">
-            <el-select :disabled="flag === 'edit'" v-model="formData.department" multiple clearable @remove-tag="removeTag" collapse-tags>
+            <el-select
+              :disabled="flag === 'edit'"
+              placeholder="请选择统计部门"
+              v-model="formData.department"
+              multiple
+              clearable
+              @remove-tag="removeTag"
+              collapse-tags
+            >
               <el-option disabled v-for="item in departments" :key="item.id" :label="item.name" :value="item.id">
                 <el-checkbox :disabled="item.id === 0" v-model="item.check" @change="isCheck(item)">
                   {{ item.name }}
@@ -33,30 +41,30 @@
               v-model="formData.reportStartTime"
               type="date"
               value-format="yyyy-MM-dd"
-              placeholder="开始填报时间"
+              placeholder="请选择开始填报时间"
               clearable
             />
           </el-form-item>
           <el-form-item label="填报天数:" prop="reportDay">
-            <el-select v-model="formData.reportDay" clearable>
+            <el-select v-model="formData.reportDay" clearable placeholder="请选择填报天数">
               <el-option v-for="item in days" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             天
           </el-form-item>
           <el-form-item label="确认天数:" prop="affirmDay">
-            <el-select v-model="formData.affirmDay" clearable>
+            <el-select v-model="formData.affirmDay" placeholder="请选择确认天数" clearable>
               <el-option v-for="item in days" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             天
           </el-form-item>
           <el-form-item label="归档天数:" prop="pigeonholeDay">
-            <el-select v-model="formData.pigeonholeDay" clearable>
+            <el-select v-model="formData.pigeonholeDay" placeholder="请选择归档天数" clearable>
               <el-option v-for="item in days" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             天
           </el-form-item>
           <el-form-item label="提醒频率:" prop="frequency">
-            <el-select v-model="formData.frequency" clearable>
+            <el-select v-model="formData.frequency" placeholder="请选择提醒频率" clearable>
               <el-option v-for="item in reminderFrequency" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             小时(9:00-18:00)
@@ -364,9 +372,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.el-button {
-  margin-left: 0;
-  width: auto;
-}
-</style>
+<style scoped></style>

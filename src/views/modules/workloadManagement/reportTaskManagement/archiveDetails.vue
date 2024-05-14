@@ -177,6 +177,9 @@ export default {
     },
     async initTable() {
       await this.selectTaskList()
+      if (!this.taskId) {
+        return
+      }
       this.selectTaskDetial({ taskId: this.taskId, status: 4 })
     },
     //获取报工类别

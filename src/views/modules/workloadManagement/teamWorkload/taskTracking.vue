@@ -154,6 +154,9 @@ export default {
     },
     async initTable() {
       await this.selectTaskList()
+      if (!this.taskId) {
+        return
+      }
       this.selectWorkload()
     },
     select() {

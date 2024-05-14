@@ -108,8 +108,8 @@
 
         <!-- toolBar -->
         <div class="operate-button">
-          <el-button class="el-button-func" type="primary" icon="el-icon-download" style="margin-right: 10px" @click="batchDownload">批量下载</el-button>
-          <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addPersonnelInfo">添加人员</el-button>
+          <el-button class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
+          <el-button class="btn-download" type="primary" icon="el-icon-circle-plus-outline" @click="addPersonnelInfo">添加人员</el-button>
         </div>
         <!-- @select="onSelectTableItem" -->
         <baseTable ref="personnelManagementTable" :table-data="personnelManagementTableData" :multi-select="true" @selectData="selectData">
@@ -524,16 +524,7 @@ export default {
   /*color: #409eff; */ /* 设置描述项label字体颜色为绿色 */
 }
 
-/* ::v-deep .el-select .el-tag {
-  max-width: 70% !important;
-} */
-
 .el-input {
   width: 200px;
-}
-
-.el-button {
-  margin-left: 0;
-  width: auto;
 }
 </style>

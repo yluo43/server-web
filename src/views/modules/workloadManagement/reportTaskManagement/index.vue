@@ -37,7 +37,9 @@
             <el-col :span="10">
               <div style="display: flex; align-items: center">
                 <p style="font-size: 16px; font-weight: 600; margin-left: 10px">任务列表</p>
-                <el-button style="margin-left: 10px; width: 130px" type="primary" icon="el-icon-plus" @click="addReportTask">下发填报任务</el-button>
+                <el-button style="margin-left: 10px; width: 130px" type="primary" icon="el-icon-circle-plus-outline" @click="addReportTask">
+                  下发填报任务
+                </el-button>
               </div>
             </el-col>
             <el-col :span="14">
@@ -90,14 +92,16 @@
                 <template>
                   <el-row>
                     <el-col :span="8">
-                      <el-button v-show="row.item.taskStatus == 4" type="text" @click="goToArchiveDetails(row)">>>归档详情</el-button>
-                      <el-button v-show="row.item.taskStatus == 3" type="text" @click="goToArchive(row)">>>去归档</el-button>
+                      <el-button v-show="row.item.taskStatus == 4" type="text" style="width: 100px" @click="goToArchiveDetails(row)">>>归档详情</el-button>
+                      <el-button v-show="row.item.taskStatus == 3" type="text" style="width: 100px" @click="goToArchive(row)">>>去归档</el-button>
                     </el-col>
                     <el-col :span="6">
-                      <el-button type="text" @click="goToTaskDetails(row)">任务详情</el-button>
+                      <el-button type="text" style="width: 100px" @click="goToTaskDetails(row)">任务详情</el-button>
                     </el-col>
-                    <el-col :span="5"><el-button :disabled="row.item.taskStatus !== 0" type="text" @click="editReportTask(row)">编辑</el-button></el-col>
-                    <el-col :span="5"><el-button type="text" @click="goToDelete(row)">删除</el-button></el-col>
+                    <el-col :span="5">
+                      <el-button :disabled="row.item.taskStatus !== 0" type="text" style="width: 100px" @click="editReportTask(row)">编辑</el-button>
+                    </el-col>
+                    <el-col :span="5"><el-button type="text" style="width: 100px" @click="goToDelete(row)">删除</el-button></el-col>
                   </el-row>
                 </template>
               </template>
@@ -338,10 +342,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .el-button {
-  min-width: 0;
-  width: auto;
-}
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }

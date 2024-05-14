@@ -114,7 +114,7 @@
       </el-header>
       <div class="operate-button">
         <el-button
-          style="width: 110px"
+          class="btn-download"
           icon="
           el-icon-download"
           type="primary"
@@ -124,7 +124,7 @@
           批量下载
         </el-button>
         <el-button
-          style="width: 110px"
+          class="btn-download"
           icon="
           el-icon-circle-plus-outline"
           type="primary"
@@ -357,8 +357,8 @@ export default {
         url: '/employee/selectEmployeeListWithPage'
       },
       rules: {
-        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        empId: [{ required: true, message: '请输入工号', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入姓名', trigger: 'change' || 'blur' }],
+        empId: [{ required: true, message: '请输入工号', trigger: 'change' || 'blur' }],
         mailbox: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { validator: validEmail, trigger: 'change' }
@@ -454,6 +454,11 @@ export default {
     },
 
     changeTeamByDept() {
+      if (!this.editDataForm.deptId && this.editDataForm.deptId !== 0) {
+        this.teamNamesByDept = []
+        this.editDataForm.teamId = ''
+        return
+      }
       //刷新团队
       this.$http({
         url: this.$http.adornUrl('/common/getTeamByDept?deptId=' + this.editDataForm.deptId),
@@ -478,7 +483,6 @@ export default {
       if (!go) {
         return
       }
-
       let user = getCName()
       this.editDataForm.createUser = user
       if (this.editDataForm.departDate == '-') {
@@ -551,7 +555,6 @@ export default {
         if (!valid) {
           return false
         }
-
         if (this.departDate != null && this.departDate != '') {
           this.dataForm.departDateStart = this.departDate[0]
           this.dataForm.departDateEnd = this.departDate[1]
@@ -638,7 +641,7 @@ export default {
           this.deleteIds.push(a.id)
           totalMoney += a.totalMoney
         })
-        this.chooseStr = '已选中' + this.deleteIds.length + '位成员'
+        this.chooseStr = '已选中 ' + this.deleteIds.length + ' 项'
       } else {
         this.chooseStr = '已选中 0 项'
       }
@@ -700,8 +703,20 @@ export default {
 
       this.$refs.dataForm.resetFields()
     },
+    // clear(form) {
+    //   Object.keys(form).forEach((key) => (form[key] = ''))
+    // }
     clear(form) {
-      Object.keys(form).forEach((key) => (form[key] = ''))
+      Object.keys(form).forEach((key) => {
+        if (Array.isArray(form[key])) {
+          form[key] = []
+        } else {
+          form[key] = ''
+        }
+      })
+      this.$nextTick(() => {
+        this.$refs.editdataForm.clearValidate()
+      })
     }
   }
 }
@@ -719,24 +734,10 @@ export default {
   padding-left: 20px;
   display: flex;
 } */
-.el-button-func {
-  width: 86px;
-  height: 30px;
-  text-align: center;
-}
+
 ::v-deep .el-table__cell {
   text-align: center;
 }
-/* .chooseResult {
-  width: 98%;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
 
 // ::v-deep .editForm .el-form-item__label {
 //   width: 80px !important;

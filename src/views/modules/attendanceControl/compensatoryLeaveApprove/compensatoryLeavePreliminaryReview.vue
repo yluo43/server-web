@@ -350,10 +350,4 @@ export default {
 .el-input {
   width: 200px;
 }
-
-.el-button {
-  min-width: 60px;
-  margin-left: 0;
-  width: auto;
-}
 </style>

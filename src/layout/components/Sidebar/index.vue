@@ -92,3 +92,11 @@ export default {
   }
 }
 </script>
+<style scoped>
+::v-deep .el-submenu__title:hover i {
+  color: #2462f9 !important;
+}
+::v-deep .el-submenu__icon-arrow {
+  font-size: 14px;
+}
+</style>

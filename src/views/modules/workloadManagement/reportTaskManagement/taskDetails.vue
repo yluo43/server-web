@@ -58,7 +58,7 @@
               :type="null"
               @afterQuery="afterTeamListQuery"
               style="margin-top: 10px"
-              propHeight="325px"
+              propHeight="315px"
             ></baseTable>
           </div>
         </div>
@@ -104,7 +104,6 @@ export default {
         this.active = initData.taskStatus
       }
       Object.assign(this.taskInfo, initData)
-      console.log(this.taskInfo)
       this.selectPersonCount({ deptIds: this.taskInfo.deptIds, curPage: 1, pageSize: 10 })
       this.selectTableData()
     },
