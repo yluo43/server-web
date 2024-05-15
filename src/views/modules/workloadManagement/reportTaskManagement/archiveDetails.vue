@@ -6,7 +6,7 @@
           <div class="header-title">
             <div>工作量统计:</div>
             <div style="margin-left: 10px">
-              <el-select v-model="reportWorkName" style="width: 278px !important" @change="changeSelect">
+              <el-select v-model="taskId" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>
             </div>
@@ -139,6 +139,7 @@ export default {
       taskIds: [],
       taskDetial: {
         theads: [
+          { label: '任务名称', prop: 'taskName' },
           { label: '团队成员', prop: 'name' },
           { label: '工号', prop: 'empId' },
           { label: '归属部门', prop: 'deptName' },
@@ -172,15 +173,14 @@ export default {
   methods: {
     async init(initData) {
       await this.selectTaskList()
-      this.reportWorkName = initData.reportWorkName
       this.taskId = initData.taskId
       this.selectTaskDetial({ taskId: this.taskId, status: 4 })
     },
     async initTable() {
       await this.selectTaskList()
-      // if (!this.taskId) {
-      //   return
-      // }
+      if (!this.taskId) {
+        return
+      }
       this.selectTaskDetial({ taskId: this.taskIds.toString(), status: 4 })
     },
     //获取报工类别
@@ -230,14 +230,22 @@ export default {
         params: params
       })
       if (result.data && result.data.code === 200) {
-        this.workLoadStatistics = result.data.payload
         if (result.data.payload.length != 0) {
-          this.reportWorkName = result.data.payload[0].reportWorkName
-          this.taskId = result.data.payload[0].taskId
           result.data.payload.map((item) => {
             this.taskIds.push(item.taskId)
           })
+          result.data.payload.splice(0, 0, {
+            reportWorkName: '全部',
+            taskId: this.taskIds.toString()
+          })
+          this.taskId = result.data.payload[0].taskId
+        } else {
+          result.data.payload.splice(0, 0, {
+            reportWorkName: '全部',
+            taskId: ''
+          })
         }
+        this.workLoadStatistics = [...result.data.payload]
       } else {
         this.$message.error(result.data.msg)
       }

@@ -6,7 +6,7 @@
           <div class="header-title">
             <div>工作量统计:</div>
             <div style="margin-left: 10px">
-              <el-select v-model="reportWorkName" style="width: 278px !important" @change="changeSelect">
+              <el-select v-model="taskId" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>
             </div>
@@ -94,6 +94,7 @@ export default {
       teamIds: [],
       teams: [],
       empId: '1260',
+      taskIds: [],
       //团队选择数据
       checkedData: [],
       workloadList: {
@@ -128,7 +129,6 @@ export default {
     //初始化数据
     async init(initData) {
       await this.selectTaskList()
-      this.reportWorkName = initData.reportWorkName
       this.taskId = initData.taskId
       this.selectWorkload({ taskId: this.taskId })
     },
@@ -189,9 +189,21 @@ export default {
       if (result.data && result.data.code === 200) {
         this.workLoadStatistics = result.data.payload.list
         if (result.data.payload.list.length != 0) {
-          this.reportWorkName = result.data.payload.list[0].reportWorkName
+          result.data.payload.list.map((item) => {
+            this.taskIds.push(item.taskId)
+          })
+          result.data.payload.list.splice(0, 0, {
+            reportWorkName: '全部',
+            taskId: this.taskIds.toString()
+          })
           this.taskId = result.data.payload.list[0].taskId
+        } else {
+          result.data.payload.list.splice(0, 0, {
+            reportWorkName: '全部',
+            taskId: ''
+          })
         }
+        this.workLoadStatistics = result.data.payload.list
       } else {
         this.$message.error(result.data.msg)
       }
