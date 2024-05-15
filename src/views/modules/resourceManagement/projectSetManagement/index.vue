@@ -176,7 +176,7 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '项目集名称', prop: 'psName' },
+          { label: '项目集名称', prop: 'psName', width: '210px' },
           { label: '项目集ID', prop: 'psId', width: '80px' },
           { label: '负责人', prop: 'managerName', width: '80px' },
           { label: '归属部门', prop: 'deptName' },

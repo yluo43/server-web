@@ -5,13 +5,13 @@
         <div class="top">
           <div class="header-title">
             <div>工作量统计:</div>
-            <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="reportWorkName" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
+            <div style="margin-left: 10px">
+              <el-select v-model="reportWorkName" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>
             </div>
           </div>
-          <div style="padding-left: 16px">
+          <div style="padding: 20px 16px">
             <el-form ref="formData" :inline="true" label-width="70px" :label-position="labelposition" :model="formData">
               <el-form-item label="用户姓名:" prop="name">
                 <el-input style="width: 200px" v-model="formData.name" placeholder="请输入用户姓名" clearable />
@@ -68,15 +68,15 @@
               </el-form-item>
             </el-form>
           </div>
-          <div class="chooseResult" style="display: flex">
-            <div>
-              已选中
-              <span>{{ count }}</span>
-              项
-            </div>
-            <div>
-              <el-button type="text" @click="batchDownLoad">批量下载</el-button>
-            </div>
+        </div>
+        <div class="chooseResult" style="display: flex; margin: 24px 0">
+          <div>
+            已选中
+            <span>{{ count }}</span>
+            项
+          </div>
+          <div>
+            <el-button type="text" @click="batchDownLoad">批量下载</el-button>
           </div>
         </div>
         <div class="table">
@@ -136,6 +136,7 @@ export default {
       costItems: [],
       //报工类别
       categories: [],
+      taskIds: [],
       taskDetial: {
         theads: [
           { label: '团队成员', prop: 'name' },
@@ -177,10 +178,10 @@ export default {
     },
     async initTable() {
       await this.selectTaskList()
-      if (!this.taskId) {
-        return
-      }
-      this.selectTaskDetial({ taskId: this.taskId, status: 4 })
+      // if (!this.taskId) {
+      //   return
+      // }
+      this.selectTaskDetial({ taskId: this.taskIds.toString(), status: 4 })
     },
     //获取报工类别
     getWorkloadType() {
@@ -233,6 +234,9 @@ export default {
         if (result.data.payload.length != 0) {
           this.reportWorkName = result.data.payload[0].reportWorkName
           this.taskId = result.data.payload[0].taskId
+          result.data.payload.map((item) => {
+            this.taskIds.push(item.taskId)
+          })
         }
       } else {
         this.$message.error(result.data.msg)
@@ -375,10 +379,9 @@ export default {
   .header-title {
     display: flex;
     align-items: center;
-    padding-left: 16px;
-    font-size: 16px;
-    font-weight: 600;
-    padding-left: 16px;
+    // font-size: 16px;
+    // font-weight: 600;
+    padding-left: 24px;
   }
 }
 .table {

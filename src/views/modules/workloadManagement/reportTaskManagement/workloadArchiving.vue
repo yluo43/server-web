@@ -5,8 +5,8 @@
         <div class="top">
           <div class="header-title">
             <div>工作量统计:</div>
-            <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="reportWorkName" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
+            <div style="margin-left: 10px">
+              <el-select v-model="reportWorkName" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>
             </div>
@@ -21,48 +21,45 @@
                 <el-radio-button label="4">已归档</el-radio-button>
               </el-radio-group>
             </div>
-            <div>
-              <el-select v-model="teamIds" placeholder="请选择" multiple collapse-tags clearable @change="search">
+            <div style="margin-right: 24px">
+              <el-select v-model="teamIds" placeholder="请选择团队" multiple collapse-tags clearable @change="search">
                 <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </div>
           </div>
-          <div class="chooseResult" style="display: flex">
-            <div>
-              已选中
-              <span>{{ count }}</span>
-              项
-            </div>
-            <div v-if="this.radio == 2 || this.radio == 1">
-              <el-button type="text" @click="batchArchiving">批量归档</el-button>
-            </div>
+        </div>
+        <div class="chooseResult" style="display: flex; margin: 24px 0">
+          <div>
+            已选中
+            <span>{{ count }}</span>
+            项
+          </div>
+          <div v-if="this.radio == 2 || this.radio == 1">
+            <el-button type="text" @click="batchArchiving">批量归档</el-button>
           </div>
         </div>
-
         <div class="table">
-          <div>
-            <!-- @select="onSelect" -->
-            <baseTable ref="workloadListTable" :multi-select="true" @selectData="selectData" :table-data="workloadList" style="margin-top: 10px">
-              <template v-slot:workStatus="row">
-                <template v-if="row.item.workStatus == 2">
-                  <span>待归档</span>
-                </template>
-                <template v-if="row.item.workStatus == 3">
-                  <span>被驳回</span>
-                </template>
-                <template v-if="row.item.workStatus == 4">
-                  <span>已归档</span>
-                </template>
+          <!-- @select="onSelect" -->
+          <baseTable ref="workloadListTable" :multi-select="true" @selectData="selectData" :table-data="workloadList">
+            <template v-slot:workStatus="row">
+              <template v-if="row.item.workStatus == 2">
+                <span>待归档</span>
               </template>
-              <!-- 操作 -->
-              <template v-slot:clientType="row">
-                <template>
-                  <el-button :disabled="row.item.workStatus != 2" type="text" @click="goToArchived(row)">归档</el-button>
-                  <el-button :disabled="row.item.workStatus != 2" type="text" @click="goToReject(row)">驳回</el-button>
-                </template>
+              <template v-if="row.item.workStatus == 3">
+                <span>被驳回</span>
               </template>
-            </baseTable>
-          </div>
+              <template v-if="row.item.workStatus == 4">
+                <span>已归档</span>
+              </template>
+            </template>
+            <!-- 操作 -->
+            <template v-slot:clientType="row">
+              <template>
+                <el-button :disabled="row.item.workStatus != 2" type="text" @click="goToArchived(row)">归档</el-button>
+                <el-button :disabled="row.item.workStatus != 2" type="text" @click="goToReject(row)">驳回</el-button>
+              </template>
+            </template>
+          </baseTable>
         </div>
       </el-main>
     </el-container>
@@ -103,7 +100,7 @@ export default {
         theads: [
           { label: '团队成员', prop: 'name' },
           { label: '工号', prop: 'empId' },
-          { label: '归属部门', prop: 'deptName' },
+          { label: '归属部门', prop: 'deptName', width: '70px' },
           { label: '归属团队', prop: 'teamName' },
           { label: '开始时间', prop: 'startTime', width: '90px' },
           { label: '结束时间', prop: 'overTime', width: '90px' },
@@ -321,19 +318,16 @@ export default {
     background: white;
   }
   .header-title {
-    font-size: 16px;
-    font-weight: 600;
     display: flex;
     align-items: center;
-    padding-left: 16px;
+    padding-left: 24px;
   }
   .status {
-    padding: 20px 16px;
+    padding: 24px 60px;
   }
 }
 .table {
   background-color: white;
-  // margin-top: 10px;
 }
 
 .setstyle {
