@@ -124,6 +124,7 @@ export default {
   },
   methods: {
     async init(data) {
+      this.clear(this.dataForm)
       if (data) {
         Object.assign(this.dataForm, data)
       }
@@ -132,14 +133,14 @@ export default {
         this.selectTaskList()
       }
     },
-    initData(params) {
-      if (params) {
-        Object.assign(this.dataForm, params)
-      }
-      if (!this.dataForm.taskId) {
-        return
-      }
-      this.selectTaskList()
+    clear(form) {
+      Object.keys(form).forEach((key) => {
+        if (Array.isArray(form[key])) {
+          form[key] = []
+        } else {
+          form[key] = ''
+        }
+      })
     },
     async projectTaskListNoPage() {
       const result = await this.$http({

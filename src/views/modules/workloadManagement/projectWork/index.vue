@@ -217,13 +217,13 @@ export default {
         //this.projectList()
       } else if (this.activeName === 'second') {
         this.$nextTick(() => {
-          this.$refs.workerHourApproval.initData({
+          this.$refs.workerHourApproval.init({
             projectId: this.dataForm.projectId
           })
         })
       } else if (this.activeName === 'third') {
         this.$nextTick(() => {
-          this.$refs.taskDetails.initData({
+          this.$refs.taskDetails.init({
             projectId: this.dataForm.projectId
           })
         })
@@ -311,13 +311,13 @@ export default {
                 })
               } else if (this.activeName == 'second') {
                 this.$nextTick(() => {
-                  this.$refs.workerHourApproval.initData({
+                  this.$refs.workerHourApproval.init({
                     projectId: this.dataForm.projectId
                   })
                 })
               } else if (this.activeName == 'third') {
                 this.$nextTick(() => {
-                  this.$refs.taskDetails.initData({
+                  this.$refs.taskDetails.init({
                     projectId: this.dataForm.projectId
                   })
                 })

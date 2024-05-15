@@ -42,8 +42,8 @@
                 </div>
                 <div style="margin-left: 12px">
                   <p>本年完成任务数</p>
-                  <p class="font-bold">
-                    <span>{{ yearTask }}</span>
+                  <p>
+                    <span class="font-bold">{{ yearTask }}</span>
                     个任务
                   </p>
                 </div>
@@ -112,8 +112,8 @@
                 <template>
                   <el-row>
                     <el-col :span="8">
-                      <el-button v-show="row.item.taskStatus == 4" type="text" style="width: 100px" @click="goToArchiveDetails(row)">>>归档详情</el-button>
-                      <el-button v-show="row.item.taskStatus == 3" type="text" style="width: 100px" @click="goToArchive(row)">>>去归档</el-button>
+                      <el-button v-show="row.item.taskStatus == 4" type="text" style="width: 100px" @click="goToArchiveDetails(row)">归档详情>></el-button>
+                      <el-button v-show="row.item.taskStatus == 3" type="text" style="width: 100px" @click="goToArchive(row)">去归档>></el-button>
                     </el-col>
                     <el-col :span="6">
                       <el-button type="text" style="width: 100px" @click="goToTaskDetails(row)">任务详情</el-button>
