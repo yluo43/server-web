@@ -245,7 +245,7 @@ export default {
   data() {
     return {
       showFlag: false,
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       deleteIds: [],
       drawer: false,
       direction: 'rtl',

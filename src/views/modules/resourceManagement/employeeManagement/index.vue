@@ -276,7 +276,7 @@ export default {
         if (reg.test(value)) {
           callback()
         } else {
-          callback(new Error('邮箱格式错误'))
+          callback(new Error('邮箱格式错误!'))
         }
       }
     }
@@ -290,7 +290,7 @@ export default {
       entryDateInput: false,
       disabled: false,
       title: '',
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       deleteIds: [],
       drawer: false,
       entryDateShow: false,
@@ -357,8 +357,8 @@ export default {
         url: '/employee/selectEmployeeListWithPage'
       },
       rules: {
-        name: [{ required: true, message: '请输入姓名', trigger: 'change' || 'blur' }],
-        empId: [{ required: true, message: '请输入工号', trigger: 'change' || 'blur' }],
+        name: [{ required: true, message: '请输入姓名', trigger: ['change', 'blur'] }],
+        empId: [{ required: true, message: '请输入工号', trigger: ['change', 'blur'] }],
         mailbox: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { validator: validEmail, trigger: 'change' }
@@ -663,7 +663,7 @@ export default {
             method: 'post',
             data: this.deleteIds
           }).then(({ data }) => {
-            if (data && data.code === 200) {
+            if (data.success && data.code === 200) {
               this.$message({
                 message: '删除成功',
                 type: 'success'

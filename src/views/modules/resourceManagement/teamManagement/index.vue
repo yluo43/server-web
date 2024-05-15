@@ -222,7 +222,7 @@ export default {
       url: '',
       showParent: true,
       departStatusNameShow: false,
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       deleteIds: [],
       empLocations: [],
       managerList: [],

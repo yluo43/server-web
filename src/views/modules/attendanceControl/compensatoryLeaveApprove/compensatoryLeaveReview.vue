@@ -386,7 +386,7 @@ export default {
     // }
     selectData(sel) {
       this.count = sel.length
-      this.selData = sel
+      this.selData = [...sel]
     }
   }
 }

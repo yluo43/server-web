@@ -154,7 +154,7 @@ export default {
   data() {
     return {
       showFlag: false,
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       title: '',
       managerIdList: [],
       deptIdList: [],
@@ -345,7 +345,7 @@ export default {
     // },
     selectData(selection) {
       if (selection.length > 0) {
-        this.chooseStr = '已选中' + selection.length + '项'
+        this.chooseStr = '已选中 ' + selection.length + ' 项'
       } else {
         this.chooseStr = '已选中 0 项'
       }

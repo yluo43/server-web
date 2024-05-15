@@ -250,7 +250,7 @@ export default {
       deptList: [],
       projectTypeList: [...ProjectConstants.projectType],
       settlementCycleList: [...ProjectConstants.settlementCycle],
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       projectTableData: {
         theads: [
           { label: '项目名称', prop: 'name', slotName: 'name', width: '210px' },

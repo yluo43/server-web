@@ -189,7 +189,7 @@ export default {
     // },
     selectData(sel) {
       this.count = sel.length
-      this.selData = sel
+      this.selData = [...sel]
     },
     //批量下载
     batchDownload() {

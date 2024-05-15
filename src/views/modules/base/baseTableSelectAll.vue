@@ -76,7 +76,7 @@
       </el-table>
     </div>
     <!-- Footer Area -->
-    <div v-if="!hidePage">
+    <div v-if="!hidePage" style="margin-top: 10px">
       <el-pagination
         style="text-align: center"
         :current-page="options.curPage"

@@ -210,7 +210,7 @@ export default {
   data() {
     return {
       activeNames: [],
-      chooseStr: '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款 0.00',
+      chooseStr: '已选中 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款 0.00',
       title: '',
       order: {
         name: '',
@@ -393,9 +393,10 @@ export default {
             settlementAcount += parseFloat(a.settlementAcount)
           }
         })
-        this.chooseStr = '已选中' + selection.length + '项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + settlementAcount.toFixed(2) + '，已回款：' + returnAcount.toFixed(2)
+        this.chooseStr =
+          '已选中 ' + selection.length + ' 项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + settlementAcount.toFixed(2) + '，已回款：' + returnAcount.toFixed(2)
       } else {
-        this.chooseStr = '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款：0.00'
+        this.chooseStr = '已选中 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款：0.00'
       }
     },
     addSettlement(index) {

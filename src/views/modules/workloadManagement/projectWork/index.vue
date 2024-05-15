@@ -68,12 +68,12 @@
           </div>
           <div class="table">
             <el-row style="display: flex; align-items: center">
-              <el-col :span="10">
+              <el-col :span="9">
                 <div style="display: flex; align-items: center">
                   <p style="font-size: 16px; font-weight: 600; margin-left: 10px">任务列表</p>
                 </div>
               </el-col>
-              <el-col :span="14">
+              <el-col :span="15">
                 <el-row style="display: flex; align-items: center">
                   <el-col :span="18">
                     <el-radio-group v-model="dataForm.taskStatus" @change="handlerRadio">
@@ -129,10 +129,11 @@
                 <!-- 操作 -->
                 <template v-slot:clientType="row">
                   <template>
-                    <el-button type="text" :disabled="row.item.taskStatus != 2" @click="goToTrack(row)">>>去确认</el-button>
+                    <el-button type="text" :disabled="row.item.taskStatus != 2" style="width: 100px" @click="goToTrack(row)">>>去确认</el-button>
                     <el-button
                       type="text"
                       :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 2"
+                      style="width: 100px"
                       @click="goToShowDetails(row)"
                     >
                       查看详情

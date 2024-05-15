@@ -157,7 +157,7 @@ export default {
     return {
       operateType: 'add',
       personnelInfoDialogTitle: '',
-      chooseStr: '',
+      chooseStr: '已选中 0 项',
       projectInfo: {
         name: '',
         projectId: '',
@@ -335,7 +335,7 @@ export default {
     // },
     selectData(selection) {
       if (selection.length > 0) {
-        this.chooseStr = '已选中' + selection.length + '项'
+        this.chooseStr = '已选中 ' + selection.length + ' 项'
       } else {
         this.chooseStr = '已选中 0 项'
       }

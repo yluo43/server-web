@@ -117,7 +117,7 @@ export default {
   components: { baseTable, baseDialog },
   data() {
     return {
-      chooseStr: '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已付款 0.00',
+      chooseStr: '已选中 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已付款 0.00',
       editFlag: false,
       title: '',
       order: {
@@ -218,9 +218,9 @@ export default {
             }
           }
         })
-        this.chooseStr = '已选中' + selection.length + '项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + total.toFixed(2) + '，已付款：' + expenditureAmount.toFixed(2)
+        this.chooseStr = '已选中 ' + selection.length + ' 项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + total.toFixed(2) + '，已付款：' + expenditureAmount.toFixed(2)
       } else {
-        this.chooseStr = '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已付款：0.00'
+        this.chooseStr = '已选中 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已付款：0.00'
       }
     },
     addSettlement() {

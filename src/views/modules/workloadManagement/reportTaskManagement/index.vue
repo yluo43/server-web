@@ -220,7 +220,6 @@ export default {
       if (this.activeName === 'first') {
         this.$nextTick(() => {
           this.handlerRadio()
-          // this.selectTaskList({ empId: this.empId })
         })
       }
       if (this.activeName === 'second') {

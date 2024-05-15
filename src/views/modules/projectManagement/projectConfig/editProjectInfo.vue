@@ -9,7 +9,7 @@
             <el-radio :label="2">运营管理</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="项目名称:" prop="name">
+        <el-form-item label="项目名称:" prop="name" class="specialInput">
           <el-input v-model="editProjectInfoFormData.name" placeholder="请输入项目名称" style="width: 80%" maxlength="50" show-word-limit clearable></el-input>
         </el-form-item>
         <el-form-item label="归属部门:" prop="deptId">
@@ -65,7 +65,7 @@
             style="width: 80% !important"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="甲方名称:" prop="firstParty" v-if="editProjectInfoFormData.projectType == 0">
+        <el-form-item label="甲方名称:" prop="firstParty" v-if="editProjectInfoFormData.projectType == 0" class="specialInput">
           <el-input
             v-model="editProjectInfoFormData.firstParty"
             placeholder="请输入甲方名称"
@@ -75,7 +75,7 @@
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="合同名称:" prop="contractName" v-if="editProjectInfoFormData.projectType == 0">
+        <el-form-item label="合同名称:" prop="contractName" v-if="editProjectInfoFormData.projectType == 0" class="specialInput">
           <el-input
             v-model="editProjectInfoFormData.contractName"
             placeholder="请输入合同名称"
@@ -85,7 +85,7 @@
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="合同编号:" prop="contractNo" v-if="editProjectInfoFormData.projectType == 0">
+        <el-form-item label="合同编号:" prop="contractNo" v-if="editProjectInfoFormData.projectType == 0" class="specialInput">
           <el-input
             v-model="editProjectInfoFormData.contractNo"
             placeholder="请输入合同编号"
@@ -427,5 +427,8 @@ export default {
 
 .el-input-number {
   line-height: 26px;
+}
+.specialInput ::v-deep .el-input--suffix .el-input__inner {
+  padding-right: 70px;
 }
 </style>

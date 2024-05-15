@@ -23,8 +23,8 @@
               <el-radio :label="2">运营管理</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="项目名称:" prop="vo.name">
-            <el-input v-model="dataForm.vo.name" placeholder="请输入项目名称" clearable></el-input>
+          <el-form-item label="项目名称:" prop="vo.name" class="specialInput">
+            <el-input v-model="dataForm.vo.name" placeholder="请输入项目名称" maxlength="50" show-word-limit clearable></el-input>
           </el-form-item>
           <el-form-item label="归属部门:" prop="vo.deptName">
             <el-input v-model="dataForm.vo.deptName" disabled></el-input>
@@ -82,13 +82,13 @@
               placeholder="请选择计划交付时间"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="甲方名称:" prop="vo.firstParty" v-if="dataForm.vo.projectType == 0">
+          <el-form-item label="甲方名称:" prop="vo.firstParty" v-if="dataForm.vo.projectType == 0" class="specialInput">
             <el-input v-model="dataForm.vo.firstParty" placeholder="请输入甲方名称" maxlength="50" show-word-limit clearable></el-input>
           </el-form-item>
-          <el-form-item label="合同名称:" prop="vo.contractName" v-if="dataForm.vo.projectType == 0">
+          <el-form-item label="合同名称:" prop="vo.contractName" v-if="dataForm.vo.projectType == 0" class="specialInput">
             <el-input v-model="dataForm.vo.contractName" placeholder="请输入合同名称" maxlength="50" show-word-limit clearable></el-input>
           </el-form-item>
-          <el-form-item label="合同编号:" prop="vo.contractNo" v-if="dataForm.vo.projectType == 0">
+          <el-form-item label="合同编号:" prop="vo.contractNo" v-if="dataForm.vo.projectType == 0" class="specialInput">
             <el-input v-model="dataForm.vo.contractNo" placeholder="请输入合同编号" maxlength="50" show-word-limit clearable></el-input>
           </el-form-item>
           <el-form-item label="合同类型:" prop="vo.contractType" v-if="dataForm.vo.projectType === 0">
@@ -419,5 +419,8 @@ export default {
 }
 .el-input-number {
   line-height: 26px;
+}
+.specialInput ::v-deep .el-input--suffix .el-input__inner {
+  padding-right: 70px;
 }
 </style>
