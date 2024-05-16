@@ -229,50 +229,49 @@ export default {
     projectNameChange() {
       this.projectListRefresh()
     },
-    activeNameChange() {
+    async activeNameChange() {
       this.projectName = ''
       if (this.activeName === 'first') {
         this.projectList()
       } else if (this.activeName === 'second') {
-        this.projectListRefresh()
+        await this.projectListRefresh()
         this.$nextTick(() => {
           this.$refs.workerHourApproval.init({ projectId: this.dataForm.projectId })
         })
       } else if (this.activeName === 'third') {
-        this.projectListRefresh()
+        await this.projectListRefresh()
         this.$nextTick(() => {
           this.$refs.taskDetails.init({ projectId: this.dataForm.projectId })
         })
       }
     },
-    projectListRefresh() {
-      this.$http({
+    async projectListRefresh() {
+      const { data } = this.$http({
         url: this.$http.adornUrl('/projectWork/projectList'),
         method: 'get',
         params: { projectName: this.projectName }
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          let list = []
-          if (data.payload.length > 0) {
-            data.payload.forEach((item) => {
-              list.push({
-                label: item.name,
-                id: item.id,
-                isConfirm: item.isConfirm
-              })
-            })
-            if (list.length !== 0) {
-              this.dataForm.projectId = list[0].id
-            }
-          } else {
-            this.dataForm.projectId = null
-          }
-          this.data = list
-          this.selectFirstNode()
-        } else {
-          this.$message.error(data.msg)
-        }
       })
+      if (data && data.code === 200) {
+        let list = []
+        if (data.payload.length > 0) {
+          data.payload.forEach((item) => {
+            list.push({
+              label: item.name,
+              id: item.id,
+              isConfirm: item.isConfirm
+            })
+          })
+          if (list.length !== 0) {
+            this.dataForm.projectId = list[0].id
+          }
+        } else {
+          this.dataForm.projectId = null
+        }
+        this.data = list
+        this.selectFirstNode()
+      } else {
+        this.$message.error(data.msg)
+      }
     },
     projectList() {
       this.$http({

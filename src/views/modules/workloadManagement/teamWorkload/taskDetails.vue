@@ -334,7 +334,7 @@ export default {
         params: data
       }).then(({ data }) => {
         if (data && data.code == 200) {
-          this.tableData = data.payload.list
+          this.tableData = data.payload.list.sort(this.compare('empId'))
           this.total = data.payload.totalCount
           this.spanArr = []
           this.getSpanArr(this.tableData)
@@ -351,6 +351,11 @@ export default {
           this.$message.error(data.msg)
         }
       })
+    },
+    compare(prop) {
+      return function (a, b) {
+        return a[prop] - b[prop] // 升序
+      }
     },
     // 分页自带的函数，当pageSize变化时会触发此函数
     handleSizeChange(val) {

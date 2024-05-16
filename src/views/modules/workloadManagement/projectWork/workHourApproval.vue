@@ -3,36 +3,28 @@
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-main style="width: 100%; padding: 0">
         <div class="table" style="height: 650px; background-color: white">
-          <el-row style="display: flex; align-items: center">
-            <el-col>
-              <div style="display: flex; align-items: center">
-                <span style="font-size: 16px; font-weight: 600; margin-left: 16px">工作量统计：</span>
-                <el-select v-model="dataForm.taskId" style="width: 230px !important" @change="changeSelect">
-                  <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
-                </el-select>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col>
-              <el-col>
-                <span style="font-size: 13px; margin-left: 16px">状态：</span>
-                <el-radio-group v-model="dataForm.workStatus" @change="handlerRadio">
-                  <el-radio-button :label="null">全部</el-radio-button>
-                  <el-radio-button :label="1">待确认</el-radio-button>
-                  <el-radio-button :label="3">被驳回</el-radio-button>
-                  <el-radio-button :label="2">已确认</el-radio-button>
-                </el-radio-group>
-              </el-col>
-            </el-col>
-          </el-row>
+          <div style="display: flex; align-items: center">
+            <span style="margin-left: 16px; font-size: 13px">工作量统计：</span>
+            <el-select v-model="dataForm.taskId" style="width: 278px !important" @change="changeSelect">
+              <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
+            </el-select>
+          </div>
+          <div style="margin: 24px 0">
+            <span style="font-size: 13px; margin-left: 54px">状态：</span>
+            <el-radio-group v-model="dataForm.workStatus" @change="handlerRadio">
+              <el-radio-button :label="null">全部</el-radio-button>
+              <el-radio-button :label="1">待确认</el-radio-button>
+              <el-radio-button :label="3">被驳回</el-radio-button>
+              <el-radio-button :label="2">已确认</el-radio-button>
+            </el-radio-group>
+          </div>
           <div class="chooseResult">
             <span>已选中 {{ count }} 项</span>
             <el-button type="text" @click="projectWorkOperate(null, 1)">批量确认</el-button>
             <!-- <span style="color: blue" @click="projectWorkOperate(null, 1)">批量确认</span> -->
           </div>
 
-          <div style="margin-top: 10px">
+          <div style="margin-top: 24px">
             <div>
               <!-- @selection-change="selChange" -->
               <el-table
@@ -41,7 +33,7 @@
                 border
                 :header-cell-style="{ 'text-align': 'center' }"
                 :cell-style="{ 'text-align': 'center' }"
-                style="width: 100%; height: 475px; overflow-y: scroll"
+                style="width: 100%; height: 455px; overflow-y: scroll"
                 :span-method="objectSpanMethod"
                 :row-key="(row) => row.id"
                 @select="handleSelect"
@@ -214,7 +206,7 @@ export default {
         params: params
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          this.tableData = data.payload.list
+          this.tableData = data.payload.list.sort(this.compare('empId'))
           this.total = data.payload.totalCount
           this.pos = 0
           this.spanArr = []
@@ -232,6 +224,11 @@ export default {
           this.$message.error(data.msg)
         }
       })
+    },
+    compare(prop) {
+      return function (a, b) {
+        return a[prop] - b[prop] // 升序
+      }
     },
     // 分页自带的函数，当pageSize变化时会触发此函数
     handleSizeChange(val) {
@@ -360,7 +357,6 @@ export default {
 }
 .table {
   background-color: white;
-  margin-top: 10px;
 }
 
 .el-dropdown-link {
