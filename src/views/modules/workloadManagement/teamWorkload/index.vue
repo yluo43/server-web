@@ -1,64 +1,84 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-header style="padding: 0">
-        <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick">
+      <div>
+        <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick" style="padding: 24px">
           <el-tab-pane label="任务填报" name="first"></el-tab-pane>
           <el-tab-pane label="任务跟踪" name="second"></el-tab-pane>
           <el-tab-pane label="任务详情" name="third"></el-tab-pane>
         </el-tabs>
-      </el-header>
-      <el-main class="main" v-if="activeName === 'first'">
+      </div>
+      <el-main style="width: 100%; padding: 0" v-if="activeName === 'first'">
         <div class="management-header">
-          <div class="management-item">
-            <p>我的待办</p>
-            <p class="font-bold">
-              <span>{{ waitCount }}</span>
-              个任务
-            </p>
-          </div>
-          <div class="management-item">
-            <p>本月完成任务数</p>
-            <p class="font-bold">
-              <span>{{ monthCount }}</span>
-              个任务
-            </p>
-          </div>
-          <div class="management-item border-none">
-            <p>本年完成任务数</p>
-            <p class="font-bold">
-              <span>{{ yearCount }}</span>
-              个任务
-            </p>
+          <div class="type-area">
+            <div class="management-content">
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/commission-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>我的待办</p>
+                  <p>
+                    <span class="font-bold">{{ waitCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/month-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本月完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ monthCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item border-none">
+                <div>
+                  <img src="@/assets/year-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本年完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ yearCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="table">
-          <el-row style="display: flex; align-items: center">
-            <el-col :span="10">
-              <div style="display: flex; align-items: center">
-                <p style="font-size: 16px; font-weight: 600; margin-left: 10px">任务列表</p>
-              </div>
-            </el-col>
-            <el-col :span="14">
-              <el-row style="display: flex; align-items: center">
-                <el-col :span="18">
-                  <el-radio-group v-model="radio" @change="handlerRadio">
-                    <el-radio-button label="1">全部</el-radio-button>
-                    <el-radio-button label="2">待开始</el-radio-button>
-                    <el-radio-button label="3">填报中</el-radio-button>
-                    <el-radio-button label="4">确认中</el-radio-button>
-                    <el-radio-button label="5">待归档</el-radio-button>
-                    <el-radio-button label="6">已归档</el-radio-button>
-                  </el-radio-group>
-                </el-col>
-                <el-col :span="6">
-                  <el-input v-model="keyword" placeholder="请输入搜索关键字" @change="search" prefix-icon="el-icon-search" clearable></el-input>
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
+          <div class="table-top">
+            <div style="display: flex; align-items: center">
+              <p style="font-size: 16px; font-weight: 600">任务列表</p>
+            </div>
+            <div>
+              <el-radio-group v-model="radio" @change="handlerRadio">
+                <el-radio-button label="1">全部</el-radio-button>
+                <el-radio-button label="2">待开始</el-radio-button>
+                <el-radio-button label="3">填报中</el-radio-button>
+                <el-radio-button label="4">确认中</el-radio-button>
+                <el-radio-button label="5">待归档</el-radio-button>
+                <el-radio-button label="6">已归档</el-radio-button>
+              </el-radio-group>
+            </div>
+            <div style="display: flex; justify-content: flex-end">
+              <el-input
+                style="width: 240px"
+                v-model="keyword"
+                placeholder="请输入搜索关键字"
+                @change="search"
+                suffix-icon="el-icon-search"
+                clearable
+              ></el-input>
+            </div>
+          </div>
           <div>
-            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px" propHeight="425px">
+            <baseTable ref="taskListTable" :table-data="taskList" :type="null" propHeight="425px">
               <template v-slot:reportWorkName="row">
                 <div v-if="row.item.taskStatus == 1">
                   {{ row.item.reportWorkName }}
@@ -255,33 +275,61 @@ export default {
   line-height: 20px;
 }
 
-.main {
-  width: 100%;
+::v-deep .el-tabs--border-card > .el-tabs__header {
+  border-bottom: none;
+}
+::v-deep .el-tabs--border-card > .el-tabs__content {
   padding: 0;
-
-  .management-header {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: white;
-    .management-item {
-      width: 100%;
-      border-right: 1px solid lightgray;
+}
+::v-deep .el-tabs--border-card {
+  border: none;
+}
+::v-deep .el-input__icon {
+  line-height: 30px;
+}
+.management-header {
+  height: 100px;
+  background: white;
+  .type-area {
+    height: 100%;
+    margin: 0 24px;
+    border-top: 1px solid #f2f3f5;
+    .management-content {
+      height: 100%;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      .font-bold {
-        font-size: 18px;
-        font-weight: 600;
-      }
+      margin: 0 130px;
     }
-    .border-none {
-      border-right: 0;
+  }
+  .management-item {
+    width: 208px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #f2f3f5;
+    img {
+      width: 54px;
+      height: 54px;
     }
+    .font-bold {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+  .border-none {
+    border-right: 0;
   }
 }
 .table {
   background-color: white;
-  margin-top: 10px;
+  margin-top: 24px;
+  .table-top {
+    margin: 0 24px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 </style>

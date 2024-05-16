@@ -47,8 +47,8 @@
           <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" propHeight="467px">
             <template v-slot:clientType="row">
               <template>
-                <el-button type="text" @click="viewDetails(row.item)">查看明细</el-button>
-                <el-button type="text" v-auth="'attendance:subsidy'" @click="workAllowance(row.item)">工时补贴</el-button>
+                <el-button type="text" style="width: 100px" @click="viewDetails(row.item)">查看明细</el-button>
+                <el-button type="text" style="width: 100px" v-auth="'attendance:subsidy'" @click="workAllowance(row.item)">工时补贴</el-button>
               </template>
             </template>
           </baseTable>

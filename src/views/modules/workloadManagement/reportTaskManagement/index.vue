@@ -111,17 +111,31 @@
               <template v-slot:clientType="row">
                 <template>
                   <el-row>
-                    <el-col :span="8">
-                      <el-button v-show="row.item.taskStatus == 4" type="text" style="width: 100px" @click="goToArchiveDetails(row)">归档详情>></el-button>
-                      <el-button v-show="row.item.taskStatus == 3" type="text" style="width: 100px" @click="goToArchive(row)">去归档>></el-button>
+                    <el-col :span="12">
+                      <el-button v-show="row.item.taskStatus == 4" type="text" style="width: 100px" @click="goToArchiveDetails(row)">>>归档详情</el-button>
+                      <el-button v-show="row.item.taskStatus == 3" type="text" style="width: 100px" @click="goToArchive(row)">>>去归档</el-button>
                     </el-col>
-                    <el-col :span="6">
+                    <el-col :span="12">
+                      <el-tooltip class="item" effect="dark" content="任务详情" placement="bottom">
+                        <svg-icon :icon-class="'detials-icon'" style="height: 1.5em; width: 1.5em; margin-right: 20px" @click="goToTaskDetails(row)" />
+                      </el-tooltip>
+                      <el-tooltip v-if="row.item.taskStatus !== 0" class="item" effect="dark" content="编辑" placement="bottom">
+                        <svg-icon :icon-class="'edit-disabled-icon'" style="height: 1.5em; width: 1.5em; margin-right: 20px" />
+                      </el-tooltip>
+                      <el-tooltip v-else class="item" effect="dark" content="编辑" placement="bottom">
+                        <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em; margin-right: 20px" @click="editReportTask(row)" />
+                      </el-tooltip>
+                      <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                        <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="goToDelete(row)" />
+                      </el-tooltip>
+                    </el-col>
+                    <!-- <el-col :span="6">
                       <el-button type="text" style="width: 100px" @click="goToTaskDetails(row)">任务详情</el-button>
                     </el-col>
                     <el-col :span="5">
                       <el-button :disabled="row.item.taskStatus !== 0" type="text" style="width: 100px" @click="editReportTask(row)">编辑</el-button>
                     </el-col>
-                    <el-col :span="5"><el-button type="text" style="width: 100px" @click="goToDelete(row)">删除</el-button></el-col>
+                    <el-col :span="5"><el-button type="text" style="width: 100px" @click="goToDelete(row)">删除</el-button></el-col> -->
                   </el-row>
                 </template>
               </template>
@@ -184,7 +198,7 @@ export default {
           { label: '填报天数', prop: 'reportDay', width: '80px' },
           { label: '提醒频率', prop: 'frequency', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus', width: '80px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '300px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
         url: '/workload/selectReportPage'
       }

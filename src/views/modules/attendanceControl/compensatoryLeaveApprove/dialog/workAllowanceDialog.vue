@@ -20,7 +20,7 @@
           <el-form-item>
             <i class="el-icon-warning-outline" style="color: #faad14"></i>
             <span>
-              该员工总调休天数{{ totalDays }}天，其中已调休{{ compensatedLeaveDays }}天，已补贴{{ subsidizedDays }}天，剩余可补贴天数
+              该员工总可调休天数{{ totalDays }}天，其中已调休{{ compensatedLeaveDays }}天，已补贴{{ subsidizedDays }}天，剩余可补贴天数
               <span style="color: #70b603">{{ remainingDays }}天。</span>
             </span>
           </el-form-item>

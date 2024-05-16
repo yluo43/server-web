@@ -22,7 +22,7 @@
               </el-radio-group>
             </div>
             <div style="margin-right: 24px">
-              <el-select v-model="teamIds" placeholder="请选择团队" multiple collapse-tags clearable @change="search">
+              <el-select v-model="teamIds" placeholder="请选择团队" multiple collapse-tags filterable clearable @change="search">
                 <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </div>
@@ -40,7 +40,7 @@
         </div>
         <div class="table">
           <!-- @select="onSelect" -->
-          <baseTable ref="workloadListTable" :multi-select="true" @selectData="selectData" :table-data="workloadList">
+          <baseTable ref="workloadListTable" :multi-select="true" @selectData="selectData" :table-data="workloadList" propHeight="425px">
             <template v-slot:workStatus="row">
               <template v-if="row.item.workStatus == 2">
                 <span>待归档</span>
@@ -89,7 +89,7 @@ export default {
       taskId: '',
       //已选择多少项
       count: 0,
-      radio: '1',
+      radio: 1,
       ids: [],
       teamIds: [],
       teams: [],

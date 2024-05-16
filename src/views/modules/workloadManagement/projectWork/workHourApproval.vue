@@ -128,9 +128,12 @@ export default {
       if (data) {
         Object.assign(this.dataForm, data)
       }
+      this.dataForm.type = 1
       await this.projectTaskListNoPage()
       if (this.dataForm.projectId && this.dataForm.taskId) {
         this.selectTaskList()
+      } else {
+        this.clearTable()
       }
     },
     clear(form) {
@@ -138,7 +141,7 @@ export default {
         if (Array.isArray(form[key])) {
           form[key] = []
         } else {
-          form[key] = ''
+          form[key] = null
         }
       })
     },

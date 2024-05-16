@@ -6,13 +6,29 @@
           <div class="header-title">
             <div>工作量统计:</div>
             <div style="margin-left: 10px">
-              <el-select v-model="reportWorkName" style="width: 230px !important" @change="changeSelect">
+              <el-select v-model="reportWorkName" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
           </div>
 
-          <div class="status">
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <div class="status">
+              状态：
+              <el-radio-group v-model="radio" @change="handlerRadio">
+                <el-radio-button label="1">全部</el-radio-button>
+                <el-radio-button label="2">待归档</el-radio-button>
+                <el-radio-button label="3">被驳回</el-radio-button>
+                <el-radio-button label="4">已归档</el-radio-button>
+              </el-radio-group>
+            </div>
+            <div style="margin-right: 24px">
+              <el-select v-model="teamIds" placeholder="请选择团队" multiple collapse-tags filterable clearable @change="search">
+                <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </div>
+          </div>
+          <!-- <div class="status">
             状态：
             <el-radio-group v-model="radio" @change="handlerRadio">
               <el-radio-button label="0">全部</el-radio-button>
@@ -29,7 +45,7 @@
                 </el-checkbox>
               </el-option>
             </el-select>
-          </div>
+          </div> -->
         </div>
 
         <div class="table">
@@ -127,18 +143,18 @@ export default {
       //工作量统计
       reportWorkName: '',
       workLoadStatistics: [],
-      radio: '0',
+      radio: 1,
       queryData: {},
       tableData: [],
       spanArr: [],
       pos: 0,
-      checkTeam: [],
+      // checkTeam: [],
       teams: [],
-      empId: '1260'
+      empId: '1260',
+      teamIds: []
     }
   },
   mounted() {
-    // this.empId = this.$store.state.user.empId
     this.getTeam()
   },
   created() {},
@@ -150,7 +166,6 @@ export default {
       this.taskId = initData.id
       this.teamId = initData.teamId
       this.selectWorkload({ teamIdList: this.teamId })
-      // console.log(initData)
     },
     async initTable() {
       await this.selectTaskList()
@@ -194,30 +209,32 @@ export default {
         }
       })
     },
-
+    //团队搜索
+    search() {
+      this.handlerRadio()
+    },
     //选择框多选
-    isCheck(item) {
-      if (item.check && this.checkTeam.indexOf(item.name) == -1) {
-        this.checkTeam.push(item.id)
-      } else if (!item.check) {
-        this.checkTeam.forEach((elm, idx) => {
-          if (elm == item.id) {
-            this.checkTeam.splice(idx, 1)
-          }
-        })
-      }
-      this.handlerRadio()
-    },
-
-    removeTag(id) {
-      this.teams.forEach((elm, idx) => {
-        if (elm.id == id) {
-          elm.check = false
-          this.checkTeam.splice(idx, 1)
-        }
-      })
-      this.handlerRadio()
-    },
+    // isCheck(item) {
+    //   if (item.check && this.checkTeam.indexOf(item.name) == -1) {
+    //     this.checkTeam.push(item.id)
+    //   } else if (!item.check) {
+    //     this.checkTeam.forEach((elm, idx) => {
+    //       if (elm == item.id) {
+    //         this.checkTeam.splice(idx, 1)
+    //       }
+    //     })
+    //   }
+    //   this.handlerRadio()
+    // },
+    // removeTag(id) {
+    //   this.teams.forEach((elm, idx) => {
+    //     if (elm.id == id) {
+    //       elm.check = false
+    //       this.checkTeam.splice(idx, 1)
+    //     }
+    //   })
+    //   this.handlerRadio()
+    // },
     //查询表格数据
     selectWorkload(params) {
       let data = {
@@ -262,11 +279,11 @@ export default {
     //切换ridio
     handlerRadio() {
       if (this.radio == 0) {
-        this.selectWorkload({ teamIdList: this.checkTeam.toString() || this.teamId })
+        this.selectWorkload({ teamIdList: this.teamIds.toString() || this.teamId })
       } else {
         this.selectWorkload({
           workStatus: this.radio,
-          teamIdList: this.checkTeam.toString() || this.teamId
+          teamIdList: this.teamIds.toString() || this.teamId
         })
       }
     },
@@ -277,14 +294,7 @@ export default {
         userName: row.name,
         empId: row.empId,
         taskId: this.taskId
-        //工作量
-        // workLoad: []
       }
-      // this.tableData.map((item) => {
-      //   if (item.empId === row.empId) {
-      //     data.workLoad.push(item)
-      //   }
-      // })
       this.$refs.editDataDialog.show()
       this.$nextTick(() => {
         this.$refs.edit.init(data)
@@ -338,16 +348,16 @@ export default {
   padding: 0;
   .top {
     background: white;
-    padding-left: 20px;
   }
   .header-title {
-    font-size: 16px;
-    font-weight: 600;
+    // font-size: 16px;
+    // font-weight: 600;
     display: flex;
     align-items: center;
+    padding-left: 24px;
   }
   .status {
-    padding: 20px 0;
+    padding: 24px 60px;
   }
 }
 .table {

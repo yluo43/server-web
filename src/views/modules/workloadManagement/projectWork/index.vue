@@ -1,104 +1,101 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-header style="padding: 0">
-        <el-tabs v-model="activeName" type="border-card" @tab-click="activeNameChange">
+      <div>
+        <el-tabs v-model="activeName" type="border-card" style="padding: 24px" @tab-click="activeNameChange">
           <el-tab-pane label="我的项目" name="first"></el-tab-pane>
           <el-tab-pane label="工时确认" name="second"></el-tab-pane>
           <el-tab-pane label="任务详情" name="third"></el-tab-pane>
         </el-tabs>
-      </el-header>
+      </div>
       <el-container>
-        <el-aside style="width: 200px; background-color: #ffffff; height: 655px; margin-top: 4px">
-          <el-row>
-            <el-col>
-              <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
-              <el-tree
-                :data="data"
-                :render-content="renderContent"
-                :props="defaultProps"
-                :highlight-current="true"
-                node-key="id"
-                ref="treeRef"
-                @node-click="handleNodeClick"
-              ></el-tree>
-            </el-col>
-          </el-row>
-        </el-aside>
-        <el-main style="width: calc(100% - 200px); padding: 0" v-if="activeName === 'first'">
-          <!-- <div class="management-header">
-            <div class="management-item">
-              <el-statistic title="我的待办">
-                <template slot="formatter" class="font-bold">{{ myTaskCount.waitCount }}个任务</template>
-              </el-statistic>
-            </div>
-            <div class="management-item">
-              <el-statistic title="本月完成任务数">
-                <template slot="formatter">{{ myTaskCount.monthCount }}个任务</template>
-              </el-statistic>
-            </div>
-            <div class="management-item border-none">
-              <el-statistic title="本年完成任务数">
-                <template slot="formatter">{{ myTaskCount.yearCount }}个任务</template>
-              </el-statistic>
-            </div>
-          </div> -->
+        <div style="background-color: #fff">
+          <el-aside style="width: 200px; height: 655px; margin-left: 24px">
+            <el-row>
+              <el-col>
+                <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
+                <el-tree
+                  :data="data"
+                  :render-content="renderContent"
+                  :props="defaultProps"
+                  :highlight-current="true"
+                  node-key="id"
+                  ref="treeRef"
+                  @node-click="handleNodeClick"
+                ></el-tree>
+              </el-col>
+            </el-row>
+          </el-aside>
+        </div>
+        <el-main style="width: calc(100% - 224px); background: #fff; padding: 0 0 0 16px" v-if="activeName === 'first'">
           <div class="management-header">
-            <div class="management-item">
-              <p>我的待办</p>
-              <p class="font-bold">
-                <span>{{ myTaskCount.waitCount }}</span>
-                个任务
-              </p>
-            </div>
-            <div class="management-item">
-              <p>本月完成任务数</p>
-              <p class="font-bold">
-                <span>{{ myTaskCount.monthCount }}</span>
-                个任务
-              </p>
-            </div>
-            <div class="management-item border-none">
-              <p>本年完成任务数</p>
-              <p class="font-bold">
-                <span>{{ myTaskCount.yearCount }}</span>
-                个任务
-              </p>
+            <div class="management-content">
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/commission-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>我的待办</p>
+                  <p>
+                    <span class="font-bold">{{ myTaskCount.waitCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/month-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本月完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ myTaskCount.monthCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item border-none">
+                <div>
+                  <img src="@/assets/year-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本年完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ myTaskCount.yearCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="table">
-            <el-row style="display: flex; align-items: center">
-              <el-col :span="9">
-                <div style="display: flex; align-items: center">
-                  <p style="font-size: 16px; font-weight: 600; margin-left: 10px">任务列表</p>
-                </div>
-              </el-col>
-              <el-col :span="15">
-                <el-row style="display: flex; align-items: center">
-                  <el-col :span="18">
-                    <el-radio-group v-model="dataForm.taskStatus" @change="handlerRadio">
-                      <el-radio-button :label="null">全部</el-radio-button>
-                      <!-- <el-radio-button :label="0">待开始</el-radio-button>
+            <div class="table-top">
+              <div style="display: flex; align-items: center">
+                <p style="font-size: 16px; font-weight: 600">任务列表</p>
+              </div>
+              <div>
+                <el-radio-group v-model="dataForm.taskStatus" @change="handlerRadio">
+                  <el-radio-button :label="null">全部</el-radio-button>
+                  <!-- <el-radio-button :label="0">待开始</el-radio-button>
                       <el-radio-button :label="1">填报中</el-radio-button> -->
-                      <el-radio-button :label="2">确认中</el-radio-button>
-                      <el-radio-button :label="3">待归档</el-radio-button>
-                      <el-radio-button :label="4">已归档</el-radio-button>
-                    </el-radio-group>
-                  </el-col>
-                  <el-col :span="6">
-                    <el-input
-                      v-model="dataForm.reportWorkName"
-                      placeholder="请输入搜索关键字"
-                      @change="search"
-                      prefix-icon="el-icon-search"
-                      clearable
-                    ></el-input>
-                  </el-col>
-                </el-row>
-              </el-col>
-            </el-row>
+                  <el-radio-button :label="2">确认中</el-radio-button>
+                  <el-radio-button :label="3">待归档</el-radio-button>
+                  <el-radio-button :label="4">已归档</el-radio-button>
+                </el-radio-group>
+              </div>
+              <div style="display: flex; justify-content: flex-end">
+                <el-input
+                  style="width: 240px"
+                  v-model="dataForm.reportWorkName"
+                  placeholder="请输入搜索关键字"
+                  @change="search"
+                  suffix-icon="el-icon-search"
+                  clearable
+                ></el-input>
+              </div>
+            </div>
             <div>
-              <baseTable :tableData="tableData" ref="table" :type="null" style="margin-top: 10px" propHeight="425px">
+              <baseTable :tableData="tableData" ref="table" :type="null" propHeight="425px">
                 <template v-slot:reportWorkName="row">
                   <template v-if="row.item.taskStatus === 2">
                     <el-badge value="待确认" class="small-badge badge-table">
@@ -145,11 +142,11 @@
           </div>
         </el-main>
         <!-- 工时审批 -->
-        <div v-if="activeName === 'second'" style="width: calc(100% - 200px)">
+        <div v-if="activeName === 'second'" style="width: calc(100% - 224px); background: #fff; padding: 0 0 0 16px">
           <workerHourApproval ref="workerHourApproval" @projectListRefresh="projectListRefresh"></workerHourApproval>
         </div>
         <!-- 任务详情 -->
-        <div v-if="activeName === 'third'" style="width: calc(100% - 200px)">
+        <div v-if="activeName === 'third'" style="width: calc(100% - 224px); background: #fff; padding: 0 0 0 16px">
           <taskDetails ref="taskDetails"></taskDetails>
         </div>
       </el-container>
@@ -401,21 +398,39 @@ export default {
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }
-
+::v-deep .el-tabs--border-card > .el-tabs__header {
+  border-bottom: none;
+}
+::v-deep .el-tabs--border-card > .el-tabs__content {
+  padding: 0;
+}
+::v-deep .el-tabs--border-card {
+  border: none;
+}
+::v-deep .el-input__icon {
+  line-height: 30px;
+}
 .management-header {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
   background-color: white;
   height: 100px;
-  .management-item {
-    width: 100%;
+  border: 1px solid #f2f3f5;
+  .management-content {
     height: 100%;
-    border-right: 1px solid lightgray;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 85px;
+  }
+  .management-item {
+    width: 208px;
+    border-right: 1px solid #f2f3f5;
+    display: flex;
     align-items: center;
     justify-content: center;
+    img {
+      width: 54px;
+      height: 54px;
+    }
     .font-bold {
       font-size: 18px;
       font-weight: 600;
@@ -425,22 +440,16 @@ export default {
     border-right: 0;
   }
 }
-// .management-header {
-//   display: flex;
-//   justify-content: space-around;
-//   align-items: center;
-//   background-color: white;
-//   height: 100px;
-
-//   .management-item {
-//     width: 100%;
-//     border-right: 1px solid lightgray;
-//   }
-// }
-
 .table {
   background-color: white;
-  margin-top: 10px;
+  .table-top {
+    border-left: 1px solid #f2f3f5;
+    padding: 0 24px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 ::v-deep .small-badge .el-badge__content {

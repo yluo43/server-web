@@ -246,9 +246,12 @@ export default {
       if (data) {
         Object.assign(this.dataForm, data)
       }
+      this.dataForm.type = 2
       await this.projectTaskListNoPage()
       if (this.dataForm.projectId && this.dataForm.taskId) {
         this.selectTaskList()
+      } else {
+        this.clearTable()
       }
     },
     clear(form) {

@@ -81,7 +81,7 @@
         </div>
         <div class="table">
           <!-- @select="onSelect" -->
-          <baseTable ref="taskDetialTable" :multi-select="true" @selectData="selectData" :table-data="taskDetial" style="margin-top: 10px"></baseTable>
+          <baseTable ref="taskDetialTable" :multi-select="true" @selectData="selectData" :table-data="taskDetial" propHeight="425px"></baseTable>
         </div>
       </el-main>
     </el-container>

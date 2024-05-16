@@ -532,4 +532,9 @@ export default {
 .el-input {
   width: 200px;
 }
+::v-deep .el-table td.el-table__cell div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 </style>
