@@ -88,7 +88,6 @@ export default {
     init(initData) {
       Object.assign(this.formData, initData)
       this.selectInfo()
-      // console.log(this.formData)
     },
     //获取报工类别
     getWorkloadType() {
@@ -175,7 +174,7 @@ export default {
         workloadType: '',
         projectId: '',
         projectName: '',
-        realityRate: '',
+        realityRate: 0,
         startTime: this.workLoad[0].startTime,
         taskId: this.formData.taskId,
         teamId: this.workLoad[0].teamId,
@@ -212,9 +211,6 @@ export default {
             item.deptId = ele.deptId
           }
         })
-        // if (item.workStatusName == '已归档') {
-        //   this.formData.workLoad.splice(index, 1)
-        // }
       })
 
       let data = {

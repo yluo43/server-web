@@ -246,7 +246,7 @@ export default {
       }
     },
     async projectListRefresh() {
-      const { data } = this.$http({
+      const { data } = await this.$http({
         url: this.$http.adornUrl('/projectWork/projectList'),
         method: 'get',
         params: { projectName: this.projectName }

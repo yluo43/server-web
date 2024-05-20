@@ -1,10 +1,10 @@
 <template>
   <div class="el-main__mdgMainTable" style="width: 100%; height: 100%">
+    <!-- :row-key="(row) => row.id" -->
     <div>
       <el-table
         ref="table"
         v-loading="options.tableLoading"
-        :row-key="(row) => row.id"
         :cell-style="cellStyle"
         :header-cell-style="{ 'text-align': 'center' }"
         border
