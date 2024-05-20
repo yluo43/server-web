@@ -228,7 +228,7 @@ export default {
           { label: '加班原因', prop: 'reason' },
           { label: '申请时间', prop: 'createTime', width: '140px' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px' }
         ],
         url: '/attendance/getOvertimeList'
       },
@@ -245,8 +245,6 @@ export default {
   },
   mounted() {
     this.getProjectList()
-    // this.getDept()
-    // this.getTeam()
     this.getOvertimeListDeptAndTeam()
     this.selectTableData()
   },
@@ -277,33 +275,6 @@ export default {
         }
       })
     },
-    //获取部门
-    // getDept() {
-    //   this.$http({
-    //     url: this.$http.adornUrl('/common/getDeptByRole'),
-    //     method: 'get'
-    //   }).then(({ data }) => {
-    //     if (data && data.code === 200) {
-    //       this.deptList = data.payload.filter((item) => item.id !== 0)
-    //     } else {
-    //       this.$message.error(data.msg)
-    //     }
-    //   })
-    // },
-
-    //获取团队
-    // getTeam() {
-    //   this.$http({
-    //     url: this.$http.adornUrl('/common/getTeamByRole'),
-    //     method: 'get'
-    //   }).then(({ data }) => {
-    //     if (data && data.code === 200) {
-    //       this.teamList = data.payload
-    //     } else {
-    //       this.$message.error(data.msg)
-    //     }
-    //   })
-    // },
     //获取项目树
     getProjectList() {
       let params

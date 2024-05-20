@@ -27,7 +27,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="项目经理" prop="projectManager">
-              {{ overtimeDataForm.projectManager }}
+              <el-input style="width: 200px" v-model="overtimeDataForm.projectManager" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -528,7 +528,7 @@ export default {
 
 <style lang="scss" scoped>
 ::v-deep .el-date-editor.el-input {
-  width: 190px;
+  width: 200px;
 }
 ::v-deep .el-form-item__label {
   float: none;

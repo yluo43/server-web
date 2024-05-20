@@ -100,7 +100,6 @@
         <div class="chooseResult">
           <span v-text="chooseStr" />
           <el-button type="text" @click="deleteProjectInfo()" v-auth="'costItems:deletes'">批量删除</el-button>
-          <!-- <span v-auth="'costItems:deletes'" style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span> -->
         </div>
 
         <!-- toolBar -->
@@ -334,8 +333,9 @@ export default {
           this.$message.error(data.msg)
         }
       })
+
       this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data.success) {
@@ -419,7 +419,7 @@ export default {
     // },
     selectData(selection) {
       if (selection.length > 0) {
-        this.chooseStr = '已选中' + selection.length + '项'
+        this.chooseStr = '已选中 ' + selection.length + ' 项'
       } else {
         this.chooseStr = '已选中 0 项'
       }

@@ -36,8 +36,6 @@
   </div>
 </template>
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
-import baseDialog from '@/views/modules/base/baseDialog.vue'
 import overtimePreliminaryReview from '@/views/modules/attendanceControl/compensatoryLeaveApprove/overtimePreliminaryReview.vue'
 import overtimeReview from '@/views/modules/attendanceControl/compensatoryLeaveApprove/overtimeReview.vue'
 import compensatoryLeavePreliminaryReview from '@/views/modules/attendanceControl/compensatoryLeaveApprove/compensatoryLeavePreliminaryReview.vue'
@@ -45,8 +43,6 @@ import compensatoryLeaveReview from '@/views/modules/attendanceControl/compensat
 import overtimeStatistics from '@/views/modules/attendanceControl/compensatoryLeaveApprove/overtimeStatistics.vue'
 export default {
   components: {
-    baseTable,
-    baseDialog,
     overtimePreliminaryReview,
     overtimeReview,
     compensatoryLeavePreliminaryReview,

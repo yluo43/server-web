@@ -475,7 +475,7 @@ export default {
         this.$message.warning('请至少选择一条数据！')
         return
       }
-      this.$confirm('已选中' + this.deleteIds.length + '条报销数据,您确定删除吗?', '提示', {
+      this.$confirm('已选中' + this.deleteIds.length + '条报销数据,确定删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -536,7 +536,7 @@ export default {
           this.deleteIds.push(a.id)
           totalMoney += parseFloat(a.totalMoney)
         })
-        this.chooseStr = '已选中' + this.deleteIds.length + '项，合计：' + totalMoney.toFixed(2) + '元'
+        this.chooseStr = '已选中 ' + this.deleteIds.length + ' 项，合计：' + totalMoney.toFixed(2) + '元'
       } else {
         this.chooseStr = '已选中 0 项'
       }

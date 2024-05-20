@@ -4,87 +4,78 @@
       <el-container>
         <el-main style="width: 100%; padding: 0">
           <div class="table" style="height: 650px; background-color: white">
-            <el-row style="display: flex; align-items: center">
-              <el-col>
-                <div style="display: flex; align-items: center">
-                  <span style="font-size: 16px; font-weight: 600; margin-left: 16px">工作量统计：</span>
-                  <el-select v-model="dataForm.taskId" style="width: 230px !important" @change="changeSelect">
-                    <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
-                  </el-select>
-                </div>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col>
-                <el-col>
-                  <el-header style="height: auto">
-                    <el-form :inline="true" label-width="70px" label-position="right" :model="dataForm" ref="dataForm">
-                      <el-form-item label="用户姓名:" prop="empName">
-                        <el-input style="width: 200px" v-model="dataForm.empName" placeholder="请输入用户姓名" clearable></el-input>
+            <div style="display: flex; align-items: center">
+              <span style="margin-left: 16px">工作量统计：</span>
+              <el-select v-model="dataForm.taskId" style="width: 278px !important" @change="changeSelect">
+                <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
+              </el-select>
+            </div>
+            <div  style="margin: 20px 0 20px 16px">
+                  <el-form :inline="true" label-width="70px" label-position="right" :model="dataForm" ref="dataForm">
+                    <el-form-item label="用户姓名:" prop="empName">
+                      <el-input style="width: 200px" v-model="dataForm.empName" placeholder="请输入用户姓名" clearable></el-input>
+                    </el-form-item>
+                    <el-form-item label="归属部门:">
+                      <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
+                        <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="归属团队:">
+                      <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
+                        <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="报工类别:">
+                      <el-select v-model="workloadType" multiple collapse-tags placeholder="请选择报工类别">
+                        <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <div v-if="showFlag" style="display: contents">
+                      <el-form-item label="工号:" prop="empId">
+                        <el-input
+                          style="width: 200px"
+                          v-model="dataForm.empId"
+                          oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                          placeholder="请输入工号"
+                          clearable
+                        ></el-input>
                       </el-form-item>
-                      <el-form-item label="归属部门:">
-                        <el-select v-model="deptIdList" multiple collapse-tags placeholder="请选择归属部门">
-                          <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                      <el-form-item label="团队负责人:">
+                        <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择团队负责人">
+                          <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
                         </el-select>
                       </el-form-item>
-                      <el-form-item label="归属团队:">
-                        <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
-                          <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                        </el-select>
-                      </el-form-item>
-                      <el-form-item label="报工类别:">
-                        <el-select v-model="workloadType" multiple collapse-tags placeholder="请选择报工类别">
-                          <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id"></el-option>
-                        </el-select>
-                      </el-form-item>
-                      <div v-if="showFlag" style="display: contents">
-                        <el-form-item label="工号:" prop="empId">
-                          <el-input
-                            style="width: 200px"
-                            v-model="dataForm.empId"
-                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                            placeholder="请输入工号"
-                            clearable
-                          ></el-input>
-                        </el-form-item>
-                        <el-form-item label="团队负责人:">
-                          <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择团队负责人">
-                            <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
-                          </el-select>
-                        </el-form-item>
+                    </div>
+                    <el-form-item>
+                      <div style="display: inline-block; margin-right: 15px" :style="showFlag ? { 'margin-left': '10px' } : ''" @click="showFlag = !showFlag">
+                        <svg-icon
+                          :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'"
+                          style="height: 1.3em; width: 1.3em; position: relative; top: 3px"
+                        />
+                        <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                        <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
                       </div>
-                      <el-form-item>
-                        <div style="display: inline-block; margin-right: 15px" :style="showFlag ? { 'margin-left': '10px' } : ''" @click="showFlag = !showFlag">
-                          <svg-icon
-                            :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'"
-                            style="height: 1.3em; width: 1.3em; position: relative; top: 3px"
-                          />
-                          <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
-                          <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
-                        </div>
-                        <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
-                        <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
-                      </el-form-item>
-                    </el-form>
-                  </el-header>
-                </el-col>
-              </el-col>
-            </el-row>
+                      <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
+                      <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+                    </el-form-item>
+                  </el-form>
+                </el-header>
+              </div>
             <div class="chooseResult">
               <span>已选中 {{ count }} 项</span>
               <el-button type="text" @click="download()">批量下载</el-button>
-              <!-- <span style="color: blue; margin-left: 50px" @click="download()">批量下载</span> -->
             </div>
-            <div style="margin-top: 10px">
+            <div style="margin-top: 24px">
               <!-- @selection-change="selChange" -->
               <div>
                 <el-table
                   ref="multipleTable"
                   :data="tableData"
+                  height="400px"
                   border
                   :header-cell-style="{ 'text-align': 'center' }"
                   :cell-style="{ 'text-align': 'center' }"
-                  style="width: 100%; height: 425px; overflow-y: scroll"
+                  style="width: 100%;"
                   :span-method="objectSpanMethod"
                   :row-key="(row) => row.id"
                   @select="handleSelect"
@@ -264,6 +255,8 @@ export default {
       })
     },
     changeSelect() {
+      this.count=0
+      this.multipleSelection = []
       this.selectTaskList()
     },
     selectTaskList() {
@@ -273,6 +266,9 @@ export default {
           delete params[key]
         }
       })
+      if (!params.taskId) {
+        return
+      }
       this.$http({
         url: this.$http.adornUrl('/projectWork/projectWorkList'),
         method: 'get',
@@ -452,7 +448,6 @@ export default {
 }
 .table {
   background-color: white;
-  margin-top: 10px;
 }
 
 .el-dropdown-link {
@@ -464,13 +459,4 @@ export default {
 .el-icon-arrow-down {
   font-size: 16px;
 }
-
-// .chooseResult {
-//   height: 30px;
-//   line-height: 30px;
-//   margin: 10px auto;
-//   display: block;
-//   background: #e9f3ff;
-//   border-radius: 6px;
-// }
 </style>

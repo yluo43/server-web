@@ -52,10 +52,11 @@
           <div>
             <el-table
               :data="tableData"
+              height="500px"
               :header-cell-style="{ 'text-align': 'center' }"
               :cell-style="{ 'text-align': 'center' }"
               border
-              style="width: 100%; height: 475px; overflow-y: scroll"
+              style="width: 100%"
               :span-method="objectSpanMethod"
               :row-key="(row) => row.id"
             >
@@ -244,6 +245,9 @@ export default {
         type: 1
       }
       data = { ...data, ...params }
+      if (!data.taskId) {
+        return
+      }
       this.$http({
         url: this.$http.adornUrl('/teamWork/viewTeamWorkList'),
         method: 'get',
@@ -355,8 +359,6 @@ export default {
     background: white;
   }
   .header-title {
-    // font-size: 16px;
-    // font-weight: 600;
     display: flex;
     align-items: center;
     padding-left: 24px;
@@ -367,7 +369,6 @@ export default {
 }
 .table {
   background-color: white;
-  margin-top: 10px;
 }
 ::v-deep .el-input__icon {
   line-height: 0;

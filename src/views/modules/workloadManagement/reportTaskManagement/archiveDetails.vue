@@ -63,7 +63,7 @@
                   <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
                   <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
                 </div>
-                <el-button type="primary" icon="el-icon-search" @click="selectTableData" style="margin-right: 10px">查询</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="selectTaskDetial" style="margin-right: 10px">查询</el-button>
                 <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
               </el-form-item>
             </el-form>
@@ -174,14 +174,11 @@ export default {
     async init(initData) {
       await this.selectTaskList()
       this.taskId = initData.taskId
-      this.selectTaskDetial({ taskId: this.taskId, status: 4 })
+      this.selectTaskDetial()
     },
     async initTable() {
       await this.selectTaskList()
-      if (!this.taskId) {
-        return
-      }
-      this.selectTaskDetial({ taskId: this.taskIds.toString(), status: 4 })
+      this.selectTaskDetial()
     },
     //获取报工类别
     getWorkloadType() {
@@ -199,15 +196,14 @@ export default {
     //统计工作量下拉框改变
     changeSelect(params) {
       this.taskId = params
-      this.selectTableData()
+      this.count = 0
+      this.checkedData = []
+      this.$refs.taskDetialTable.options.multipleSelection = []
+      this.selectTaskDetial()
     },
     //查询工作量
-    selectTaskDetial(params) {
-      this.$refs.taskDetialTable.refresh(params)
-    },
-    //输入框输入查询
-    selectTableData() {
-      let data = {
+    selectTaskDetial() {
+      const params = {
         taskId: this.taskId,
         status: 4,
         name: this.formData.name,
@@ -219,7 +215,10 @@ export default {
         projectIds: this.formData.costItem.toString(),
         managerIds: this.formData.projectManager.toString()
       }
-      this.selectTaskDetial(data)
+      if (!params.taskId) {
+        return
+      }
+      this.$refs.taskDetialTable.refresh(params)
     },
     //查询任务列表
     async selectTaskList() {
@@ -262,30 +261,6 @@ export default {
         }
       })
     },
-    //获取团队负责人
-    // getTeamLeaders() {
-    //   this.$http({
-    //     url: this.$http.adornUrl('/employee/selectEmployeeList'),
-    //     method: 'get'
-    //   }).then(({ data }) => {
-    //     if (data && data.code === 200) {
-    //       data.payload.forEach((data) => {
-    //         if (
-    //           data.empLevel == '6-' ||
-    //           data.empLevel == '6' ||
-    //           data.empLevel == '7' ||
-    //           data.empLevel == '8' ||
-    //           data.empLevel == '9' ||
-    //           data.empLevel == '6+'
-    //         ) {
-    //           this.teamLeaders.push(data)
-    //         }
-    //       })
-    //     } else {
-    //       this.$message.error(data.msg)
-    //     }
-    //   })
-    // },
     //获取项目
     getProject() {
       this.$http({

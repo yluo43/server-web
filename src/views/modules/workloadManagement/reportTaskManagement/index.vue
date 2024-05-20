@@ -74,7 +74,7 @@
                 style="width: 240px"
                 v-model="keyword"
                 placeholder="请输入搜索关键字"
-                @change="search"
+                @change="selectTaskList"
                 suffix-icon="el-icon-search"
                 clearable
               ></el-input>
@@ -182,12 +182,13 @@ export default {
       commissionTask: '',
       monthTask: '',
       yearTask: '',
-      empId: '1260',
+      empId: '',
       //taskStatus 0:待开始，1:填报中，2:确认中，3:待归档，4:已归档
       activeName: 'first',
-      radio: '1',
+      radio: 1,
       keyword: '',
       reportTaskTitle: '',
+      status: '',
       taskList: {
         theads: [
           { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '260px' },
@@ -207,7 +208,7 @@ export default {
 
   mounted() {
     // console.log(this.$store.state.user.empId)
-    this.selectTaskList({ empId: this.empId })
+    this.selectTaskList()
     this.selectTaskAmount()
   },
   created() {
@@ -215,15 +216,16 @@ export default {
   },
   methods: {
     selectTable() {
-      this.handlerRadio()
+      this.selectTaskList()
       this.selectTaskAmount()
     },
-    //搜索框搜索
-    search() {
-      this.handlerRadio()
-    },
     //查询列表
-    selectTaskList(params) {
+    selectTaskList() {
+      const params = {
+        empId: this.empId,
+        search: this.keyword,
+        status: this.status
+      }
       this.$refs.taskListTable.refresh(params)
     },
     //统计任务数
@@ -253,7 +255,7 @@ export default {
     tabChange() {
       if (this.activeName === 'first') {
         this.$nextTick(() => {
-          this.handlerRadio()
+          this.selectTaskList()
         })
       }
       if (this.activeName === 'second') {
@@ -270,9 +272,11 @@ export default {
     //切换radio查询
     handlerRadio() {
       if (this.radio == 1) {
-        this.selectTaskList({ empId: this.empId, search: this.keyword })
+        this.status = ''
+        this.selectTaskList()
       } else {
-        this.selectTaskList({ empId: this.empId, status: this.radio - 2, search: this.keyword })
+        this.status = this.radio - 2
+        this.selectTaskList()
       }
     },
     //下发填报任务
@@ -351,7 +355,7 @@ export default {
                   message: '删除成功',
                   type: 'success'
                 })
-                this.handlerRadio()
+                this.selectTaskList()
                 this.selectTaskAmount()
               } else {
                 this.$message.error(data.msg)

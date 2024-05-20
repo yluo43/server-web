@@ -71,7 +71,7 @@
                 style="width: 240px"
                 v-model="keyword"
                 placeholder="请输入搜索关键字"
-                @change="search"
+                @change="selectTaskList"
                 suffix-icon="el-icon-search"
                 clearable
               ></el-input>
@@ -158,6 +158,7 @@ export default {
       waitCount: '',
       monthCount: '',
       yearCount: '',
+      taskStatus: '',
       taskList: {
         theads: [
           { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '260px' },
@@ -179,13 +180,12 @@ export default {
   },
   created() {},
   methods: {
-    //搜索框搜索
-    search() {
-      this.handlerRadio()
-    },
-
-    //查询表格
-    selectTaskList(params) {
+    //查询表格数据
+    selectTaskList() {
+      const params = {
+        reportWorkName: this.keyword,
+        taskStatus: this.taskStatus
+      }
       this.$refs.taskListTable.refresh(params)
     },
 
@@ -215,7 +215,7 @@ export default {
     tabClick(params) {
       if (this.activeName === 'first') {
         this.$nextTick(() => {
-          this.handlerRadio()
+          this.selectTaskList()
         })
       }
       if (this.activeName === 'second') {
@@ -232,10 +232,11 @@ export default {
     //切换radio
     handlerRadio() {
       if (this.radio == 1) {
-        this.selectTaskList({ reportWorkName: this.keyword })
+        this.taskStatus = ''
       } else {
-        this.selectTaskList({ taskStatus: this.radio - 2, reportWorkName: this.keyword })
+        this.taskStatus = this.radio - 2
       }
+      this.selectTaskList()
     },
     //填报工作量
     goToReportingWorkload(row) {

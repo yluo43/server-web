@@ -6,24 +6,20 @@
           <div class="header-title">
             <div>工作量统计:</div>
             <div style="margin-left: 10px">
-              <el-select v-model="reportWorkName" style="width: 230px !important" @change="changeSelect">
+              <el-select v-model="reportWorkName" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
           </div>
-          <div style="margin-bottom: 10px; padding-left: 16px">
+          <div style="padding-left: 24px">
             <el-form ref="formData" :inline="true" label-width="60px" :label-position="labelposition" :model="formData">
               <el-form-item label="用户姓名:" prop="userName">
                 <el-input style="width: 200px" v-model="formData.userName" placeholder="请输入用户姓名" clearable />
               </el-form-item>
-              <el-form-item label="工号:" prop="empId">
-                <el-input
-                  style="width: 200px"
-                  v-model="formData.empId"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                  placeholder="请输入工号"
-                  clearable
-                />
+              <el-form-item label="归属团队:" prop="teamIds">
+                <el-select v-model="formData.teamIds" placeholder="请选择归属团队" multiple collapse-tags clearable>
+                  <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
+                </el-select>
               </el-form-item>
               <el-form-item label="报工类别:" prop="workLoadIds">
                 <el-select v-model="formData.workLoadIds" multiple collapse-tags placeholder="请选择报工类别" clearable>
@@ -35,48 +31,54 @@
                   <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="项目经理:" prop="managerIds">
-                <el-select v-model="formData.managerIds" multiple collapse-tags placeholder="请选择项目经理" clearable>
-                  <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
-                </el-select>
-              </el-form-item>
+              <div v-if="showFlag" style="display: contents">
+                <el-form-item label="工号:" prop="empId">
+                  <el-input
+                    style="width: 200px"
+                    v-model="formData.empId"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                    placeholder="请输入工号"
+                    clearable
+                  />
+                </el-form-item>
+                <el-form-item label="项目经理:" prop="managerIds">
+                  <el-select v-model="formData.managerIds" multiple collapse-tags placeholder="请选择项目经理" clearable>
+                    <el-option v-for="item in projectManagers" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id" />
+                  </el-select>
+                </el-form-item>
+              </div>
               <el-form-item>
-                <el-button type="primary" icon="el-icon-search" @click="selectData" style="margin-right: 10px">查询</el-button>
+                <div style="display: inline-block; margin-right: 15px" :style="showFlag ? { 'margin-left': '10px' } : ''" @click="showFlag = !showFlag">
+                  <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                  <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                  <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
+                </div>
+                <el-button type="primary" icon="el-icon-search" @click="selectTaskDetial" style="margin-right: 10px">查询</el-button>
                 <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
               </el-form-item>
             </el-form>
           </div>
-          <div class="chooseResult" style="display: flex; margin-bottom: 16px">
-            <div>
-              已选中
-              <span>{{ count }}</span>
-              项
-            </div>
-            <div>
-              <el-button type="text" @click="batchDownLoad">批量下载</el-button>
-            </div>
+        </div>
+        <div class="chooseResult" style="display: flex; margin: 24px 0">
+          <div>
+            已选中
+            <span>{{ count }}</span>
+            项
           </div>
-          <div style="padding-bottom: 20px; display: flex; justify-content: flex-end">
-            <el-select v-model="checkTeam" multiple clearable @remove-tag="removeTag" collapse-tags>
-              <el-option disabled v-for="item in teams" :key="item.id" :label="item.name" :value="item.id">
-                <el-checkbox v-model="item.check" @change="isCheck(item)">
-                  {{ item.name }}
-                </el-checkbox>
-              </el-option>
-            </el-select>
+          <div>
+            <el-button type="text" @click="batchDownLoad">批量下载</el-button>
           </div>
         </div>
-
         <div class="table">
           <div>
-            <!-- @selection-change="selChange" -->
             <el-table
               ref="multipleTable"
               :data="tableData"
               border
+              height="430px"
+              style="width: 100%"
               :header-cell-style="{ 'text-align': 'center' }"
               :cell-style="{ 'text-align': 'center' }"
-              style="width: 100%; height: 430px; overflow-y: scroll"
               :span-method="objectSpanMethod"
               :row-key="(row) => row.id"
               @select="handleSelect"
@@ -121,6 +123,7 @@ export default {
   data() {
     return {
       //总条数
+      showFlag: false,
       total: 0,
       taskId: '',
       teamId: '',
@@ -143,16 +146,15 @@ export default {
         //报工类别
         workLoadIds: [],
         //项目经理
-        managerIds: []
+        managerIds: [],
+        teamIds: []
       },
       belongingDepartments: [],
       projectManagers: [],
       costItems: [],
       tableData: [],
       spanArr: [],
-      pos: '',
-      //  checkedData: [],
-      checkTeam: [],
+      pos: 0,
       teams: [],
       categories: [],
       multipleSelection: []
@@ -240,33 +242,6 @@ export default {
         }
       })
     },
-    //选择框多选
-    isCheck(item) {
-      if (item.check && this.checkTeam.indexOf(item.id) == -1) {
-        this.checkTeam.push(item.id)
-      } else if (!item.check) {
-        this.checkTeam.forEach((elm, idx) => {
-          if (elm == item.id) {
-            this.checkTeam.splice(idx, 1)
-          }
-        })
-      }
-      this.selectData()
-    },
-    removeTag(id) {
-      this.teams.forEach((elm, idx) => {
-        if (elm.id == id) {
-          elm.check = false
-          this.checkTeam.splice(idx, 1)
-        }
-      })
-      this.selectData()
-    },
-    //数据选择框改变
-    // selChange(sel) {
-    //   this.count = sel.length
-    //   this.checkedData = [...sel]
-    // },
     //单选
     handleSelect(rows, row) {
       let foundIndex = this.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(row))
@@ -305,29 +280,32 @@ export default {
     //统计工作量下拉框改变
     changeSelect(params) {
       this.taskId = params
-      this.selectData()
-    },
-    //查询
-    selectData() {
-      let data = {
-        empName: this.formData.userName,
-        empId: this.formData.empId,
-        workloadType: this.formData.workLoadIds.toString() || null,
-        managerIds: this.formData.managerIds.toString(),
-        projectIds: this.formData.projectIds.toString(),
-        teamIdList: this.checkTeam.toString() || this.teamId
-      }
-      this.selectTaskDetial(data)
+      this.count = 0
+      this.multipleSelection = []
+      this.selectTaskDetial()
     },
     //查询详情
-    selectTaskDetial(params) {
-      let data = { curPage: this.curPage, pageSize: this.pageSize, taskId: this.taskId, type: 2 }
-      data = { ...data, ...params }
+    selectTaskDetial() {
+      let data = {
+        taskId: this.taskId,
+        empName: this.formData.userName,
+        empId: this.formData.empId,
+        workloadType: this.formData.workLoadIds.toString(),
+        managerIds: this.formData.managerIds.toString(),
+        projectIds: this.formData.projectIds.toString(),
+        teamIdList: this.formData.teamIds.toString() || this.teamId,
+        type: 2,
+        curPage: this.curPage,
+        pageSize: this.pageSize
+      }
       Object.keys(data).map((key) => {
         if (!data[key]) {
           delete data[key]
         }
       })
+      if (!data.taskId) {
+        return
+      }
       this.$http({
         url: this.$http.adornUrl('/teamWork/viewTeamWorkList'),
         method: 'get',
@@ -360,12 +338,12 @@ export default {
     // 分页自带的函数，当pageSize变化时会触发此函数
     handleSizeChange(val) {
       this.pageSize = val
-      this.selectData()
+      this.selectTaskDetial()
     },
     // 分页自带函数，当curPage变化时会触发此函数
     handleCurrentChange(val) {
       this.curPage = val
-      this.selectData()
+      this.selectTaskDetial()
     },
     getSpanArr(data) {
       // 遍历数据
@@ -426,15 +404,6 @@ export default {
         return
       }
       data.ids = this.multipleSelection.map((item) => item.id)
-      // let ids = []
-      // this.tableData.map((item) => {
-      //   this.checkedData.map((ele) => {
-      //     if (item.empId === ele.empId) {
-      //       ids.push(item.id)
-      //     }
-      //   })
-      // })
-      // data.ids = ids
       this.$http.downloadPost(this.$http.adornUrl('/teamWork/export'), data, this)
     },
     //重置
@@ -449,7 +418,6 @@ export default {
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }
-
 ::v-deep.el-table::before {
   display: none !important;
 }
@@ -460,32 +428,17 @@ export default {
   width: 100%;
   padding: 0;
   .top {
+    padding-bottom: 20px;
     background: white;
   }
   .header-title {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    padding-left: 16px;
+    margin-bottom: 20px;
+    padding-left: 24px;
   }
-  .status {
-    padding: 20px 16px;
-  }
-  // .row-box {
-  //   display: flex;
-  //   align-items: center;
-  //   height: 40px;
-  //   border-radius: 5px;
-  //   margin-left: -20px;
-  //   margin-bottom: 20px;
-  //   background-color: #e8f4ff;
-  //   padding-left: 20px;
-  // }
 }
 .table {
   background-color: white;
-  margin-top: 10px;
 }
 </style>

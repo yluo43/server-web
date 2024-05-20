@@ -4,13 +4,13 @@
       <el-main style="width: 100%; padding: 0">
         <div class="table" style="height: 650px; background-color: white">
           <div style="display: flex; align-items: center">
-            <span style="margin-left: 16px; font-size: 13px">工作量统计：</span>
+            <span style="margin-left: 16px">工作量统计：</span>
             <el-select v-model="dataForm.taskId" style="width: 278px !important" @change="changeSelect">
               <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
             </el-select>
           </div>
           <div style="margin: 24px 0">
-            <span style="font-size: 13px; margin-left: 54px">状态：</span>
+            <span style="margin-left: 54px">状态：</span>
             <el-radio-group v-model="dataForm.workStatus" @change="handlerRadio">
               <el-radio-button :label="null">全部</el-radio-button>
               <el-radio-button :label="1">待确认</el-radio-button>
@@ -21,7 +21,6 @@
           <div class="chooseResult">
             <span>已选中 {{ count }} 项</span>
             <el-button type="text" @click="projectWorkOperate(null, 1)">批量确认</el-button>
-            <!-- <span style="color: blue" @click="projectWorkOperate(null, 1)">批量确认</span> -->
           </div>
 
           <div style="margin-top: 24px">
@@ -29,11 +28,12 @@
               <!-- @selection-change="selChange" -->
               <el-table
                 ref="multipleTable"
+                height="455px"
                 :data="tableData"
                 border
                 :header-cell-style="{ 'text-align': 'center' }"
                 :cell-style="{ 'text-align': 'center' }"
-                style="width: 100%; height: 455px; overflow-y: scroll"
+                style="width: 100%"
                 :span-method="objectSpanMethod"
                 :row-key="(row) => row.id"
                 @select="handleSelect"
@@ -196,10 +196,15 @@ export default {
       this.count = this.multipleSelection.length
     },
     changeSelect() {
+      this.count = 0
+      this.multipleSelection = []
       this.selectTaskList()
     },
     selectTaskList() {
       let params = { ...this.dataForm, curPage: this.curPage, pageSize: this.pageSize }
+      if (!params.taskId) {
+        return
+      }
       this.$http({
         url: this.$http.adornUrl('/projectWork/projectWorkList'),
         method: 'get',

@@ -22,7 +22,7 @@
               </el-radio-group>
             </div>
             <div style="margin-right: 24px">
-              <el-select v-model="teamIds" placeholder="请选择团队" multiple collapse-tags filterable clearable @change="search">
+              <el-select v-model="teamIds" placeholder="请选择团队" multiple collapse-tags filterable clearable @change="selectWorkload">
                 <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </div>
@@ -66,7 +66,7 @@
     <!-- 驳回 -->
     <base-dialog ref="rejectDialog" title="工作量驳回" :width="'500px'">
       <template>
-        <rejectDialog ref="reject" :cancelDialog="closeDialog" @selectTableData="selectWorkload({ taskId: taskId })"></rejectDialog>
+        <rejectDialog ref="reject" :cancelDialog="closeDialog" @selectTableData="selectWorkload()"></rejectDialog>
       </template>
     </base-dialog>
   </div>
@@ -95,10 +95,12 @@ export default {
       teams: [],
       empId: '1260',
       taskIds: [],
-      //团队选择数据
+      status: '',
+      //选中的数据
       checkedData: [],
       workloadList: {
         theads: [
+          { label: '任务名称', prop: 'taskName' },
           { label: '团队成员', prop: 'name' },
           { label: '工号', prop: 'empId' },
           { label: '归属部门', prop: 'deptName', width: '70px' },
@@ -130,14 +132,11 @@ export default {
     async init(initData) {
       await this.selectTaskList()
       this.taskId = initData.taskId
-      this.selectWorkload({ taskId: this.taskId })
+      this.selectWorkload()
     },
     async initTable() {
       await this.selectTaskList()
-      if (!this.taskId) {
-        return
-      }
-      this.selectWorkload({ taskId: this.taskId })
+      this.selectWorkload()
     },
     //获取团队
     getTeam() {
@@ -155,30 +154,11 @@ export default {
     //统计工作量下拉框改变
     changeSelect(params) {
       this.taskId = params
-      this.handlerRadio()
+      this.count = 0
+      this.checkedData = []
+      this.$refs.workloadListTable.options.multipleSelection = []
+      this.selectWorkload()
     },
-    //团队下拉框值改变
-    search() {
-      this.handlerRadio()
-    },
-    //查询任务列表
-    // async selectTaskList() {
-    //   let params = { empId: this.empId }
-    //   const result = await this.$http({
-    //     url: this.$http.adornUrl('/workload/selectTasks'),
-    //     method: 'get',
-    //     params: params
-    //   })
-    //   if (result.data && result.data.code === 200) {
-    //     this.workLoadStatistics = result.data.payload
-    //     if (result.data.payload.length != 0) {
-    //       this.reportWorkName = result.data.payload[0].reportWorkName
-    //       this.taskId = result.data.payload[0].taskId
-    //     }
-    //   } else {
-    //     this.$message.error(result.data.msg)
-    //   }
-    // },
     async selectTaskList() {
       let params = { empId: this.empId, status: 3, curPage: 1, pageSize: 500 }
       const result = await this.$http({
@@ -208,16 +188,26 @@ export default {
         this.$message.error(result.data.msg)
       }
     },
-    //查询
-    selectWorkload(params) {
+    //查询列表数据
+    selectWorkload() {
+      const params = {
+        taskId: this.taskId,
+        status: this.status,
+        teamIds: this.teamIds.toString()
+      }
+      if (!params.taskId) {
+        return
+      }
       this.$refs.workloadListTable.refresh(params)
     },
     //切换ridio
     handlerRadio() {
       if (this.radio == 1) {
-        this.selectWorkload({ taskId: this.taskId, teamIds: this.teamIds.toString() })
+        this.status = ''
+        this.selectWorkload()
       } else {
-        this.selectWorkload({ taskId: this.taskId, status: this.radio, teamIds: this.teamIds.toString() })
+        this.status = this.radio
+        this.selectWorkload()
       }
     },
     //选中项数
@@ -256,7 +246,7 @@ export default {
             params: data
           }).then((result) => {
             if (result.data.code == 200 && result.data.success) {
-              this.handlerRadio()
+              this.selectWorkload()
               this.$message.success('批量归档成功')
             } else {
               this.$message.error('批量归档失败：' + result.data.msg)
@@ -286,8 +276,7 @@ export default {
             params: data
           }).then((result) => {
             if (result.data.code == 200 && result.data.success) {
-              // this.selectWorkload({ taskId: this.taskId })
-              this.handlerRadio()
+              this.selectWorkload()
               this.$message.success('归档成功')
             } else {
               this.$message.error('归档失败：' + result.data.msg)
