@@ -126,10 +126,10 @@
     </base-dialog> -->
   </div>
   <div v-else-if="flag == 2">
-    <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate" @changeFlag="handlerFlag"></addOrUpdate>
+    <addOrUpdate ref="addOrUpdate" @changeFlag="handlerFlag"></addOrUpdate>
   </div>
   <div v-else>
-    <expenditure @refreshDataList="refresh" ref="expenditure" @changeFlag="handlerFlag"></expenditure>
+    <expenditure ref="expenditure" @changeFlag="handlerFlag"></expenditure>
   </div>
 </template>
 <script>
@@ -319,12 +319,13 @@ export default {
       })
     },
     refresh() {
-      this.$refs.dataForm.validate((valid) => {
-        if (!valid) {
-          return false
-        }
-        this.$refs.table.refresh(this.dataForm)
-      })
+      // this.$refs.dataForm.validate((valid) => {
+      //   if (!valid) {
+      //     return false
+      //   }
+      //   this.$refs.table.refresh(this.dataForm)
+      // })
+      this.$refs.table.refresh(this.dataForm)
     },
     //表格选中
     // onSelect(selection) {

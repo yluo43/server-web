@@ -128,7 +128,6 @@ export default {
     },
     // 新增
     addOrUpdateHandle() {
-      console.log(this.operateType)
       let url = '/costItems/order/add'
       let method = 'post'
       if (this.operateType === 'update') {

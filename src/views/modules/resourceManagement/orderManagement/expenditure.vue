@@ -301,7 +301,7 @@ export default {
         data: obj
       }).then(({ data }) => {
         if (data.success) {
-          this.$emit('refreshDataList')
+          // this.$emit('refreshDataList')
           this.$message({
             message: '操作成功',
             type: 'success'

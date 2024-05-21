@@ -184,6 +184,7 @@
       </div>
       <div class="bottom-btn">
         <el-button type="primary" style="margin-right: 10px" @click="handlerFlag">确定</el-button>
+        <!-- <el-button type="primary" style="margin-right: 10px" @click="saveInfo">暂存</el-button> -->
         <el-button @click="handlerFlag">取消</el-button>
       </div>
     </el-container>
@@ -224,15 +225,15 @@ export default {
       orderData: { settlementDate: '' },
       tableData: {
         theads: [
-          { label: '结算时间', prop: 'settlementDate', slotName: 'settlementDate', width: '112px' },
-          { label: '结算金额', prop: 'settlementAcount', slotName: 'settlementAcount', width: '50px' },
-          { label: '结算单', prop: 'settlementFile', slotName: 'settlementFile', width: '80px' },
-          { label: '预计回款时间', prop: 'expectReturnDate', slotName: 'expectReturnDate', width: '112px' },
-          { label: '状态', prop: 'state', slotName: 'state', width: '80px' },
-          { label: '回款时间', prop: 'returnDate', slotName: 'returnDate', width: '112px' },
-          { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount', width: '80px' },
-          { label: '回款单', prop: 'returnFile', slotName: 'returnFile', width: '80px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
+          { label: '结算时间', prop: 'settlementDate', slotName: 'settlementDate', width: '160px' },
+          { label: '结算金额', prop: 'settlementAcount', slotName: 'settlementAcount', width: '100px' },
+          { label: '结算单', prop: 'settlementFile', slotName: 'settlementFile', width: '120px' },
+          { label: '预计回款时间', prop: 'expectReturnDate', slotName: 'expectReturnDate', width: '160px' },
+          { label: '状态', prop: 'state', slotName: 'state', width: '125px' },
+          { label: '回款时间', prop: 'returnDate', slotName: 'returnDate', width: '160px' },
+          { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount', width: '100px' },
+          { label: '回款单', prop: 'returnFile', slotName: 'returnFile', width: '120px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         height: '150px',
         minHeight: '180px',
@@ -282,6 +283,9 @@ export default {
         this.$refs.addOrderRef.init('add', this.order.id)
       })
     },
+    // saveInfo() {
+    //   console.log(this.orderList)
+    // },
     refresh() {
       this.$http({
         url: this.$http.adornUrl('/costItems/order/list'),
@@ -303,7 +307,7 @@ export default {
                   //item.clientTypeShow = true
                   // item.settlementFileShow = true
                   //item.returnFileShow = true
-                  //item.returnShow = true
+                  // item.returnShow = true
                   item.settlementFileList = []
                   item.returnFileList = []
                   if (item.settlementFilePath) {
@@ -333,7 +337,6 @@ export default {
     },
     handleChange(activeNames) {
       this.activeName = activeNames
-      console.log(activeNames)
     },
     viewOrder(item) {
       this.title = '订单详情'
@@ -441,18 +444,19 @@ export default {
       scope.item.row.settlementFileShow = true
       scope.item.row.settlementFileList = fileList
       scope.item.row.settlementFilePath = ''
-      scope.item.row.settlementFile = ''
+      scope.item.row.settlementFile = null
     },
     handleSecondRemove(file, fileList, scope, index) {
       scope.item.row.returnFileShow = true
       scope.item.row.returnFileList = fileList
       scope.item.row.returnFilePath = ''
-      scope.item.returnFile = ''
+      scope.item.returnFile = null
     },
     handleFileChange(file, fileList, scope, index) {
       if (file) {
         scope.item.row.settlementFileShow = false
         scope.item.row.settlementFile = file.raw
+        scope.item.row.settlementFileList = fileList
       }
       this.$refs.table[index].options.dataList[scope.item.$index] = scope.item.row
     },
@@ -460,7 +464,7 @@ export default {
       if (file) {
         scope.item.row.returnFileShow = false
         scope.item.row.returnFile = file.raw
-        console.log(scope.item.row)
+        scope.item.row.returnFileList = fileList
       }
       this.$refs.table[index].options.dataList[scope.item.$index] = scope.item.row
     },
@@ -546,6 +550,7 @@ export default {
           return
         }
       }
+
       let formData = new FormData()
       for (let key in obj) {
         if (obj[key] || obj[key] === 0) {
@@ -564,7 +569,7 @@ export default {
           .then(({ data }) => {
             this.flag = true
             if (data.success) {
-              this.$emit('refreshDataList')
+              // this.$emit('refreshDataList')
               this.$message({
                 message: '操作成功',
                 type: 'success'

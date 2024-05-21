@@ -114,6 +114,7 @@
                     clearable
                     v-model.number="scope.row.realityRate"
                   ></el-input>
+                  %
                 </template>
               </el-table-column>
               <!-- <el-table-column prop="realityRate" label="实际投入" width="160px" align="center">
@@ -324,7 +325,7 @@ export default {
     save() {
       let data = {
         pmsWorkloadVoList: this.tableData,
-        operate: 1,
+        operateType: 1,
         taskId: this.taskId,
         teamId: this.teamId
       }
@@ -376,7 +377,7 @@ export default {
         //发起请求
         let data = {
           pmsWorkloadVoList: this.tableData,
-          operate: 2,
+          operateType: 2,
           taskId: this.taskId,
           teamId: this.teamId
         }
@@ -532,6 +533,7 @@ export default {
   align-items: center;
   justify-content: flex-end;
   margin-bottom: 20px;
+  padding-right: 32px;
 }
 .table {
   background-color: white;
