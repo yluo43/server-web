@@ -17,7 +17,7 @@
               clearable
             />
           </el-form-item>
-          <el-form-item label="统计部门:" prop="department">
+          <!-- <el-form-item label="统计部门:" prop="department">
             <el-select
               :disabled="flag === 'edit'"
               placeholder="请选择统计部门"
@@ -32,6 +32,11 @@
                   {{ item.name }}
                 </el-checkbox>
               </el-option>
+            </el-select>
+          </el-form-item> -->
+          <el-form-item label="统计部门:" prop="department">
+            <el-select :disabled="flag === 'edit'" placeholder="请选择统计部门" v-model="formData.department" multiple clearable collapse-tags>
+              <el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.name"></el-option>
             </el-select>
           </el-form-item>
 
@@ -120,7 +125,7 @@ export default {
     return {
       //add 添加 edit编辑
       flag: '',
-      managerName: '王瑢',
+      managerName: '',
       formData: {
         //统计时间段department
         timePeriod: [],
@@ -348,28 +353,32 @@ export default {
           return false
         }
       })
-    },
-    //选择框多选
-    isCheck(item) {
-      if (item.check && this.formData.department.indexOf(item.name) == -1) {
-        this.formData.department.push(item.name)
-      } else if (!item.check) {
-        this.formData.department.forEach((elm, idx) => {
-          if (elm == item.name) {
-            this.formData.department.splice(idx, 1)
-          }
-        })
-      }
-    },
-    removeTag(name) {
-      this.departments.forEach((elm, idx) => {
-        if (elm.name == name) {
-          elm.check = false
-        }
-      })
     }
+    //选择框多选
+    // isCheck(item) {
+    //   if (item.check && this.formData.department.indexOf(item.name) == -1) {
+    //     this.formData.department.push(item.name)
+    //   } else if (!item.check) {
+    //     this.formData.department.forEach((elm, idx) => {
+    //       if (elm == item.name) {
+    //         this.formData.department.splice(idx, 1)
+    //       }
+    //     })
+    //   }
+    // },
+    // removeTag(name) {
+    //   this.departments.forEach((elm, idx) => {
+    //     if (elm.name == name) {
+    //       elm.check = false
+    //     }
+    //   })
+    // }
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+::v-deep .el-input__icon {
+  line-height: 20px !important;
+}
+</style>

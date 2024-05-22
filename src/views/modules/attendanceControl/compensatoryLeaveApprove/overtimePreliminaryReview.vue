@@ -467,6 +467,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-tree-node__label {
+  font-size: 12px;
+}
 .el-input {
   width: 200px;
 }

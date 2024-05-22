@@ -173,7 +173,7 @@
                   style="width: 160px; margin-top: 20px; color: #2462f9"
                   @click="addSettlement(index)"
                   icon="el-icon-circle-plus-outline"
-                  :disabled="viewDisabled"
+                  :disabled="viewDisabled || btnDisabled"
                 >
                   添加结算回款
                 </el-button>
@@ -210,7 +210,6 @@ export default {
   components: { baseTable, addOrder, baseDialog, viewOrder },
   data() {
     return {
-      activeNames: [],
       chooseStr: '已选中 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款 0.00',
       title: '',
       order: {
@@ -260,7 +259,8 @@ export default {
           label: '已收款'
         }
       ],
-      viewDisabled: false
+      viewDisabled: false,
+      btnDisabled: false
     }
   },
   methods: {
@@ -293,6 +293,7 @@ export default {
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
+          this.btnDisabled = false
           this.orderList = data.payload
           if (this.orderList) {
             for (let i = 0; i < this.orderList.length; i++) {
@@ -335,9 +336,7 @@ export default {
         }
       })
     },
-    handleChange(activeNames) {
-      this.activeName = activeNames
-    },
+    handleChange() {},
     viewOrder(item) {
       this.title = '订单详情'
       this.$refs.viewOrderDialog.show()
@@ -354,7 +353,7 @@ export default {
       })
     },
     deleteOrder(item) {
-      this.$confirm('确定删除该订单信息吗？', '提示', {
+      this.$confirm(`确定删除"${item.orderName}"吗?删除后将无法恢复!`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -403,6 +402,7 @@ export default {
       }
     },
     addSettlement(index) {
+      this.btnDisabled = true
       this.$refs.table[index].options.dataList.push({
         settlementDate: '',
         settlementAcount: null,
@@ -435,6 +435,7 @@ export default {
     },
     editSettlement(scope, index) {
       scope.item.row.clientTypeShow = false
+      this.btnDisabled = true
       // 手动触发重新渲染
       this.$nextTick(() => {
         this.$refs.table[index].__rowClick(scope.item.row)

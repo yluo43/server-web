@@ -15,11 +15,12 @@
           <div style="display: flex; justify-content: space-between; align-items: center">
             <div class="status">
               状态：
+
               <el-radio-group v-model="radio" @change="handlerRadio">
-                <el-radio-button label="1">全部</el-radio-button>
-                <el-radio-button label="2">待归档</el-radio-button>
+                <el-radio-button label="0">全部</el-radio-button>
+                <el-radio-button label="1">待确认</el-radio-button>
                 <el-radio-button label="3">被驳回</el-radio-button>
-                <el-radio-button label="4">已归档</el-radio-button>
+                <el-radio-button label="2">已确认</el-radio-button>
               </el-radio-group>
             </div>
             <div style="margin-right: 24px">
@@ -144,7 +145,7 @@ export default {
       //工作量统计
       reportWorkName: '',
       workLoadStatistics: [],
-      radio: 1,
+      radio: 0,
       queryData: {},
       tableData: [],
       spanArr: [],
