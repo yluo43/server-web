@@ -8,6 +8,19 @@
           </el-form-item>
           <el-form-item label="工作量填报:">
             <div style="display: flex; align-items: center" v-for="(item, index) in formData.workLoad" :key="index">
+              <el-form-item :prop="'workLoad.' + index + '.investTime'">
+                <el-date-picker
+                  style="width: 200px"
+                  v-model="item.investTime"
+                  :picker-options="pickerOptions"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                />
+              </el-form-item>
               <el-form-item :prop="'workLoad.' + index + '.workloadName'">
                 <el-select v-model="item.workloadName" filterable placeholder="请选择报工类别" @change="workLoadChange(item)" clearable>
                   <el-option v-for="ele in categories" :key="ele.id" :label="ele.name" :value="ele.name" />
@@ -28,23 +41,6 @@
 
             <el-button type="text" icon="el-icon-circle-plus-outline" style="font-size: 16px !important" @click="addRow">添加</el-button>
           </el-form-item>
-          <!-- <el-row style="width: 100%" v-for="(item, index) in formData.workLoad" :key="index">
-            <el-col :span="10">
-              <el-form-item :prop="'workLoad.' + index + '.projectName'">
-                <el-select v-model="item.projectName" placeholder="请选择成本项目" clearable>
-                  <el-option v-for="ele in costItems" :key="ele.id" :label="ele.name" :value="ele.name" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="10">
-              <el-form-item :prop="'workLoad.' + index + '.realityRate'">
-                <el-input style="width: 100px" v-model="item.realityRate" clearable />
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <i class="el-icon-delete" @click="deleteRow(item)"></i>
-            </el-col>
-          </el-row> -->
         </el-form>
         <div class="btn-group">
           <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
@@ -76,6 +72,18 @@ export default {
       dataList: [],
       categories: [],
       workLoad: []
+    }
+  },
+  computed: {
+    pickerOptions() {
+      return {
+        disabledDate: (time) => {
+          return (
+            time.getTime() < new Date(this.workLoad[0].jobStartTime + ' 00:00:00').getTime() ||
+            time.getTime() > new Date(this.workLoad[0].jobOverTime + ' 23:59:59').getTime()
+          )
+        }
+      }
     }
   },
   mounted() {
@@ -113,6 +121,9 @@ export default {
         }
       }).then(({ data }) => {
         if (data && data.code === 200) {
+          data.payload.list.forEach((item) => {
+            item.investTime = [item.startTime, item.overTime]
+          })
           this.formData.workLoad = [...data.payload.list]
           this.workLoad = [...data.payload.list]
         } else {
@@ -168,14 +179,15 @@ export default {
         id: '',
         managerName: '',
         name: this.formData.userName,
-        overTime: this.workLoad[0].overTime,
+        overTime: '',
         planRate: '',
         workloadName: '',
         workloadType: '',
         projectId: '',
         projectName: '',
         realityRate: 0,
-        startTime: this.workLoad[0].startTime,
+        investTime: [this.workLoad[0].jobStartTime, this.workLoad[0].jobOverTime],
+        startTime: '',
         taskId: this.formData.taskId,
         teamId: this.workLoad[0].teamId,
         teamManagerName: this.workLoad[0].teamManagerName,
@@ -205,6 +217,8 @@ export default {
         return false
       }
       this.formData.workLoad.map((item, index) => {
+        item.startTime = item.investTime[0]
+        item.overTime = item.investTime[1]
         item.taskId = this.formData.taskId
         this.costItems.map((ele) => {
           if (item.projectId === ele.id) {
@@ -212,7 +226,6 @@ export default {
           }
         })
       })
-
       let data = {
         pmsWorkloadVoList: this.formData.workLoad,
         empId: this.formData.empId,

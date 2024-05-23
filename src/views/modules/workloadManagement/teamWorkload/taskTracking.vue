@@ -118,7 +118,7 @@
       </el-main>
     </el-container>
     <!-- 驳回 -->
-    <base-dialog ref="editDataDialog" title="编辑工作量" :width="'800px'">
+    <base-dialog ref="editDataDialog" title="编辑工作量" :width="'1000px'">
       <template>
         <editDataDialog ref="edit" :cancelDialog="closeDialog" @select="select"></editDataDialog>
       </template>
@@ -333,7 +333,7 @@ export default {
     },
     //合并单元格
     objectSpanMethod({ rowIndex, columnIndex }) {
-      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 3 || columnIndex === 10) {
+      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 10) {
         const _row = this.spanArr[rowIndex]
         const _col = _row > 0 ? 1 : 0
         return {

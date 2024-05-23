@@ -239,6 +239,9 @@ export default {
       }
       this.dataForm.type = 2
       await this.projectTaskListNoPage()
+      if(data.taskId){
+        this.dataForm.taskId=data.taskId
+      }
       if (this.dataForm.projectId && this.dataForm.taskId) {
         this.selectTaskList()
       } else {
@@ -333,9 +336,7 @@ export default {
         columnIndex === 2 ||
         columnIndex === 3 ||
         columnIndex === 4 ||
-        columnIndex === 5 ||
-        columnIndex === 6 ||
-        columnIndex === 7
+        columnIndex === 5 
       ) {
         const _row = this.spanArr[rowIndex]
         const _col = _row > 0 ? 1 : 0
