@@ -156,25 +156,25 @@
       </template>
     </base-dialog>
     <!-- 提交成功 -->
-    <base-dialog ref="successDialog" :width="'500px'">
+    <!-- <base-dialog ref="successDialog" :width="'500px'">
       <template>
         <successDialog ref="success" :cancelDialog="closeDialog" @track="goTrack"></successDialog>
       </template>
-    </base-dialog>
+    </base-dialog> -->
   </div>
 </template>
 
 <script>
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import addDataDialog from '@/views/modules/workloadManagement/teamWorkload/addDataDialog.vue'
-import successDialog from '@/views/modules/workloadManagement/teamWorkload/successDialog.vue'
+// import successDialog from '@/views/modules/workloadManagement/teamWorkload/successDialog.vue'
 export default {
   props: {
     cancelDialog: {
       type: Function
     }
   },
-  components: { baseDialog, addDataDialog, successDialog },
+  components: { baseDialog, addDataDialog },
   data() {
     return {
       number: '',
@@ -186,7 +186,8 @@ export default {
       costItems: [],
       categories: [],
       spanArr: [], // 需要合并的行数
-      pos: 0 // 索引
+      pos: 0, // 索引
+      initData: {}
     }
   },
   mounted() {
@@ -200,6 +201,7 @@ export default {
       console.log(initData)
       this.taskId = initData.id
       this.teamId = initData.teamId
+      this.initData = initData
       this.selectWorkload()
     },
     //日期格式化
@@ -249,10 +251,10 @@ export default {
         return a[prop] - b[prop] // 升序
       }
     },
-    goTrack() {
-      this.cancelDialog()
-      this.$emit('track', { reportWorkName: this.taskInfo.reportWorkName, id: this.taskId, teamId: this.teamId })
-    },
+    // goTrack() {
+    //   this.cancelDialog()
+    //   this.$emit('track', { reportWorkName: this.taskInfo.reportWorkName, id: this.taskId, teamId: this.teamId })
+    // },
     //查询
     selectWorkload() {
       let params = { taskId: this.taskId, teamId: this.teamId }
@@ -336,7 +338,9 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.$message.success('保存成功')
-          this.selectWorkload()
+          this.cancelDialog()
+          this.$emit('refresh')
+          // this.selectWorkload()
         } else {
           this.$message.error(data.msg)
         }
@@ -387,11 +391,13 @@ export default {
           data: data
         }).then(({ data }) => {
           if (data && data.code === 200) {
-            this.selectWorkload()
-            this.$refs.successDialog.show()
-            this.$nextTick(() => {
-              this.$refs.success.init(this.taskInfo)
-            })
+            this.cancelDialog()
+            this.$emit('successShow', this.initData)
+            // this.selectWorkload()
+            // this.$refs.successDialog.show()
+            // this.$nextTick(() => {
+            //   this.$refs.success.init(this.taskInfo)
+            // })
           } else {
             this.$message.error(data.msg)
           }

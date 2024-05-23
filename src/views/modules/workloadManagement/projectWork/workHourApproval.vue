@@ -40,8 +40,8 @@
                 @select-all="handleSelectionAll"
               >
                 <el-table-column type="selection" width="55" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="empId" label="工号" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="name" label="团队成员" show-overflow-tooltip fixed="left"></el-table-column>
+                <el-table-column prop="empId" label="工号" show-overflow-tooltip fixed="left"></el-table-column>
                 <el-table-column prop="deptName" label="归属部门" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="teamName" label="归属团队" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="teamManagerName" label="团队负责人" show-overflow-tooltip></el-table-column>
@@ -51,7 +51,7 @@
                 <el-table-column prop="planRate" label="计划投入(%)" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="workStatusName" label="确认状态" show-overflow-tooltip></el-table-column>
-                <el-table-column label="操作" width="200px">
+                <el-table-column label="操作" width="200px" fixed="right">
                   <template slot-scope="scope">
                     <el-button :disabled="scope.row.workStatusName != '待确认'" type="text" @click="projectWorkOperate(scope.row, 1)">确认</el-button>
                     <el-button :disabled="scope.row.workStatusName != '待确认'" type="text" @click="projectWorkOperateTwo(scope.row, 2)">驳回</el-button>

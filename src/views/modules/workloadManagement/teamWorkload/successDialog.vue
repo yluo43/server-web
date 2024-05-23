@@ -13,15 +13,17 @@
 </template>
 <script>
 export default {
-  props: {
-    cancelDialog: {
-      type: Function
-    }
-  },
+  // props: {
+  //   cancelDialog: {
+  //     type: Function
+  //   }
+  // },
   data() {
     return {
       reportWorkName: '',
-      teamName: ''
+      teamName: '',
+      taskId: '',
+      teamId: ''
     }
   },
   mounted() {},
@@ -31,10 +33,12 @@ export default {
     init(initData) {
       this.reportWorkName = initData.reportWorkName
       this.teamName = initData.teamName
+      this.taskId = initData.id
+      this.teamId = initData.teamId
     },
     goToTrack() {
-      this.cancelDialog()
-      this.$emit('track')
+      this.$emit('track', { reportWorkName: this.reportWorkName, id: this.taskId, teamId: this.teamId })
+      // this.cancelDialog()
     }
   }
 }

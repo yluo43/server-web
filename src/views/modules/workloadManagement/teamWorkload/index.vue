@@ -134,7 +134,15 @@
     <!-- 工作量填报 -->
     <base-dialog ref="reportingWorkloadDialog" title="工作量填报" :width="'1200px'">
       <template>
-        <reportingWorkload ref="reportingWorkload" :cancelDialog="closeDialog" @track="goTrack"></reportingWorkload>
+        <reportingWorkload ref="reportingWorkload" @successShow="successShow" @refresh="selectTaskList" :cancelDialog="closeDialog"></reportingWorkload>
+      </template>
+    </base-dialog>
+
+    <!-- 提交成功 -->
+    <!-- :cancelDialog="closeSuccessDialog" -->
+    <base-dialog ref="successDialog" :width="'500px'">
+      <template>
+        <successDialog ref="success" :cancelDialog="closeSuccessDialog" @track="goTrack"></successDialog>
       </template>
     </base-dialog>
   </div>
@@ -146,14 +154,15 @@ import baseDialog from '@/views/modules/base/baseDialog.vue'
 import taskTracking from '@/views/modules/workloadManagement/teamWorkload/taskTracking.vue'
 import taskDetails from '@/views/modules/workloadManagement/teamWorkload/taskDetails.vue'
 import reportingWorkload from '@/views/modules/workloadManagement/teamWorkload/reportingWorkload.vue'
+import successDialog from '@/views/modules/workloadManagement/teamWorkload/successDialog.vue'
 export default {
-  components: { baseTable, baseDialog, taskTracking, taskDetails, reportingWorkload },
+  components: { baseTable, baseDialog, taskTracking, taskDetails, reportingWorkload, successDialog },
   props: {},
   data() {
     return {
       activeName: 'first',
       taskFlag: 'true',
-      radio: '1',
+      radio: 1,
       keyword: '',
       waitCount: '',
       monthCount: '',
@@ -205,7 +214,15 @@ export default {
         }
       })
     },
+    successShow(params) {
+      this.selectTaskList()
+      this.$refs.successDialog.show()
+      this.$nextTick(() => {
+        this.$refs.success.init(params)
+      })
+    },
     goTrack(params) {
+      this.closeSuccessDialog()
       this.activeName = 'second'
       this.$nextTick(() => {
         this.$refs.taskTracking.init(params)
@@ -262,6 +279,10 @@ export default {
     //关闭弹窗
     closeDialog() {
       this.$refs.reportingWorkloadDialog.hide()
+    },
+    //关闭提交成功弹窗
+    closeSuccessDialog() {
+      this.$refs.successDialog.hide()
     }
   }
 }
