@@ -10,11 +10,12 @@
       </div>
       <el-container>
         <div style="background-color: #fff">
-          <el-aside style="width: 200px; height: 655px; margin-left: 24px">
+          <el-aside style="width: 256px; height: 655px; margin-left: 24px">
             <el-row>
               <el-col>
                 <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
                 <el-tree
+                  style="width: 100%"
                   :data="data"
                   :render-content="renderContent"
                   :props="defaultProps"
@@ -27,7 +28,7 @@
             </el-row>
           </el-aside>
         </div>
-        <el-main style="width: calc(100% - 224px); background: #fff; padding: 0 0 0 16px" v-if="activeName === 'first'">
+        <el-main style="width: calc(100% - 280px); background: #fff; padding: 0 0 0 16px" v-if="activeName === 'first'">
           <div class="management-header">
             <div class="management-content">
               <div class="management-item">
@@ -142,11 +143,11 @@
           </div>
         </el-main>
         <!-- 工时审批 -->
-        <div v-if="activeName === 'second'" style="width: calc(100% - 224px); background: #fff; padding: 0 0 0 16px">
+        <div v-if="activeName === 'second'" style="width: calc(100% - 280px); background: #fff; padding: 0 0 0 16px">
           <workerHourApproval ref="workerHourApproval" @projectListRefresh="projectListRefresh"></workerHourApproval>
         </div>
         <!-- 任务详情 -->
-        <div v-if="activeName === 'third'" style="width: calc(100% - 224px); background: #fff; padding: 0 0 0 16px">
+        <div v-if="activeName === 'third'" style="width: calc(100% - 280px); background: #fff; padding: 0 0 0 16px">
           <taskDetails ref="taskDetails"></taskDetails>
         </div>
       </el-container>
@@ -371,22 +372,26 @@ export default {
     goToTrack(row) {
       this.activeName = 'second'
       this.$nextTick(() => {
-        this.$refs.workerHourApproval.init({
-          projectId: this.dataForm.projectId,
-          taskId: row.item.id,
-          reportWorkName: row.item.reportWorkName
-        })
+        this.$refs.workerHourApproval.init(
+          {
+            projectId: this.dataForm.projectId,
+            reportWorkName: row.item.reportWorkName
+          },
+          row.item.id
+        )
       })
     },
     //查看详情
     goToShowDetails(row) {
       this.activeName = 'third'
       this.$nextTick(() => {
-        this.$refs.taskDetails.init({
-          projectId: this.dataForm.projectId,
-          taskId: row.item.id,
-          reportWorkName: row.item.reportWorkName
-        })
+        this.$refs.taskDetails.init(
+          {
+            projectId: this.dataForm.projectId,
+            reportWorkName: row.item.reportWorkName
+          },
+          row.item.id
+        )
       })
     }
   }
@@ -461,11 +466,40 @@ export default {
 }
 
 ::v-deep .badge-table .el-badge__content.is-fixed {
-  top: 8px;
+  top: 10px;
 }
 ::v-deep .el-badge__content {
   border-radius: 4px;
-
-  padding: 0 10px;
+  padding: 0 3px;
 }
+::v-deep .el-icon-caret-right:before {
+  content: '';
+}
+::v-deep .el-tree-node__content > .el-tree-node__expand-icon {
+  padding: 0;
+  display: none;
+}
+// ::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+//   background-color: white;
+//   display: block;
+//   height: 26px;
+//   line-height: 26px;
+// }
+
+// ::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content span:last-child {
+//   display: inline-block;
+//   min-width: 248px;
+//   height: 26px;
+//   line-height: 26px;
+//   background-color: #f0f7ff;
+// }
+// ::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content .el-badge span {
+//   display: inline-block;
+//   height: 26px;
+//   line-height: 26px;
+//   background-color: #f0f7ff;
+// }
+// ::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content .small-badge .el-badge__content.is-fixed {
+//   top: 12px;
+// }
 </style>

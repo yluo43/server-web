@@ -115,15 +115,15 @@ export default {
     }
   },
   methods: {
-    async init(data) {
+    async init(data, taskId) {
       this.clear(this.dataForm)
       if (data) {
         Object.assign(this.dataForm, data)
       }
       this.dataForm.type = 1
       await this.projectTaskListNoPage()
-      if (data.taskId) {
-        this.dataForm.taskId = data.taskId
+      if (taskId) {
+        this.dataForm.taskId = taskId
       }
       if (this.dataForm.projectId && this.dataForm.taskId) {
         this.selectTaskList()

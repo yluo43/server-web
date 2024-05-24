@@ -293,8 +293,9 @@ export default {
   padding: 6px 15px;
 }
 ::v-deep .el-tag {
-  height: 20px;
-  line-height: 20px;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 3px;
 }
 
 ::v-deep .el-tabs--border-card > .el-tabs__header {
