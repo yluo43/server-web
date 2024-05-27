@@ -1,14 +1,22 @@
 <template>
   <el-container style="height: 100%; width: 100%">
-    <el-aside :class="showFlag ? 'asideHeight' : 'leftHeight'" style="width: 200px">
+    <el-aside :class="showFlag ? 'asideHeight' : 'leftHeight'" style="width: 256px">
       <el-row>
         <el-col>
-          <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
-          <el-tree :data="treeData" :props="defaultProps" :highlight-current="true" node-key="id" ref="treeRef" @node-click="handleNodeClick"></el-tree>
+          <el-input style="width: 100%" v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
+          <el-tree
+            :data="treeData"
+            :render-content="renderContent"
+            :props="defaultProps"
+            :highlight-current="true"
+            node-key="id"
+            ref="treeRef"
+            @node-click="handleNodeClick"
+          ></el-tree>
         </el-col>
       </el-row>
     </el-aside>
-    <div style="width: calc(100% - 200px)">
+    <div style="width: calc(100% - 256px)">
       <div style="margin-left: 16px">
         <el-form ref="dataForm" label-width="82px" label-position="right" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
@@ -216,19 +224,19 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'userName', width: '70px' },
-          { label: '工号', prop: 'empId', width: '70px' },
+          { label: '用户姓名', prop: 'userName', width: '68px', fixed: 'left' },
+          { label: '工号', prop: 'empId', width: '65px', fixed: 'left' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '加班开始时间', prop: 'startTime', width: '140px' },
-          { label: '加班结束时间', prop: 'endTime', width: '140px' },
+          { label: '加班开始时间', prop: 'startTime', width: '138px' },
+          { label: '加班结束时间', prop: 'endTime', width: '138px' },
           { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
-          { label: '加班时长(小时)', prop: 'overtimeHours' },
-          { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork' },
+          { label: '加班时长(小时)', prop: 'overtimeHours', width: '70px' },
+          { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork', width: '70px' },
           { label: '加班原因', prop: 'reason' },
-          { label: '申请时间', prop: 'createTime', width: '140px' },
-          { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px' }
+          { label: '申请时间', prop: 'createTime', width: '138px' },
+          { label: '审批状态', prop: 'status', slotName: 'status', width: '70px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px', fixed: 'right' }
         ],
         url: '/attendance/getOvertimeList'
       },
@@ -249,6 +257,13 @@ export default {
     this.selectTableData()
   },
   methods: {
+    renderContent(h, { node, data, store }) {
+      return (
+        <el-tooltip content={node.label} placement='top' popper-class='custom-tooltip' popper-class='custom-tooltip'>
+          <span class='content-span'> {node.label}</span>
+        </el-tooltip>
+      )
+    },
     //刷新页面并打开弹窗
     refrshTable(initData, rejectFlag) {
       this.selectTableData()
@@ -483,6 +498,14 @@ export default {
   background-color: #ffffff;
   margin-top: 4px;
 }
+::v-deep .el-tree-node__content .content-span {
+  max-width: 220px;
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 </style>
 <style lang="scss">
 .msgClass {
@@ -490,5 +513,8 @@ export default {
     padding: 0 27px 20px 48px;
     font-size: 16px;
   }
+}
+.custom-tooltip {
+  margin-bottom: 5px !important;
 }
 </style>

@@ -64,6 +64,7 @@
               :formatter="item.formatter"
               :sortable="item.sortName != null"
               :width="item.width"
+              :min-width="item.minWidth"
               :fixed="item.fixed"
             ></el-table-column>
           </template>

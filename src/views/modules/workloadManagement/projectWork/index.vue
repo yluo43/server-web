@@ -174,13 +174,13 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '200px' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '270px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName', width: '80px' },
           { label: '开始确认时间', prop: 'startConfirmTime', width: '100px' },
           { label: '确认天数', prop: 'affirmDay', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus', width: '80px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '160px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '230px' }
         ],
         url: '/projectWork/projectTaskList'
       },
@@ -198,14 +198,34 @@ export default {
   },
   methods: {
     renderContent(h, { node, data, store }) {
+      // if (data.isConfirm === '1') {
+      //   return (
+      //     <el-badge value='待确认' class='small-badge'>
+      //       <span> {node.label}</span>
+      //     </el-badge>
+      //   )
+      // } else {
+      //   return <span> {node.label}</span>
+      // }
       if (data.isConfirm === '1') {
         return (
-          <el-badge value='待确认' class='small-badge'>
-            <span> {node.label}</span>
-          </el-badge>
+          <span class='tree-content'>
+            <el-tooltip content={node.label} placement='top' popper-class='custom-tooltip'>
+              <span class='first-span'> {node.label}</span>
+            </el-tooltip>
+            <span style='display: inline-block; color: white;border: 1px solid white;background-color:#F56C6C; border-radius:4px;padding: 0 3px; text-align: center; height: 18px;line-height:18px;'>
+              待确认
+            </span>
+          </span>
         )
       } else {
-        return <span> {node.label}</span>
+        return (
+          <span class='tree-content'>
+            <el-tooltip content={node.label} effect='dark' placement='top' popper-class='custom-tooltip'>
+              <span class='second-span'> {node.label}</span>
+            </el-tooltip>
+          </span>
+        )
       }
     },
     handleNodeClick(data) {
@@ -479,27 +499,32 @@ export default {
   padding: 0;
   display: none;
 }
-// ::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
-//   background-color: white;
-//   display: block;
-//   height: 26px;
-//   line-height: 26px;
-// }
-
-// ::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content span:last-child {
-//   display: inline-block;
-//   min-width: 248px;
-//   height: 26px;
-//   line-height: 26px;
-//   background-color: #f0f7ff;
-// }
-// ::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content .el-badge span {
-//   display: inline-block;
-//   height: 26px;
-//   line-height: 26px;
-//   background-color: #f0f7ff;
-// }
-// ::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content .small-badge .el-badge__content.is-fixed {
-//   top: 12px;
-// }
+::v-deep .tree-content {
+  display: flex;
+  align-items: center;
+  height: 26px;
+}
+::v-deep .tree-content .first-span {
+  display: inline-block;
+  max-width: 200px;
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+::v-deep .tree-content .second-span {
+  display: inline-block;
+  max-width: 230px;
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+</style>
+<style>
+.custom-tooltip {
+  margin-bottom: 5px !important;
+}
 </style>

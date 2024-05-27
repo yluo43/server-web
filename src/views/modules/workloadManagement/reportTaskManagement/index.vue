@@ -317,10 +317,63 @@ export default {
       })
     },
     //删除
+    // goToDelete(row) {
+    //   if (row) {
+    //     let message = ''
+    //     let data = { deptIds: row.item.deptIds, deleteFlag: 1, taskId: row.item.taskId }
+    //     switch (row.item.taskStatus) {
+    //       case 0:
+    //         message = '该任务待开始填报,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //       case 1:
+    //         message = '该任务正在填报中,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //       case 2:
+    //         message = '该任务正在确认中,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //       case 3:
+    //         message = '该任务待归档,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //       case 4:
+    //         message = '该任务已归档,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //     }
+    //     this.$confirm(message, '提示', {
+    //       confirmButtonText: '确定',
+    //       cancelButtonText: '取消',
+    //       type: 'warning',
+    //       center: true
+    //     })
+    //       .then(() => {
+    //         this.$http({
+    //           url: this.$http.adornUrl('/workload/updateReport'),
+    //           method: 'post',
+    //           data: data
+    //         }).then(({ data }) => {
+    //           if (data && data.code === 200) {
+    //             this.$message({
+    //               message: '删除成功',
+    //               type: 'success'
+    //             })
+    //             this.selectTaskList()
+    //             this.selectTaskAmount()
+    //           } else {
+    //             this.$message.error(data.msg)
+    //           }
+    //         })
+    //       })
+    //       .catch(() => {
+    //         this.$message({
+    //           type: 'info',
+    //           message: '已取消删除'
+    //         })
+    //       })
+    //   }
+    // },
     goToDelete(row) {
       if (row) {
         let message = ''
-        let data = { deptIds: row.item.deptIds, deleteFlag: 1, taskId: row.item.taskId }
+        // let params = { taskId: row.item.taskId }
         switch (row.item.taskStatus) {
           case 0:
             message = '该任务待开始填报,确定删除吗?删除后该任务下的报工将作废!'
@@ -346,9 +399,8 @@ export default {
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl('/workload/updateReport'),
-              method: 'post',
-              data: data
+              url: this.$http.adornUrl(`/workload/deleteTask?taskId=${row.item.taskId}`),
+              method: 'post'
             }).then(({ data }) => {
               if (data && data.code === 200) {
                 this.$message({

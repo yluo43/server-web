@@ -156,7 +156,7 @@ export default {
           { label: '调休天数(天)', prop: 'days' },
           { label: '申请时间', prop: 'createTime', width: '140px' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px' }
         ],
         url: '/attendance/getDayoffList'
       }

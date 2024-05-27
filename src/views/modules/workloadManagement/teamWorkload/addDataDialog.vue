@@ -9,7 +9,7 @@
                 <el-option v-for="item in users" :key="item.empId" :label="item.name + '(' + item.empId + ')'" :value="item.empId" />
               </el-select>
             </el-form-item>
-            <el-form-item label="投入时间:" prop="investTime">
+            <!-- <el-form-item label="投入时间:" prop="investTime">
               <el-date-picker
                 style="width: 200px"
                 v-model="formData.investTime"
@@ -21,7 +21,7 @@
                 start-placeholder="开始时间"
                 end-placeholder="结束时间"
               />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="成本项目:" prop="projectId">
               <el-select v-model="formData.projectId" placeholder="请选择成本项目" filterable clearable>
                 <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.id" />
@@ -32,7 +32,7 @@
                 <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
-            <el-form-item label="实际投入:" prop="realityRate" style="margin-top: 10px">
+            <el-form-item label="实际投入:" prop="realityRate">
               <el-input
                 oninput="this.value = this.value.replace(/[^0-9]/g, '');"
                 v-model.number="formData.realityRate"
@@ -200,8 +200,10 @@ export default {
             realityRate: this.formData.realityRate,
             planRate: '',
             managerName: this.managerName,
-            startTime: this.formData.investTime[0],
-            overTime: this.formData.investTime[1],
+            //  startTime: this.formData.investTime[0],
+            //  overTime: this.formData.investTime[1],
+            startTime: this.dataList[0].startTime,
+            overTime: this.dataList[0].overTime,
             workStatus: '',
             deptId: this.dataList[0].deptId,
             deptName: this.dataList[0].deptName,

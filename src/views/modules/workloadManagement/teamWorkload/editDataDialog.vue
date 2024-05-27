@@ -8,7 +8,7 @@
           </el-form-item>
           <el-form-item label="工作量填报:">
             <div style="display: flex; align-items: center" v-for="(item, index) in formData.workLoad" :key="index">
-              <el-form-item :prop="'workLoad.' + index + '.investTime'">
+              <!-- <el-form-item :prop="'workLoad.' + index + '.investTime'">
                 <el-date-picker
                   style="width: 200px"
                   v-model="item.investTime"
@@ -20,7 +20,7 @@
                   start-placeholder="开始时间"
                   end-placeholder="结束时间"
                 />
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item :prop="'workLoad.' + index + '.workloadName'">
                 <el-select v-model="item.workloadName" filterable placeholder="请选择报工类别" @change="workLoadChange(item)" clearable>
                   <el-option v-for="ele in categories" :key="ele.id" :label="ele.name" :value="ele.name" />
@@ -74,18 +74,18 @@ export default {
       workLoad: []
     }
   },
-  computed: {
-    pickerOptions() {
-      return {
-        disabledDate: (time) => {
-          return (
-            time.getTime() < new Date(this.workLoad[0].jobStartTime + ' 00:00:00').getTime() ||
-            time.getTime() > new Date(this.workLoad[0].jobOverTime + ' 23:59:59').getTime()
-          )
-        }
-      }
-    }
-  },
+  // computed: {
+  //   pickerOptions() {
+  //     return {
+  //       disabledDate: (time) => {
+  //         return (
+  //           time.getTime() < new Date(this.workLoad[0].jobStartTime + ' 00:00:00').getTime() ||
+  //           time.getTime() > new Date(this.workLoad[0].jobOverTime + ' 23:59:59').getTime()
+  //         )
+  //       }
+  //     }
+  //   }
+  // },
   mounted() {
     this.getProject()
     this.getWorkloadType()
@@ -121,9 +121,9 @@ export default {
         }
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          data.payload.list.forEach((item) => {
-            item.investTime = [item.startTime, item.overTime]
-          })
+          // data.payload.list.forEach((item) => {
+          //   item.investTime = [item.startTime, item.overTime]
+          // })
           this.formData.workLoad = [...data.payload.list]
           this.workLoad = [...data.payload.list]
         } else {
@@ -179,15 +179,15 @@ export default {
         id: '',
         managerName: '',
         name: this.formData.userName,
-        overTime: '',
+        overTime: this.workLoad[0].overTime,
         planRate: '',
         workloadName: '',
         workloadType: '',
         projectId: '',
         projectName: '',
         realityRate: 0,
-        investTime: [this.workLoad[0].jobStartTime, this.workLoad[0].jobOverTime],
-        startTime: '',
+        //  investTime: [this.workLoad[0].jobStartTime, this.workLoad[0].jobOverTime],
+        startTime: this.workLoad[0].startTime,
         taskId: this.formData.taskId,
         teamId: this.workLoad[0].teamId,
         teamManagerName: this.workLoad[0].teamManagerName,
@@ -217,8 +217,8 @@ export default {
         return false
       }
       this.formData.workLoad.map((item, index) => {
-        item.startTime = item.investTime[0]
-        item.overTime = item.investTime[1]
+        //  item.startTime = item.investTime[0]
+        //  item.overTime = item.investTime[1]
         item.taskId = this.formData.taskId
         this.costItems.map((ele) => {
           if (item.projectId === ele.id) {

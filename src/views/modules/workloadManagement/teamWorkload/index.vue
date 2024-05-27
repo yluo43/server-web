@@ -177,7 +177,7 @@ export default {
           { label: '开始填报时间', prop: 'reportStartTime', width: '100px' },
           { label: '填报天数', prop: 'reportDay', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '260px' }
         ],
         url: '/teamWork/teamTaskList'
       }

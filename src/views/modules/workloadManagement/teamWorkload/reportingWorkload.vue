@@ -491,7 +491,7 @@ export default {
       }
     },
     objectSpanMethod({ rowIndex, columnIndex }) {
-      if (columnIndex === 0 || columnIndex === 1) {
+      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 3) {
         const _row = this.spanArr[rowIndex]
         const _col = _row > 0 ? 1 : 0
         return {
