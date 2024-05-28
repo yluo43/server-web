@@ -37,25 +37,12 @@
           </div>
           <div>
             <el-table :data="tableData" style="width: 100%" border height="300px" :span-method="objectSpanMethod">
-              <el-table-column prop="name" label="姓名" width="80px" align="center"></el-table-column>
-              <el-table-column prop="empId" label="工号" width="80px" align="center"></el-table-column>
-              <el-table-column prop="startTime" label="开始时间" width="100px" align="center"></el-table-column>
-              <el-table-column prop="overTime" label="结束时间" width="100px" align="center"></el-table-column>
-              <el-table-column prop="workloadName" label="报工类别" width="160px" align="center">
-                <template slot-scope="scope">
-                  <el-select
-                    style="width: 120px !important"
-                    v-model="scope.row.workloadName"
-                    @change="handlerWorkLoadName(scope.row, scope.column)"
-                    ref="workloadName"
-                    filterable
-                    placeholder="请选择报工类别"
-                  >
-                    <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.name"></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column prop="projectName" label="成本项目" width="160px" align="center">
+              <el-table-column prop="name" label="姓名" min-width="70px" align="center"></el-table-column>
+              <el-table-column prop="empId" label="工号" min-width="70px" align="center"></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" min-width="90px" align="center"></el-table-column>
+              <el-table-column prop="overTime" label="结束时间" min-width="90px" align="center"></el-table-column>
+
+              <el-table-column prop="projectName" label="成本项目" min-width="140px" align="center">
                 <template slot-scope="scope">
                   <el-tooltip class="item" :disabled="!scope.row.projectName" :content="scope.row.projectName" placement="top-end">
                     <el-select
@@ -69,6 +56,20 @@
                       <el-option v-for="item in costItems" :key="item.id" :label="item.name" :value="item.name"></el-option>
                     </el-select>
                   </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column prop="workloadName" label="报工类别" min-width="140px" align="center">
+                <template slot-scope="scope">
+                  <el-select
+                    style="width: 120px !important"
+                    v-model="scope.row.workloadName"
+                    @change="handlerWorkLoadName(scope.row, scope.column)"
+                    ref="workloadName"
+                    filterable
+                    placeholder="请选择报工类别"
+                  >
+                    <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.name"></el-option>
+                  </el-select>
                 </template>
               </el-table-column>
               <!-- <el-table-column prop="workloadName" label="报工类别">
@@ -103,16 +104,17 @@
                   </div>
                 </template>
               </el-table-column> -->
-              <el-table-column prop="managerName" label="项目经理" align="center"></el-table-column>
-              <el-table-column prop="realityRate" label="实际投入" width="160px" align="center">
+              <el-table-column prop="managerName" label="项目经理" align="center" min-width="70px"></el-table-column>
+              <el-table-column prop="realityRate" label="实际投入" min-width="100px" align="center">
                 <template slot-scope="scope">
                   <el-input
-                    style="width: 120px !important"
+                    style="width: 60px !important"
                     oninput="this.value = this.value.replace(/[^0-9]/g, '');if(value > 100) value = 100; "
                     ref="realityRate"
                     clearable
                     v-model.number="scope.row.realityRate"
                   ></el-input>
+                  %
                 </template>
               </el-table-column>
               <!-- <el-table-column prop="realityRate" label="实际投入" width="160px" align="center">
@@ -142,8 +144,8 @@
         </div>
       </el-main>
       <div class="btnGroup">
-        <el-button @click="cancelDialog">取消</el-button>
-        <el-button type="primary" @click="save">保存</el-button>
+        <el-button @click="cancelDialog" style="margin-right: 10px">取消</el-button>
+        <el-button type="primary" style="margin-right: 10px" @click="save">保存</el-button>
         <el-button type="primary" @click="submitData">提交</el-button>
       </div>
     </el-container>
@@ -154,25 +156,25 @@
       </template>
     </base-dialog>
     <!-- 提交成功 -->
-    <base-dialog ref="successDialog" :width="'500px'">
+    <!-- <base-dialog ref="successDialog" :width="'500px'">
       <template>
         <successDialog ref="success" :cancelDialog="closeDialog" @track="goTrack"></successDialog>
       </template>
-    </base-dialog>
+    </base-dialog> -->
   </div>
 </template>
 
 <script>
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import addDataDialog from '@/views/modules/workloadManagement/teamWorkload/addDataDialog.vue'
-import successDialog from '@/views/modules/workloadManagement/teamWorkload/successDialog.vue'
+// import successDialog from '@/views/modules/workloadManagement/teamWorkload/successDialog.vue'
 export default {
   props: {
     cancelDialog: {
       type: Function
     }
   },
-  components: { baseDialog, addDataDialog, successDialog },
+  components: { baseDialog, addDataDialog },
   data() {
     return {
       number: '',
@@ -184,7 +186,8 @@ export default {
       costItems: [],
       categories: [],
       spanArr: [], // 需要合并的行数
-      pos: 0 // 索引
+      pos: 0, // 索引
+      initData: {}
     }
   },
   mounted() {
@@ -198,6 +201,7 @@ export default {
       console.log(initData)
       this.taskId = initData.id
       this.teamId = initData.teamId
+      this.initData = initData
       this.selectWorkload()
     },
     //日期格式化
@@ -247,10 +251,10 @@ export default {
         return a[prop] - b[prop] // 升序
       }
     },
-    goTrack() {
-      this.cancelDialog()
-      this.$emit('track', { reportWorkName: this.taskInfo.reportWorkName, id: this.taskId, teamId: this.teamId })
-    },
+    // goTrack() {
+    //   this.cancelDialog()
+    //   this.$emit('track', { reportWorkName: this.taskInfo.reportWorkName, id: this.taskId, teamId: this.teamId })
+    // },
     //查询
     selectWorkload() {
       let params = { taskId: this.taskId, teamId: this.teamId }
@@ -296,12 +300,12 @@ export default {
     },
     //删除
     goToDelete(row) {
-      debugger
-      let message = '确认删除?'
+      let message = '确认删除吗?'
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           let index = this.tableData.indexOf(row)
@@ -323,7 +327,7 @@ export default {
     save() {
       let data = {
         pmsWorkloadVoList: this.tableData,
-        operate: 1,
+        operateType: 1,
         taskId: this.taskId,
         teamId: this.teamId
       }
@@ -334,7 +338,9 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.$message.success('保存成功')
-          this.selectWorkload()
+          this.cancelDialog()
+          this.$emit('refresh')
+          // this.selectWorkload()
         } else {
           this.$message.error(data.msg)
         }
@@ -375,7 +381,7 @@ export default {
         //发起请求
         let data = {
           pmsWorkloadVoList: this.tableData,
-          operate: 2,
+          operateType: 2,
           taskId: this.taskId,
           teamId: this.teamId
         }
@@ -385,11 +391,13 @@ export default {
           data: data
         }).then(({ data }) => {
           if (data && data.code === 200) {
-            this.selectWorkload()
-            this.$refs.successDialog.show()
-            this.$nextTick(() => {
-              this.$refs.success.init(this.taskInfo)
-            })
+            this.cancelDialog()
+            this.$emit('successShow', this.initData)
+            // this.selectWorkload()
+            // this.$refs.successDialog.show()
+            // this.$nextTick(() => {
+            //   this.$refs.success.init(this.taskInfo)
+            // })
           } else {
             this.$message.error(data.msg)
           }
@@ -531,6 +539,7 @@ export default {
   align-items: center;
   justify-content: flex-end;
   margin-bottom: 20px;
+  padding-right: 32px;
 }
 .table {
   background-color: white;
@@ -540,7 +549,7 @@ export default {
     height: 50px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid lightgray;
+    //border-bottom: 1px solid lightgray;
     padding-left: 20px;
     font-weight: 600;
   }

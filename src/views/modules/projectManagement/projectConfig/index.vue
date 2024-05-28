@@ -2,7 +2,7 @@
   <div v-if="flag" style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: 100%; padding: 0">
-        <el-form ref="projectConfigForm" label-width="80px" label-position="left" :inline="true" :model="projectConfigFormData">
+        <el-form ref="projectConfigForm" label-width="70px" label-position="right" :inline="true" :model="projectConfigFormData">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectConfigFormData.name" placeholder="请输入项目名称" clearable />
           </el-form-item>
@@ -86,9 +86,9 @@
           </div>
           <el-form-item>
             <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-              <span v-if="showFlag" style="color: #2462f9">收起</span>
-              <span v-else style="color: #2462f9">展开</span>
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+              <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+              <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
             </div>
             <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="queryProjectList">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
@@ -100,27 +100,17 @@
         <div class="chooseResult">
           <span v-text="chooseStr" />
           <el-button type="text" @click="deleteProjectInfo()" v-auth="'costItems:deletes'">批量删除</el-button>
-          <!-- <span v-auth="'costItems:deletes'" style="color: blue; margin-left: 50px" @click="deleteProjectInfo()">批量删除</span> -->
         </div>
 
         <!-- toolBar -->
         <div class="operate-button">
-          <el-button
-            v-auth="'costItems:export'"
-            class="el-button-func"
-            type="primary"
-            icon="el-icon-download"
-            style="margin-right: 10px"
-            @click="batchDownload"
-          >
-            批量下载
-          </el-button>
-          <el-button v-auth="'costItems:add'" class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">
+          <el-button v-auth="'costItems:export'" class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
+          <el-button v-auth="'costItems:add'" class="btn-download" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">
             新建项目
           </el-button>
         </div>
-
-        <baseTable ref="projectTable" :table-data="projectTableData" :multi-select="true" @select="onSelectTableItem">
+        <!-- @select="onSelectTableItem" -->
+        <baseTable ref="projectTable" :table-data="projectTableData" :multi-select="true" @selectData="selectData">
           <template v-slot:contractTypeName="row">
             <div v-if="row.item.contractTypeName">{{ row.item.contractTypeName }}</div>
             <div v-else>--</div>
@@ -195,7 +185,7 @@
 
     <!-- 编辑项目信息 -->
     <!-- :handle-close="beforeCloseEditProjectDrawer" -->
-    <base-drawer ref="editProjectInfoDrawer" :title="editDrawertitle">
+    <base-drawer ref="editProjectInfoDrawer" :title="editDrawertitle" size="26%">
       <template>
         <editProjectInfo ref="editProjectInfo" @closeDrawer="closeEditProjectInfoDrawer" />
       </template>
@@ -214,7 +204,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDrawer from '@/views/modules/base/baseDrawer.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import editProjectInfo from '@/views/modules/projectManagement/projectConfig/editProjectInfo.vue'
@@ -258,7 +249,7 @@ export default {
       deptList: [],
       projectTypeList: [...ProjectConstants.projectType],
       settlementCycleList: [...ProjectConstants.settlementCycle],
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       projectTableData: {
         theads: [
           { label: '项目名称', prop: 'name', slotName: 'name', width: '210px' },
@@ -278,7 +269,8 @@ export default {
         url: '/costItems/list'
       },
       editDrawertitle: '编辑项目',
-      operateType: 'add'
+      operateType: 'add',
+      checkData: []
     }
   },
   mounted() {
@@ -341,8 +333,9 @@ export default {
           this.$message.error(data.msg)
         }
       })
+
       this.$http({
-        url: this.$http.adornUrl('/common/getDept'),
+        url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
       }).then(({ data }) => {
         if (data.success) {
@@ -390,7 +383,8 @@ export default {
         params.deliveryDateEnd = params.deliveryDate[1]
       }
       let data = []
-      const list = this.$refs.projectTable.getSelectRow()
+      // const list = this.$refs.projectTable.getSelectRow()
+      const list = this.checkData
       if (list.length === 0) {
         this.$message.warning('请至少选择一条数据！')
         return
@@ -416,14 +410,21 @@ export default {
     // },
 
     // 表格勾选时
-    onSelectTableItem(selection) {
+    // onSelectTableItem(selection) {
+    //   if (selection.length > 0) {
+    //     this.chooseStr = '已选中' + selection.length + '项'
+    //   } else {
+    //     this.chooseStr = '已选中 0 项'
+    //   }
+    // },
+    selectData(selection) {
       if (selection.length > 0) {
-        this.chooseStr = '已选中' + selection.length + '项'
+        this.chooseStr = '已选中 ' + selection.length + ' 项'
       } else {
         this.chooseStr = '已选中 0 项'
       }
+      this.checkData = [...selection]
     },
-
     // 编辑人员信息
     editPersonnelInfo(row) {
       // this.$refs.personnelManagementDialog.show()
@@ -472,23 +473,24 @@ export default {
         data = [row.id]
         switch (row.state) {
           case 0:
-            message = `【该项目正在交付中,确定删除吗?删除后将无法恢复!】`
+            message = `该项目正在交付中,确定删除吗?删除后将无法恢复!`
             break
           case 1:
-            message = `【该项目已交付,确定删除吗?删除后将无法恢复!】`
+            message = `该项目已交付,确定删除吗?删除后将无法恢复!`
             break
           case 2:
-            message = `【该项目已关闭,确定删除吗?删除后将无法恢复!】`
+            message = `该项目已关闭,确定删除吗?删除后将无法恢复!`
             break
           case 3:
-            message = `【该项目已回款,确定删除吗?删除后将无法恢复!】`
+            message = `该项目已回款,确定删除吗?删除后将无法恢复!`
             break
           default:
-            message = '【确定删除该项目吗?删除后将无法恢复!】'
+            message = '确定删除该项目吗?删除后将无法恢复!'
         }
       } else {
         // 批量删除时
-        const list = this.$refs.projectTable.getSelectRow()
+        const list = this.checkData
+        //  const list = this.$refs.projectTable.getSelectRow()
         if (list.length === 0) {
           this.$message.warning('请至少选择一条数据！')
           return
@@ -501,7 +503,8 @@ export default {
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -529,8 +532,9 @@ export default {
 .el-input {
   width: 200px;
 }
-.el-button {
-  margin-left: 0;
-  width: auto;
+::v-deep .el-table td.el-table__cell div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

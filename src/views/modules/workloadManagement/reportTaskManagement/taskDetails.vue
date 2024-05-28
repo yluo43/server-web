@@ -52,7 +52,14 @@
         <div class="table">
           <div class="table-title">填报团队</div>
           <div>
-            <baseTable ref="taskDetialTable" :table-data="taskDetial" :type="null" @afterQuery="afterTeamListQuery" style="margin-top: 10px"></baseTable>
+            <baseTable
+              ref="taskDetialTable"
+              :table-data="taskDetial"
+              :type="null"
+              @afterQuery="afterTeamListQuery"
+              style="margin-top: 10px"
+              propHeight="315px"
+            ></baseTable>
           </div>
         </div>
       </el-main>
@@ -81,7 +88,7 @@ export default {
           { label: '团队成员', prop: 'teamNum' },
           { label: '团队状态', prop: 'teamStatus' }
         ],
-        // url: '/team/selectTeamPage'
+        //url: '/team/selectTeamPage'
         url: '/team/selectTeamWithStatus'
       }
     }
@@ -97,7 +104,6 @@ export default {
         this.active = initData.taskStatus
       }
       Object.assign(this.taskInfo, initData)
-      console.log(this.taskInfo)
       this.selectPersonCount({ deptIds: this.taskInfo.deptIds, curPage: 1, pageSize: 10 })
       this.selectTableData()
     },
@@ -170,12 +176,21 @@ export default {
     font-weight: 600;
   }
 }
+::v-deep .is-success {
+  .el-step__line {
+    background-color: #2462f9;
+  }
+}
 ::v-deep .el-step__head.is-success {
   color: #2462f9;
   border-color: #2462f9;
 }
+
 ::v-deep .el-step__title.is-success {
-  color: #c0c4cc;
+  color: #262b39;
+}
+::v-deep .el-step__title.is-process {
+  color: #2462f9;
 }
 ::v-deep .el-step__head.is-process {
   color: #2462f9;

@@ -402,7 +402,7 @@
 
 .el-button{
   height: 38px;
-  min-width: 80px;
+  min-width: 70px;
 }
 
 
@@ -461,7 +461,7 @@
 }
 
 .el-button {
-  width: 80px;
+  width: 70px;
   height: 28px;
 }
 
@@ -484,6 +484,9 @@
   align-items: center;
   border-top: 1px solid lightgray;
   
+}
+.el-form-item__label{
+  padding: 0 6px 0 0;
 }
 .el-select{
   width: 200px ;
@@ -509,4 +512,23 @@
 }
 .operate-button{
   margin: 24px 0 16px 0;
+}
+// .el-message-box--center 
+.el-message-box--center .el-message-box__title {
+  justify-content: flex-start;
+  margin-left: 17px;
+}
+ .el-message-box--center .el-message-box__content{
+  text-align: left; 
+  padding-left: 48px;
+}
+.el-message-box--center .el-message-box__btns{
+  text-align: right;
+}
+.btn-font-size{
+  font-size: 12px;
+}
+.btn-download{
+  width: 110px;
+  margin-right: 10px;
 }

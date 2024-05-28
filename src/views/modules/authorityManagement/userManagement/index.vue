@@ -1,9 +1,9 @@
 <template>
-  <div style="height: 100%;">
-    <el-container >
-      <el-header >
+  <div style="height: 100%">
+    <el-container>
+      <el-header>
         <el-form :inline="true" :model="dataForm" ref="dataForm">
-          <div class="inputlist" >
+          <div class="inputlist">
             <el-form-item label="用户账号:" prop="account">
               <el-input v-model="dataForm.account" placeholder="请输入用户账号" clearable></el-input>
             </el-form-item>
@@ -11,37 +11,34 @@
               <el-input v-model="dataForm.phone" placeholder="请输入用户手机号" clearable></el-input>
             </el-form-item>
             <el-form-item label="角色类型:" prop="roleId">
-              <el-select v-model="dataForm.roleId"  clearable placeholder="请选择角色类型">
+              <el-select v-model="dataForm.roleId" clearable placeholder="请选择角色类型">
                 <el-option label="全部" value=""></el-option>
-                <el-option      v-for="item in roleList"
-                                :key="item.roleId"
-                                :label="item.roleName"
-                                :value="item.roleId">
-                </el-option>
+                <el-option v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId"></el-option>
               </el-select>
             </el-form-item>
-            <div style="display: contents;">
-              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询
-              </el-button>
+            <div style="display: contents">
+              <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 20px">查询</el-button>
               <el-button type="primary" @click="resetForm()" icon="el-icon-search">重置</el-button>
             </div>
           </div>
         </el-form>
       </el-header>
-      <div style="padding:20px 0 10px 2px;">
+      <div style="padding: 20px 0 10px 2px">
         <el-button class="el-button-func" type="danger" @click="deleteList()">批量删除</el-button>
         <el-button class="el-button-func" type="primary" @click="addOrAlter()">添加用户</el-button>
-<!--        <el-button class="el-button-func" type="warning" @click="exportExcel()">导出Excel</el-button>-->
+        <!--        <el-button class="el-button-func" type="warning" @click="exportExcel()">导出Excel</el-button>-->
       </div>
       <baseTable :tableData="tableData" ref="table" :multiSelect="true">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <svg-icon :icon-class="row.item.status == '0' ? 'switch-close' : 'switch-open'"
-                      style="height:1.5em;width:1.5em; margin-right: 2em;" @click="swith(row)"/>
-            <svg-icon :icon-class="'delete'" style="height:1.5em;width:1.5em; margin-right: 2em;"
-                      @click="deleteList(row)"/>
-            <svg-icon :icon-class="'amend'" style="height:1.5em;width:1.5em;" @click="alter(row)"/>
+            <svg-icon
+              :icon-class="row.item.status == '0' ? 'switch-close' : 'switch-open'"
+              style="height: 1.5em; width: 1.5em; margin-right: 2em"
+              @click="swith(row)"
+            />
+            <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" />
+            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" />
           </template>
         </template>
         <template v-slot:status="row">
@@ -78,23 +75,25 @@ export default {
         createTime: '',
         status: ''
       },
-      roleList:[],
+      roleList: [],
       tableData: {
         theads: [
-          {label: '用户账号', prop: 'account'},
-          {label: '手机号', prop: 'phone'},
-          {label: '邮箱', prop: 'mail'},
-          {label: '开通时间', prop: 'createTime'},
-          {label: '角色类型', prop: 'roleName'},
-          {label: '用户状态', prop: 'status', slotName: 'status'},
-          {label: '操作', prop: 'clientType', slotName: 'clientType'}
+          { label: '用户账号', prop: 'account' },
+          { label: '手机号', prop: 'phone' },
+          { label: '邮箱', prop: 'mail' },
+          { label: '开通时间', prop: 'createTime' },
+          { label: '角色类型', prop: 'roleName' },
+          { label: '用户状态', prop: 'status', slotName: 'status' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType' }
         ],
         url: '/userInfo/list'
       }
     }
   },
   components: {
-    baseTable, baseDialog, addOrUpdate
+    baseTable,
+    baseDialog,
+    addOrUpdate
   },
   mounted() {
     this.$refs.table.refresh(this.dataForm)
@@ -103,7 +102,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/userRole/list'),
       method: 'get'
-    }).then(({data}) => {
+    }).then(({ data }) => {
       if (data && data.code === 200) {
         this.roleList = data.payload
       } else {
@@ -136,7 +135,7 @@ export default {
         url: this.$http.adornUrl('/userInfo/status'),
         method: 'post',
         data: data
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
           this.$message({
             message: '操作成功',
@@ -171,46 +170,50 @@ export default {
         userIds = list.map((item) => {
           return item.userId
         })
-        userName = list.map((item) => {
-          return item.account
-        }).join(',')
-      }else{
+        userName = list
+          .map((item) => {
+            return item.account
+          })
+          .join(',')
+      } else {
         userIds.push(row.item.userId)
         userName = row.item.account
       }
       this.$confirm(`您确定删除吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-
-        this.$http({
-          url: this.$http.adornUrl('/userInfo/del'),
-          method: 'post',
-          data: userIds
-        }).then(({data}) => {
-          if (data && data.code === 200) {
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            })
-          } else {
-            this.$message.error(data.msg)
-          }
+        type: 'warning',
+        center: true
+      })
+        .then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/userInfo/del'),
+            method: 'post',
+            data: userIds
+          }).then(({ data }) => {
+            if (data && data.code === 200) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
+          this.refresh()
         })
-        this.refresh()
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     },
     resetForm() {
       this.$refs.dataForm.resetFields()
     },
-    exportExcel(){
-        this.$http.download(this.$http.adornUrl('/userInfo/list/excel'),this.$http.adornParams(this.dataForm), this);
+    exportExcel() {
+      this.$http.download(this.$http.adornUrl('/userInfo/list/excel'), this.$http.adornParams(this.dataForm), this)
     }
   }
 }
@@ -246,7 +249,7 @@ export default {
   height: 30px;
   text-align: center;
 }
-::v-deep .el-table__cell{
+::v-deep .el-table__cell {
   text-align: center;
 }
 </style>

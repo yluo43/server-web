@@ -2,37 +2,38 @@
   <div style="height: 100%">
     <el-container>
       <el-header style="height: 100%">
-        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="70px" label-position="right" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="团队名称:" prop="teamName">
-              <el-input v-model="dataForm.teamName" placeholder="输入关键字" clearable maxlength="50"></el-input>
+              <el-input v-model="dataForm.teamName" placeholder="请输入团队名称" clearable maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="团队负责人:" prop="managerIds">
-              <el-select v-model="dataForm.managerIds" placeholder="请选择" multiple>
-                <el-option v-for="manager in managerList" :key="manager.id" :label="manager.name + '(' + manager.id + ')'" :value="manager.id"></el-option>
-              </el-select>
-            </el-form-item>
+
             <el-form-item label="驻地:" prop="stationIds">
-              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择" multiple :collapse-tags="true">
+              <el-select v-model="dataForm.stationIds" filterable clearable placeholder="请选择驻地" multiple :collapse-tags="true">
                 <el-option v-for="item in empLocations" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="团队负责人:" prop="managerIds">
+              <el-select v-model="dataForm.managerIds" placeholder="请选择团队负责人" multiple>
+                <el-option v-for="manager in managerList" :key="manager.id" :label="manager.name + '(' + manager.id + ')'" :value="manager.id"></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="状态:" prop="state">
-              <el-select clearable v-model="dataForm.state" placeholder="请选择">
+              <el-select clearable v-model="dataForm.state" placeholder="请选择状态">
                 <el-option key="0" label="正常" value="0"></el-option>
                 <el-option key="1" label="解散" value="1"></el-option>
               </el-select>
             </el-form-item>
             <div v-if="showFlag" style="display: contents">
               <el-form-item label="团队编码:" prop="teamId">
-                <el-input v-model="dataForm.teamId" placeholder="输入关键字" clearable maxlength="50"></el-input>
+                <el-input v-model="dataForm.teamId" placeholder="请输入团队编码" clearable maxlength="50"></el-input>
               </el-form-item>
               <el-form-item label="归属部门:" prop="deptIds">
-                <el-select v-model="dataForm.deptIds" placeholder="请选择" multiple :collapse-tags="true">
+                <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" multiple :collapse-tags="true">
                   <el-option v-for="dept in deptList" :key="dept.id" :label="dept.name" :value="dept.id" multiple></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="创建时间:" prop="createTime" style="width: 290px !important">
+              <el-form-item label="创建时间:" prop="createTime">
                 <el-date-picker
                   style="width: 200px"
                   value-format="yyyy-MM-dd"
@@ -47,9 +48,9 @@
             </div>
             <el-form-item>
               <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-                <span v-if="showFlag" style="color: #2462f9">收起</span>
-                <span v-else style="color: #2462f9">展开</span>
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
               </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
@@ -66,7 +67,7 @@
       </el-header>
       <div class="operate-button">
         <el-button
-          style="width: 110px"
+          class="btn-download"
           icon="
           el-icon-download"
           type="primary"
@@ -76,7 +77,7 @@
           批量下载
         </el-button>
         <el-button
-          style="width: 110px"
+          class="btn-download"
           icon="
           el-icon-circle-plus-outline"
           type="primary"
@@ -86,8 +87,8 @@
           新建团队
         </el-button>
       </div>
-
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+      <!-- @select="onSelect" -->
+      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
@@ -105,10 +106,10 @@
       </baseTable>
 
       <el-drawer class="drawer" :title="title" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 30px">
-          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
-            <el-form-item label="团队名称:" prop="teamName" :rules="[{ required: true, message: '团队不能为空' }]">
-              <el-input v-model="editDataForm.teamName" clearable maxlength="50"></el-input>
+        <div style="padding: 0 50px">
+          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="drawerForm">
+            <el-form-item label="团队名称:" prop="teamName" :rules="[{ required: true, message: '团队名称不能为空' }]">
+              <el-input v-model="editDataForm.teamName" clearable maxlength="50" placeholder="请输入团队名称"></el-input>
             </el-form-item>
 
             <!--            <el-form-item label="团队级别:" prop="teamLevel" :rules="[ { required: true, message: '团队级别不能为空'}]">-->
@@ -118,25 +119,25 @@
             <!--              </el-select>-->
             <!--            </el-form-item>-->
             <el-form-item label="父团队:" prop="parentId" v-if="showParent">
-              <el-select v-model="editDataForm.parentId" placeholder="请选择" clearable>
+              <el-select v-model="editDataForm.parentId" placeholder="请选择父团队" clearable>
                 <el-option v-for="team in parentTeam" :key="team.id" :label="team.name" :value="team.id"></el-option>
               </el-select>
             </el-form-item>
 
             <el-form-item label="归属部门:" prop="deptId" :rules="[{ required: true, message: '归属部门不能为空' }]">
-              <el-select clearable v-model="editDataForm.deptId" placeholder="请选择" @change="changeManagerList">
+              <el-select clearable v-model="editDataForm.deptId" placeholder="请选择归属部门" @change="changeManagerList">
                 <el-option v-for="dept in onwerDeptList" :key="dept.id" :label="dept.name" :value="dept.id"></el-option>
               </el-select>
             </el-form-item>
 
-            <el-form-item label="团队负责人:" prop="managerId" :rules="[{ required: true, message: '不能为空，请先选择归属部门' }]">
+            <el-form-item label="团队负责人:" prop="managerId" :rules="[{ required: true, message: '团队负责人不能为空' }]">
               <el-select clearable v-model="editDataForm.managerId" placeholder="请先选择归属部门">
                 <el-option v-for="manager in teamManagerList" :key="manager.id" :label="manager.name + '(' + manager.id + ')'" :value="manager.id"></el-option>
               </el-select>
             </el-form-item>
 
             <el-form-item label="团队驻地:" prop="stationId" :rules="[{ required: true, message: '驻地不能为空' }]">
-              <el-select v-model="editDataForm.stationId" filterable clearable placeholder="请选择" @change="getTeamId">
+              <el-select v-model="editDataForm.stationId" filterable clearable placeholder="请选择团队驻地" @change="getTeamId">
                 <el-option v-for="location in empLocations" :key="location.id" :label="location.name" :value="location.id"></el-option>
               </el-select>
             </el-form-item>
@@ -146,7 +147,7 @@
             </el-form-item>
             <el-row>
               <el-form-item label="团队成员:" prop="teamMembers">
-                <el-button type="primary" style="width: 200px" plain @click="chooseTeamMember">选择团队成员</el-button>
+                <el-button type="primary" style="width: 100%" plain @click="chooseTeamMember">选择团队成员</el-button>
 
                 <!-- <el-select  clearable v-model="editDataForm.teamMembers"
                          filterable
@@ -162,14 +163,14 @@
               </el-select> -->
               </el-form-item>
             </el-row>
-            <el-form-item label="创建时间:" prop="createTime" :rules="[{ required: true, message: '创建不能为空' }]">
+            <el-form-item label="创建时间:" prop="createTime" :rules="[{ required: true, message: '创建时间不能为空' }]">
               <el-date-picker
-                style="width: 200px"
+                style="width: 100%"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.createTime"
                 type="date"
-                placeholder="选择日期"
+                placeholder="请选择创建日期"
               ></el-date-picker>
             </el-form-item>
 
@@ -179,10 +180,8 @@
                 <el-option key="1" label="解散" value="1"></el-option>
               </el-select>
             </el-form-item>
-
             <br />
-
-            <div style="display: flex; justify-content: flex-end; margin-right: 10px; margin-top: 30px">
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
@@ -201,14 +200,15 @@
           :data="teamMembers"
         ></el-transfer>
         <div style="width: 100%; margin-bottom: 20px; display: flex; justify-content: flex-end">
-          <el-button type="primary" @click="confirm">确认</el-button>
+          <el-button type="primary" @click="confirm">确定</el-button>
         </div>
       </template>
     </base-dialog>
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
+//import baseTable from '../../base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '../../base/baseDialog'
 import { getCName } from '@/utils/auth'
 
@@ -222,7 +222,7 @@ export default {
       url: '',
       showParent: true,
       departStatusNameShow: false,
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       deleteIds: [],
       empLocations: [],
       managerList: [],
@@ -342,12 +342,16 @@ export default {
       this.$refs.transferDialog.hide()
     },
     changeManagerList() {
-      if (this.editDataForm.deptId == '' || this.editDataForm.deptId == null) {
-        alert('请先选择部门，再选择团队负责人')
-        return false
-      }
+      // if (this.editDataForm.deptId == '' || this.editDataForm.deptId == null) {
+      //   alert('请先选择部门，再选择团队负责人')
+      //   return false
+      // }
       let deptId = this.editDataForm.deptId
-
+      if (!deptId && deptId !== 0) {
+        this.teamManagerList = []
+        this.editDataForm.managerId = ''
+        return
+      }
       this.$http({
         url: this.$http.adornUrl('/common/getTeamManagerUp?pid=3&deptId=' + deptId),
         method: 'get'
@@ -533,7 +537,20 @@ export default {
         }
       })
     },
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   this.deleteIds = []
+    //   let totalMoney = 0
+    //   if (selection.length > 0) {
+    //     selection.forEach((a) => {
+    //       this.deleteIds.push(a.id)
+    //       totalMoney += a.totalMoney
+    //     })
+    //     this.chooseStr = '已选中' + this.deleteIds.length + '个团队'
+    //   } else {
+    //     this.chooseStr = '已选中 0 个团队'
+    //   }
+    // },
+    selectData(selection) {
       this.deleteIds = []
       let totalMoney = 0
       if (selection.length > 0) {
@@ -541,21 +558,34 @@ export default {
           this.deleteIds.push(a.id)
           totalMoney += a.totalMoney
         })
-        this.chooseStr = '已选中' + this.deleteIds.length + '个团队'
+        this.chooseStr = '已选中 ' + this.deleteIds.length + ' 项'
       } else {
-        this.chooseStr = '已选中 0 个团队'
+        this.chooseStr = '已选中 0 项'
       }
     },
+    // clear(form) {
+    //   Object.keys(form).forEach((key) => (form[key] = ''))
+    // },
     clear(form) {
-      Object.keys(form).forEach((key) => (form[key] = ''))
+      Object.keys(form).forEach((key) => {
+        if (Array.isArray(form[key])) {
+          form[key] = []
+        } else {
+          form[key] = ''
+        }
+      })
+      this.$nextTick(() => {
+        this.$refs.editdataForm.clearValidate()
+      })
     },
     deleteList(row) {
       this.deleteIds = []
       this.deleteIds.push(row.item.id)
-      this.$confirm(`【确定删除"${row.item.teamName}"吗?删除后团队下成员将被移除!】`, '提示', {
+      this.$confirm(`确定删除"${row.item.teamName}"吗?删除后团队下成员将被移除!`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -602,7 +632,8 @@ export default {
       this.$confirm('已选中' + this.deleteIds.length + '个团队,确认批量删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -651,7 +682,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -659,33 +690,21 @@ export default {
 .el-input {
   width: 200px;
 }
-/* .el-form--inline > .inputlist {
-  padding-top: 20px;
-  padding-left: 20px;
-  display: flex;
-} */
 
-.el-button-func {
-  width: 86px;
-  height: 30px;
-  text-align: center;
-}
-::v-deep .el-table__cell {
-  text-align: center;
-}
-
-/* .chooseResult {
-  width: 98%;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
-::v-deep .editForm .el-form-item__label {
-  width: 90px !important;
+::v-deep .drawerForm {
+  .el-form-item__label {
+    width: 80px !important;
+  }
+  .el-form-item {
+    width: 100% !important;
+  }
+  .el-form-item__content {
+    width: calc(100% - 80px);
+  }
+  .el-input,
+  .el-select {
+    width: 100%;
+  }
 }
 
 ::v-deep .drawer .el-form-item {

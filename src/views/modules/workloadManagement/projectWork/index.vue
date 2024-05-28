@@ -1,104 +1,102 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-header style="padding: 0">
-        <el-tabs v-model="activeName" type="border-card" @tab-click="activeNameChange">
+      <div>
+        <el-tabs v-model="activeName" type="border-card" style="padding: 24px" @tab-click="activeNameChange">
           <el-tab-pane label="我的项目" name="first"></el-tab-pane>
           <el-tab-pane label="工时确认" name="second"></el-tab-pane>
           <el-tab-pane label="任务详情" name="third"></el-tab-pane>
         </el-tabs>
-      </el-header>
+      </div>
       <el-container>
-        <el-aside style="width: 200px; background-color: #ffffff; height: 645px; margin-top: 4px">
-          <el-row>
-            <el-col>
-              <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
-              <el-tree
-                :data="data"
-                :render-content="renderContent"
-                :props="defaultProps"
-                :highlight-current="true"
-                node-key="id"
-                ref="treeRef"
-                @node-click="handleNodeClick"
-              ></el-tree>
-            </el-col>
-          </el-row>
-        </el-aside>
-        <el-main style="width: calc(100% - 200px); padding: 0" v-if="activeName === 'first'">
-          <!-- <div class="management-header">
-            <div class="management-item">
-              <el-statistic title="我的待办">
-                <template slot="formatter" class="font-bold">{{ myTaskCount.waitCount }}个任务</template>
-              </el-statistic>
-            </div>
-            <div class="management-item">
-              <el-statistic title="本月完成任务数">
-                <template slot="formatter">{{ myTaskCount.monthCount }}个任务</template>
-              </el-statistic>
-            </div>
-            <div class="management-item border-none">
-              <el-statistic title="本年完成任务数">
-                <template slot="formatter">{{ myTaskCount.yearCount }}个任务</template>
-              </el-statistic>
-            </div>
-          </div> -->
+        <div style="background-color: #fff">
+          <el-aside style="width: 256px; height: 647px; margin-left: 24px">
+            <el-row>
+              <el-col>
+                <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
+                <el-tree
+                  style="width: 100%"
+                  :data="data"
+                  :render-content="renderContent"
+                  :props="defaultProps"
+                  :highlight-current="true"
+                  node-key="id"
+                  ref="treeRef"
+                  @node-click="handleNodeClick"
+                ></el-tree>
+              </el-col>
+            </el-row>
+          </el-aside>
+        </div>
+        <el-main style="width: calc(100% - 280px); background: #fff; padding: 0 0 0 16px" v-if="activeName === 'first'">
           <div class="management-header">
-            <div class="management-item">
-              <p>我的待办</p>
-              <p class="font-bold">
-                <span>{{ myTaskCount.waitCount }}</span>
-                个任务
-              </p>
-            </div>
-            <div class="management-item">
-              <p>本月完成任务数</p>
-              <p class="font-bold">
-                <span>{{ myTaskCount.monthCount }}</span>
-                个任务
-              </p>
-            </div>
-            <div class="management-item border-none">
-              <p>本年完成任务数</p>
-              <p class="font-bold">
-                <span>{{ myTaskCount.yearCount }}</span>
-                个任务
-              </p>
+            <div class="management-content">
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/commission-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>我的待办</p>
+                  <p>
+                    <span class="font-bold">{{ myTaskCount.waitCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/month-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本月完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ myTaskCount.monthCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item border-none">
+                <div>
+                  <img src="@/assets/year-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本年完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ myTaskCount.yearCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="table">
-            <el-row style="display: flex; align-items: center">
-              <el-col :span="10">
-                <div style="display: flex; align-items: center">
-                  <p style="font-size: 16px; font-weight: 600; margin-left: 10px">任务列表</p>
-                </div>
-              </el-col>
-              <el-col :span="14">
-                <el-row style="display: flex; align-items: center">
-                  <el-col :span="18">
-                    <el-radio-group v-model="dataForm.taskStatus" @change="handlerRadio">
-                      <el-radio-button :label="null">全部</el-radio-button>
-                      <!-- <el-radio-button :label="0">待开始</el-radio-button>
+            <div class="table-top">
+              <div style="display: flex; align-items: center">
+                <p style="font-size: 16px; font-weight: 600">任务列表</p>
+              </div>
+              <div>
+                <el-radio-group v-model="dataForm.taskStatus" @change="handlerRadio">
+                  <el-radio-button :label="null">全部</el-radio-button>
+                  <!-- <el-radio-button :label="0">待开始</el-radio-button>
                       <el-radio-button :label="1">填报中</el-radio-button> -->
-                      <el-radio-button :label="2">确认中</el-radio-button>
-                      <el-radio-button :label="3">待归档</el-radio-button>
-                      <el-radio-button :label="4">已归档</el-radio-button>
-                    </el-radio-group>
-                  </el-col>
-                  <el-col :span="6">
-                    <el-input
-                      v-model="dataForm.reportWorkName"
-                      placeholder="请输入搜索关键字"
-                      @change="search"
-                      prefix-icon="el-icon-search"
-                      clearable
-                    ></el-input>
-                  </el-col>
-                </el-row>
-              </el-col>
-            </el-row>
+                  <el-radio-button :label="2">确认中</el-radio-button>
+                  <el-radio-button :label="3">待归档</el-radio-button>
+                  <el-radio-button :label="4">已归档</el-radio-button>
+                </el-radio-group>
+              </div>
+              <div style="display: flex; justify-content: flex-end">
+                <el-input
+                  style="width: 240px"
+                  v-model="dataForm.reportWorkName"
+                  placeholder="请输入搜索关键字"
+                  @change="search"
+                  suffix-icon="el-icon-search"
+                  clearable
+                ></el-input>
+              </div>
+            </div>
             <div>
-              <baseTable :tableData="tableData" ref="table" :type="null" style="margin-top: 10px">
+              <baseTable :tableData="tableData" ref="table" :type="null" propHeight="425px">
                 <template v-slot:reportWorkName="row">
                   <template v-if="row.item.taskStatus === 2">
                     <el-badge value="待确认" class="small-badge badge-table">
@@ -129,10 +127,11 @@
                 <!-- 操作 -->
                 <template v-slot:clientType="row">
                   <template>
-                    <el-button type="text" :disabled="row.item.taskStatus != 2" @click="goToTrack(row)">>>去确认</el-button>
+                    <el-button type="text" :disabled="row.item.taskStatus != 2" style="width: 100px" @click="goToTrack(row)">>>去确认</el-button>
                     <el-button
                       type="text"
                       :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 2"
+                      style="width: 100px"
                       @click="goToShowDetails(row)"
                     >
                       查看详情
@@ -144,11 +143,11 @@
           </div>
         </el-main>
         <!-- 工时审批 -->
-        <div v-if="activeName === 'second'" style="width: calc(100% - 200px)">
+        <div v-if="activeName === 'second'" style="width: calc(100% - 280px); background: #fff; padding: 0 0 0 16px">
           <workerHourApproval ref="workerHourApproval" @projectListRefresh="projectListRefresh"></workerHourApproval>
         </div>
         <!-- 任务详情 -->
-        <div v-if="activeName === 'third'" style="width: calc(100% - 200px)">
+        <div v-if="activeName === 'third'" style="width: calc(100% - 280px); background: #fff; padding: 0 0 0 16px">
           <taskDetails ref="taskDetails"></taskDetails>
         </div>
       </el-container>
@@ -175,13 +174,13 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '200px' },
+          { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '270px' },
           { label: '简介', prop: 'intro' },
           { label: '创建人', prop: 'managerName', width: '80px' },
           { label: '开始确认时间', prop: 'startConfirmTime', width: '100px' },
           { label: '确认天数', prop: 'affirmDay', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus', width: '80px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '160px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '230px' }
         ],
         url: '/projectWork/projectTaskList'
       },
@@ -199,14 +198,34 @@ export default {
   },
   methods: {
     renderContent(h, { node, data, store }) {
+      // if (data.isConfirm === '1') {
+      //   return (
+      //     <el-badge value='待确认' class='small-badge'>
+      //       <span> {node.label}</span>
+      //     </el-badge>
+      //   )
+      // } else {
+      //   return <span> {node.label}</span>
+      // }
       if (data.isConfirm === '1') {
         return (
-          <el-badge value='待确认' class='small-badge'>
-            <span> {node.label}</span>
-          </el-badge>
+          <span class='tree-content'>
+            <el-tooltip content={node.label} placement='top' popper-class='custom-tooltip'>
+              <span class='first-span'> {node.label}</span>
+            </el-tooltip>
+            <span style='display: inline-block; color: white;border: 1px solid white;background-color:#F56C6C; border-radius:4px;padding: 0 3px; text-align: center; height: 18px;line-height:18px;'>
+              待确认
+            </span>
+          </span>
         )
       } else {
-        return <span> {node.label}</span>
+        return (
+          <span class='tree-content'>
+            <el-tooltip content={node.label} effect='dark' placement='top' popper-class='custom-tooltip'>
+              <span class='second-span'> {node.label}</span>
+            </el-tooltip>
+          </span>
+        )
       }
     },
     handleNodeClick(data) {
@@ -216,13 +235,13 @@ export default {
         //this.projectList()
       } else if (this.activeName === 'second') {
         this.$nextTick(() => {
-          this.$refs.workerHourApproval.initData({
+          this.$refs.workerHourApproval.init({
             projectId: this.dataForm.projectId
           })
         })
       } else if (this.activeName === 'third') {
         this.$nextTick(() => {
-          this.$refs.taskDetails.initData({
+          this.$refs.taskDetails.init({
             projectId: this.dataForm.projectId
           })
         })
@@ -231,50 +250,49 @@ export default {
     projectNameChange() {
       this.projectListRefresh()
     },
-    activeNameChange() {
+    async activeNameChange() {
       this.projectName = ''
       if (this.activeName === 'first') {
         this.projectList()
       } else if (this.activeName === 'second') {
-        this.projectListRefresh()
+        await this.projectListRefresh()
         this.$nextTick(() => {
           this.$refs.workerHourApproval.init({ projectId: this.dataForm.projectId })
         })
       } else if (this.activeName === 'third') {
-        this.projectListRefresh()
+        await this.projectListRefresh()
         this.$nextTick(() => {
           this.$refs.taskDetails.init({ projectId: this.dataForm.projectId })
         })
       }
     },
-    projectListRefresh() {
-      this.$http({
+    async projectListRefresh() {
+      const { data } = await this.$http({
         url: this.$http.adornUrl('/projectWork/projectList'),
         method: 'get',
         params: { projectName: this.projectName }
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          let list = []
-          if (data.payload.length > 0) {
-            data.payload.forEach((item) => {
-              list.push({
-                label: item.name,
-                id: item.id,
-                isConfirm: item.isConfirm
-              })
-            })
-            if (list.length !== 0) {
-              this.dataForm.projectId = list[0].id
-            }
-          } else {
-            this.dataForm.projectId = null
-          }
-          this.data = list
-          this.selectFirstNode()
-        } else {
-          this.$message.error(data.msg)
-        }
       })
+      if (data && data.code === 200) {
+        let list = []
+        if (data.payload.length > 0) {
+          data.payload.forEach((item) => {
+            list.push({
+              label: item.name,
+              id: item.id,
+              isConfirm: item.isConfirm
+            })
+          })
+          if (list.length !== 0) {
+            this.dataForm.projectId = list[0].id
+          }
+        } else {
+          this.dataForm.projectId = null
+        }
+        this.data = list
+        this.selectFirstNode()
+      } else {
+        this.$message.error(data.msg)
+      }
     },
     projectList() {
       this.$http({
@@ -310,13 +328,13 @@ export default {
                 })
               } else if (this.activeName == 'second') {
                 this.$nextTick(() => {
-                  this.$refs.workerHourApproval.initData({
+                  this.$refs.workerHourApproval.init({
                     projectId: this.dataForm.projectId
                   })
                 })
               } else if (this.activeName == 'third') {
                 this.$nextTick(() => {
-                  this.$refs.taskDetails.initData({
+                  this.$refs.taskDetails.init({
                     projectId: this.dataForm.projectId
                   })
                 })
@@ -374,22 +392,26 @@ export default {
     goToTrack(row) {
       this.activeName = 'second'
       this.$nextTick(() => {
-        this.$refs.workerHourApproval.init({
-          projectId: this.dataForm.projectId,
-          taskId: row.item.id,
-          reportWorkName: row.item.reportWorkName
-        })
+        this.$refs.workerHourApproval.init(
+          {
+            projectId: this.dataForm.projectId,
+            reportWorkName: row.item.reportWorkName
+          },
+          row.item.id
+        )
       })
     },
     //查看详情
     goToShowDetails(row) {
       this.activeName = 'third'
       this.$nextTick(() => {
-        this.$refs.taskDetails.init({
-          projectId: this.dataForm.projectId,
-          taskId: row.item.id,
-          reportWorkName: row.item.reportWorkName
-        })
+        this.$refs.taskDetails.init(
+          {
+            projectId: this.dataForm.projectId,
+            reportWorkName: row.item.reportWorkName
+          },
+          row.item.id
+        )
       })
     }
   }
@@ -400,21 +422,39 @@ export default {
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }
-
+::v-deep .el-tabs--border-card > .el-tabs__header {
+  border-bottom: none;
+}
+::v-deep .el-tabs--border-card > .el-tabs__content {
+  padding: 0;
+}
+::v-deep .el-tabs--border-card {
+  border: none;
+}
+::v-deep .el-input__icon {
+  line-height: 30px;
+}
 .management-header {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
   background-color: white;
   height: 100px;
-  .management-item {
-    width: 100%;
+  border: 1px solid #f2f3f5;
+  .management-content {
     height: 100%;
-    border-right: 1px solid lightgray;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 85px;
+  }
+  .management-item {
+    width: 208px;
+    border-right: 1px solid #f2f3f5;
+    display: flex;
     align-items: center;
     justify-content: center;
+    img {
+      width: 54px;
+      height: 54px;
+    }
     .font-bold {
       font-size: 18px;
       font-weight: 600;
@@ -424,22 +464,16 @@ export default {
     border-right: 0;
   }
 }
-// .management-header {
-//   display: flex;
-//   justify-content: space-around;
-//   align-items: center;
-//   background-color: white;
-//   height: 100px;
-
-//   .management-item {
-//     width: 100%;
-//     border-right: 1px solid lightgray;
-//   }
-// }
-
 .table {
   background-color: white;
-  margin-top: 10px;
+  .table-top {
+    border-left: 1px solid #f2f3f5;
+    padding: 0 24px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 
 ::v-deep .small-badge .el-badge__content {
@@ -452,11 +486,45 @@ export default {
 }
 
 ::v-deep .badge-table .el-badge__content.is-fixed {
-  top: 8px;
+  top: 10px;
 }
 ::v-deep .el-badge__content {
   border-radius: 4px;
-
-  padding: 0 10px;
+  padding: 0 3px;
+}
+::v-deep .el-icon-caret-right:before {
+  content: '';
+}
+::v-deep .el-tree-node__content > .el-tree-node__expand-icon {
+  padding: 0;
+  display: none;
+}
+::v-deep .tree-content {
+  display: flex;
+  align-items: center;
+  height: 26px;
+}
+::v-deep .tree-content .first-span {
+  display: inline-block;
+  max-width: 200px;
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+::v-deep .tree-content .second-span {
+  display: inline-block;
+  max-width: 230px;
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+</style>
+<style>
+.custom-tooltip {
+  margin-bottom: 5px !important;
 }
 </style>

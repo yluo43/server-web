@@ -20,7 +20,7 @@
           <el-form-item>
             <i class="el-icon-warning-outline" style="color: #faad14"></i>
             <span>
-              该员工总调休天数{{ totalDays }}天，其中已调休{{ compensatedLeaveDays }}天，已补贴{{ subsidizedDays }}天，剩余可补贴天数
+              该员工总可调休天数{{ totalDays }}天，其中已调休{{ compensatedLeaveDays }}天，已补贴{{ subsidizedDays }}天，剩余可补贴天数
               <span style="color: #70b603">{{ remainingDays }}天。</span>
             </span>
           </el-form-item>
@@ -37,7 +37,7 @@
         </el-form>
         <div class="btn-group">
           <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
-          <el-button type="primary" @click="confirm('dataForm')">确认</el-button>
+          <el-button type="primary" @click="confirm('dataForm')">确定</el-button>
         </div>
       </div>
     </el-container>
@@ -119,6 +119,9 @@ export default {
             this.remainingDays = this.totalDays - this.compensatedLeaveDays - this.subsidizedDays + data.payload.lastYearOffdays
           } else {
             this.remainingDays = this.totalDays - this.compensatedLeaveDays - this.subsidizedDays
+          }
+          if (this.remainingDays < 0) {
+            this.remainingDays = 0
           }
         } else {
           this.$message.error(data.msg)

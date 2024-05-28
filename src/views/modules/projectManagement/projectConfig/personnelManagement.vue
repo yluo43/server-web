@@ -31,8 +31,8 @@
           style="padding-left: 42px"
           ref="personnelManagementForm"
           :inline="true"
-          label-width="90px"
-          label-position="left"
+          label-width="82px"
+          label-position="right"
           :model="personnelManagementFormData"
         >
           <el-form-item label="姓名:" prop="name">
@@ -108,11 +108,11 @@
 
         <!-- toolBar -->
         <div class="operate-button">
-          <el-button class="el-button-func" type="primary" icon="el-icon-download" style="margin-right: 10px" @click="batchDownload">批量下载</el-button>
-          <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addPersonnelInfo">添加人员</el-button>
+          <el-button class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
+          <el-button class="btn-download" type="primary" icon="el-icon-circle-plus-outline" @click="addPersonnelInfo">添加人员</el-button>
         </div>
-
-        <baseTable ref="personnelManagementTable" :table-data="personnelManagementTableData" :multi-select="true" @select="onSelectTableItem">
+        <!-- @select="onSelectTableItem" -->
+        <baseTable ref="personnelManagementTable" :table-data="personnelManagementTableData" :multi-select="true" @selectData="selectData">
           <template v-slot:clientType1="row">
             <!--类型插槽-->
             <template>
@@ -143,7 +143,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import editPersonnelInfo from '@/views/modules/projectManagement/projectConfig/editPersonnelInfo.vue'
 import * as ArrUtil from '@/views/modules/common/arrUtil'
 import * as ProjectConstants from '@/views/modules/projectManagement/projectConstants'
@@ -156,7 +157,7 @@ export default {
     return {
       operateType: 'add',
       personnelInfoDialogTitle: '',
-      chooseStr: '',
+      chooseStr: '已选中 0 项',
       projectInfo: {
         name: '',
         projectId: '',
@@ -204,7 +205,8 @@ export default {
           { label: '操作', prop: 'clientType', slotName: 'clientType1', width: '130px', fixed: 'right' }
         ],
         url: '/costItems/member/page'
-      }
+      },
+      checkData: []
     }
   },
   computed: {},
@@ -244,6 +246,7 @@ export default {
       } else {
         this.activeIndex = this.stepTitleList.findIndex((item) => item.id === Number(this.projectInfo.state))
       }
+
       this.queryEnumList()
       this.queryPersonnelList()
     },
@@ -312,7 +315,8 @@ export default {
         params.endSupportDateEnd = params.endSupportDate[1]
       }
       let data = []
-      const list = this.$refs.personnelManagementTable.getSelectRow()
+      // const list = this.$refs.personnelManagementTable.getSelectRow()
+      const list = this.checkData
       if (list.length === 0) {
         this.$message.warning('请至少选择一条数据！')
         return
@@ -322,14 +326,21 @@ export default {
     },
 
     // 表格勾选时
-    onSelectTableItem(selection) {
+    // onSelectTableItem(selection) {
+    //   if (selection.length > 0) {
+    //     this.chooseStr = '已选中' + selection.length + '项'
+    //   } else {
+    //     this.chooseStr = '已选中 0 项'
+    //   }
+    // },
+    selectData(selection) {
       if (selection.length > 0) {
-        this.chooseStr = '已选中' + selection.length + '项'
+        this.chooseStr = '已选中 ' + selection.length + ' 项'
       } else {
         this.chooseStr = '已选中 0 项'
       }
+      this.checkData = [...selection]
     },
-
     // 查询总数
     // getTableTotalCount() {
     //   this.$http({
@@ -401,10 +412,11 @@ export default {
             supportState = '已结束支撑'
             break
         }
-        message = `【"${row.name}"${supportState},确定删除吗?删除后将无法恢复!】`
+        message = `"${row.name}"${supportState},确定删除吗?删除后将无法恢复!`
       } else {
         // 批量删除时
-        const list = this.$refs.personnelManagementTable.getSelectRow()
+        // const list = this.$refs.personnelManagementTable.getSelectRow()
+        const list = this.checkData
         if (list.length === 0) {
           this.$message.warning('请至少选择一条数据!')
           return
@@ -417,7 +429,8 @@ export default {
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -480,12 +493,20 @@ export default {
 ::v-deep .el-descriptions__body {
   padding-left: 42px;
 }
+::v-deep .is-success {
+  .el-step__line {
+    background-color: #2462f9;
+  }
+}
 ::v-deep .el-step__head.is-success {
   color: #2462f9;
   border-color: #2462f9;
 }
 ::v-deep .el-step__title.is-success {
-  color: #c0c4cc;
+  color: #262b39;
+}
+::v-deep .el-step__title.is-process {
+  color: #2462f9;
 }
 ::v-deep .el-step__head.is-process {
   color: #2462f9;
@@ -503,16 +524,7 @@ export default {
   /*color: #409eff; */ /* 设置描述项label字体颜色为绿色 */
 }
 
-/* ::v-deep .el-select .el-tag {
-  max-width: 70% !important;
-} */
-
 .el-input {
   width: 200px;
-}
-
-.el-button {
-  margin-left: 0;
-  width: auto;
 }
 </style>

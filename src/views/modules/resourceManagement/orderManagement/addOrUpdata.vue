@@ -47,9 +47,11 @@
                     <span>{{ item.orderName }}</span>
                   </div>
                   <div style="display: flex">
-                    <el-link type="primary" @click.stop="viewOrder(item)">查看详情 |</el-link>
-                    <el-link type="primary" @click.stop="updateOrder(item)" :disabled="viewDisabled">编辑 |</el-link>
-                    <el-link type="primary" @click.stop="deleteOrder(item)" :disabled="viewDisabled" style="margin-right: 30px">删除</el-link>
+                    <el-link type="primary" :underline="false" @click.stop="viewOrder(item)">查看详情 |</el-link>
+                    <el-link type="primary" :underline="false" @click.stop="updateOrder(item)" :disabled="viewDisabled">编辑 |</el-link>
+                    <el-link type="primary" :underline="false" @click.stop="deleteOrder(item)" :disabled="viewDisabled" style="margin-right: 30px">
+                      删除
+                    </el-link>
                   </div>
                 </div>
               </template>
@@ -171,7 +173,7 @@
                   style="width: 160px; margin-top: 20px; color: #2462f9"
                   @click="addSettlement(index)"
                   icon="el-icon-circle-plus-outline"
-                  :disabled="viewDisabled"
+                  :disabled="viewDisabled || btnDisabled"
                 >
                   添加结算回款
                 </el-button>
@@ -182,6 +184,7 @@
       </div>
       <div class="bottom-btn">
         <el-button type="primary" style="margin-right: 10px" @click="handlerFlag">确定</el-button>
+        <!-- <el-button type="primary" style="margin-right: 10px" @click="saveInfo">暂存</el-button> -->
         <el-button @click="handlerFlag">取消</el-button>
       </div>
     </el-container>
@@ -207,8 +210,7 @@ export default {
   components: { baseTable, addOrder, baseDialog, viewOrder },
   data() {
     return {
-      activeNames: [],
-      chooseStr: '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款 0.00',
+      chooseStr: '已选中 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款 0.00',
       title: '',
       order: {
         name: '',
@@ -222,15 +224,15 @@ export default {
       orderData: { settlementDate: '' },
       tableData: {
         theads: [
-          { label: '结算时间', prop: 'settlementDate', slotName: 'settlementDate', width: '112px' },
-          { label: '结算金额', prop: 'settlementAcount', slotName: 'settlementAcount', width: '50px' },
-          { label: '结算单', prop: 'settlementFile', slotName: 'settlementFile', width: '80px' },
-          { label: '预计回款时间', prop: 'expectReturnDate', slotName: 'expectReturnDate', width: '112px' },
-          { label: '状态', prop: 'state', slotName: 'state', width: '80px' },
-          { label: '回款时间', prop: 'returnDate', slotName: 'returnDate', width: '112px' },
-          { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount', width: '80px' },
-          { label: '回款单', prop: 'returnFile', slotName: 'returnFile', width: '80px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
+          { label: '结算时间', prop: 'settlementDate', slotName: 'settlementDate', width: '160px' },
+          { label: '结算金额', prop: 'settlementAcount', slotName: 'settlementAcount', width: '100px' },
+          { label: '结算单', prop: 'settlementFile', slotName: 'settlementFile', width: '120px' },
+          { label: '预计回款时间', prop: 'expectReturnDate', slotName: 'expectReturnDate', width: '160px' },
+          { label: '状态', prop: 'state', slotName: 'state', width: '125px' },
+          { label: '回款时间', prop: 'returnDate', slotName: 'returnDate', width: '160px' },
+          { label: '回款金额', prop: 'returnAcount', slotName: 'returnAcount', width: '100px' },
+          { label: '回款单', prop: 'returnFile', slotName: 'returnFile', width: '120px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         height: '150px',
         minHeight: '180px',
@@ -257,7 +259,8 @@ export default {
           label: '已收款'
         }
       ],
-      viewDisabled: false
+      viewDisabled: false,
+      btnDisabled: false
     }
   },
   methods: {
@@ -280,6 +283,9 @@ export default {
         this.$refs.addOrderRef.init('add', this.order.id)
       })
     },
+    // saveInfo() {
+    //   console.log(this.orderList)
+    // },
     refresh() {
       this.$http({
         url: this.$http.adornUrl('/costItems/order/list'),
@@ -287,6 +293,7 @@ export default {
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
+          this.btnDisabled = false
           this.orderList = data.payload
           if (this.orderList) {
             for (let i = 0; i < this.orderList.length; i++) {
@@ -301,7 +308,7 @@ export default {
                   //item.clientTypeShow = true
                   // item.settlementFileShow = true
                   //item.returnFileShow = true
-                  //item.returnShow = true
+                  // item.returnShow = true
                   item.settlementFileList = []
                   item.returnFileList = []
                   if (item.settlementFilePath) {
@@ -329,10 +336,7 @@ export default {
         }
       })
     },
-    handleChange(activeNames) {
-      this.activeName = activeNames
-      console.log(activeNames)
-    },
+    handleChange() {},
     viewOrder(item) {
       this.title = '订单详情'
       this.$refs.viewOrderDialog.show()
@@ -349,10 +353,11 @@ export default {
       })
     },
     deleteOrder(item) {
-      this.$confirm('确定删除该订单信息吗？', '提示', {
+      this.$confirm(`确定删除"${item.orderName}"吗?删除后将无法恢复!`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -390,12 +395,14 @@ export default {
             settlementAcount += parseFloat(a.settlementAcount)
           }
         })
-        this.chooseStr = '已选中' + selection.length + '项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + settlementAcount.toFixed(2) + '，已回款：' + returnAcount.toFixed(2)
+        this.chooseStr =
+          '已选中 ' + selection.length + ' 项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + settlementAcount.toFixed(2) + '，已回款：' + returnAcount.toFixed(2)
       } else {
-        this.chooseStr = '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款：0.00'
+        this.chooseStr = '已选中 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已回款：0.00'
       }
     },
     addSettlement(index) {
+      this.btnDisabled = true
       this.$refs.table[index].options.dataList.push({
         settlementDate: '',
         settlementAcount: null,
@@ -428,6 +435,7 @@ export default {
     },
     editSettlement(scope, index) {
       scope.item.row.clientTypeShow = false
+      this.btnDisabled = true
       // 手动触发重新渲染
       this.$nextTick(() => {
         this.$refs.table[index].__rowClick(scope.item.row)
@@ -437,18 +445,19 @@ export default {
       scope.item.row.settlementFileShow = true
       scope.item.row.settlementFileList = fileList
       scope.item.row.settlementFilePath = ''
-      scope.item.row.settlementFile = ''
+      scope.item.row.settlementFile = null
     },
     handleSecondRemove(file, fileList, scope, index) {
       scope.item.row.returnFileShow = true
       scope.item.row.returnFileList = fileList
       scope.item.row.returnFilePath = ''
-      scope.item.returnFile = ''
+      scope.item.returnFile = null
     },
     handleFileChange(file, fileList, scope, index) {
       if (file) {
         scope.item.row.settlementFileShow = false
         scope.item.row.settlementFile = file.raw
+        scope.item.row.settlementFileList = fileList
       }
       this.$refs.table[index].options.dataList[scope.item.$index] = scope.item.row
     },
@@ -456,7 +465,7 @@ export default {
       if (file) {
         scope.item.row.returnFileShow = false
         scope.item.row.returnFile = file.raw
-        console.log(scope.item.row)
+        scope.item.row.returnFileList = fileList
       }
       this.$refs.table[index].options.dataList[scope.item.$index] = scope.item.row
     },
@@ -464,7 +473,8 @@ export default {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           if (scope.item.row.id) {
@@ -541,6 +551,7 @@ export default {
           return
         }
       }
+
       let formData = new FormData()
       for (let key in obj) {
         if (obj[key] || obj[key] === 0) {
@@ -559,7 +570,7 @@ export default {
           .then(({ data }) => {
             this.flag = true
             if (data.success) {
-              this.$emit('refreshDataList')
+              // this.$emit('refreshDataList')
               this.$message({
                 message: '操作成功',
                 type: 'success'
@@ -592,6 +603,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .is-success {
+  .el-step__line {
+    background-color: #2462f9;
+  }
+}
 .container-box {
   height: 100%;
   background: white;
@@ -645,8 +661,12 @@ export default {
   color: #2462f9;
   border-color: #2462f9;
 }
+
 ::v-deep .el-step__title.is-success {
-  color: #c0c4cc;
+  color: #262b39;
+}
+::v-deep .el-step__title.is-process {
+  color: #2462f9;
 }
 ::v-deep .el-step__head.is-process {
   color: #2462f9;

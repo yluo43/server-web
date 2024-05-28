@@ -6,13 +6,30 @@
           <div class="header-title">
             <div>工作量统计:</div>
             <div style="margin-left: 10px">
-              <el-select v-model="reportWorkName" style="width: 230px !important" @change="changeSelect">
+              <el-select v-model="reportWorkName" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
           </div>
 
-          <div class="status">
+          <div style="display: flex; justify-content: space-between; align-items: center">
+            <div class="status">
+              状态：
+
+              <el-radio-group v-model="radio" @change="handlerRadio">
+                <el-radio-button label="0">全部</el-radio-button>
+                <el-radio-button label="1">待确认</el-radio-button>
+                <el-radio-button label="3">被驳回</el-radio-button>
+                <el-radio-button label="2">已确认</el-radio-button>
+              </el-radio-group>
+            </div>
+            <div style="margin-right: 24px">
+              <el-select v-model="teamIds" placeholder="请选择团队" multiple collapse-tags filterable clearable @change="search">
+                <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </div>
+          </div>
+          <!-- <div class="status">
             状态：
             <el-radio-group v-model="radio" @change="handlerRadio">
               <el-radio-button label="0">全部</el-radio-button>
@@ -29,28 +46,30 @@
                 </el-checkbox>
               </el-option>
             </el-select>
-          </div>
+          </div> -->
         </div>
 
         <div class="table">
           <div>
             <el-table
               :data="tableData"
+              height="500px"
               :header-cell-style="{ 'text-align': 'center' }"
               :cell-style="{ 'text-align': 'center' }"
               border
-              style="width: 100%; height: 425px; overflow-y: scroll"
+              style="width: 100%"
               :span-method="objectSpanMethod"
+              :row-key="(row) => row.id"
             >
-              <el-table-column prop="name" label="团队成员"></el-table-column>
-              <el-table-column prop="empId" label="工号"></el-table-column>
-              <el-table-column prop="startTime" label="开始时间" width="90px"></el-table-column>
-              <el-table-column prop="overTime" label="结束时间" width="90px"></el-table-column>
-              <el-table-column prop="workloadName" label="报工类别"></el-table-column>
-              <el-table-column prop="projectName" label="成本项目" width="210px"></el-table-column>
-              <el-table-column prop="managerName" label="项目经理"></el-table-column>
-              <el-table-column prop="realityRate" label="实际投入(%)"></el-table-column>
-              <el-table-column prop="commitTime" label="提交时间" width="90px"></el-table-column>
+              <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="empId" label="工号" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="overTime" label="结束时间" width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="projectName" label="成本项目" width="210px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="managerName" label="项目经理" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="commitTime" label="提交时间" width="90px" show-overflow-tooltip></el-table-column>
               <el-table-column prop="workStatus" label="确认状态">
                 <template slot-scope="scope">
                   <template v-if="scope.row.workStatus == 0">
@@ -84,7 +103,7 @@
               </el-table-column>
             </el-table>
           </div>
-          <div style="display: flex; justify-content: center">
+          <div style="display: flex; justify-content: center; margin-top: 10px">
             <el-pagination
               :page-sizes="[20, 50, 100]"
               :page-size="pageSize"
@@ -117,7 +136,7 @@ export default {
   data() {
     return {
       //总条数
-      total: '',
+      total: 0,
       curPage: 1,
       pageSize: 20,
       //任务Id
@@ -126,18 +145,18 @@ export default {
       //工作量统计
       reportWorkName: '',
       workLoadStatistics: [],
-      radio: '0',
+      radio: 0,
       queryData: {},
       tableData: [],
       spanArr: [],
       pos: 0,
-      checkTeam: [],
+      // checkTeam: [],
       teams: [],
-      empId: '1260'
+      empId: '1260',
+      teamIds: []
     }
   },
   mounted() {
-    // this.empId = this.$store.state.user.empId
     this.getTeam()
   },
   created() {},
@@ -149,10 +168,12 @@ export default {
       this.taskId = initData.id
       this.teamId = initData.teamId
       this.selectWorkload({ teamIdList: this.teamId })
-      // console.log(initData)
     },
     async initTable() {
       await this.selectTaskList()
+      if (!this.taskId) {
+        return
+      }
       this.selectWorkload()
     },
     select() {
@@ -190,30 +211,32 @@ export default {
         }
       })
     },
-
+    //团队搜索
+    search() {
+      this.handlerRadio()
+    },
     //选择框多选
-    isCheck(item) {
-      if (item.check && this.checkTeam.indexOf(item.name) == -1) {
-        this.checkTeam.push(item.id)
-      } else if (!item.check) {
-        this.checkTeam.forEach((elm, idx) => {
-          if (elm == item.id) {
-            this.checkTeam.splice(idx, 1)
-          }
-        })
-      }
-      this.handlerRadio()
-    },
-
-    removeTag(id) {
-      this.teams.forEach((elm, idx) => {
-        if (elm.id == id) {
-          elm.check = false
-          this.checkTeam.splice(idx, 1)
-        }
-      })
-      this.handlerRadio()
-    },
+    // isCheck(item) {
+    //   if (item.check && this.checkTeam.indexOf(item.name) == -1) {
+    //     this.checkTeam.push(item.id)
+    //   } else if (!item.check) {
+    //     this.checkTeam.forEach((elm, idx) => {
+    //       if (elm == item.id) {
+    //         this.checkTeam.splice(idx, 1)
+    //       }
+    //     })
+    //   }
+    //   this.handlerRadio()
+    // },
+    // removeTag(id) {
+    //   this.teams.forEach((elm, idx) => {
+    //     if (elm.id == id) {
+    //       elm.check = false
+    //       this.checkTeam.splice(idx, 1)
+    //     }
+    //   })
+    //   this.handlerRadio()
+    // },
     //查询表格数据
     selectWorkload(params) {
       let data = {
@@ -223,13 +246,16 @@ export default {
         type: 1
       }
       data = { ...data, ...params }
+      if (!data.taskId) {
+        return
+      }
       this.$http({
         url: this.$http.adornUrl('/teamWork/viewTeamWorkList'),
         method: 'get',
         params: data
       }).then(({ data }) => {
         if (data && data.code == 200) {
-          this.tableData = data.payload.list
+          this.tableData = data.payload.list.sort(this.compare('empId'))
           this.total = data.payload.totalCount
           this.spanArr = []
           this.getSpanArr(this.tableData)
@@ -237,6 +263,11 @@ export default {
           this.$message.error(data.msg)
         }
       })
+    },
+    compare(prop) {
+      return function (a, b) {
+        return a[prop] - b[prop] // 升序
+      }
     },
     //统计工作量下拉框改变
     changeSelect(params) {
@@ -258,11 +289,11 @@ export default {
     //切换ridio
     handlerRadio() {
       if (this.radio == 0) {
-        this.selectWorkload({ teamIdList: this.checkTeam.toString() || this.teamId })
+        this.selectWorkload({ teamIdList: this.teamIds.toString() || this.teamId })
       } else {
         this.selectWorkload({
           workStatus: this.radio,
-          teamIdList: this.checkTeam.toString() || this.teamId
+          teamIdList: this.teamIds.toString() || this.teamId
         })
       }
     },
@@ -273,14 +304,7 @@ export default {
         userName: row.name,
         empId: row.empId,
         taskId: this.taskId
-        //工作量
-        // workLoad: []
       }
-      // this.tableData.map((item) => {
-      //   if (item.empId === row.empId) {
-      //     data.workLoad.push(item)
-      //   }
-      // })
       this.$refs.editDataDialog.show()
       this.$nextTick(() => {
         this.$refs.edit.init(data)
@@ -334,21 +358,18 @@ export default {
   padding: 0;
   .top {
     background: white;
-    padding-left: 20px;
   }
   .header-title {
-    font-size: 16px;
-    font-weight: 600;
     display: flex;
     align-items: center;
+    padding-left: 24px;
   }
   .status {
-    padding: 20px 0;
+    padding: 24px 60px;
   }
 }
 .table {
   background-color: white;
-  margin-top: 10px;
 }
 ::v-deep .el-input__icon {
   line-height: 0;

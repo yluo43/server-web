@@ -1,64 +1,84 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-header style="padding: 0">
-        <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick">
+      <div>
+        <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick" style="padding: 24px">
           <el-tab-pane label="任务填报" name="first"></el-tab-pane>
           <el-tab-pane label="任务跟踪" name="second"></el-tab-pane>
           <el-tab-pane label="任务详情" name="third"></el-tab-pane>
         </el-tabs>
-      </el-header>
-      <el-main class="main" v-if="activeName === 'first'">
+      </div>
+      <el-main style="width: 100%; padding: 0" v-if="activeName === 'first'">
         <div class="management-header">
-          <div class="management-item">
-            <p>我的待办</p>
-            <p class="font-bold">
-              <span>{{ waitCount }}</span>
-              个任务
-            </p>
-          </div>
-          <div class="management-item">
-            <p>本月完成任务数</p>
-            <p class="font-bold">
-              <span>{{ monthCount }}</span>
-              个任务
-            </p>
-          </div>
-          <div class="management-item border-none">
-            <p>本年完成任务数</p>
-            <p class="font-bold">
-              <span>{{ yearCount }}</span>
-              个任务
-            </p>
+          <div class="type-area">
+            <div class="management-content">
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/commission-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>我的待办</p>
+                  <p>
+                    <span class="font-bold">{{ waitCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/month-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本月完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ monthCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item border-none">
+                <div>
+                  <img src="@/assets/year-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本年完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ yearCount }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="table">
-          <el-row style="display: flex; align-items: center">
-            <el-col :span="10">
-              <div style="display: flex; align-items: center">
-                <p style="font-size: 16px; font-weight: 600; margin-left: 10px">任务列表</p>
-              </div>
-            </el-col>
-            <el-col :span="14">
-              <el-row style="display: flex; align-items: center">
-                <el-col :span="18">
-                  <el-radio-group v-model="radio" @change="handlerRadio">
-                    <el-radio-button label="1">全部</el-radio-button>
-                    <el-radio-button label="2">待开始</el-radio-button>
-                    <el-radio-button label="3">填报中</el-radio-button>
-                    <el-radio-button label="4">确认中</el-radio-button>
-                    <el-radio-button label="5">待归档</el-radio-button>
-                    <el-radio-button label="6">已归档</el-radio-button>
-                  </el-radio-group>
-                </el-col>
-                <el-col :span="6">
-                  <el-input v-model="keyword" placeholder="请输入搜索关键字" @change="search" prefix-icon="el-icon-search" clearable></el-input>
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
+          <div class="table-top">
+            <div style="display: flex; align-items: center">
+              <p style="font-size: 16px; font-weight: 600">任务列表</p>
+            </div>
+            <div>
+              <el-radio-group v-model="radio" @change="handlerRadio">
+                <el-radio-button label="1">全部</el-radio-button>
+                <el-radio-button label="2">待开始</el-radio-button>
+                <el-radio-button label="3">填报中</el-radio-button>
+                <el-radio-button label="4">确认中</el-radio-button>
+                <el-radio-button label="5">待归档</el-radio-button>
+                <el-radio-button label="6">已归档</el-radio-button>
+              </el-radio-group>
+            </div>
+            <div style="display: flex; justify-content: flex-end">
+              <el-input
+                style="width: 240px"
+                v-model="keyword"
+                placeholder="请输入搜索关键字"
+                @change="selectTaskList"
+                suffix-icon="el-icon-search"
+                clearable
+              ></el-input>
+            </div>
+          </div>
           <div>
-            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px">
+            <baseTable ref="taskListTable" :table-data="taskList" :type="null" propHeight="425px">
               <template v-slot:reportWorkName="row">
                 <div v-if="row.item.taskStatus == 1">
                   {{ row.item.reportWorkName }}
@@ -85,11 +105,18 @@
               </template>
               <!-- 操作 -->
               <template v-slot:clientType="row">
-                <el-button :disabled="row.item.taskStatus != 1" type="text" @click="goToReportingWorkload(row)">填报工作量</el-button>
-                <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 4" type="text" @click="goToTrack(row)">
+                <el-button :disabled="row.item.taskStatus != 1" type="text" @click="goToReportingWorkload(row)" style="width: 100px">填报工作量</el-button>
+                <el-button
+                  :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 4"
+                  type="text"
+                  style="width: 100px"
+                  @click="goToTrack(row)"
+                >
                   去跟踪
                 </el-button>
-                <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1" type="text" @click="goToShowDetails(row)">查看详情</el-button>
+                <el-button :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1" type="text" style="width: 100px" @click="goToShowDetails(row)">
+                  查看详情
+                </el-button>
               </template>
             </baseTable>
           </div>
@@ -107,7 +134,15 @@
     <!-- 工作量填报 -->
     <base-dialog ref="reportingWorkloadDialog" title="工作量填报" :width="'1200px'">
       <template>
-        <reportingWorkload ref="reportingWorkload" :cancelDialog="closeDialog" @track="goTrack"></reportingWorkload>
+        <reportingWorkload ref="reportingWorkload" @successShow="successShow" @refresh="selectTaskList" :cancelDialog="closeDialog"></reportingWorkload>
+      </template>
+    </base-dialog>
+
+    <!-- 提交成功 -->
+    <!-- :cancelDialog="closeSuccessDialog" -->
+    <base-dialog ref="successDialog" :width="'500px'">
+      <template>
+        <successDialog ref="success" :cancelDialog="closeSuccessDialog" @track="goTrack"></successDialog>
       </template>
     </base-dialog>
   </div>
@@ -119,18 +154,20 @@ import baseDialog from '@/views/modules/base/baseDialog.vue'
 import taskTracking from '@/views/modules/workloadManagement/teamWorkload/taskTracking.vue'
 import taskDetails from '@/views/modules/workloadManagement/teamWorkload/taskDetails.vue'
 import reportingWorkload from '@/views/modules/workloadManagement/teamWorkload/reportingWorkload.vue'
+import successDialog from '@/views/modules/workloadManagement/teamWorkload/successDialog.vue'
 export default {
-  components: { baseTable, baseDialog, taskTracking, taskDetails, reportingWorkload },
+  components: { baseTable, baseDialog, taskTracking, taskDetails, reportingWorkload, successDialog },
   props: {},
   data() {
     return {
       activeName: 'first',
       taskFlag: 'true',
-      radio: '1',
+      radio: 1,
       keyword: '',
       waitCount: '',
       monthCount: '',
       yearCount: '',
+      taskStatus: '',
       taskList: {
         theads: [
           { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '260px' },
@@ -140,7 +177,7 @@ export default {
           { label: '开始填报时间', prop: 'reportStartTime', width: '100px' },
           { label: '填报天数', prop: 'reportDay', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '260px' }
         ],
         url: '/teamWork/teamTaskList'
       }
@@ -152,13 +189,12 @@ export default {
   },
   created() {},
   methods: {
-    //搜索框搜索
-    search() {
-      this.handlerRadio()
-    },
-
-    //查询表格
-    selectTaskList(params) {
+    //查询表格数据
+    selectTaskList() {
+      const params = {
+        reportWorkName: this.keyword,
+        taskStatus: this.taskStatus
+      }
       this.$refs.taskListTable.refresh(params)
     },
 
@@ -178,7 +214,15 @@ export default {
         }
       })
     },
+    successShow(params) {
+      this.selectTaskList()
+      this.$refs.successDialog.show()
+      this.$nextTick(() => {
+        this.$refs.success.init(params)
+      })
+    },
     goTrack(params) {
+      this.closeSuccessDialog()
       this.activeName = 'second'
       this.$nextTick(() => {
         this.$refs.taskTracking.init(params)
@@ -188,7 +232,7 @@ export default {
     tabClick(params) {
       if (this.activeName === 'first') {
         this.$nextTick(() => {
-          this.handlerRadio()
+          this.selectTaskList()
         })
       }
       if (this.activeName === 'second') {
@@ -205,10 +249,11 @@ export default {
     //切换radio
     handlerRadio() {
       if (this.radio == 1) {
-        this.selectTaskList({ reportWorkName: this.keyword })
+        this.taskStatus = ''
       } else {
-        this.selectTaskList({ taskStatus: this.radio - 2, reportWorkName: this.keyword })
+        this.taskStatus = this.radio - 2
       }
+      this.selectTaskList()
     },
     //填报工作量
     goToReportingWorkload(row) {
@@ -234,6 +279,10 @@ export default {
     //关闭弹窗
     closeDialog() {
       this.$refs.reportingWorkloadDialog.hide()
+    },
+    //关闭提交成功弹窗
+    closeSuccessDialog() {
+      this.$refs.successDialog.hide()
     }
   }
 }
@@ -244,40 +293,66 @@ export default {
   padding: 6px 15px;
 }
 ::v-deep .el-tag {
-  height: 20px;
-  line-height: 20px;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 3px;
 }
-::v-deep .el-button {
-  min-width: 0;
-  width: auto;
-}
-.main {
-  width: 100%;
-  padding: 0;
 
-  .management-header {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: white;
-    .management-item {
-      width: 100%;
-      border-right: 1px solid lightgray;
+::v-deep .el-tabs--border-card > .el-tabs__header {
+  border-bottom: none;
+}
+::v-deep .el-tabs--border-card > .el-tabs__content {
+  padding: 0;
+}
+::v-deep .el-tabs--border-card {
+  border: none;
+}
+::v-deep .el-input__icon {
+  line-height: 30px;
+}
+.management-header {
+  height: 100px;
+  background: white;
+  .type-area {
+    height: 100%;
+    margin: 0 24px;
+    border-top: 1px solid #f2f3f5;
+    .management-content {
+      height: 100%;
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      .font-bold {
-        font-size: 18px;
-        font-weight: 600;
-      }
+      margin: 0 130px;
     }
-    .border-none {
-      border-right: 0;
+  }
+  .management-item {
+    width: 208px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #f2f3f5;
+    img {
+      width: 54px;
+      height: 54px;
     }
+    .font-bold {
+      font-size: 18px;
+      font-weight: 600;
+    }
+  }
+  .border-none {
+    border-right: 0;
   }
 }
 .table {
   background-color: white;
-  margin-top: 10px;
+  margin-top: 24px;
+  .table-top {
+    margin: 0 24px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 </style>

@@ -27,7 +27,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="项目经理" prop="projectManager">
-              {{ overtimeDataForm.projectManager }}
+              <el-input style="width: 200px" v-model="overtimeDataForm.projectManager" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -52,7 +52,7 @@
                 value-format="yyyy-MM-dd HH:mm"
                 format="yyyy-MM-dd HH:mm"
                 type="datetime"
-                placeholder="选择日期时间"
+                placeholder="请选择加班开始时间"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -63,7 +63,7 @@
                 type="datetime"
                 value-format="yyyy-MM-dd HH:mm"
                 format="yyyy-MM-dd HH:mm"
-                placeholder="选择日期时间"
+                placeholder="请选择加班结束时间"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -88,7 +88,7 @@
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 type="date"
-                placeholder="选择日期"
+                placeholder="请选择调休开始日期"
               ></el-date-picker>
               <el-time-select
                 v-model="compensatoryLeaveDataForm.startTime"
@@ -97,7 +97,7 @@
                   step: '03:00',
                   end: '12:00'
                 }"
-                placeholder="选择时间"
+                placeholder="请选择调休开始时间"
               ></el-time-select>
             </el-form-item>
           </el-col>
@@ -108,7 +108,7 @@
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 type="date"
-                placeholder="选择日期"
+                placeholder="请选择调休结束日期"
               ></el-date-picker>
               <el-time-select
                 v-model="compensatoryLeaveDataForm.endTime"
@@ -117,7 +117,7 @@
                   step: '06:00',
                   end: '18:00'
                 }"
-                placeholder="选择时间"
+                placeholder="请选择调休结束时间"
               ></el-time-select>
             </el-form-item>
           </el-col>
@@ -341,7 +341,8 @@ export default {
         this.$confirm(message, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         })
           .then(() => {
             this.$http({
@@ -385,7 +386,8 @@ export default {
         this.$confirm(message, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         })
           .then(() => {
             this.$http({
@@ -526,7 +528,7 @@ export default {
 
 <style lang="scss" scoped>
 ::v-deep .el-date-editor.el-input {
-  width: 190px;
+  width: 200px;
 }
 ::v-deep .el-form-item__label {
   float: none;

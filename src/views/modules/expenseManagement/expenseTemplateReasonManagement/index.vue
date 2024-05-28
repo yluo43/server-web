@@ -5,7 +5,7 @@
         <el-form :inline="true" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="报销项目名称:" prop="name">
-              <el-input v-model="dataForm.name" placeholder="请输入事由名称" clearable></el-input>
+              <el-input v-model="dataForm.name" placeholder="请输入报销项目名称" clearable></el-input>
             </el-form-item>
             <el-form-item label="报销项目归属部门:" prop="deptId">
               <el-select v-model="dataForm.deptId" placeholder="请选择报销项目归属部门" :multiple="true" :collapse-tags="true">
@@ -30,15 +30,16 @@
         </el-form>
 
         <div class="chooseResult">
-          <span>已选中{{ count }}项</span>
+          <span>已选中 {{ count }} 项</span>
           <el-button type="text" @click="batchDelete()">批量删除</el-button>
         </div>
       </el-header>
       <div class="operate-button">
-        <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
+        <el-button class="btn-download" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
         <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="add">添加</el-button>
       </div>
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+      <!-- @select="onSelect" -->
+      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
@@ -55,13 +56,13 @@
         </template>
       </baseTable>
       <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 20px">
-          <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="editForm">
+        <div style="padding: 0 50px">
+          <el-form :inline="true" :model="editDataForm" :rules="rules" ref="editDataForm" class="drawerForm">
             <el-form-item label="报销项目名称:" prop="name">
-              <el-input v-model="editDataForm.name" placeholder="请输入事由名称" clearable></el-input>
+              <el-input v-model="editDataForm.name" placeholder="请输入报销项目名称" clearable></el-input>
             </el-form-item>
             <el-form-item label="报销项目归属部门:" prop="deptName">
-              <el-select v-model="editDataForm.deptName" placeholder="请选择">
+              <el-select v-model="editDataForm.deptName" placeholder="请选择报销项目归属部门">
                 <el-option v-for="dept in departments" :key="dept.id" :label="dept.name" :value="dept.name" multiple="true"></el-option>
               </el-select>
             </el-form-item>
@@ -71,10 +72,17 @@
               </el-select>
             </el-form-item> -->
             <el-form-item label="关联项目:" prop="value">
-              <el-cascader clearable :append-to-body="false" style="width: 200px" v-model="editDataForm.value" :options="options"></el-cascader>
+              <el-cascader
+                clearable
+                :append-to-body="false"
+                placeholder="请选择关联项目"
+                style="width: 100%"
+                v-model="editDataForm.value"
+                :options="options"
+              ></el-cascader>
             </el-form-item>
-            <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
-              <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">保存</el-button>
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px">
+              <el-button type="primary" style="margin-right: 20px" @click="editSubmit('editDataForm')">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
           </el-form>
@@ -84,7 +92,8 @@
   </div>
 </template>
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import { getCName } from '@/utils/auth'
 
@@ -211,7 +220,18 @@ export default {
       this.$refs.table.refresh(params)
     },
     //表格选中
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   this.deleteIds = []
+    //   if (selection.length > 0) {
+    //     this.count = selection.length
+    //     selection.forEach((item) => {
+    //       this.deleteIds.push(item.id)
+    //     })
+    //   } else {
+    //     this.count = 0
+    //   }
+    // },
+    selectData(selection) {
       this.deleteIds = []
       if (selection.length > 0) {
         this.count = selection.length
@@ -226,10 +246,11 @@ export default {
     deleteList(row) {
       this.deleteIds = []
       this.deleteIds.push(row.item.id)
-      this.$confirm(`【确定删除"${row.item.name}"吗？删除后将无法恢复!】`, '提示', {
+      this.$confirm(`确定删除"${row.item.name}"吗？删除后将无法恢复!`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -237,7 +258,7 @@ export default {
             method: 'get',
             params: { ids: this.deleteIds.toString() }
           }).then(({ data }) => {
-            if (data && data.code === 200) {
+            if (data.success && data.code === 200) {
               this.$message({
                 message: '删除成功',
                 type: 'success'
@@ -264,7 +285,8 @@ export default {
       this.$confirm('已选中' + this.deleteIds.length + '条数据,确定删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -339,7 +361,6 @@ export default {
           this.editDataForm.projectName = item.name
         }
       })
-      // this.editDataForm.projectId = this.editDataForm.value[1]
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.title == '添加') {
@@ -400,7 +421,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -411,35 +432,25 @@ export default {
 .el-input {
   width: 200px;
 }
-/* ::v-deep .el-cascader-menu {
-  width: 190px;
-} */
-
-/* ::v-deep .el-select {
-  width: 230px !important;
-} */
-
-/* ::v-deep .el-select__tags {
-  max-width: none !important;
-}
-::v-deep .el-select__tags-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 80px;
-} */
-
-::v-deep .editForm .el-form-item__label {
-  width: 125px !important;
-}
-::v-deep .editForm .el-form-item {
-  width: 100% !important;
+::v-deep .drawerForm {
+  .el-form-item__label {
+    width: 120px !important;
+  }
+  .el-form-item {
+    width: 100% !important;
+  }
+  .el-form-item__content {
+    width: calc(100% - 120px);
+  }
+  .el-input,
+  .el-select {
+    width: 100%;
+  }
 }
 
 .el-button-func {
   width: 86px;
-  height: 30px;
-  text-align: center;
+  height: 28px;
 }
 ::v-deep .el-table__cell {
   text-align: center;

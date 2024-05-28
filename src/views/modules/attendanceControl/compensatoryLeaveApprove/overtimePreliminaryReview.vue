@@ -1,16 +1,24 @@
 <template>
   <el-container style="height: 100%; width: 100%">
-    <el-aside :class="showFlag ? 'asideHeight' : 'leftHeight'" style="width: 200px">
+    <el-aside :class="showFlag ? 'asideHeight' : 'leftHeight'" style="width: 256px">
       <el-row>
         <el-col>
-          <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
-          <el-tree :data="treeData" :props="defaultProps" :highlight-current="true" node-key="id" ref="treeRef" @node-click="handleNodeClick"></el-tree>
+          <el-input style="width: 100%" v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
+          <el-tree
+            :data="treeData"
+            :render-content="renderContent"
+            :props="defaultProps"
+            :highlight-current="true"
+            node-key="id"
+            ref="treeRef"
+            @node-click="handleNodeClick"
+          ></el-tree>
         </el-col>
       </el-row>
     </el-aside>
-    <div style="width: calc(100% - 200px)">
+    <div style="width: calc(100% - 256px)">
       <div style="margin-left: 16px">
-        <el-form ref="dataForm" label-width="90px" label-position="left" :inline="true" :model="dataForm">
+        <el-form ref="dataForm" label-width="82px" label-position="right" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
@@ -93,10 +101,10 @@
             </el-form-item>
           </div>
           <el-form-item>
-            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-              <span v-if="showFlag" style="color: #2462f9">收起</span>
-              <span v-else style="color: #2462f9">展开</span>
+            <div style="display: inline-block; margin-right: 15px" :style="showFlag ? { 'margin-left': '22px' } : ''" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+              <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+              <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
             </div>
             <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="selectTableData">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
@@ -105,7 +113,7 @@
       </div>
       <div class="chooseResult" style="display: flex; margin-bottom: 10px">
         <div>
-          已选择
+          已选中
           <span>{{ count }}</span>
           项
         </div>
@@ -114,7 +122,8 @@
         </div>
       </div>
       <el-main style="padding: 0">
-        <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
+        <!-- @select="checkedTable" -->
+        <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" propHeight="450px">
           <template v-slot:overtimeType="row">
             <span v-if="row.item.overtimeType == 0">日常加班</span>
             <span v-else>节假日加班</span>
@@ -158,7 +167,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import { getCName } from '@/utils/auth'
 import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
@@ -214,19 +224,19 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'userName', width: '70px' },
-          { label: '工号', prop: 'empId', width: '70px' },
+          { label: '用户姓名', prop: 'userName', width: '68px', fixed: 'left' },
+          { label: '工号', prop: 'empId', width: '65px', fixed: 'left' },
           { label: '归属部门', prop: 'deptName' },
           { label: '归属团队', prop: 'teamName' },
-          { label: '加班开始时间', prop: 'startTime', width: '140px' },
-          { label: '加班结束时间', prop: 'endTime', width: '140px' },
+          { label: '加班开始时间', prop: 'startTime', width: '138px' },
+          { label: '加班结束时间', prop: 'endTime', width: '138px' },
           { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
-          { label: '加班时长(小时)', prop: 'overtimeHours' },
-          { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork' },
+          { label: '加班时长(小时)', prop: 'overtimeHours', width: '70px' },
+          { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork', width: '70px' },
           { label: '加班原因', prop: 'reason' },
-          { label: '申请时间', prop: 'createTime', width: '140px' },
-          { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
+          { label: '申请时间', prop: 'createTime', width: '138px' },
+          { label: '审批状态', prop: 'status', slotName: 'status', width: '70px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px', fixed: 'right' }
         ],
         url: '/attendance/getOvertimeList'
       },
@@ -243,11 +253,17 @@ export default {
   },
   mounted() {
     this.getProjectList()
-    this.getDept()
-    this.getTeam()
+    this.getOvertimeListDeptAndTeam()
     this.selectTableData()
   },
   methods: {
+    renderContent(h, { node, data, store }) {
+      return (
+        <el-tooltip content={node.label} placement='top' popper-class='custom-tooltip' popper-class='custom-tooltip'>
+          <span class='content-span'> {node.label}</span>
+        </el-tooltip>
+      )
+    },
     //刷新页面并打开弹窗
     refrshTable(initData, rejectFlag) {
       this.selectTableData()
@@ -260,28 +276,15 @@ export default {
         }
       })
     },
-    //获取部门
-    getDept() {
+    //获取列表中部门和团队
+    getOvertimeListDeptAndTeam() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDeptByRole'),
+        url: this.$http.adornUrl('/attendance/getOvertimeListDeptAndTeam'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          this.deptList = data.payload.filter((item) => item.id !== 0)
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
-
-    //获取团队
-    getTeam() {
-      this.$http({
-        url: this.$http.adornUrl('/common/getTeamByRole'),
-        method: 'get'
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.teamList = data.payload
+          this.deptList = data.payload.deptDtoSet
+          this.teamList = data.payload.teamDtoSet
         } else {
           this.$message.error(data.msg)
         }
@@ -407,11 +410,13 @@ export default {
     },
     open(message, ids, row) {
       this.$msgbox({
+        title: '提示',
         message: message,
         showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
+        center: true,
         customClass: 'msgClass'
       })
         .then(() => {
@@ -464,7 +469,11 @@ export default {
       })
     },
     //选择框选择
-    checkedTable(sel) {
+    // checkedTable(sel) {
+    //   this.count = sel.length
+    //   this.selData = [...sel]
+    // },
+    selectData(sel) {
       this.count = sel.length
       this.selData = [...sel]
     }
@@ -473,31 +482,39 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-button {
-  min-width: 60px;
-  margin-left: 0;
-  width: auto;
+::v-deep .el-tree-node__label {
+  font-size: 12px;
 }
 .el-input {
   width: 200px;
 }
 .asideHeight {
-  height: 625px;
+  height: 650px;
   background-color: #ffffff;
   margin-top: 4px;
 }
 .leftHeight {
-  height: 550px;
+  height: 575px;
   background-color: #ffffff;
   margin-top: 4px;
+}
+::v-deep .el-tree-node__content .content-span {
+  max-width: 220px;
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>
 <style lang="scss">
 .msgClass {
-  padding: 20px;
   .el-message-box__content {
-    padding: 0 0 20px 0;
+    padding: 0 27px 20px 48px;
     font-size: 16px;
   }
+}
+.custom-tooltip {
+  margin-bottom: 5px !important;
 }
 </style>

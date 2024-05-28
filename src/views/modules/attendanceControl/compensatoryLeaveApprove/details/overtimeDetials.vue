@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%; height: 100%">
     <div>
-      <baseTable :tableData="tableData" :type="null" ref="table">
+      <baseTable :tableData="tableData" :type="null" ref="table" propHeight="425px">
         <template v-slot:overtimeType="row">
           <span v-if="row.item.overtimeType == 0">日常加班</span>
           <span v-else>节假日加班</span>
@@ -23,14 +23,15 @@ export default {
     return {
       tableData: {
         theads: [
-          { label: '加班项目', prop: 'projectName' },
-          { label: '加班开始时间', prop: 'startTime' },
-          { label: '加班结束时间', prop: 'endTime' },
+          { label: '加班项目', prop: 'projectName', width: '210px' },
+          { label: '加班开始时间', prop: 'startTime', width: '140px' },
+          { label: '加班结束时间', prop: 'endTime', width: '140px' },
           { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
           { label: '加班时长(小时)', prop: 'overtimeHours' },
           { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork' },
-          { label: '申请时间', prop: 'createTime' },
-          { label: '审批通过时间', prop: 'reTrialTime' }
+          { label: '申请时间', prop: 'createTime', width: '140px' },
+          { label: '初审时间', prop: 'firstTrialTime', width: '140px' },
+          { label: '复审时间', prop: 'reTrialTime', width: '140px' }
         ],
         url: '/attendance/overtimeDetailByEmp'
       }

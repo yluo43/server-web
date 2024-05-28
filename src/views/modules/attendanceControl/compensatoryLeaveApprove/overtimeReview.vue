@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container style="height: 100%" direction="vertical">
       <div style="margin-left: 16px">
-        <el-form ref="dataForm" label-width="90px" label-position="left" :inline="true" :model="dataForm">
+        <el-form ref="dataForm" label-width="82px" label-position="right" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
           </el-form-item>
@@ -84,10 +84,10 @@
             </el-form-item>
           </div>
           <el-form-item>
-            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-              <span v-if="showFlag" style="color: #2462f9">收起</span>
-              <span v-else style="color: #2462f9">展开</span>
+            <div style="display: inline-block; margin-right: 15px" :style="showFlag ? { 'margin-left': '22px' } : ''" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+              <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+              <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
             </div>
             <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="selectTableData">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm">重置</el-button>
@@ -96,11 +96,12 @@
       </div>
       <div>
         <div class="chooseResult">
-          <span>已选择{{ count }}项</span>
+          <span>已选中 {{ count }} 项</span>
           <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
         <div style="margin-top: 10px">
-          <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
+          <!-- @select="checkedTable" -->
+          <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData">
             <template v-slot:overtimeType="row">
               <span v-if="row.item.overtimeType == 0">日常加班</span>
               <span v-else>节假日加班</span>
@@ -143,7 +144,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import { getCName } from '@/utils/auth'
 import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
@@ -207,7 +209,7 @@ export default {
           { label: '加班原因', prop: 'reason' },
           { label: '申请时间', prop: 'createTime', width: '140px' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px' }
         ],
         url: '/attendance/getOvertimeList'
       }
@@ -327,11 +329,13 @@ export default {
     },
     open(message, ids, row) {
       this.$msgbox({
+        title: '提示',
         message: message,
         showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
+        center: true,
         customClass: 'msgClass'
       })
         .then(() => {
@@ -384,30 +388,20 @@ export default {
       this.$refs.approvalProcessDialog.hide()
     },
     //选择框选择
-    checkedTable(sel) {
+    // checkedTable(sel) {
+    //   this.count = sel.length
+    //   this.selData = sel
+    // }
+    selectData(sel) {
       this.count = sel.length
-      this.selData = sel
+      this.selData = [...sel]
     }
   }
 }
 </script>
 
 <style scoped>
-::v-deep .el-button {
-  min-width: 60px;
-  margin-left: 0;
-  width: auto;
-}
 .el-input {
   width: 200px;
-}
-</style>
-<style lang="scss">
-.msgClass {
-  padding: 20px;
-  .el-message-box__content {
-    padding: 0 0 20px 0;
-    font-size: 16px;
-  }
 }
 </style>

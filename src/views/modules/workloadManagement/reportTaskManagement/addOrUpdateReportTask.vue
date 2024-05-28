@@ -17,13 +17,26 @@
               clearable
             />
           </el-form-item>
-          <el-form-item label="统计部门:" prop="department">
-            <el-select :disabled="flag === 'edit'" v-model="formData.department" multiple clearable @remove-tag="removeTag" collapse-tags>
+          <!-- <el-form-item label="统计部门:" prop="department">
+            <el-select
+              :disabled="flag === 'edit'"
+              placeholder="请选择统计部门"
+              v-model="formData.department"
+              multiple
+              clearable
+              @remove-tag="removeTag"
+              collapse-tags
+            >
               <el-option disabled v-for="item in departments" :key="item.id" :label="item.name" :value="item.id">
                 <el-checkbox :disabled="item.id === 0" v-model="item.check" @change="isCheck(item)">
                   {{ item.name }}
                 </el-checkbox>
               </el-option>
+            </el-select>
+          </el-form-item> -->
+          <el-form-item label="统计部门:" prop="department">
+            <el-select :disabled="flag === 'edit'" placeholder="请选择统计部门" v-model="formData.department" multiple clearable collapse-tags>
+              <el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.name"></el-option>
             </el-select>
           </el-form-item>
 
@@ -33,30 +46,30 @@
               v-model="formData.reportStartTime"
               type="date"
               value-format="yyyy-MM-dd"
-              placeholder="开始填报时间"
+              placeholder="请选择开始填报时间"
               clearable
             />
           </el-form-item>
           <el-form-item label="填报天数:" prop="reportDay">
-            <el-select v-model="formData.reportDay" clearable>
+            <el-select v-model="formData.reportDay" clearable placeholder="请选择填报天数">
               <el-option v-for="item in days" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             天
           </el-form-item>
           <el-form-item label="确认天数:" prop="affirmDay">
-            <el-select v-model="formData.affirmDay" clearable>
+            <el-select v-model="formData.affirmDay" placeholder="请选择确认天数" clearable>
               <el-option v-for="item in days" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             天
           </el-form-item>
           <el-form-item label="归档天数:" prop="pigeonholeDay">
-            <el-select v-model="formData.pigeonholeDay" clearable>
+            <el-select v-model="formData.pigeonholeDay" placeholder="请选择归档天数" clearable>
               <el-option v-for="item in days" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             天
           </el-form-item>
           <el-form-item label="提醒频率:" prop="frequency">
-            <el-select v-model="formData.frequency" clearable>
+            <el-select v-model="formData.frequency" placeholder="请选择提醒频率" clearable>
               <el-option v-for="item in reminderFrequency" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
             小时(9:00-18:00)
@@ -74,7 +87,7 @@
         </el-form>
         <div class="btn-group">
           <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
-          <el-button type="primary" @click="confirm('formData')">确认</el-button>
+          <el-button type="primary" @click="confirm('formData')">确定</el-button>
         </div>
       </div>
     </el-container>
@@ -112,7 +125,7 @@ export default {
     return {
       //add 添加 edit编辑
       flag: '',
-      managerName: '王瑢',
+      managerName: '',
       formData: {
         //统计时间段department
         timePeriod: [],
@@ -340,33 +353,32 @@ export default {
           return false
         }
       })
-    },
-    //选择框多选
-    isCheck(item) {
-      if (item.check && this.formData.department.indexOf(item.name) == -1) {
-        this.formData.department.push(item.name)
-      } else if (!item.check) {
-        this.formData.department.forEach((elm, idx) => {
-          if (elm == item.name) {
-            this.formData.department.splice(idx, 1)
-          }
-        })
-      }
-    },
-    removeTag(name) {
-      this.departments.forEach((elm, idx) => {
-        if (elm.name == name) {
-          elm.check = false
-        }
-      })
     }
+    //选择框多选
+    // isCheck(item) {
+    //   if (item.check && this.formData.department.indexOf(item.name) == -1) {
+    //     this.formData.department.push(item.name)
+    //   } else if (!item.check) {
+    //     this.formData.department.forEach((elm, idx) => {
+    //       if (elm == item.name) {
+    //         this.formData.department.splice(idx, 1)
+    //       }
+    //     })
+    //   }
+    // },
+    // removeTag(name) {
+    //   this.departments.forEach((elm, idx) => {
+    //     if (elm.name == name) {
+    //       elm.check = false
+    //     }
+    //   })
+    // }
   }
 }
 </script>
 
 <style scoped>
-.el-button {
-  margin-left: 0;
-  width: auto;
+::v-deep .el-input__icon {
+  line-height: 20px !important;
 }
 </style>

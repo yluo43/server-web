@@ -37,17 +37,18 @@
       </div>
       <div>
         <div class="chooseResult">
-          <span>已选择{{ count }}项</span>
+          <span>已选中 {{ count }} 项</span>
         </div>
         <div class="operate-button">
-          <el-button class="el-button-func" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
+          <el-button class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
         </div>
         <div>
-          <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
+          <!-- @select="checkedTable" -->
+          <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" propHeight="467px">
             <template v-slot:clientType="row">
               <template>
-                <el-button type="text" @click="viewDetails(row.item)">查看明细</el-button>
-                <el-button type="text" v-auth="'attendance:subsidy'" @click="workAllowance(row.item)">工时补贴</el-button>
+                <el-button type="text" style="width: 100px" @click="viewDetails(row.item)">查看明细</el-button>
+                <el-button type="text" style="width: 100px" v-auth="'attendance:subsidy'" @click="workAllowance(row.item)">工时补贴</el-button>
               </template>
             </template>
           </baseTable>
@@ -55,7 +56,7 @@
       </div>
     </el-container>
     <!-- 查看明细 -->
-    <base-dialog ref="detailsDialog" title="查看明细" :width="'1000px'" :speail-style="true">
+    <base-dialog ref="detailsDialog" title="查看明细" :width="'1200px'" :speail-style="true">
       <template>
         <detailsDialog ref="details" :cancelDialog="closeDetailsDialog"></detailsDialog>
       </template>
@@ -70,7 +71,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import detailsDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/detailsDialog.vue'
 import workAllowanceDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/workAllowanceDialog.vue'
@@ -100,7 +102,7 @@ export default {
           { label: '团队负责人', prop: 'teamManager' },
           { label: '累计加班时长(小时)', prop: 'overtimeHours' },
           { label: '可调休天数(天)', prop: 'dayoffDays' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px' }
         ],
         url: '/attendance/overtimeStats'
       }
@@ -181,9 +183,13 @@ export default {
     },
 
     //选择框选择
-    checkedTable(sel) {
+    // checkedTable(sel) {
+    //   this.count = sel.length
+    //   this.selData = sel
+    // },
+    selectData(sel) {
       this.count = sel.length
-      this.selData = sel
+      this.selData = [...sel]
     },
     //批量下载
     batchDownload() {
@@ -210,10 +216,6 @@ export default {
 <style scoped>
 .el-input {
   width: 200px;
-}
-.el-button {
-  margin-left: 0;
-  width: auto;
 }
 </style>
 <style>

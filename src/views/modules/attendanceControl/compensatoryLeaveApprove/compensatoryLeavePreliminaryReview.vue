@@ -66,11 +66,12 @@
       </div>
       <div>
         <div class="chooseResult">
-          <span>已选择{{ count }}项</span>
+          <span>已选中 {{ count }} 项</span>
           <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
         <div style="margin-top: 10px">
-          <baseTable :tableData="tableData" ref="table" :multi-select="true" @select="checkedTable">
+          <!-- @select="checkedTable" -->
+          <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData">
             <template v-slot:status="row">
               <span v-if="row.item.status == 0">待初审</span>
               <span v-if="row.item.status == 2">待复审</span>
@@ -105,7 +106,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import { getCName } from '@/utils/auth'
 import rejectDialog from '@/views/modules/attendanceControl/compensatoryLeaveApprove/dialog/rejectDialog.vue'
@@ -154,7 +156,7 @@ export default {
           { label: '调休天数(天)', prop: 'days' },
           { label: '申请时间', prop: 'createTime', width: '140px' },
           { label: '审批状态', prop: 'status', slotName: 'status' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '205px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px' }
         ],
         url: '/attendance/getDayoffList'
       }
@@ -273,11 +275,13 @@ export default {
     },
     open(message, ids, row) {
       this.$msgbox({
+        title: '提示',
         message: message,
         showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
+        center: true,
         customClass: 'msgClass'
       })
         .then(() => {
@@ -330,9 +334,13 @@ export default {
       this.$refs.approvalProcessDialog.hide()
     },
     //选择框选择
-    checkedTable(sel) {
+    // checkedTable(sel) {
+    //   this.count = sel.length
+    //   this.selData = sel
+    // }
+    selectData(sel) {
       this.count = sel.length
-      this.selData = sel
+      this.selData = [...sel]
     }
   }
 }
@@ -341,20 +349,5 @@ export default {
 <style scoped>
 .el-input {
   width: 200px;
-}
-
-.el-button {
-  min-width: 60px;
-  margin-left: 0;
-  width: auto;
-}
-</style>
-<style lang="scss">
-.msgClass {
-  padding: 20px;
-  .el-message-box__content {
-    padding: 0 0 20px 0;
-    font-size: 16px;
-  }
 }
 </style>

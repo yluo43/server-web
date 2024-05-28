@@ -15,7 +15,7 @@
           <el-input v-model="dataForm.orderAmount" placeholder="请输入订单金额"></el-input>
         </el-form-item>
         <el-form-item label="订单人数:" prop="orderMember">
-          <el-input v-model="dataForm.orderMember" placeholder="请输入订单人数"></el-input>
+          <el-input v-model.number="dataForm.orderMember" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="请输入订单人数"></el-input>
         </el-form-item>
         <el-form-item label="订单描述:" style="margin-top: 10px">
           <el-input
@@ -51,7 +51,7 @@
       </el-form>
       <div class="btn-group">
         <el-button plain style="margin-right: 10px" @click="cancel()">取消</el-button>
-        <el-button type="primary" @click="addCheck">确认</el-button>
+        <el-button type="primary" @click="addCheck">确定</el-button>
       </div>
     </el-container>
   </div>
@@ -111,7 +111,12 @@ export default {
     },
     beforeRemove(file, fileList) {
       this.dataForm.orderFile = ''
-      return this.$confirm(`确定移除 ${file.name}？`)
+      return this.$confirm(`确定移除 ${file.name}？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      })
     },
     addCheck() {
       this.$refs.dataFormRef.validate((valid) => {
@@ -123,7 +128,6 @@ export default {
     },
     // 新增
     addOrUpdateHandle() {
-      console.log(this.operateType)
       let url = '/costItems/order/add'
       let method = 'post'
       if (this.operateType === 'update') {

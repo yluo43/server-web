@@ -1,10 +1,10 @@
 <template>
   <div class="el-main__mdgMainTable" style="width: 100%; height: 100%">
-    <!-- :row-key="(row) => row.id" -->
     <div>
       <el-table
         ref="table"
         v-loading="options.tableLoading"
+        :row-key="(row) => row.id"
         :cell-style="cellStyle"
         :header-cell-style="{ 'text-align': 'center' }"
         border
@@ -19,13 +19,13 @@
         :row-class-name="tableRowClassName"
         size="mini"
         :style="{ 'min-height': options.minHeight }"
-        @selection-change="__handleSelectionChange"
         @sort-change="__changeTableSort"
         @row-dblclick="__rowDblclick"
         @row-click="__rowClick"
         @select="__select"
         @select-all="__selectAll"
       >
+        <!-- @selection-change="__handleSelectionChange" -->
         <el-table-column
           :key="9999"
           :type="type"
@@ -64,6 +64,7 @@
               :formatter="item.formatter"
               :sortable="item.sortName != null"
               :width="item.width"
+              :min-width="item.minWidth"
               :fixed="item.fixed"
             ></el-table-column>
           </template>
@@ -198,17 +199,18 @@ export default {
       this.options.orderKey = null
       this.refresh()
     },
-    __handleSelectionChange(val) {
-      this.$emit('select', val)
-      this.options.multipleSelection = val
-      if (this.afterSelect != null) {
-        this.afterSelect()
-      }
-    },
+    // __handleSelectionChange(val) {
+    //   this.$emit('select', val)
+    //   this.options.multipleSelection = val
+    //   if (this.afterSelect != null) {
+    //     this.afterSelect()
+    //   }
+    // },
     // 当前页
     __currentChangeHandle(val) {
       this.$emit('select', [])
-      this.$refs.table.clearSelection()
+      this.$emit('selectData', this.options.multipleSelection)
+      // this.$refs.table.clearSelection()
       this.options.curPage = val
       if (this.options.dataListSelected.length !== 0) {
         // 已选会员类型列表不为空
@@ -248,20 +250,17 @@ export default {
       this.$refs.table.clearSelection()
     },
     __rowClick(row, column, event) {
-      if (!this.multiSelect) {
-        // 单选
-        if (this.$refs.table.selection == null || this.$refs.table.selection[0] !== row) {
-          this.$refs.table.clearSelection()
-          this.$refs.table.toggleRowSelection(row)
-        } else {
-          if (this.$refs.table.selection.length > 0) {
-            this.$refs.table.setCurrentRow()
-          }
-          this.$refs.table.toggleRowSelection(row)
-        }
+      let foundIndex = this.options.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(row))
+      if (foundIndex != -1) {
+        this.options.multipleSelection.splice(foundIndex, 1)
+        this.$refs.table.toggleRowSelection(row, false)
       } else {
-        // 多选
+        this.options.multipleSelection.push(row)
         this.$refs.table.toggleRowSelection(row)
+      }
+      this.$emit('selectData', this.options.multipleSelection)
+      if (this.afterSelect != null) {
+        this.afterSelect()
       }
     },
     selectone(row) {
@@ -270,33 +269,34 @@ export default {
       this.$refs.table.toggleRowSelection(row, true)
     },
     __select(selection, row) {
-      if (!this.multiSelect) {
-        // 单选
-        this.$refs.table.clearSelection()
-        if (selection.length === 0) {
-          return
-        }
-        this.$refs.table.setCurrentRow(row)
-        this.$refs.table.toggleRowSelection(row, true)
+      let foundIndex = this.options.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(row))
+      if (foundIndex != -1) {
+        this.options.multipleSelection.splice(foundIndex, 1)
       } else {
-        // 多选
-        this.$refs.table.setCurrentRow(row)
+        this.options.multipleSelection.push(row)
       }
+      this.$emit('selectData', this.options.multipleSelection)
       if (this.afterSelect != null) {
         this.afterSelect()
       }
     },
     __selectAll(selection) {
-      if (!this.multiSelect) {
-        // 单选
-        if (selection.length === 0) {
-          return
-        }
-        let row = selection[0]
-        this.$refs.table.clearSelection()
-        this.$refs.table.setCurrentRow(row)
-        this.$refs.table.toggleRowSelection(row, true)
+      let foundIndex
+      if (selection.length > 0) {
+        const result = []
+        this.options.dataList.forEach((ele) => {
+          if (this.options.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele)) == -1) result.push(ele)
+        })
+        this.options.multipleSelection.push(...result)
+      } else {
+        this.options.dataList.forEach((ele) => {
+          foundIndex = this.options.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele))
+          if (foundIndex != -1) {
+            this.options.multipleSelection.splice(foundIndex, 1)
+          }
+        })
       }
+      this.$emit('selectData', this.options.multipleSelection)
     },
     __clickStop: function () {
       // 该方法为了阻止冒泡事件，没什么软用
@@ -349,6 +349,15 @@ export default {
             this.options.dataList = data.page.list
             this.options.count = data.page.totalCount
             this.options.data = data
+            this.$nextTick(() => {
+              let foundIndex
+              this.options.dataList.forEach((ele, index) => {
+                foundIndex = this.options.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(ele))
+                if (foundIndex != -1) {
+                  this.$refs.table.toggleRowSelection(this.$refs.table.data[index], true)
+                }
+              })
+            })
           } else {
             this.options.dataList = []
             this.options.totalPage = 0

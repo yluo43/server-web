@@ -1,66 +1,88 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-header style="padding: 0">
-        <el-tabs v-model="activeName" type="border-card" @tab-click="tabChange">
+      <div>
+        <el-tabs v-model="activeName" type="border-card" @tab-click="tabChange" style="padding: 24px">
           <el-tab-pane label="填报任务管理" name="first"></el-tab-pane>
           <el-tab-pane label="工作量归档" name="second"></el-tab-pane>
           <el-tab-pane label="归档任务详情" name="third"></el-tab-pane>
         </el-tabs>
-      </el-header>
-      <el-main style="width: 100%; padding: 0" class="main" v-if="activeName === 'first'">
+      </div>
+      <el-main style="width: 100%; padding: 0" v-if="activeName === 'first'">
         <div class="management-header">
-          <div class="management-item">
-            <p>我的待办</p>
-            <p class="font-bold">
-              <span>{{ commissionTask }}</span>
-              个任务
-            </p>
-          </div>
-          <div class="management-item">
-            <p>本月完成任务数</p>
-            <p class="font-bold">
-              <span>{{ monthTask }}</span>
-              个任务
-            </p>
-          </div>
-          <div class="management-item border-none">
-            <p>本年完成任务数</p>
-            <p class="font-bold">
-              <span>{{ yearTask }}</span>
-              个任务
-            </p>
+          <div class="type-area">
+            <div class="management-content">
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/commission-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>我的待办</p>
+                  <p>
+                    <span class="font-bold">{{ commissionTask }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item">
+                <div>
+                  <img src="@/assets/month-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本月完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ monthTask }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+              <div class="management-item border-none">
+                <div>
+                  <img src="@/assets/year-task.png" />
+                </div>
+                <div style="margin-left: 12px">
+                  <p>本年完成任务数</p>
+                  <p>
+                    <span class="font-bold">{{ yearTask }}</span>
+                    个任务
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="table">
-          <el-row style="display: flex; align-items: center">
-            <el-col :span="10">
-              <div style="display: flex; align-items: center">
-                <p style="font-size: 16px; font-weight: 600; margin-left: 10px">任务列表</p>
-                <el-button style="margin-left: 10px; width: 130px" type="primary" icon="el-icon-plus" @click="addReportTask">下发填报任务</el-button>
-              </div>
-            </el-col>
-            <el-col :span="14">
-              <el-row style="display: flex; align-items: center">
-                <el-col :span="18">
-                  <el-radio-group v-model="radio" @change="handlerRadio">
-                    <el-radio-button label="1">全部</el-radio-button>
-                    <el-radio-button label="2">待开始</el-radio-button>
-                    <el-radio-button label="3">填报中</el-radio-button>
-                    <el-radio-button label="4">确认中</el-radio-button>
-                    <el-radio-button label="5">待归档</el-radio-button>
-                    <el-radio-button label="6">已归档</el-radio-button>
-                  </el-radio-group>
-                </el-col>
-                <el-col :span="6">
-                  <el-input v-model="keyword" placeholder="请输入搜索关键字" @change="search" prefix-icon="el-icon-search" clearable></el-input>
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
+          <div class="table-top">
+            <div style="display: flex; align-items: center">
+              <p style="font-size: 16px; font-weight: 600">任务列表</p>
+              <el-button style="margin-left: 10px; width: 130px" type="primary" icon="el-icon-circle-plus-outline" @click="addReportTask">
+                下发填报任务
+              </el-button>
+            </div>
+            <div>
+              <el-radio-group v-model="radio" @change="handlerRadio">
+                <el-radio-button label="1">全部</el-radio-button>
+                <el-radio-button label="2">待开始</el-radio-button>
+                <el-radio-button label="3">填报中</el-radio-button>
+                <el-radio-button label="4">确认中</el-radio-button>
+                <el-radio-button label="5">待归档</el-radio-button>
+                <el-radio-button label="6">已归档</el-radio-button>
+              </el-radio-group>
+            </div>
+            <div style="display: flex; justify-content: flex-end">
+              <el-input
+                style="width: 240px"
+                v-model="keyword"
+                placeholder="请输入搜索关键字"
+                @change="selectTaskList"
+                suffix-icon="el-icon-search"
+                clearable
+              ></el-input>
+            </div>
+          </div>
           <div>
             <!-- @afterQuery="afterTaskListQuery" -->
-            <baseTable ref="taskListTable" :table-data="taskList" :type="null" style="margin-top: 10px">
+            <baseTable ref="taskListTable" :table-data="taskList" :type="null" propHeight="425px">
               <template v-slot:reportWorkName="row">
                 <div v-if="row.item.taskStatus == 3">
                   {{ row.item.reportWorkName }}
@@ -89,15 +111,31 @@
               <template v-slot:clientType="row">
                 <template>
                   <el-row>
-                    <el-col :span="8">
-                      <el-button v-show="row.item.taskStatus == 4" type="text" @click="goToArchiveDetails(row)">>>归档详情</el-button>
-                      <el-button v-show="row.item.taskStatus == 3" type="text" @click="goToArchive(row)">>>去归档</el-button>
+                    <el-col :span="12">
+                      <el-button v-show="row.item.taskStatus == 4" type="text" style="width: 100px" @click="goToArchiveDetails(row)">>>归档详情</el-button>
+                      <el-button v-show="row.item.taskStatus == 3" type="text" style="width: 100px" @click="goToArchive(row)">>>去归档</el-button>
                     </el-col>
-                    <el-col :span="6">
-                      <el-button type="text" @click="goToTaskDetails(row)">任务详情</el-button>
+                    <el-col :span="12">
+                      <el-tooltip class="item" effect="dark" content="任务详情" placement="bottom">
+                        <svg-icon :icon-class="'detials-icon'" style="height: 1.5em; width: 1.5em; margin-right: 20px" @click="goToTaskDetails(row)" />
+                      </el-tooltip>
+                      <el-tooltip v-if="row.item.taskStatus !== 0" class="item" effect="dark" content="编辑" placement="bottom">
+                        <svg-icon :icon-class="'edit-disabled-icon'" style="height: 1.5em; width: 1.5em; margin-right: 20px" />
+                      </el-tooltip>
+                      <el-tooltip v-else class="item" effect="dark" content="编辑" placement="bottom">
+                        <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em; margin-right: 20px" @click="editReportTask(row)" />
+                      </el-tooltip>
+                      <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                        <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em" @click="goToDelete(row)" />
+                      </el-tooltip>
                     </el-col>
-                    <el-col :span="5"><el-button :disabled="row.item.taskStatus !== 0" type="text" @click="editReportTask(row)">编辑</el-button></el-col>
-                    <el-col :span="5"><el-button type="text" @click="goToDelete(row)">删除</el-button></el-col>
+                    <!-- <el-col :span="6">
+                      <el-button type="text" style="width: 100px" @click="goToTaskDetails(row)">任务详情</el-button>
+                    </el-col>
+                    <el-col :span="5">
+                      <el-button :disabled="row.item.taskStatus !== 0" type="text" style="width: 100px" @click="editReportTask(row)">编辑</el-button>
+                    </el-col>
+                    <el-col :span="5"><el-button type="text" style="width: 100px" @click="goToDelete(row)">删除</el-button></el-col> -->
                   </el-row>
                 </template>
               </template>
@@ -144,12 +182,13 @@ export default {
       commissionTask: '',
       monthTask: '',
       yearTask: '',
-      empId: '1260',
+      empId: '',
       //taskStatus 0:待开始，1:填报中，2:确认中，3:待归档，4:已归档
       activeName: 'first',
-      radio: '1',
+      radio: 1,
       keyword: '',
       reportTaskTitle: '',
+      status: '',
       taskList: {
         theads: [
           { label: '任务名称', prop: 'reportWorkName', slotName: 'reportWorkName', width: '260px' },
@@ -160,7 +199,7 @@ export default {
           { label: '填报天数', prop: 'reportDay', width: '80px' },
           { label: '提醒频率', prop: 'frequency', width: '80px' },
           { label: '任务状态', prop: 'taskStatus', slotName: 'taskStatus', width: '80px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '300px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
         url: '/workload/selectReportPage'
       }
@@ -169,7 +208,7 @@ export default {
 
   mounted() {
     // console.log(this.$store.state.user.empId)
-    this.selectTaskList({ empId: this.empId })
+    this.selectTaskList()
     this.selectTaskAmount()
   },
   created() {
@@ -177,15 +216,16 @@ export default {
   },
   methods: {
     selectTable() {
-      this.handlerRadio()
+      this.selectTaskList()
       this.selectTaskAmount()
     },
-    //搜索框搜索
-    search() {
-      this.handlerRadio()
-    },
     //查询列表
-    selectTaskList(params) {
+    selectTaskList() {
+      const params = {
+        empId: this.empId,
+        search: this.keyword,
+        status: this.status
+      }
       this.$refs.taskListTable.refresh(params)
     },
     //统计任务数
@@ -215,8 +255,7 @@ export default {
     tabChange() {
       if (this.activeName === 'first') {
         this.$nextTick(() => {
-          this.handlerRadio()
-          // this.selectTaskList({ empId: this.empId })
+          this.selectTaskList()
         })
       }
       if (this.activeName === 'second') {
@@ -233,9 +272,11 @@ export default {
     //切换radio查询
     handlerRadio() {
       if (this.radio == 1) {
-        this.selectTaskList({ empId: this.empId, search: this.keyword })
+        this.status = ''
+        this.selectTaskList()
       } else {
-        this.selectTaskList({ empId: this.empId, status: this.radio - 2, search: this.keyword })
+        this.status = this.radio - 2
+        this.selectTaskList()
       }
     },
     //下发填报任务
@@ -276,44 +317,97 @@ export default {
       })
     },
     //删除
+    // goToDelete(row) {
+    //   if (row) {
+    //     let message = ''
+    //     let data = { deptIds: row.item.deptIds, deleteFlag: 1, taskId: row.item.taskId }
+    //     switch (row.item.taskStatus) {
+    //       case 0:
+    //         message = '该任务待开始填报,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //       case 1:
+    //         message = '该任务正在填报中,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //       case 2:
+    //         message = '该任务正在确认中,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //       case 3:
+    //         message = '该任务待归档,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //       case 4:
+    //         message = '该任务已归档,确定删除吗?删除后该任务下的报工将作废!'
+    //         break
+    //     }
+    //     this.$confirm(message, '提示', {
+    //       confirmButtonText: '确定',
+    //       cancelButtonText: '取消',
+    //       type: 'warning',
+    //       center: true
+    //     })
+    //       .then(() => {
+    //         this.$http({
+    //           url: this.$http.adornUrl('/workload/updateReport'),
+    //           method: 'post',
+    //           data: data
+    //         }).then(({ data }) => {
+    //           if (data && data.code === 200) {
+    //             this.$message({
+    //               message: '删除成功',
+    //               type: 'success'
+    //             })
+    //             this.selectTaskList()
+    //             this.selectTaskAmount()
+    //           } else {
+    //             this.$message.error(data.msg)
+    //           }
+    //         })
+    //       })
+    //       .catch(() => {
+    //         this.$message({
+    //           type: 'info',
+    //           message: '已取消删除'
+    //         })
+    //       })
+    //   }
+    // },
     goToDelete(row) {
       if (row) {
         let message = ''
-        let data = { deptIds: row.item.deptIds, deleteFlag: 1, taskId: row.item.taskId }
+        // let params = { taskId: row.item.taskId }
         switch (row.item.taskStatus) {
           case 0:
-            message = '【该任务待开始填报,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务待开始填报,确定删除吗?删除后该任务下的报工将作废!'
             break
           case 1:
-            message = '【该任务正在填报中,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务正在填报中,确定删除吗?删除后该任务下的报工将作废!'
             break
           case 2:
-            message = '【该任务正在确认中,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务正在确认中,确定删除吗?删除后该任务下的报工将作废!'
             break
           case 3:
-            message = '【该任务待归档,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务待归档,确定删除吗?删除后该任务下的报工将作废!'
             break
           case 4:
-            message = '【该任务已归档,确定删除吗?删除后该任务下的报工将作废!】'
+            message = '该任务已归档,确定删除吗?删除后该任务下的报工将作废!'
             break
         }
         this.$confirm(message, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          center: true
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl('/workload/updateReport'),
-              method: 'post',
-              data: data
+              url: this.$http.adornUrl(`/workload/deleteTask?taskId=${row.item.taskId}`),
+              method: 'post'
             }).then(({ data }) => {
               if (data && data.code === 200) {
                 this.$message({
                   message: '删除成功',
                   type: 'success'
                 })
-                this.handlerRadio()
+                this.selectTaskList()
                 this.selectTaskAmount()
               } else {
                 this.$message.error(data.msg)
@@ -337,28 +431,51 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .el-button {
-  min-width: 0;
-  width: auto;
-}
 ::v-deep .el-radio-button__inner {
   padding: 6px 15px;
 }
 ::v-deep .el-tag {
-  height: 20px;
-  line-height: 20px;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 3px;
+}
+::v-deep .el-tabs--border-card > .el-tabs__header {
+  border-bottom: none;
+}
+::v-deep .el-tabs--border-card > .el-tabs__content {
+  padding: 0;
+}
+::v-deep .el-tabs--border-card {
+  border: none;
+}
+::v-deep .el-input__icon {
+  line-height: 30px;
 }
 .management-header {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: white;
+  height: 100px;
+  background: white;
+  .type-area {
+    height: 100%;
+    margin: 0 24px;
+    border-top: 1px solid #f2f3f5;
+    .management-content {
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 130px;
+    }
+  }
   .management-item {
-    width: 100%;
-    border-right: 1px solid lightgray;
+    width: 208px;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    border-right: 1px solid #f2f3f5;
+    img {
+      width: 54px;
+      height: 54px;
+    }
     .font-bold {
       font-size: 18px;
       font-weight: 600;
@@ -370,6 +487,13 @@ export default {
 }
 .table {
   background-color: white;
-  margin-top: 10px;
+  margin-top: 24px;
+  .table-top {
+    margin: 0 24px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 </style>

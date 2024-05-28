@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container>
       <el-header style="height: 100%">
-        <el-form :inline="true" label-width="65px" label-position="left" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="60px" label-position="right" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="用户姓名:" prop="account" class="name">
               <el-input v-model="dataForm.account" placeholder="请输入用户姓名" clearable maxlength="50"></el-input>
@@ -23,15 +23,6 @@
               </el-select>
             </el-form-item>
             <div v-if="showFlag" style="display: contents">
-              <el-form-item label="工号:" prop="empId" class="empId">
-                <el-input
-                  v-model="dataForm.empId"
-                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                  placeholder="请输入工号"
-                  clearable
-                  maxlength="50"
-                ></el-input>
-              </el-form-item>
               <el-form-item label="成本中心:" prop="costCenters">
                 <el-select v-model="dataForm.costCenters" placeholder="请选择成本中心" :multiple="true" :collapse-tags="true">
                   <el-option
@@ -42,6 +33,15 @@
                     multiple="true"
                   ></el-option>
                 </el-select>
+              </el-form-item>
+              <el-form-item label="工号:" prop="empId" class="empId">
+                <el-input
+                  v-model="dataForm.empId"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  placeholder="请输入工号"
+                  clearable
+                  maxlength="50"
+                ></el-input>
               </el-form-item>
               <el-form-item label="归属部门:" prop="deptNames">
                 <el-select v-model="dataForm.deptNames" placeholder="请选择归属部门" :multiple="true" :collapse-tags="true">
@@ -87,9 +87,9 @@
             </div>
             <el-form-item>
               <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-                <span v-if="showFlag" style="color: #2462f9">收起</span>
-                <span v-else style="color: #2462f9">展开</span>
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
               </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
@@ -102,19 +102,10 @@
         </div>
       </el-header>
       <div class="operate-button">
-        <el-button
-          style="width: 110px"
-          icon="
-          el-icon-download"
-          type="primary"
-          @click="download()"
-          v-auth="'tripCost:export'"
-        >
-          批量下载
-        </el-button>
+        <el-button class="btn-download" icon="el-icon-download" type="primary" @click="download()" v-auth="'tripCost:export'">批量下载</el-button>
       </div>
-
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+      <!-- @select="onSelect" -->
+      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
@@ -177,8 +168,8 @@
       </baseTable>
 
       <el-drawer title="编辑" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 40px">
-          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="editForm">
+        <div style="padding: 0 50px">
+          <el-form :inline="true" :model="editDataForm" ref="editdataForm" class="drawerForm">
             <el-form-item label="姓名:" prop="account">
               <el-input v-model="editDataForm.account" clearable disabled="disabled" maxlength="50"></el-input>
             </el-form-item>
@@ -234,8 +225,8 @@
               <el-input v-model="editDataForm.totalMoney" clearable disabled="disabled"></el-input>
             </el-form-item>
 
-            <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 20px">
-              <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">保存</el-button>
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px">
+              <el-button type="primary" style="margin-right: 20px" @click="editSubmit()">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
           </el-form>
@@ -245,7 +236,8 @@
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
+//import baseTable from '../../base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '../../base/baseDialog'
 import { getCName } from '@/utils/auth'
 
@@ -253,7 +245,7 @@ export default {
   data() {
     return {
       showFlag: false,
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       deleteIds: [],
       drawer: false,
       direction: 'rtl',
@@ -483,10 +475,11 @@ export default {
         this.$message.warning('请至少选择一条数据！')
         return
       }
-      this.$confirm('已选中' + this.deleteIds.length + '条报销数据,您确定删除吗?', '提示', {
+      this.$confirm('已选中' + this.deleteIds.length + '条报销数据,确定删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -522,7 +515,20 @@ export default {
       form.ids = this.deleteIds
       this.$http.downloadPost(this.$http.adornUrl('/tripCost/export'), this.$http.adornParams(form), this)
     },
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   this.deleteIds = []
+    //   let totalMoney = 0
+    //   if (selection.length > 0) {
+    //     selection.forEach((a) => {
+    //       this.deleteIds.push(a.id)
+    //       totalMoney += parseFloat(a.totalMoney)
+    //     })
+    //     this.chooseStr = '已选中' + this.deleteIds.length + '项，合计：' + totalMoney.toFixed(2) + '元'
+    //   } else {
+    //     this.chooseStr = '已选中 0 项'
+    //   }
+    // },
+    selectData(selection) {
       this.deleteIds = []
       let totalMoney = 0
       if (selection.length > 0) {
@@ -530,7 +536,7 @@ export default {
           this.deleteIds.push(a.id)
           totalMoney += parseFloat(a.totalMoney)
         })
-        this.chooseStr = '已选中' + this.deleteIds.length + '项，合计：' + totalMoney.toFixed(2) + '元'
+        this.chooseStr = '已选中 ' + this.deleteIds.length + ' 项，合计：' + totalMoney.toFixed(2) + '元'
       } else {
         this.chooseStr = '已选中 0 项'
       }
@@ -538,11 +544,12 @@ export default {
     deleteList(row) {
       this.deleteIds = []
       this.deleteIds.push(row.id)
-      const message = `【确定删除[${row.deptName}-${row.account}]${row.startDate}至${row.backDate}前往${row.backCity}的出差记录吗？删除后将无法恢复!】`
+      const message = `确定删除[${row.deptName}-${row.account}]${row.startDate}至${row.backDate}前往${row.backCity}的出差记录吗？删除后将无法恢复!`
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -583,7 +590,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -591,20 +598,20 @@ export default {
 .el-input {
   width: 200px;
 }
-::v-deep .el-drawer__body {
-  overflow: hidden;
-}
-::v-deep .editForm .el-form-item__label {
-  width: 80px !important;
-}
-::v-deep .editForm .el-form-item {
-  width: 100% !important;
-}
-
-.el-button-func {
-  width: 86px;
-  height: 30px;
-  text-align: center;
+::v-deep .drawerForm {
+  .el-form-item__label {
+    width: 60px !important;
+  }
+  .el-form-item {
+    width: 100% !important;
+  }
+  .el-form-item__content {
+    width: calc(100% - 60px);
+  }
+  .el-input,
+  .el-select {
+    width: 100%;
+  }
 }
 ::v-deep .el-table__cell {
   text-align: center;

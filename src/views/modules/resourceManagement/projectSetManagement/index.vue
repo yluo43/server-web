@@ -2,15 +2,13 @@
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: auto; padding: 0">
-        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
-          <el-form-item label="项目集名称:" prop="psName">
-            <el-input v-model="dataForm.psName" placeholder="请输入项目集名称" clearable></el-input>
-          </el-form-item>
+        <el-form :inline="true" label-width="70px" label-position="right" :model="dataForm" ref="dataForm">
           <el-form-item label="负责人:">
             <el-select v-model="managerIdList" multiple collapse-tags placeholder="请选择负责人">
               <el-option v-for="item in managerList" :key="item.id" :label="item.name + '(' + item.id + ')'" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
+
           <el-form-item label="归属团队:">
             <el-select v-model="teamIdList" multiple collapse-tags placeholder="请选择归属团队">
               <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -20,6 +18,9 @@
             <el-select clearable v-model="state" multiple collapse-tags placeholder="请选择状态">
               <el-option v-for="item in stateOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item label="项目集名称:" prop="psName">
+            <el-input v-model="dataForm.psName" placeholder="请输入项目集名称" clearable></el-input>
           </el-form-item>
           <div v-if="showFlag" style="display: contents">
             <el-form-item label="项目集ID:" prop="psId">
@@ -57,9 +58,9 @@
           </div>
           <el-form-item>
             <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-              <span v-if="showFlag" style="color: #2462f9">收起</span>
-              <span v-else style="color: #2462f9">展开</span>
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+              <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+              <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
             </div>
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
             <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
@@ -72,12 +73,11 @@
           <el-button type="text" @click="deleteList()" v-auth="'projectSet:deletes'">批量删除</el-button>
         </div>
         <div class="operate-button">
-          <el-button class="el-button-func" type="primary" @click="download()" icon="el-icon-download" style="margin-right: 10px" v-auth="'projectSet:export'">
-            批量下载
-          </el-button>
-          <el-button class="el-button-func" type="primary" @click="add()" icon="el-icon-circle-plus-outline" v-auth="'projectSet:add'">新建项目集</el-button>
+          <el-button type="primary" @click="download()" icon="el-icon-download" class="btn-download" v-auth="'projectSet:export'">批量下载</el-button>
+          <el-button class="btn-download" type="primary" @click="add()" icon="el-icon-circle-plus-outline" v-auth="'projectSet:add'">新建项目集</el-button>
         </div>
-        <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+        <!-- @select="onSelect"-->
+        <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
           <template v-slot:endDate="row">
             <div v-if="!row.item.endDate">-</div>
             <div v-else>{{ row.item.endDate }}</div>
@@ -125,7 +125,7 @@
         </baseTable>
       </el-main>
     </el-container>
-    <base-drawer :title="title" ref="addOrUpdateDrawer">
+    <base-drawer :title="title" ref="addOrUpdateDrawer" size="23%">
       <template>
         <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate"></addOrUpdate>
       </template>
@@ -135,7 +135,7 @@
         <showProject @refreshDataList="refresh" ref="showProject"></showProject>
       </template>
     </base-drawer>
-    <base-drawer :title="title" ref="addProjectDrawer">
+    <base-drawer :title="title" ref="addProjectDrawer" size="24%">
       <template>
         <addProject @refreshDataList="refresh" ref="addProject"></addProject>
       </template>
@@ -143,7 +143,8 @@
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
+//import baseTable from '../../base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDrawer from '../../base/baseDrawer.vue'
 import addOrUpdate from './addOrUpdata.vue'
 import showProject from '@/views/modules/resourceManagement/projectSetManagement/showProject.vue'
@@ -153,7 +154,7 @@ export default {
   data() {
     return {
       showFlag: false,
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       title: '',
       managerIdList: [],
       deptIdList: [],
@@ -175,7 +176,7 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '项目集名称', prop: 'psName' },
+          { label: '项目集名称', prop: 'psName', width: '210px' },
           { label: '项目集ID', prop: 'psId', width: '80px' },
           { label: '负责人', prop: 'managerName', width: '80px' },
           { label: '归属部门', prop: 'deptName' },
@@ -197,7 +198,8 @@ export default {
         { value: 0, label: '交付中' },
         { value: 1, label: '已交付' },
         { value: 2, label: '关闭' }
-      ]
+      ],
+      checkData: []
     }
   },
   components: {
@@ -280,7 +282,8 @@ export default {
       })
     },
     download() {
-      const list = this.$refs.table.getSelectRow()
+      //  const list = this.$refs.table.getSelectRow()
+      const list = this.checkData
       if (list.length === 0) {
         this.$message.warning('请至少选择一条数据！')
         return
@@ -333,12 +336,20 @@ export default {
         })
       })
     },
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   if (selection.length > 0) {
+    //     this.chooseStr = '已选中' + selection.length + '项'
+    //   } else {
+    //     this.chooseStr = '已选中 0 项'
+    //   }
+    // },
+    selectData(selection) {
       if (selection.length > 0) {
-        this.chooseStr = '已选中' + selection.length + '项'
+        this.chooseStr = '已选中 ' + selection.length + ' 项'
       } else {
         this.chooseStr = '已选中 0 项'
       }
+      this.checkData = [...selection]
     },
     deleteList(row) {
       let message = ''
@@ -347,17 +358,18 @@ export default {
         data = [row.item.id]
         switch (row.item.state) {
           case 0:
-            message = '【该项目集正在交付中,确定删除吗?删除后项目集下项目将被移除!】'
+            message = '该项目集正在交付中,确定删除吗?删除后项目集下项目将被移除!'
             break
           case 1:
-            message = '【该项目集已交付,确定删除吗?删除后项目集下项目将被移除!】'
+            message = '该项目集已交付,确定删除吗?删除后项目集下项目将被移除!'
             break
           case 2:
-            message = '【该项目集已关闭,确定删除吗?删除后项目集下项目将被移除!】'
+            message = '该项目集已关闭,确定删除吗?删除后项目集下项目将被移除!'
             break
         }
       } else {
-        const list = this.$refs.table.getSelectRow()
+        // const list = this.$refs.table.getSelectRow()
+        const list = this.checkData
         if (list.length === 0) {
           this.$message.warning('请至少选择一条数据！')
           return
@@ -370,7 +382,8 @@ export default {
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -409,10 +422,6 @@ export default {
 }
 </script>
 <style scoped>
-.el-button {
-  margin-left: 0;
-  width: auto;
-}
 .el-input {
   width: 200px;
 }

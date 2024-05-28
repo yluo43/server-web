@@ -22,7 +22,7 @@
           <el-descriptions-item label="项目状态">
             <div style="width: 80%">
               <!--            0交付中 1已交付 2关闭 3已回款-->
-              <el-steps :active="order.state">
+              <el-steps :active="order.state" finish-status="success">
                 <el-step title="交付中"></el-step>
                 <el-step title="已交付"></el-step>
                 <el-step title="关闭"></el-step>
@@ -80,12 +80,12 @@
           <template v-slot:clientType="scope">
             <!--类型插槽-->
             <template v-if="scope.item.row.clientTypeShow">
-              <el-link type="primary" @click="editSettlement(scope)" :disabled="viewDisabled || editFlag">编辑 |</el-link>
-              <el-link type="primary" @click="deleteSettlement(scope)" :disabled="viewDisabled">删除</el-link>
+              <el-link type="primary" :underline="false" @click="editSettlement(scope)" :disabled="viewDisabled || editFlag">编辑 |</el-link>
+              <el-link type="primary" :underline="false" @click="deleteSettlement(scope)" :disabled="viewDisabled">删除</el-link>
             </template>
             <template v-else>
-              <el-link type="primary" @click="updateSettlement(scope)" :disabled="viewDisabled">保存 |</el-link>
-              <el-link type="primary" @click="cancelSettlement(scope)" :disabled="viewDisabled">取消</el-link>
+              <el-link type="primary" :underline="false" @click="updateSettlement(scope)" :disabled="viewDisabled">保存 |</el-link>
+              <el-link type="primary" :underline="false" @click="cancelSettlement(scope)" :disabled="viewDisabled">取消</el-link>
             </template>
           </template>
         </baseTable>
@@ -117,7 +117,7 @@ export default {
   components: { baseTable, baseDialog },
   data() {
     return {
-      chooseStr: '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已付款 0.00',
+      chooseStr: '已选中 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已付款 0.00',
       editFlag: false,
       title: '',
       order: {
@@ -218,9 +218,9 @@ export default {
             }
           }
         })
-        this.chooseStr = '已选中' + selection.length + '项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + total.toFixed(2) + '，已付款：' + expenditureAmount.toFixed(2)
+        this.chooseStr = '已选中 ' + selection.length + ' 项&nbsp;&nbsp;&nbsp;&nbsp;合计：' + total.toFixed(2) + '，已付款：' + expenditureAmount.toFixed(2)
       } else {
-        this.chooseStr = '已选择 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已付款：0.00'
+        this.chooseStr = '已选中 0 项&nbsp;&nbsp;&nbsp;&nbsp;合计：0.00，已付款：0.00'
       }
     },
     addSettlement() {
@@ -248,7 +248,8 @@ export default {
       this.$confirm('确定删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           if (scope.item.row.id) {
@@ -300,7 +301,7 @@ export default {
         data: obj
       }).then(({ data }) => {
         if (data.success) {
-          this.$emit('refreshDataList')
+          // this.$emit('refreshDataList')
           this.$message({
             message: '操作成功',
             type: 'success'
@@ -398,12 +399,21 @@ export default {
 ::v-deep .el-descriptions__body {
   padding-left: 42px;
 }
+::v-deep .is-success {
+  .el-step__line {
+    background-color: #2462f9;
+  }
+}
 ::v-deep .el-step__head.is-success {
   color: #2462f9;
   border-color: #2462f9;
 }
+
 ::v-deep .el-step__title.is-success {
-  color: #c0c4cc;
+  color: #262b39;
+}
+::v-deep .el-step__title.is-process {
+  color: #2462f9;
 }
 ::v-deep .el-step__head.is-process {
   color: #2462f9;

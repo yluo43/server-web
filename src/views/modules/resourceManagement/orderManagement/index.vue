@@ -2,7 +2,7 @@
   <div v-if="flag == 1" style="height: 100%">
     <el-container style="height: 100%; width: 100%">
       <el-header style="height: auto; padding: 0">
-        <el-form :inline="true" label-width="80px" label-position="left" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="70px" label-position="right" :model="dataForm" ref="dataForm">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="dataForm.name" placeholder="请输入项目名称" clearable></el-input>
           </el-form-item>
@@ -69,23 +69,24 @@
           </div>
           <el-form-item>
             <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-              <span v-if="showFlag" style="color: #2462f9">收起</span>
-              <span v-else style="color: #2462f9">展开</span>
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+              <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+              <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
             </div>
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
             <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
           </el-form-item>
         </el-form>
         <div class="chooseResult">
-          <span>已选中{{ count }}项</span>
+          <span>已选中 {{ count }} 项</span>
         </div>
       </el-header>
       <div class="operate-button">
-        <el-button style="width: 110px" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
+        <el-button class="btn-download" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
       </div>
       <el-main style="padding: 0">
-        <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+        <!-- @select="onSelect" -->
+        <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <el-tooltip class="item" effect="dark" content="订单提交" placement="bottom">
@@ -125,14 +126,15 @@
     </base-dialog> -->
   </div>
   <div v-else-if="flag == 2">
-    <addOrUpdate @refreshDataList="refresh" ref="addOrUpdate" @changeFlag="handlerFlag"></addOrUpdate>
+    <addOrUpdate ref="addOrUpdate" @changeFlag="handlerFlag"></addOrUpdate>
   </div>
   <div v-else>
-    <expenditure @refreshDataList="refresh" ref="expenditure" @changeFlag="handlerFlag"></expenditure>
+    <expenditure ref="expenditure" @changeFlag="handlerFlag"></expenditure>
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
+//import baseTable from '../../base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '../../base/baseDialog.vue'
 import addOrUpdate from './addOrUpdata.vue'
 import expenditure from '@/views/modules/resourceManagement/orderManagement/expenditure.vue'
@@ -317,15 +319,27 @@ export default {
       })
     },
     refresh() {
-      this.$refs.dataForm.validate((valid) => {
-        if (!valid) {
-          return false
-        }
-        this.$refs.table.refresh(this.dataForm)
-      })
+      // this.$refs.dataForm.validate((valid) => {
+      //   if (!valid) {
+      //     return false
+      //   }
+      //   this.$refs.table.refresh(this.dataForm)
+      // })
+      this.$refs.table.refresh(this.dataForm)
     },
     //表格选中
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   this.deleteIds = []
+    //   if (selection.length > 0) {
+    //     this.count = selection.length
+    //     selection.forEach((item) => {
+    //       this.deleteIds.push(item.id)
+    //     })
+    //   } else {
+    //     this.count = 0
+    //   }
+    // },
+    selectData(selection) {
       this.deleteIds = []
       if (selection.length > 0) {
         this.count = selection.length
@@ -383,10 +397,6 @@ export default {
 }
 </script>
 <style scoped>
-.el-button {
-  margin-left: 0;
-  width: auto;
-}
 .el-input {
   width: 200px;
 }

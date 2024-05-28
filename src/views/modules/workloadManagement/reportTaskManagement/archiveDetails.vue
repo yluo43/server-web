@@ -5,14 +5,14 @@
         <div class="top">
           <div class="header-title">
             <div>工作量统计:</div>
-            <div style="margin-left: 10px; font-weight: 600">
-              <el-select v-model="reportWorkName" style="font-weight: 600px; width: 230px !important" @change="changeSelect">
+            <div style="margin-left: 10px">
+              <el-select v-model="taskId" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>
             </div>
           </div>
-          <div style="padding-left: 16px">
-            <el-form ref="formData" :inline="true" label-width="80px" :label-position="labelposition" :model="formData">
+          <div style="padding: 20px 16px">
+            <el-form ref="formData" :inline="true" label-width="70px" :label-position="labelposition" :model="formData">
               <el-form-item label="用户姓名:" prop="name">
                 <el-input style="width: 200px" v-model="formData.name" placeholder="请输入用户姓名" clearable />
               </el-form-item>
@@ -58,31 +58,30 @@
                 </el-form-item>
               </div>
               <el-form-item>
-                <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-                  <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-                  <span v-if="showFlag" style="color: #2462f9">收起</span>
-                  <span v-else style="color: #2462f9">展开</span>
+                <div style="display: inline-block; margin-right: 15px" :style="showFlag ? { 'margin-left': '10px' } : ''" @click="showFlag = !showFlag">
+                  <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                  <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                  <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
                 </div>
-                <el-button type="primary" icon="el-icon-search" @click="selectData" style="margin-right: 10px">查询</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="selectTaskDetial" style="margin-right: 10px">查询</el-button>
                 <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
               </el-form-item>
             </el-form>
           </div>
-          <div class="chooseResult" style="display: flex">
-            <div>
-              已选择
-              <span>{{ count }}</span>
-              项
-            </div>
-            <div>
-              <el-button type="text" @click="batchDownLoad">批量下载</el-button>
-            </div>
+        </div>
+        <div class="chooseResult" style="display: flex; margin: 24px 0">
+          <div>
+            已选中
+            <span>{{ count }}</span>
+            项
+          </div>
+          <div>
+            <el-button type="text" @click="batchDownLoad">批量下载</el-button>
           </div>
         </div>
         <div class="table">
-          <div>
-            <baseTable ref="taskDetialTable" :multi-select="true" @select="onSelect" :table-data="taskDetial" style="margin-top: 10px"></baseTable>
-          </div>
+          <!-- @select="onSelect" -->
+          <baseTable ref="taskDetialTable" :multi-select="true" @selectData="selectData" :table-data="taskDetial" propHeight="425px"></baseTable>
         </div>
       </el-main>
     </el-container>
@@ -90,7 +89,8 @@
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTable.vue'
+//import baseTable from '@/views/modules/base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 export default {
   components: { baseTable, baseDialog },
@@ -105,7 +105,7 @@ export default {
       reportWorkName: '',
       workLoadStatistics: [],
       // form表单右对齐
-      labelposition: 'left',
+      labelposition: 'right',
       formData: {
         //用户姓名
         name: '',
@@ -136,25 +136,28 @@ export default {
       costItems: [],
       //报工类别
       categories: [],
+      taskIds: [],
       taskDetial: {
         theads: [
-          { label: '团队成员', prop: 'name' },
-          { label: '工号', prop: 'empId' },
-          { label: '归属部门', prop: 'deptName' },
-          { label: '归属团队', prop: 'teamName' },
-          { label: '开始时间', prop: 'startTime', width: '90px' },
-          { label: '结束时间', prop: 'overTime', width: '90px' },
-          { label: '报工类别', prop: 'workloadName' },
-          { label: '成本项目', prop: 'projectName', width: '210px' },
-          { label: '项目经理', prop: 'projectManagerName' },
-          { label: '计划投入(%)', prop: 'investRate' },
-          { label: '实际投入(%)', prop: 'realityRate' },
-          { label: '提交时间', prop: 'commitTime', width: '140px' },
-          { label: '审批时间', prop: 'approveTime', width: '140px' },
-          { label: '归档时间', prop: 'updateTime', width: '140px' }
+          { label: '任务名称', prop: 'taskName', minWidth: '194px' },
+          { label: '团队成员', prop: 'name', width: '70px' },
+          { label: '工号', prop: 'empId', width: '65px' },
+          { label: '归属部门', prop: 'deptName', minWidth: '95px' },
+          { label: '归属团队', prop: 'teamName', minWidth: '95px' },
+          { label: '开始时间', prop: 'startTime', width: '85px' },
+          { label: '结束时间', prop: 'overTime', width: '85px' },
+          { label: '报工类别', prop: 'workloadName', minWidth: '85px' },
+          { label: '成本项目', prop: 'projectName', minWidth: '210px' },
+          { label: '项目经理', prop: 'projectManagerName', width: '70px' },
+          { label: '计划投入(%)', prop: 'investRate', width: '60px' },
+          { label: '实际投入(%)', prop: 'realityRate', width: '60px' },
+          { label: '提交时间', prop: 'commitTime', width: '137px' },
+          { label: '审批时间', prop: 'approveTime', width: '137px' },
+          { label: '归档时间', prop: 'updateTime', width: '138px' }
         ],
         url: '/workload/pigeonholeTaskList'
-      }
+      },
+      checkedData: []
     }
   },
   mounted() {
@@ -170,13 +173,12 @@ export default {
   methods: {
     async init(initData) {
       await this.selectTaskList()
-      this.reportWorkName = initData.reportWorkName
       this.taskId = initData.taskId
-      this.selectTaskDetial({ taskId: this.taskId, status: 4 })
+      this.selectTaskDetial()
     },
     async initTable() {
       await this.selectTaskList()
-      this.selectTaskDetial({ taskId: this.taskId, status: 4 })
+      this.selectTaskDetial()
     },
     //获取报工类别
     getWorkloadType() {
@@ -194,16 +196,14 @@ export default {
     //统计工作量下拉框改变
     changeSelect(params) {
       this.taskId = params
-      this.selectData()
-      //this.selectTaskDetial({ taskId: this.taskId, status: 4 })
+      this.count = 0
+      this.checkedData = []
+      this.$refs.taskDetialTable.options.multipleSelection = []
+      this.selectTaskDetial()
     },
     //查询工作量
-    selectTaskDetial(params) {
-      this.$refs.taskDetialTable.refresh(params)
-    },
-    //输入框输入查询
-    selectData() {
-      let data = {
+    selectTaskDetial() {
+      const params = {
         taskId: this.taskId,
         status: 4,
         name: this.formData.name,
@@ -215,7 +215,10 @@ export default {
         projectIds: this.formData.costItem.toString(),
         managerIds: this.formData.projectManager.toString()
       }
-      this.selectTaskDetial(data)
+      if (!params.taskId) {
+        return
+      }
+      this.$refs.taskDetialTable.refresh(params)
     },
     //查询任务列表
     async selectTaskList() {
@@ -226,11 +229,22 @@ export default {
         params: params
       })
       if (result.data && result.data.code === 200) {
-        this.workLoadStatistics = result.data.payload
         if (result.data.payload.length != 0) {
-          this.reportWorkName = result.data.payload[0].reportWorkName
+          result.data.payload.map((item) => {
+            this.taskIds.push(item.taskId)
+          })
+          result.data.payload.splice(0, 0, {
+            reportWorkName: '全部',
+            taskId: this.taskIds.toString()
+          })
           this.taskId = result.data.payload[0].taskId
+        } else {
+          result.data.payload.splice(0, 0, {
+            reportWorkName: '全部',
+            taskId: ''
+          })
         }
+        this.workLoadStatistics = [...result.data.payload]
       } else {
         this.$message.error(result.data.msg)
       }
@@ -247,30 +261,6 @@ export default {
         }
       })
     },
-    //获取团队负责人
-    // getTeamLeaders() {
-    //   this.$http({
-    //     url: this.$http.adornUrl('/employee/selectEmployeeList'),
-    //     method: 'get'
-    //   }).then(({ data }) => {
-    //     if (data && data.code === 200) {
-    //       data.payload.forEach((data) => {
-    //         if (
-    //           data.empLevel == '6-' ||
-    //           data.empLevel == '6' ||
-    //           data.empLevel == '7' ||
-    //           data.empLevel == '8' ||
-    //           data.empLevel == '9' ||
-    //           data.empLevel == '6+'
-    //         ) {
-    //           this.teamLeaders.push(data)
-    //         }
-    //       })
-    //     } else {
-    //       this.$message.error(data.msg)
-    //     }
-    //   })
-    // },
     //获取项目
     getProject() {
       this.$http({
@@ -325,22 +315,26 @@ export default {
       })
     },
     //选中项数
-    onSelect(selection) {
-      if (selection.length > 0) {
-        this.count = selection.length
-      } else {
-        this.count = 0
-      }
+    // onSelect(selection) {
+    //   if (selection.length > 0) {
+    //     this.count = selection.length
+    //   } else {
+    //     this.count = 0
+    //   }
+    // },
+    selectData(selection) {
+      this.count = selection.length
+      this.checkedData = selection
     },
     //批量下载
     batchDownLoad() {
-      const list = this.$refs.taskDetialTable.getSelectRow()
+      // const list = this.$refs.taskDetialTable.getSelectRow()
+      const list = this.checkedData
       if (list.length === 0) {
         this.$message.warning('请至少选择一条数据！')
         return
       }
       let ids = list.map((item) => item.id)
-      console.log(ids)
       this.$http.downloadPost(this.$http.adornUrl('/workload/export'), { ids: ids }, this)
     },
     //重置
@@ -368,10 +362,9 @@ export default {
   .header-title {
     display: flex;
     align-items: center;
-    padding-left: 16px;
-    font-size: 16px;
-    font-weight: 600;
-    padding-left: 16px;
+    // font-size: 16px;
+    // font-weight: 600;
+    padding-left: 24px;
   }
 }
 .table {

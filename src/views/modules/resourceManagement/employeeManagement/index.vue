@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-container>
       <el-header style="height: 100%">
-        <el-form :inline="true" label-width="65px" label-position="left" :model="dataForm" ref="dataForm">
+        <el-form :inline="true" label-width="60px" label-position="right" :model="dataForm" ref="dataForm">
           <div class="inputlist">
             <el-form-item label="用户姓名:" prop="name">
               <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable maxlength="50"></el-input>
@@ -95,9 +95,9 @@
             </div>
             <el-form-item>
               <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
-                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.5em; width: 1.5em; position: relative; top: 3px" />
-                <span v-if="showFlag" style="color: #2462f9">收起</span>
-                <span v-else style="color: #2462f9">展开</span>
+                <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+                <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+                <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
               </div>
               <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
               <el-button @click="resetForm()" icon="el-icon-search">重置</el-button>
@@ -114,7 +114,7 @@
       </el-header>
       <div class="operate-button">
         <el-button
-          style="width: 110px"
+          class="btn-download"
           icon="
           el-icon-download"
           type="primary"
@@ -124,7 +124,7 @@
           批量下载
         </el-button>
         <el-button
-          style="width: 110px"
+          class="btn-download"
           icon="
           el-icon-circle-plus-outline"
           type="primary"
@@ -134,7 +134,8 @@
           添加员工
         </el-button>
       </div>
-      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @select="onSelect">
+      <!-- @select="onSelect" -->
+      <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
@@ -161,8 +162,8 @@
         </template>
       </baseTable>
       <el-drawer :title="title" :visible.sync="drawer" :direction="direction" size="23%">
-        <div style="padding-left: 40px">
-          <el-form :inline="true" :rules="rules" :model="editDataForm" ref="editdataForm" class="editForm">
+        <div style="padding: 0 50px">
+          <el-form :inline="true" :rules="rules" :model="editDataForm" ref="editdataForm" class="drawerForm">
             <el-form-item label="用户姓名:" prop="name">
               <el-input v-model="editDataForm.name" placeholder="请输入用户姓名" clearable maxlength="50"></el-input>
             </el-form-item>
@@ -223,7 +224,7 @@
 
             <el-form-item label="入职时间:" prop="entryDate">
               <el-date-picker
-                style="width: 200px"
+                style="width: 100%"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.entryDate"
@@ -241,7 +242,7 @@
 
             <el-form-item label="离职时间:" prop="departDate" v-if="entryDateShow" :rules="[{ required: entryDateInput, message: '岗位为空' }]">
               <el-date-picker
-                style="width: 200px"
+                style="width: 100%"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 v-model="editDataForm.departDate"
@@ -249,7 +250,7 @@
                 placeholder="请选择离职时间"
               ></el-date-picker>
             </el-form-item>
-            <div style="display: flex; justify-content: flex-end; margin-top: 60px; margin-right: 10px">
+            <div style="display: flex; justify-content: flex-end; margin-top: 60px">
               <el-button type="primary" style="margin-right: 20px" @click="editSubmit">确定</el-button>
               <el-button @click="drawer = false">取消</el-button>
             </div>
@@ -260,7 +261,8 @@
   </div>
 </template>
 <script>
-import baseTable from '../../base/baseTable.vue'
+//import baseTable from '../../base/baseTable.vue'
+import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '../../base/baseDialog'
 import { getCName } from '@/utils/auth'
 
@@ -274,7 +276,7 @@ export default {
         if (reg.test(value)) {
           callback()
         } else {
-          callback(new Error('邮箱格式错误'))
+          callback(new Error('邮箱格式错误!'))
         }
       }
     }
@@ -288,7 +290,7 @@ export default {
       entryDateInput: false,
       disabled: false,
       title: '',
-      chooseStr: '已选择 0 项',
+      chooseStr: '已选中 0 项',
       deleteIds: [],
       drawer: false,
       entryDateShow: false,
@@ -355,8 +357,8 @@ export default {
         url: '/employee/selectEmployeeListWithPage'
       },
       rules: {
-        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-        empId: [{ required: true, message: '请输入工号', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入姓名', trigger: ['change', 'blur'] }],
+        empId: [{ required: true, message: '请输入工号', trigger: ['change', 'blur'] }],
         mailbox: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
           { validator: validEmail, trigger: 'change' }
@@ -452,6 +454,11 @@ export default {
     },
 
     changeTeamByDept() {
+      if (!this.editDataForm.deptId && this.editDataForm.deptId !== 0) {
+        this.teamNamesByDept = []
+        this.editDataForm.teamId = ''
+        return
+      }
       //刷新团队
       this.$http({
         url: this.$http.adornUrl('/common/getTeamByDept?deptId=' + this.editDataForm.deptId),
@@ -476,7 +483,6 @@ export default {
       if (!go) {
         return
       }
-
       let user = getCName()
       this.editDataForm.createUser = user
       if (this.editDataForm.departDate == '-') {
@@ -549,7 +555,6 @@ export default {
         if (!valid) {
           return false
         }
-
         if (this.departDate != null && this.departDate != '') {
           this.dataForm.departDateStart = this.departDate[0]
           this.dataForm.departDateEnd = this.departDate[1]
@@ -586,17 +591,18 @@ export default {
       })
     },
     deleteList(row) {
-      this.$confirm(`【确定删除"${row.item.name}"吗?删除后将无法恢复!】`, '提示', {
+      this.$confirm(`确定删除"${row.item.name}"吗?删除后将无法恢复!`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
             url: this.$http.adornUrl('/employee/deleteEmployee?id=' + row.item.id),
             method: 'get'
           }).then(({ data }) => {
-            if (data && data.code === 200) {
+            if (data.success && data.code === 200) {
               this.$message({
                 message: '删除成功',
                 type: 'success'
@@ -614,7 +620,20 @@ export default {
           })
         })
     },
-    onSelect(selection) {
+    // onSelect(selection) {
+    //   this.deleteIds = []
+    //   let totalMoney = 0
+    //   if (selection.length > 0) {
+    //     selection.forEach((a) => {
+    //       this.deleteIds.push(a.id)
+    //       totalMoney += a.totalMoney
+    //     })
+    //     this.chooseStr = '已选中' + this.deleteIds.length + '位成员'
+    //   } else {
+    //     this.chooseStr = '已选中 0 项'
+    //   }
+    // },
+    selectData(selection) {
       this.deleteIds = []
       let totalMoney = 0
       if (selection.length > 0) {
@@ -622,7 +641,7 @@ export default {
           this.deleteIds.push(a.id)
           totalMoney += a.totalMoney
         })
-        this.chooseStr = '已选中' + this.deleteIds.length + '位成员'
+        this.chooseStr = '已选中 ' + this.deleteIds.length + ' 项'
       } else {
         this.chooseStr = '已选中 0 项'
       }
@@ -635,7 +654,8 @@ export default {
       this.$confirm('已选中' + this.deleteIds.length + '位成员,确认批量删除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        center: true
       })
         .then(() => {
           this.$http({
@@ -643,7 +663,7 @@ export default {
             method: 'post',
             data: this.deleteIds
           }).then(({ data }) => {
-            if (data && data.code === 200) {
+            if (data.success && data.code === 200) {
               this.$message({
                 message: '删除成功',
                 type: 'success'
@@ -683,13 +703,25 @@ export default {
 
       this.$refs.dataForm.resetFields()
     },
+    // clear(form) {
+    //   Object.keys(form).forEach((key) => (form[key] = ''))
+    // }
     clear(form) {
-      Object.keys(form).forEach((key) => (form[key] = ''))
+      Object.keys(form).forEach((key) => {
+        if (Array.isArray(form[key])) {
+          form[key] = []
+        } else {
+          form[key] = ''
+        }
+      })
+      this.$nextTick(() => {
+        this.$refs.editdataForm.clearValidate()
+      })
     }
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .el-header {
   color: #333;
   padding: 0 0;
@@ -702,29 +734,30 @@ export default {
   padding-left: 20px;
   display: flex;
 } */
-.el-button-func {
-  width: 86px;
-  height: 30px;
-  text-align: center;
-}
+
 ::v-deep .el-table__cell {
   text-align: center;
 }
-/* .chooseResult {
-  width: 98%;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 auto;
-  display: block;
-  background: #e9f3ff;
-  border-radius: 6px;
-  padding-left: 20px;
-} */
 
-::v-deep .editForm .el-form-item__label {
-  width: 80px !important;
-}
-::v-deep .editForm .el-form-item {
-  width: 95% !important;
+// ::v-deep .editForm .el-form-item__label {
+//   width: 80px !important;
+// }
+// ::v-deep .editForm .el-form-item {
+//   width: 95% !important;
+// }
+::v-deep .drawerForm {
+  .el-form-item__label {
+    width: 70px !important;
+  }
+  .el-form-item {
+    width: 100% !important;
+  }
+  .el-form-item__content {
+    width: calc(100% - 70px);
+  }
+  .el-input,
+  .el-select {
+    width: 100%;
+  }
 }
 </style>
