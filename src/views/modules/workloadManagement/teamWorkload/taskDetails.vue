@@ -6,7 +6,7 @@
           <div class="header-title">
             <div>工作量统计:</div>
             <div style="margin-left: 10px">
-              <el-select v-model="reportWorkName" style="width: 278px !important" @change="changeSelect">
+              <el-select v-model="taskId" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
@@ -132,7 +132,7 @@ export default {
       count: 0,
       empId: '',
       //工作量统计
-      reportWorkName: '',
+      // reportWorkName: '',
       workLoadStatistics: [],
       // form表单右对齐
       labelposition: 'right',
@@ -172,7 +172,7 @@ export default {
     //初始化数据
     async init(initData) {
       await this.selectTaskList()
-      this.reportWorkName = initData.reportWorkName
+      // this.reportWorkName = initData.reportWorkName
       this.taskId = initData.id
       this.teamId = initData.teamId
       this.selectTaskDetial({ teamIdList: this.teamId })
@@ -206,7 +206,7 @@ export default {
       if (result.data && result.data.code === 200) {
         this.workLoadStatistics = result.data.payload
         if (result.data.payload.length != 0) {
-          this.reportWorkName = result.data.payload[0].reportWorkName
+          //  this.reportWorkName = result.data.payload[0].reportWorkName
           this.taskId = result.data.payload[0].id
         }
       } else {
@@ -279,7 +279,7 @@ export default {
     },
     //统计工作量下拉框改变
     changeSelect(params) {
-      this.taskId = params
+      // this.taskId = params
       this.count = 0
       this.multipleSelection = []
       this.selectTaskDetial()

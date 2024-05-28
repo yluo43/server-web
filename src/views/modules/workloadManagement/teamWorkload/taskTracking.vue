@@ -6,7 +6,7 @@
           <div class="header-title">
             <div>工作量统计:</div>
             <div style="margin-left: 10px">
-              <el-select v-model="reportWorkName" style="width: 278px !important" @change="changeSelect">
+              <el-select v-model="taskId" style="width: 278px !important" @change="handlerRadio">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
@@ -15,7 +15,6 @@
           <div style="display: flex; justify-content: space-between; align-items: center">
             <div class="status">
               状态：
-
               <el-radio-group v-model="radio" @change="handlerRadio">
                 <el-radio-button label="0">全部</el-radio-button>
                 <el-radio-button label="1">待确认</el-radio-button>
@@ -48,7 +47,6 @@
             </el-select>
           </div> -->
         </div>
-
         <div class="table">
           <div>
             <el-table
@@ -142,8 +140,6 @@ export default {
       //任务Id
       taskId: '',
       teamId: '',
-      //工作量统计
-      reportWorkName: '',
       workLoadStatistics: [],
       radio: 0,
       queryData: {},
@@ -164,7 +160,6 @@ export default {
     //初始化数据
     async init(initData) {
       await this.selectTaskList()
-      this.reportWorkName = initData.reportWorkName
       this.taskId = initData.id
       this.teamId = initData.teamId
       this.selectWorkload({ teamIdList: this.teamId })
@@ -188,7 +183,6 @@ export default {
       if (result.data && result.data.code === 200) {
         this.workLoadStatistics = result.data.payload
         if (result.data.payload.length != 0) {
-          this.reportWorkName = result.data.payload[0].reportWorkName
           this.taskId = result.data.payload[0].id
         }
       } else {
@@ -268,11 +262,6 @@ export default {
       return function (a, b) {
         return a[prop] - b[prop] // 升序
       }
-    },
-    //统计工作量下拉框改变
-    changeSelect(params) {
-      this.taskId = params
-      this.handlerRadio()
     },
 
     // 分页自带的函数，当pageSize变化时会触发此函数
