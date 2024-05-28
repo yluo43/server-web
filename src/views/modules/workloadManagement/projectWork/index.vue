@@ -10,7 +10,7 @@
       </div>
       <el-container>
         <div style="background-color: #fff">
-          <el-aside style="width: 256px; height: 647px; margin-left: 24px">
+          <el-aside style="width: 256px; height: 650px; margin-left: 24px">
             <el-row>
               <el-col>
                 <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
@@ -521,6 +521,12 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content .first-span {
+  color: #2462f9;
+}
+::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content .second-span {
+  color: #2462f9;
 }
 </style>
 <style>

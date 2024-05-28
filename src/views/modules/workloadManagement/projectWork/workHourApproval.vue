@@ -28,7 +28,7 @@
               <!-- @selection-change="selChange" -->
               <el-table
                 ref="multipleTable"
-                height="455px"
+                height="450px"
                 :data="tableData"
                 border
                 :header-cell-style="{ 'text-align': 'center' }"

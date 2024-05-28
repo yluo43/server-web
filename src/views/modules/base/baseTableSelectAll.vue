@@ -208,6 +208,7 @@ export default {
     // },
     // 当前页
     __currentChangeHandle(val) {
+      this.$refs.table.bodyWrapper.scrollTop = 0
       this.$emit('select', [])
       this.$emit('selectData', this.options.multipleSelection)
       // this.$refs.table.clearSelection()
