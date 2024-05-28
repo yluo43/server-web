@@ -67,6 +67,7 @@
               <el-table-column prop="projectName" label="成本项目" width="210px" show-overflow-tooltip></el-table-column>
               <el-table-column prop="managerName" label="项目经理" show-overflow-tooltip></el-table-column>
               <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="marks" label="备注" show-overflow-tooltip></el-table-column>
               <el-table-column prop="commitTime" label="提交时间" width="90px" show-overflow-tooltip></el-table-column>
               <el-table-column prop="workStatus" label="确认状态">
                 <template slot-scope="scope">
@@ -116,7 +117,7 @@
       </el-main>
     </el-container>
     <!-- 驳回 -->
-    <base-dialog ref="editDataDialog" title="编辑工作量" :width="'800px'">
+    <base-dialog ref="editDataDialog" title="编辑工作量" :width="'1000px'">
       <template>
         <editDataDialog ref="edit" :cancelDialog="closeDialog" @select="select"></editDataDialog>
       </template>
@@ -322,7 +323,7 @@ export default {
     },
     //合并单元格
     objectSpanMethod({ rowIndex, columnIndex }) {
-      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 3 || columnIndex === 10) {
+      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 3 || columnIndex === 11) {
         const _row = this.spanArr[rowIndex]
         const _col = _row > 0 ? 1 : 0
         return {

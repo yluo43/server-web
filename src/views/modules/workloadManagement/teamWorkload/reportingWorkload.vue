@@ -117,6 +117,11 @@
                   %
                 </template>
               </el-table-column>
+              <el-table-column prop="marks" label="备注" min-width="160px" align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.marks" style="width: 140px !important" placeholder="请输入备注" clearable></el-input>
+                </template>
+              </el-table-column>
               <!-- <el-table-column prop="realityRate" label="实际投入" width="160px" align="center">
                 <template slot-scope="scope">
                   <div @dblclick="handler(scope.row, scope.column)" style="height: 50px; line-height: 50px">
