@@ -37,12 +37,12 @@
           </div>
           <div>
             <el-table :data="tableData" style="width: 100%" border height="300px" :span-method="objectSpanMethod">
-              <el-table-column prop="name" label="姓名" width="80px" align="center"></el-table-column>
-              <el-table-column prop="empId" label="工号" width="80px" align="center"></el-table-column>
-              <el-table-column prop="startTime" label="开始时间" width="100px" align="center"></el-table-column>
-              <el-table-column prop="overTime" label="结束时间" width="100px" align="center"></el-table-column>
+              <el-table-column prop="name" label="姓名" min-width="70px" align="center"></el-table-column>
+              <el-table-column prop="empId" label="工号" min-width="70px" align="center"></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" min-width="90px" align="center"></el-table-column>
+              <el-table-column prop="overTime" label="结束时间" min-width="90px" align="center"></el-table-column>
 
-              <el-table-column prop="projectName" label="成本项目" width="160px" align="center">
+              <el-table-column prop="projectName" label="成本项目" min-width="140px" align="center">
                 <template slot-scope="scope">
                   <el-tooltip class="item" :disabled="!scope.row.projectName" :content="scope.row.projectName" placement="top-end">
                     <el-select
@@ -58,7 +58,7 @@
                   </el-tooltip>
                 </template>
               </el-table-column>
-              <el-table-column prop="workloadName" label="报工类别" width="160px" align="center">
+              <el-table-column prop="workloadName" label="报工类别" min-width="140px" align="center">
                 <template slot-scope="scope">
                   <el-select
                     style="width: 120px !important"
@@ -104,11 +104,11 @@
                   </div>
                 </template>
               </el-table-column> -->
-              <el-table-column prop="managerName" label="项目经理" align="center"></el-table-column>
-              <el-table-column prop="realityRate" label="实际投入" width="160px" align="center">
+              <el-table-column prop="managerName" label="项目经理" align="center" min-width="70px"></el-table-column>
+              <el-table-column prop="realityRate" label="实际投入" min-width="100px" align="center">
                 <template slot-scope="scope">
                   <el-input
-                    style="width: 120px !important"
+                    style="width: 60px !important"
                     oninput="this.value = this.value.replace(/[^0-9]/g, '');if(value > 100) value = 100; "
                     ref="realityRate"
                     clearable
@@ -549,7 +549,7 @@ export default {
     height: 50px;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid lightgray;
+    //border-bottom: 1px solid lightgray;
     padding-left: 20px;
     font-weight: 600;
   }

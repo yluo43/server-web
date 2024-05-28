@@ -10,7 +10,7 @@
       </div>
       <el-container>
         <div style="background-color: #fff">
-          <el-aside style="width: 256px; height: 655px; margin-left: 24px">
+          <el-aside style="width: 256px; height: 647px; margin-left: 24px">
             <el-row>
               <el-col>
                 <el-input v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
