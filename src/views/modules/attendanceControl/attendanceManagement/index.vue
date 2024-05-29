@@ -48,7 +48,7 @@
         </el-form>
       </div>
       <div>
-        <el-button style="margin: 10px 0 10px 0" type="primary" icon="el-icon-circle-plus-outline" @click="importFile">导入</el-button>
+        <el-button style="margin: 24px 0" type="primary" icon="el-icon-circle-plus-outline" @click="importFile">导入</el-button>
         <div>
           <baseTable :tableData="tableData" ref="table" :type="null"></baseTable>
         </div>

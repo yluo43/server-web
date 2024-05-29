@@ -386,7 +386,6 @@ export default {
         }
       })
     },
-
     //批量下载
     batchDownLoad() {
       let data = {
