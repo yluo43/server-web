@@ -50,7 +50,7 @@
                 <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="planRate" label="计划投入(%)" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="workStatusName" label="确认状态" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="marks" label="备注" show-overflow-tooltip></el-table-column>
                 <el-table-column label="操作" width="200px" fixed="right">
                   <template slot-scope="scope">
                     <el-button :disabled="scope.row.workStatusName != '待确认'" type="text" @click="projectWorkOperate(scope.row, 1)">确认</el-button>

@@ -92,6 +92,7 @@
                   <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="planRate" label="计划投入(%)" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="marks" label="备注" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="commitTime" label="提交时间" width="90px" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="approveTime" label="审批时间" width="90px" show-overflow-tooltip></el-table-column>
                 </el-table>

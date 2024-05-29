@@ -506,6 +506,9 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content .content-span {
+  color: #2462f9;
+}
 </style>
 <style lang="scss">
 .msgClass {
