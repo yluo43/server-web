@@ -305,6 +305,9 @@ export default {
 
       this.drawer = true
       this.editDataForm = { ...data }
+      if (this.editDataForm.costItems == 0) {
+        this.editDataForm.costItems = null
+      }
     },
     editSubmit() {
       let user = getCName()
