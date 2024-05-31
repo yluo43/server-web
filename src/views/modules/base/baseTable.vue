@@ -346,6 +346,17 @@ export default {
         .then(({ data }) => {
           if (data && data.code === 200) {
             data.page = data.payload
+            if (data.page.list.length > 0) {
+              data.page.list.map((item) => {
+                if (item.workloadCounts && item.workloadCounts.length > 0 && item.taskStatus == 2) {
+                  item.workloadCounts.map((ele) => {
+                    if (ele.count == ele.total) {
+                      item.taskStatus = ele.workStatus + 1
+                    }
+                  })
+                }
+              })
+            }
             this.options.dataList = data.page.list
             this.options.count = data.page.totalCount
             this.options.data = data
