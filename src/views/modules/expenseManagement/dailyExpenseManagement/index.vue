@@ -366,6 +366,9 @@ export default {
         if (form.teamNames.length > 0) {
           form.teamNames = form.teamNames + ''
         }
+        this.$refs.table.options.multipleSelection = []
+        this.chooseStr = '已选中 0 项'
+        this.deleteIds = []
         this.$refs.table.refresh(form)
       })
     },

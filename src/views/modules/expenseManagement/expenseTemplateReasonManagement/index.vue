@@ -217,6 +217,9 @@ export default {
         projectId: this.dataForm.projectId.toString(),
         projectDeptId: this.dataForm.projectDeptId.toString()
       }
+      this.$refs.table.options.multipleSelection = []
+      this.count = 0
+      this.deleteIds = []
       this.$refs.table.refresh(params)
     },
     //表格选中

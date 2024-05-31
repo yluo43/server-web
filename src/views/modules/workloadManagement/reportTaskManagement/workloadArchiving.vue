@@ -198,6 +198,9 @@ export default {
       if (!params.taskId) {
         return
       }
+      this.$refs.workloadListTable.options.multipleSelection = []
+      this.count = 0
+      this.checkedData = []
       this.$refs.workloadListTable.refresh(params)
     },
     //切换ridio
@@ -220,7 +223,7 @@ export default {
     // },
     selectData(selection) {
       this.count = selection.length
-      this.checkedData = selection
+      this.checkedData = [...selection]
     },
     //批量归档
     batchArchiving() {

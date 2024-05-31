@@ -218,6 +218,9 @@ export default {
       if (!params.taskId) {
         return
       }
+      this.$refs.taskDetialTable.options.multipleSelection = []
+      this.count = 0
+      this.checkedData = []
       this.$refs.taskDetialTable.refresh(params)
     },
     //查询任务列表
@@ -324,7 +327,7 @@ export default {
     // },
     selectData(selection) {
       this.count = selection.length
-      this.checkedData = selection
+      this.checkedData = [...selection]
     },
     //批量下载
     batchDownLoad() {

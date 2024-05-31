@@ -351,6 +351,8 @@ export default {
       this.tableData = []
     },
     refresh() {
+      this.count=0
+      this.multipleSelection = []
       this.selectTaskList()
     },
     resetForm() {
@@ -425,7 +427,8 @@ export default {
         this.$message.warning('请至少选择一条数据！')
         return
       }
-      data.ids = this.multipleSelection.map((item) => item.id)
+
+      let ids = this.multipleSelection.map((item) => item.id)
       // let ids = []
       // this.tableData.map((item) => {
       //   this.checkedData.map((ele) => {
@@ -435,7 +438,7 @@ export default {
       //   })
       // })
       // let data = ids
-      this.$http.downloadPost(this.$http.adornUrl('/projectWork/export'), { ids: data }, this)
+      this.$http.downloadPost(this.$http.adornUrl('/projectWork/export'), { ids: ids }, this)
     }
   }
 }

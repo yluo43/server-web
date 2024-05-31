@@ -348,6 +348,9 @@ export default {
 
     // 查询项目列表
     queryProjectList() {
+      this.$refs.projectTable.options.multipleSelection = []
+      this.chooseStr = '已选中 0 项'
+      this.checkData = []
       this.$refs.projectTable.refresh(this.translateQueryParams())
     },
 

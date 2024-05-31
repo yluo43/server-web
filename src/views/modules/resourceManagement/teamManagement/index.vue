@@ -496,6 +496,9 @@ export default {
       if (form.managerIds.length > 0) {
         form.managerIds = form.managerIds + ''
       }
+      this.$refs.table.options.multipleSelection = []
+      this.chooseStr = '已选中 0 项'
+      this.deleteIds = []
       this.$refs.table.refresh(form)
     },
     add() {

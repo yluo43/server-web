@@ -287,6 +287,9 @@ export default {
         params.endSupportDateEnd = params.endSupportDate[1]
       }
       ArrUtil.changeDataAllArrEntriesToStr(params)
+      this.$refs.personnelManagementTable.options.multipleSelection = []
+      this.chooseStr = '已选中 0 项'
+      this.checkData = []
       this.$refs.personnelManagementTable.refresh(params)
       this.getTableTotalCount()
     },

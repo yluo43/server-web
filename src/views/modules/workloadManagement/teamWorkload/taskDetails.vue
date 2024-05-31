@@ -53,7 +53,7 @@
                   <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
                   <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
                 </div>
-                <el-button type="primary" icon="el-icon-search" @click="selectTaskDetial" style="margin-right: 10px">查询</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="searchTableData" style="margin-right: 10px">查询</el-button>
                 <el-button icon="el-icon-refresh-left" @click="resetForm">重置</el-button>
               </el-form-item>
             </el-form>
@@ -175,13 +175,18 @@ export default {
       // this.reportWorkName = initData.reportWorkName
       this.taskId = initData.id
       this.teamId = initData.teamId
-      this.selectTaskDetial({ teamIdList: this.teamId })
+      this.selectTaskDetial()
     },
     async initTable() {
       await this.selectTaskList()
       if (!this.taskId) {
         return
       }
+      this.selectTaskDetial()
+    },
+    searchTableData() {
+      this.count = 0
+      this.multipleSelection = []
       this.selectTaskDetial()
     },
     //获取报工类别

@@ -99,7 +99,7 @@ export default {
       pos: 0,
       // checkedData: [],
       count: 0,
-      chooseStr: '已选择 0 项',
+      // chooseStr: '已选择 0 项',
       // command: '选择任务',
       radio: 1,
       keyword: '',
@@ -280,6 +280,8 @@ export default {
     },
     //切换radio
     handlerRadio() {
+      this.count = 0
+      this.multipleSelection = []
       this.selectTaskList()
     },
     projectWorkOperateTwo(row, operateType) {

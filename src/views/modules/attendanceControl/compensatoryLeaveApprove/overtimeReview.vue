@@ -266,6 +266,9 @@ export default {
     },
     //表格查询
     selectTableData() {
+      this.$refs.table.options.multipleSelection = []
+      this.count = 0
+      this.selData = []
       this.$refs.table.refresh(this.dataConversion(this.dataForm))
     },
     //查询条件数据转换

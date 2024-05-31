@@ -466,6 +466,9 @@ export default {
         if (form.reason.length > 0) {
           form.reason = form.reason + ''
         }
+        this.$refs.table.options.multipleSelection = []
+        this.chooseStr = '已选中 0 项'
+        this.deleteIds = []
         this.$refs.table.refresh(form)
       })
     },
