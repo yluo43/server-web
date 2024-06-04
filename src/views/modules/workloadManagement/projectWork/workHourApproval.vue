@@ -39,14 +39,14 @@
                 @select="handleSelect"
                 @select-all="handleSelectionAll"
               >
-                <el-table-column type="selection" width="55" show-overflow-tooltip></el-table-column>
+                <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="name" label="团队成员" show-overflow-tooltip fixed="left"></el-table-column>
                 <el-table-column prop="empId" label="工号" show-overflow-tooltip fixed="left"></el-table-column>
                 <el-table-column prop="deptName" label="归属部门" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="teamName" label="归属团队" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="teamManagerName" label="团队负责人" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="startTime" label="开始时间" width="90px" show-overflow-tooltip></el-table-column>
-                <el-table-column prop="overTime" label="结束时间" width="90px" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="startTime" label="开始时间" min-width="90px" show-overflow-tooltip></el-table-column>
+                <el-table-column prop="overTime" label="结束时间" min-width="90px" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="planRate" label="计划投入(%)" show-overflow-tooltip></el-table-column>
                 <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
@@ -266,7 +266,7 @@ export default {
       }
     },
     objectSpanMethod({ rowIndex, columnIndex }) {
-      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 3 || columnIndex === 4 || columnIndex === 5) {
+      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 6 || columnIndex === 7) {
         const _row = this.spanArr[rowIndex]
         const _col = _row > 0 ? 1 : 0
         return {
@@ -292,17 +292,24 @@ export default {
       })
     },
     projectWorkOperate(row, operateType) {
+      const h = this.$createElement
       let message = ''
       let ids = []
       if (row) {
         ids = [row.id]
-        message = '确认提交吗?'
+        message = h('p', null, [
+          h('span', null, `${row.name}在`),
+          h('span', { style: 'color:red' }, `${row.workloadName}`),
+          h('span', null, `中，实际投入`),
+          h('span', { style: 'color:red' }, `${row.realityRate}%`),
+          h('span', null, `,确认通过吗？`)
+        ])
       } else {
         if (this.count === 0) {
           this.$message.warning('请至少选择一条数据！')
           return
         }
-        message = '已选中' + this.count + '项，批量确认吗？'
+        message = '已选中' + this.count + '项，确认通过吗？'
         this.multipleSelection.map((item) => {
           ids.push(item.id)
         })

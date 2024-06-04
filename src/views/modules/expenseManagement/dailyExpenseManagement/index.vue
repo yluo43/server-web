@@ -90,9 +90,6 @@
                 v-auth="'dailyCost:delete'"
               />
             </el-tooltip>
-
-            <!-- <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'dailyCost:delete'" />
-            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'dailyCost:update'" /> -->
           </template>
         </template>
       </baseTable>
@@ -330,14 +327,6 @@ export default {
         }
       })
     },
-
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then((_) => {
-          done()
-        })
-        .catch((_) => {})
-    },
     refresh() {
       this.$refs.dataForm.validate((valid) => {
         if (!valid) {
@@ -348,7 +337,6 @@ export default {
           this.dataForm.createTimeStart = this.createTime[0] + ' 00:00:00'
           this.dataForm.createTimeEnd = this.createTime[1] + ' 23:59:59'
         }
-
         if (this.costDate != null && this.costDate != '') {
           this.dataForm.costDateStart = this.costDate[0]
           this.dataForm.costDateEnd = this.costDate[1]

@@ -347,9 +347,6 @@ export default {
     },
     //保存
     editSubmit(formName) {
-      // let user = getCName()
-      // this.editDataForm.updateUser = user
-
       this.departments.forEach((item) => {
         if (item.name == this.editDataForm.deptName) {
           this.editDataForm.deptId = item.id

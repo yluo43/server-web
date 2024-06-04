@@ -58,17 +58,18 @@
               style="width: 100%"
               :span-method="objectSpanMethod"
               :row-key="(row) => row.id"
+              ref="table"
             >
               <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
               <el-table-column prop="empId" label="工号" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="startTime" label="开始时间" width="90px" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="overTime" label="结束时间" width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" min-width="90px"></el-table-column>
+              <el-table-column prop="overTime" label="结束时间" min-width="90px"></el-table-column>
               <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="projectName" label="成本项目" width="210px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="projectName" label="成本项目" min-width="210px" show-overflow-tooltip></el-table-column>
               <el-table-column prop="managerName" label="项目经理" show-overflow-tooltip></el-table-column>
               <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
               <el-table-column prop="marks" label="备注" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="commitTime" label="提交时间" width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="commitTime" label="提交时间" min-width="90px" show-overflow-tooltip></el-table-column>
               <el-table-column prop="workStatus" label="确认状态">
                 <template slot-scope="scope">
                   <template v-if="scope.row.workStatus == 0">
@@ -252,6 +253,7 @@ export default {
         if (data && data.code == 200) {
           this.tableData = data.payload.list.sort(this.compare('empId'))
           this.total = data.payload.totalCount
+          this.pos = 0
           this.spanArr = []
           this.getSpanArr(this.tableData)
         } else {

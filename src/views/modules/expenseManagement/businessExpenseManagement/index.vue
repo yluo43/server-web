@@ -104,7 +104,6 @@
       <div class="operate-button">
         <el-button class="btn-download" icon="el-icon-download" type="primary" @click="download()" v-auth="'tripCost:export'">批量下载</el-button>
       </div>
-      <!-- @select="onSelect" -->
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
         <template v-slot:clientType="row">
           <!--类型插槽-->
@@ -120,16 +119,11 @@
                 v-auth="'tripCost:delete'"
               />
             </el-tooltip>
-
-            <!-- <svg-icon :icon-class="'delete'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteList(row)" v-auth="'tripCost:delete'" />
-            <svg-icon :icon-class="'amend'" style="height: 1.5em; width: 1.5em" @click="alter(row)" v-auth="'tripCost:update'" /> -->
           </template>
         </template>
-
         <template v-slot:totalMoney="row">
           <template>
             <el-popover placement="top-start" width="200" trigger="hover">
-              <!--              :content='getHoverContent(row)'-->
               <div class="custom-content">
                 <el-tooltip class="item" effect="dark" :content="'住宿费:' + row.item.hotelTotalMoney + '元'" placement="left">
                   <div class="ellipsis">住宿费:{{ row.item.hotelTotalMoney }}元</div>
@@ -259,13 +253,11 @@ export default {
         costCenters: [] || undefined,
         createTimeStart: '' || undefined,
         createTimeEnd: '' || undefined,
-
         deptNames: [] || undefined,
         empId: '' || undefined,
         reason: [] || undefined,
         startDateStart: '' || undefined,
         startDateEnd: '' || undefined,
-
         teamNames: [] || undefined,
         ids: '' || undefined,
         backCitys: [] || undefined
@@ -401,7 +393,6 @@ export default {
           this.$message.error(data.msg)
         }
       })
-
       this.drawer = true
       this.editDataForm = { ...data }
     },

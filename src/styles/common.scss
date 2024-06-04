@@ -532,3 +532,9 @@
   width: 110px;
   margin-right: 10px;
 }
+.el-tooltip__popper[x-placement^=top] {
+  margin-bottom: 5px;
+}
+.el-tooltip__popper[x-placement^=bottom] {
+  margin-top: 5px;
+}

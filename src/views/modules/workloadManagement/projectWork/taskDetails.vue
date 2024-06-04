@@ -87,14 +87,14 @@
                   <el-table-column prop="deptName" label="归属部门" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="teamName" label="归属团队" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="teamManagerName" label="团队负责人" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="startTime" label="开始时间" width="90px" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="overTime" label="结束时间" width="90px" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="startTime" label="开始时间" min-width="90px" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="overTime" label="结束时间" min-width="90px" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="planRate" label="计划投入(%)" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="marks" label="备注" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="commitTime" label="提交时间" width="90px" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="approveTime" label="审批时间" width="90px" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="commitTime" label="提交时间" min-width="90px" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="approveTime" label="审批时间" min-width="90px" show-overflow-tooltip></el-table-column>
                 </el-table>
               </div>
               <div style="display: flex; justify-content: center; margin-top: 10px">
@@ -335,9 +335,8 @@ export default {
         columnIndex === 0 ||
         columnIndex === 1 ||
         columnIndex === 2 ||
-        columnIndex === 3 ||
-        columnIndex === 4 ||
-        columnIndex === 5 
+        columnIndex === 6||
+        columnIndex === 7 
       ) {
         const _row = this.spanArr[rowIndex]
         const _col = _row > 0 ? 1 : 0

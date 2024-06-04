@@ -87,13 +87,14 @@
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column prop="name" label="团队成员" show-overflow-tooltip></el-table-column>
               <el-table-column prop="empId" label="工号" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="startTime" label="开始时间" width="90px" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="overTime" label="结束时间" width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="startTime" label="开始时间" min-width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="overTime" label="结束时间" min-width="90px" show-overflow-tooltip></el-table-column>
               <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="projectName" label="成本项目" width="210px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="projectName" label="成本项目" min-width="210px" show-overflow-tooltip></el-table-column>
               <el-table-column prop="managerName" label="项目经理" show-overflow-tooltip></el-table-column>
               <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
-              <el-table-column prop="commitTime" label="提交时间" width="90px" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="marks" label="备注" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="commitTime" label="提交时间" min-width="90px" show-overflow-tooltip></el-table-column>
               <el-table-column prop="workStatusName" label="确认状态" show-overflow-tooltip></el-table-column>
             </el-table>
           </div>
@@ -319,6 +320,7 @@ export default {
         if (data && data.code == 200) {
           this.tableData = data.payload.list.sort(this.compare('empId'))
           this.total = data.payload.totalCount
+          this.pos = 0
           this.spanArr = []
           this.getSpanArr(this.tableData)
           this.$nextTick(() => {
@@ -368,7 +370,7 @@ export default {
       }
     },
     objectSpanMethod({ rowIndex, columnIndex }) {
-      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 3) {
+      if (columnIndex === 0 || columnIndex === 1 || columnIndex === 2 || columnIndex === 3 || columnIndex === 4) {
         const _row = this.spanArr[rowIndex]
         const _col = _row > 0 ? 1 : 0
         return {
