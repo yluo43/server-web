@@ -200,7 +200,11 @@ export default {
                 fnAddDynamicMenuRoutes(data.payload.menuList)
                 router.options.isAddDynamicMenuRoutes = true
                 if (router.options.routes.length > 5) {
-                  this.$router.push({ name: router.options.routes[5].children[0].name })
+                  if (this.$route.query && this.$route.query.location) {
+                    this.$router.push({ name: this.$route.query.location })
+                  } else {
+                    this.$router.push({ name: router.options.routes[5].children[0].name })
+                  }
                 } else {
                   this.$router.push({ name: 'index1' })
                 }
