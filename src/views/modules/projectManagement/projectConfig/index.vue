@@ -335,7 +335,7 @@ export default {
       })
 
       this.$http({
-        url: this.$http.adornUrl('/common/getDeptByRole'),
+        url: this.$http.adornUrl('/common/getDeptByRoleForProject'),
         method: 'get'
       }).then(({ data }) => {
         if (data.success) {
