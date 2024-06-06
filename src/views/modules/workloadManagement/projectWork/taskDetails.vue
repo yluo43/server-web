@@ -25,8 +25,9 @@
                         <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                       </el-select>
                     </el-form-item>
+                      <!-- multiple collapse-tags -->
                     <el-form-item label="报工类别:">
-                      <el-select v-model="workloadType" multiple collapse-tags placeholder="请选择报工类别">
+                      <el-select v-model="dataForm.workloadType" placeholder="请选择报工类别"  clearable>
                         <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id"></el-option>
                       </el-select>
                     </el-form-item>
@@ -145,12 +146,12 @@ export default {
       deptIdList: [],
       teamIdList: [],
       categories: [],
-      workloadType: [],
+    //  workloadType: [],
       dataForm: {
         teamManagerIds: '',
         deptIds: '',
         teamIds: '',
-        workloadType: null,
+        workloadType: '',
         projectId: '',
         empName: '',
         empId: '',
@@ -167,11 +168,11 @@ export default {
         this.dataForm.deptIds = newName.join(',')
       }
     },
-    workloadType(newName, oldName) {
-      if (newName) {
-        this.dataForm.workloadType = newName.join(',')
-      }
-    },
+    // workloadType(newName, oldName) {
+    //   if (newName) {
+    //     this.dataForm.workloadType = newName.join(',')
+    //   }
+    // },
     managerIdList(newName, oldName) {
       if (typeof newName === 'number') {
         this.dataForm.teamManagerIds = newName.toString()
@@ -356,10 +357,11 @@ export default {
     },
     resetForm() {
       this.$refs.dataForm.resetFields()
+      this.dataForm.workloadType=''
       this.managerIdList = []
       this.deptIdList = []
       this.teamIdList = []
-      this.workloadType = []
+     // this.workloadType = []
     },
     // selChange(selection) {
     //   this.count = selection.length

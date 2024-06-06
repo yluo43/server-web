@@ -21,8 +21,9 @@
                   <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
+              <!-- multiple collapse-tags -->
               <el-form-item label="报工类别:" prop="workLoadIds">
-                <el-select v-model="formData.workLoadIds" multiple collapse-tags placeholder="请选择报工类别" clearable>
+                <el-select v-model="formData.workLoadIds" placeholder="请选择报工类别" clearable>
                   <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -145,7 +146,8 @@ export default {
         //成本项目
         projectIds: [],
         //报工类别
-        workLoadIds: [],
+        // workLoadIds: [],
+        workLoadIds: '',
         //项目经理
         managerIds: [],
         teamIds: []
@@ -296,7 +298,8 @@ export default {
         taskId: this.taskId,
         empName: this.formData.userName,
         empId: this.formData.empId,
-        workloadType: this.formData.workLoadIds.toString(),
+        // workloadType: this.formData.workLoadIds.toString(),
+        workloadType: this.formData.workLoadIds,
         managerIds: this.formData.managerIds.toString(),
         projectIds: this.formData.projectIds.toString(),
         teamIdList: this.formData.teamIds.toString() || this.teamId,
