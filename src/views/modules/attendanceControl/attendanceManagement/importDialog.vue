@@ -8,10 +8,10 @@
           type="month"
           format="yyyy-MM"
           value-format="yyyy-MM"
-          placeholder="请选择年月"
+          placeholder="请选择月份"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="导入考勤数据:" prop="uploadFile" style="margin-top: 10px">
+      <el-form-item label="导入考勤数据:" prop="uploadFile" class="upload-form" style="margin-top: 10px">
         <el-upload
           class="upload-demo"
           drag
@@ -51,7 +51,7 @@ export default {
         uploadFileList: []
       },
       rules: {
-        month: [{ required: true, message: '请选择导入的月份', trigger: 'change' }]
+        month: [{ required: true, message: '请选择导入月份', trigger: 'change' }]
       }
     }
   },
@@ -119,11 +119,11 @@ export default {
         }
       }).then(({ data }) => {
         if (data.success) {
-          this.$message.success('导入成功!')
+          this.$message.success(data.payload)
           this.cancelDialog()
           this.$emit('refreshTableData')
         } else {
-          this.$message.error('导入失败!')
+          this.$message.error(data.payload)
         }
       })
     }
@@ -131,4 +131,10 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+::v-deep .upload-form .el-form-item__label:before {
+  content: '*';
+  color: #f56c6c;
+  margin-right: 4px;
+}
+</style>

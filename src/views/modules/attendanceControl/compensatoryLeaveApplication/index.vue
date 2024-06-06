@@ -91,6 +91,7 @@
                 placeholder="请选择调休开始日期"
               ></el-date-picker>
               <el-time-select
+                popper-class="select-class"
                 v-model="compensatoryLeaveDataForm.startTime"
                 :picker-options="{
                   start: '09:00',
@@ -111,6 +112,7 @@
                 placeholder="请选择调休结束日期"
               ></el-date-picker>
               <el-time-select
+                popper-class="select-class"
                 v-model="compensatoryLeaveDataForm.endTime"
                 :picker-options="{
                   start: '12:00',
@@ -533,5 +535,10 @@ export default {
 ::v-deep .el-form-item__label {
   float: none;
   font-size: 14px !important;
+}
+</style>
+<style>
+.select-class .el-scrollbar__wrap:not(.el-select-dropdown__wrap) {
+  overflow-x: auto !important;
 }
 </style>
