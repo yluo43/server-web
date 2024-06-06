@@ -76,7 +76,7 @@
     </el-container>
     <base-dialog ref="projectWorkOperateDialog" title="工作量驳回" :width="'500px'">
       <template>
-        <projectWorkOperate ref="projectWorkOperate" @refreshDataList="selectTaskList"></projectWorkOperate>
+        <projectWorkOperate ref="projectWorkOperate" @refreshDataList="refreshDataList"></projectWorkOperate>
       </template>
     </base-dialog>
   </div>
@@ -117,6 +117,8 @@ export default {
   methods: {
     async init(data, taskId) {
       this.clear(this.dataForm)
+      this.count = 0
+      this.multipleSelection = []
       if (data) {
         Object.assign(this.dataForm, data)
       }
@@ -158,6 +160,11 @@ export default {
       } else {
         this.$message.error(data.msg)
       }
+    },
+    refreshDataList() {
+      this.count = 0
+      this.multipleSelection = []
+      this.selectTaskList()
     },
     // selChange(selection) {
     //   this.count = selection.length
@@ -302,7 +309,7 @@ export default {
           h('span', { style: 'color:red' }, `${row.workloadName}`),
           h('span', null, `中，实际投入`),
           h('span', { style: 'color:red' }, `${row.realityRate}%`),
-          h('span', null, `,确认通过吗？`)
+          h('span', null, `，确认通过吗？`)
         ])
       } else {
         if (this.count === 0) {
@@ -311,8 +318,14 @@ export default {
         }
         message = '已选中' + this.count + '项，确认通过吗？'
         this.multipleSelection.map((item) => {
-          ids.push(item.id)
+          if (item.workStatusName != '驳回') {
+            ids.push(item.id)
+          }
         })
+        if (ids.length == 0) {
+          this.$message.warning('请选择待确认数据！')
+          return
+        }
         // this.tableData.map((item) => {
         //   this.checkedData.map((ele) => {
         //     if (item.empId === ele.empId) {
@@ -339,6 +352,8 @@ export default {
                 type: 'success'
               })
               this.$emit('projectListRefresh')
+              this.count = 0
+              this.multipleSelection = []
               this.selectTaskList()
             } else {
               this.$message.error(data.msg)

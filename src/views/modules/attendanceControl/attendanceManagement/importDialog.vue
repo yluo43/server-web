@@ -88,7 +88,7 @@ export default {
             if (data.success) {
               this.importFile(formData)
             } else {
-              this.$confirm('当前月份已上传，是否覆盖？', '提示', {
+              this.$confirm('当前月份考勤数据已上传，是否覆盖？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',

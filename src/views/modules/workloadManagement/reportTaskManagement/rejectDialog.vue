@@ -8,7 +8,7 @@
           </el-form-item>
           <el-form-item label="驳回工作量:" prop="realityRate">{{ formData.realityRate }}%</el-form-item>
           <el-form-item label="驳回理由:" prop="rejectReason">
-            <el-input type="textarea" show-word-limit minlength="5" maxlength="100" v-model="formData.rejectReason" placeholder="请输入至少5个字符"></el-input>
+            <el-input type="textarea" show-word-limit minlength="5" maxlength="100" v-model="formData.rejectReason" placeholder="请输入驳回理由"></el-input>
           </el-form-item>
         </el-form>
         <div class="btn-group">

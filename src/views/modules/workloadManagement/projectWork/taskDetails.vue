@@ -236,6 +236,8 @@ export default {
     },
     async init(data,taskId) {
       this.clear(this.dataForm)
+      this.count = 0
+      this.multipleSelection = []
       if (data) {
         Object.assign(this.dataForm, data)
       }
