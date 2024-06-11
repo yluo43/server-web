@@ -4,14 +4,14 @@
       <el-main style="width: 100%; padding: 0">
         <div class="table" style="height: 650px; background-color: white">
           <div style="display: flex; align-items: center">
-            <span style="margin-left: 16px">工作量统计：</span>
-            <el-select v-model="dataForm.taskId" style="width: 278px !important" @change="changeSelect">
+            <span style="margin-left: 16px">工作量统计:</span>
+            <el-select v-model="dataForm.taskId" style="width: 278px !important; margin-left: 6px" @change="changeSelect">
               <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
             </el-select>
           </div>
           <div style="margin: 24px 0">
-            <span style="margin-left: 54px">状态：</span>
-            <el-radio-group v-model="dataForm.workStatus" @change="handlerRadio">
+            <span style="margin-left: 54px">状态:</span>
+            <el-radio-group v-model="dataForm.workStatus" @change="handlerRadio" style="margin-left: 6px">
               <el-radio-button :label="null">全部</el-radio-button>
               <el-radio-button :label="1">待确认</el-radio-button>
               <el-radio-button :label="3">被驳回</el-radio-button>

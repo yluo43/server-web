@@ -3,7 +3,7 @@
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-main style="width: 100%" class="main">
         <div class="top">
-          <div class="header-title">工作量统计：{{ taskInfo.reportWorkName }}</div>
+          <div class="header-title">工作量统计:{{ taskInfo.reportWorkName }}</div>
         </div>
         <div class="info-box">
           <div>

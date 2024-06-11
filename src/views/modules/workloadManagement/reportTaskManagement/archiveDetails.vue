@@ -5,7 +5,7 @@
         <div class="top">
           <div class="header-title">
             <div>工作量统计:</div>
-            <div style="margin-left: 10px">
+            <div style="margin-left: 6px">
               <el-select v-model="taskId" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>

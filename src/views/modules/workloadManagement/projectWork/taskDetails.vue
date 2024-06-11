@@ -5,8 +5,8 @@
         <el-main style="width: 100%; padding: 0">
           <div class="table" style="height: 650px; background-color: white">
             <div style="display: flex; align-items: center">
-              <span style="margin-left: 16px">工作量统计：</span>
-              <el-select v-model="dataForm.taskId" style="width: 278px !important" @change="changeSelect">
+              <span style="margin-left: 16px">工作量统计:</span>
+              <el-select v-model="dataForm.taskId" style="width: 278px !important;margin-left:6px" @change="changeSelect">
                 <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>

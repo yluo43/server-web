@@ -141,9 +141,9 @@
           </template>
           <template v-slot:clientType="row">
             <template>
-              <el-button :disabled="row.item.status != 0" type="text" @click="pass(row.item)">通过</el-button>
-              <el-button :disabled="row.item.status != 0" type="text" @click="reject(row.item)">驳回</el-button>
-              <el-button type="text" @click="view(row.item)">查看</el-button>
+              <el-button style="min-width: 60px; width: 60px" :disabled="row.item.status != 0" type="text" @click="pass(row.item)">通过</el-button>
+              <el-button style="min-width: 60px; width: 60px" :disabled="row.item.status != 0" type="text" @click="reject(row.item)">驳回</el-button>
+              <el-button style="min-width: 60px; width: 60px" type="text" @click="view(row.item)">查看</el-button>
             </template>
           </template>
         </baseTable>
@@ -223,19 +223,19 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'userName', width: '68px', fixed: 'left' },
+          { label: '用户姓名', prop: 'userName', width: '70px', fixed: 'left' },
           { label: '工号', prop: 'empId', width: '65px', fixed: 'left' },
-          { label: '归属部门', prop: 'deptName' },
-          { label: '归属团队', prop: 'teamName' },
+          { label: '归属部门', prop: 'deptName', width: '106px' },
+          { label: '归属团队', prop: 'teamName', width: '86px' },
           { label: '加班开始时间', prop: 'startTime', width: '138px' },
           { label: '加班结束时间', prop: 'endTime', width: '138px' },
-          { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
+          { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType', width: '86px' },
           { label: '加班时长(小时)', prop: 'overtimeHours', width: '70px' },
           { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork', width: '70px' },
           { label: '加班原因', prop: 'reason' },
           { label: '申请时间', prop: 'createTime', width: '138px' },
           { label: '审批状态', prop: 'status', slotName: 'status', width: '70px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px', fixed: 'right' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '230px', fixed: 'right' }
         ],
         url: '/attendance/getOvertimeList'
       },

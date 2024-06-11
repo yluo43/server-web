@@ -5,17 +5,16 @@
         <div class="top">
           <div class="header-title">
             <div>工作量统计:</div>
-            <div style="margin-left: 10px">
+            <div style="margin-left: 6px">
               <el-select v-model="taskId" style="width: 278px !important" @change="handlerRadio">
                 <el-option v-for="item in workLoadStatistics" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
           </div>
-
           <div style="display: flex; justify-content: space-between; align-items: center">
             <div class="status">
-              状态：
-              <el-radio-group v-model="radio" @change="handlerRadio">
+              状态:
+              <el-radio-group v-model="radio" @change="handlerRadio" style="margin-left: 4px">
                 <el-radio-button label="0">全部</el-radio-button>
                 <el-radio-button label="1">待确认</el-radio-button>
                 <el-radio-button label="3">被驳回</el-radio-button>
@@ -357,7 +356,7 @@ export default {
     padding-left: 24px;
   }
   .status {
-    padding: 24px 60px;
+    padding: 24px 62px;
   }
 }
 .table {
