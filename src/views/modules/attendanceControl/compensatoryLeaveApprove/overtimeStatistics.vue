@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <div style="margin-left: 16px">
+      <div style="padding: 0 0 20px 24px; background: #fff">
         <el-form ref="dataForm" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
@@ -36,15 +36,15 @@
         </el-form>
       </div>
       <div>
-        <div class="chooseResult">
+        <div class="chooseResult" style="margin: 24px 0">
           <span>已选中 {{ count }} 项</span>
         </div>
-        <div class="operate-button">
+        <div class="operate-button" style="margin-bottom: 16px">
           <el-button class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
         </div>
-        <div>
+        <div style="background: #fff">
           <!-- @select="checkedTable" -->
-          <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" propHeight="467px">
+          <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" propHeight="425px">
             <template v-slot:clientType="row">
               <template>
                 <el-button type="text" style="width: 100px" @click="viewDetails(row.item)">查看明细</el-button>
@@ -143,6 +143,9 @@ export default {
     },
     //表格查询
     selectTableData() {
+      this.$refs.table.options.multipleSelection = []
+      this.count = 0
+      this.selData = []
       this.$refs.table.refresh(this.dataConversion(this.dataForm))
     },
     //查询条件格式转换

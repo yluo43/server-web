@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <el-header style="padding: 0">
+      <div style="background: white; padding: 24px">
         <el-tabs v-model="activeName" type="border-card">
           <el-tab-pane v-if="hasPermission('attendance:overtimeFirst')" label="加班初审" name="first"></el-tab-pane>
           <el-tab-pane v-if="hasPermission('attendance:overtimeRe')" label="加班复审" name="second"></el-tab-pane>
@@ -9,8 +9,8 @@
           <el-tab-pane v-if="hasPermission('attendance:dayoffRe')" label="调休复审" name="fourth"></el-tab-pane>
           <el-tab-pane v-if="hasPermission('attendance:count')" label="加班统计" name="fifth"></el-tab-pane>
         </el-tabs>
-      </el-header>
-      <el-container style="background: #ffffff">
+      </div>
+      <el-container>
         <!-- 加班初审-->
         <div v-if="activeName === 'first'" style="width: 100%">
           <overtimePreliminaryReview ref="overtimePreliminaryReview"></overtimePreliminaryReview>
@@ -72,4 +72,14 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep .el-tabs--border-card > .el-tabs__content {
+  padding: 0;
+}
+::v-deep .el-tabs--border-card > .el-tabs__header {
+  border-bottom: none;
+}
+::v-deep .el-tabs--border-card {
+  border: none;
+}
+</style>

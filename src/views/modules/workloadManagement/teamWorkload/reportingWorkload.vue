@@ -3,7 +3,7 @@
     <el-container style="height: 100%; width: 100%" direction="vertical">
       <el-main style="width: 100%" class="main">
         <div class="top">
-          <div class="header-title">工作量统计：{{ taskInfo.reportWorkName }}</div>
+          <div class="header-title">工作量统计:{{ taskInfo.reportWorkName }}</div>
         </div>
         <div class="info-box">
           <div>
@@ -115,6 +115,11 @@
                     v-model.number="scope.row.realityRate"
                   ></el-input>
                   %
+                </template>
+              </el-table-column>
+              <el-table-column prop="marks" label="备注" min-width="160px" align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.marks" style="width: 140px !important" placeholder="请输入备注" clearable></el-input>
                 </template>
               </el-table-column>
               <!-- <el-table-column prop="realityRate" label="实际投入" width="160px" align="center">

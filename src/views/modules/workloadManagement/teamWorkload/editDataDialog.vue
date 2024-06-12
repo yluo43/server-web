@@ -31,6 +31,9 @@
                   <el-option v-for="ele in costItems" :key="ele.id" :label="ele.name" :value="ele.name" />
                 </el-select>
               </el-form-item>
+              <el-form-item :prop="'workLoad.' + index + '.marks'">
+                <el-input v-model="item.marks" placeholder="请输入备注" clearable />
+              </el-form-item>
               <el-form-item :prop="'workLoad.' + index + '.realityRate'">
                 <el-input style="width: 100px" v-model.number="item.realityRate" clearable />
                 %
@@ -192,7 +195,8 @@ export default {
         teamId: this.workLoad[0].teamId,
         teamManagerName: this.workLoad[0].teamManagerName,
         teamName: this.workLoad[0].teamName,
-        workStatus: ''
+        workStatus: '',
+        marks: ''
       })
     },
     //确认

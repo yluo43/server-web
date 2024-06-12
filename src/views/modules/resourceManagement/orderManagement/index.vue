@@ -325,6 +325,9 @@ export default {
       //   }
       //   this.$refs.table.refresh(this.dataForm)
       // })
+      this.$refs.table.options.multipleSelection = []
+      this.count = 0
+      this.deleteIds = []
       this.$refs.table.refresh(this.dataForm)
     },
     //表格选中

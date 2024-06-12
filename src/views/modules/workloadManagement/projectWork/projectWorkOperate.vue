@@ -12,11 +12,11 @@
           <el-form-item label="驳回理由:" prop="rejectReason">
             <el-input
               v-model="formData.rejectReason"
-              placeholder="请输入问题描述"
+              placeholder="请输入驳回理由"
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 4 }"
               minlength="5"
-              maxlength="512"
+              maxlength="100"
               style="width: 100%"
             ></el-input>
           </el-form-item>
@@ -95,5 +95,8 @@ export default {
 
 .el-dialog__body {
   width: 50%;
+}
+::v-deep .el-form-item__error {
+  top: 54px !important;
 }
 </style>

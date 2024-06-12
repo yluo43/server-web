@@ -5,8 +5,8 @@
         <el-main style="width: 100%; padding: 0">
           <div class="table" style="height: 650px; background-color: white">
             <div style="display: flex; align-items: center">
-              <span style="margin-left: 16px">工作量统计：</span>
-              <el-select v-model="dataForm.taskId" style="width: 278px !important" @change="changeSelect">
+              <span style="margin-left: 16px">工作量统计:</span>
+              <el-select v-model="dataForm.taskId" style="width: 278px !important;margin-left:6px" @change="changeSelect">
                 <el-option v-for="item in commandList" :key="item.id" :label="item.reportWorkName" :value="item.id" />
               </el-select>
             </div>
@@ -25,8 +25,9 @@
                         <el-option v-for="item in teamList" :key="item.id" :label="item.name" :value="item.id"></el-option>
                       </el-select>
                     </el-form-item>
+                      <!-- multiple collapse-tags -->
                     <el-form-item label="报工类别:">
-                      <el-select v-model="workloadType" multiple collapse-tags placeholder="请选择报工类别">
+                      <el-select v-model="dataForm.workloadType" placeholder="请选择报工类别"  clearable>
                         <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id"></el-option>
                       </el-select>
                     </el-form-item>
@@ -87,13 +88,14 @@
                   <el-table-column prop="deptName" label="归属部门" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="teamName" label="归属团队" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="teamManagerName" label="团队负责人" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="startTime" label="开始时间" width="90px" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="overTime" label="结束时间" width="90px" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="startTime" label="开始时间" min-width="90px" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="overTime" label="结束时间" min-width="90px" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="workloadName" label="报工类别" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="planRate" label="计划投入(%)" show-overflow-tooltip></el-table-column>
                   <el-table-column prop="realityRate" label="实际投入(%)" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="commitTime" label="提交时间" width="90px" show-overflow-tooltip></el-table-column>
-                  <el-table-column prop="approveTime" label="审批时间" width="90px" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="marks" label="备注" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="commitTime" label="提交时间" min-width="90px" show-overflow-tooltip></el-table-column>
+                  <el-table-column prop="approveTime" label="审批时间" min-width="90px" show-overflow-tooltip></el-table-column>
                 </el-table>
               </div>
               <div style="display: flex; justify-content: center; margin-top: 10px">
@@ -144,12 +146,12 @@ export default {
       deptIdList: [],
       teamIdList: [],
       categories: [],
-      workloadType: [],
+    //  workloadType: [],
       dataForm: {
         teamManagerIds: '',
         deptIds: '',
         teamIds: '',
-        workloadType: null,
+        workloadType: '',
         projectId: '',
         empName: '',
         empId: '',
@@ -166,11 +168,11 @@ export default {
         this.dataForm.deptIds = newName.join(',')
       }
     },
-    workloadType(newName, oldName) {
-      if (newName) {
-        this.dataForm.workloadType = newName.join(',')
-      }
-    },
+    // workloadType(newName, oldName) {
+    //   if (newName) {
+    //     this.dataForm.workloadType = newName.join(',')
+    //   }
+    // },
     managerIdList(newName, oldName) {
       if (typeof newName === 'number') {
         this.dataForm.teamManagerIds = newName.toString()
@@ -234,6 +236,8 @@ export default {
     },
     async init(data,taskId) {
       this.clear(this.dataForm)
+      this.count = 0
+      this.multipleSelection = []
       if (data) {
         Object.assign(this.dataForm, data)
       }
@@ -334,9 +338,8 @@ export default {
         columnIndex === 0 ||
         columnIndex === 1 ||
         columnIndex === 2 ||
-        columnIndex === 3 ||
-        columnIndex === 4 ||
-        columnIndex === 5 
+        columnIndex === 6||
+        columnIndex === 7 
       ) {
         const _row = this.spanArr[rowIndex]
         const _col = _row > 0 ? 1 : 0
@@ -350,14 +353,17 @@ export default {
       this.tableData = []
     },
     refresh() {
+      this.count=0
+      this.multipleSelection = []
       this.selectTaskList()
     },
     resetForm() {
       this.$refs.dataForm.resetFields()
+      this.dataForm.workloadType=''
       this.managerIdList = []
       this.deptIdList = []
       this.teamIdList = []
-      this.workloadType = []
+     // this.workloadType = []
     },
     // selChange(selection) {
     //   this.count = selection.length
@@ -424,7 +430,8 @@ export default {
         this.$message.warning('请至少选择一条数据！')
         return
       }
-      data.ids = this.multipleSelection.map((item) => item.id)
+
+      let ids = this.multipleSelection.map((item) => item.id)
       // let ids = []
       // this.tableData.map((item) => {
       //   this.checkedData.map((ele) => {
@@ -434,7 +441,7 @@ export default {
       //   })
       // })
       // let data = ids
-      this.$http.downloadPost(this.$http.adornUrl('/projectWork/export'), { ids: data }, this)
+      this.$http.downloadPost(this.$http.adornUrl('/projectWork/export'), { ids: ids }, this)
     }
   }
 }

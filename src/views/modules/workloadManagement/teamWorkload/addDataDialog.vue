@@ -43,6 +43,9 @@
                 <template slot="append">%</template>
               </el-input>
             </el-form-item>
+            <el-form-item label="备注:" prop="marks">
+              <el-input v-model="formData.marks" placeholder="请输入备注" clearable style="width: 200px"></el-input>
+            </el-form-item>
           </el-form>
         </div>
         <div class="btn-group">
@@ -83,7 +86,8 @@ export default {
         workloadType: '',
         //实际投入
         realityRate: '',
-        investTime: []
+        investTime: [],
+        marks: ''
       },
       startDate: '',
       endDate: '',
@@ -202,8 +206,8 @@ export default {
             managerName: this.managerName,
             //  startTime: this.formData.investTime[0],
             //  overTime: this.formData.investTime[1],
-            startTime: this.dataList[0].startTime,
-            overTime: this.dataList[0].overTime,
+            startTime: this.dataList[0].jobStartTime,
+            overTime: this.dataList[0].jobOverTime,
             workStatus: '',
             deptId: this.dataList[0].deptId,
             deptName: this.dataList[0].deptName,
@@ -213,7 +217,8 @@ export default {
             isEdit: false,
             isSelect: false,
             isCategory: false,
-            teamManagerName: this.data.manageName
+            teamManagerName: this.data.manageName,
+            marks: this.formData.marks
           }
           this.$emit('addData', data)
           this.cancelDialog()

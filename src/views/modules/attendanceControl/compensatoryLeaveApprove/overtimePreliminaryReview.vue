@@ -1,6 +1,6 @@
 <template>
-  <el-container style="height: 100%; width: 100%">
-    <el-aside :class="showFlag ? 'asideHeight' : 'leftHeight'" style="width: 256px">
+  <el-container style="height: 100%; width: 100%; background: #fff">
+    <el-aside class="asideHeight" style="width: 256px; margin-left: 24px">
       <el-row>
         <el-col>
           <el-input style="width: 100%" v-model="projectName" placeholder="请输入" suffix-icon="el-icon-search" @change="projectNameChange"></el-input>
@@ -16,8 +16,8 @@
         </el-col>
       </el-row>
     </el-aside>
-    <div style="width: calc(100% - 256px)">
-      <div style="margin-left: 16px">
+    <div style="width: calc(100% - 280px); padding-left: 16px">
+      <div style="margin-bottom: 20px">
         <el-form ref="dataForm" label-width="82px" label-position="right" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
@@ -121,9 +121,9 @@
           <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
       </div>
-      <el-main style="padding: 0">
+      <el-main style="padding: 0; margin-top: 24px">
         <!-- @select="checkedTable" -->
-        <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" propHeight="450px">
+        <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" :propHeight="propHeight">
           <template v-slot:overtimeType="row">
             <span v-if="row.item.overtimeType == 0">日常加班</span>
             <span v-else>节假日加班</span>
@@ -133,8 +133,6 @@
             <span v-else>否</span>
           </template>
           <template v-slot:status="row">
-            <!-- <span v-if="row.item.status == 0 || row.item.status == 2">待审核</span> -->
-            <!-- <span v-if="row.item.status == 1 || row.item.status == 3">已驳回</span> -->
             <span v-if="row.item.status == 0">待初审</span>
             <span v-if="row.item.status == 2">待复审</span>
             <span v-if="row.item.status == 1">初审驳回</span>
@@ -143,9 +141,9 @@
           </template>
           <template v-slot:clientType="row">
             <template>
-              <el-button :disabled="row.item.status != 0" type="text" @click="pass(row.item)">通过</el-button>
-              <el-button :disabled="row.item.status != 0" type="text" @click="reject(row.item)">驳回</el-button>
-              <el-button type="text" @click="view(row.item)">查看</el-button>
+              <el-button style="min-width: 60px; width: 60px" :disabled="row.item.status != 0" type="text" @click="pass(row.item)">通过</el-button>
+              <el-button style="min-width: 60px; width: 60px" :disabled="row.item.status != 0" type="text" @click="reject(row.item)">驳回</el-button>
+              <el-button style="min-width: 60px; width: 60px" type="text" @click="view(row.item)">查看</el-button>
             </template>
           </template>
         </baseTable>
@@ -181,6 +179,7 @@ export default {
       showFlag: false,
       projectName: '',
       count: 0,
+      propHeight: '490px',
       approvalStatus: [
         { id: 0, name: '待初审' },
         { id: 1, name: '初审驳回' },
@@ -224,19 +223,19 @@ export default {
       },
       tableData: {
         theads: [
-          { label: '用户姓名', prop: 'userName', width: '68px', fixed: 'left' },
+          { label: '用户姓名', prop: 'userName', width: '70px', fixed: 'left' },
           { label: '工号', prop: 'empId', width: '65px', fixed: 'left' },
-          { label: '归属部门', prop: 'deptName' },
-          { label: '归属团队', prop: 'teamName' },
+          { label: '归属部门', prop: 'deptName', width: '106px' },
+          { label: '归属团队', prop: 'teamName', width: '86px' },
           { label: '加班开始时间', prop: 'startTime', width: '138px' },
           { label: '加班结束时间', prop: 'endTime', width: '138px' },
-          { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType' },
+          { label: '加班类型', prop: 'overtimeType', slotName: 'overtimeType', width: '86px' },
           { label: '加班时长(小时)', prop: 'overtimeHours', width: '70px' },
           { label: '是否居家办公', prop: 'isRemoteWork', slotName: 'isRemoteWork', width: '70px' },
           { label: '加班原因', prop: 'reason' },
           { label: '申请时间', prop: 'createTime', width: '138px' },
           { label: '审批状态', prop: 'status', slotName: 'status', width: '70px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '250px', fixed: 'right' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '230px', fixed: 'right' }
         ],
         url: '/attendance/getOvertimeList'
       },
@@ -245,6 +244,18 @@ export default {
         children: 'children',
         label: 'label'
       }
+    }
+  },
+  watch: {
+    showFlag(value) {
+      if (value) {
+        this.propHeight = '405px'
+      } else {
+        this.propHeight = '490px'
+      }
+      this.$nextTick(() => {
+        this.$refs.table.__calculateHeight()
+      })
     }
   },
 
@@ -345,6 +356,9 @@ export default {
     },
     //表格查询
     selectTableData() {
+      this.$refs.table.options.multipleSelection = []
+      this.count = 0
+      this.selData = []
       this.$refs.table.refresh(this.dataConversion(this.dataForm))
     },
     //查询条件数据转换
@@ -485,19 +499,20 @@ export default {
 ::v-deep .el-tree-node__label {
   font-size: 12px;
 }
+::v-deep .el-icon-caret-right:before {
+  content: '';
+}
+::v-deep .el-tree-node__content > .el-tree-node__expand-icon {
+  padding: 0;
+}
 .el-input {
   width: 200px;
 }
 .asideHeight {
   height: 650px;
   background-color: #ffffff;
-  margin-top: 4px;
 }
-.leftHeight {
-  height: 575px;
-  background-color: #ffffff;
-  margin-top: 4px;
-}
+
 ::v-deep .el-tree-node__content .content-span {
   max-width: 220px;
   height: 26px;
@@ -505,6 +520,9 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+::v-deep .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content .content-span {
+  color: #2462f9;
 }
 </style>
 <style lang="scss">

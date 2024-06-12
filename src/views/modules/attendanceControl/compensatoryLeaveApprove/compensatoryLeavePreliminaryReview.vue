@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%">
     <el-container style="height: 100%; width: 100%" direction="vertical">
-      <div style="margin-left: 16px">
+      <div style="padding: 0 0 20px 24px; background: #fff">
         <el-form ref="dataForm" :inline="true" :model="dataForm">
           <el-form-item label="用户姓名:" prop="userName">
             <el-input v-model="dataForm.userName" placeholder="请输入用户姓名" clearable />
@@ -65,13 +65,13 @@
         </el-form>
       </div>
       <div>
-        <div class="chooseResult">
+        <div class="chooseResult" style="margin-top: 24px">
           <span>已选中 {{ count }} 项</span>
           <el-button type="text" @click="pass()">批量通过</el-button>
         </div>
-        <div style="margin-top: 10px">
+        <div style="margin-top: 24px; background: #fff">
           <!-- @select="checkedTable" -->
-          <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData">
+          <baseTable :tableData="tableData" ref="table" :multi-select="true" @selectData="selectData" propHeight="470px">
             <template v-slot:status="row">
               <span v-if="row.item.status == 0">待初审</span>
               <span v-if="row.item.status == 2">待复审</span>
@@ -197,6 +197,9 @@ export default {
     },
     //表格查询
     selectTableData() {
+      this.$refs.table.options.multipleSelection = []
+      this.count = 0
+      this.selData = []
       this.$refs.table.refresh(this.dataConversion(this.dataForm))
     },
     dataConversion(form) {

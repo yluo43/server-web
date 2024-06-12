@@ -5,7 +5,7 @@
         <div class="top">
           <div class="header-title">
             <div>工作量统计:</div>
-            <div style="margin-left: 10px">
+            <div style="margin-left: 6px">
               <el-select v-model="taskId" style="width: 278px !important" @change="changeSelect">
                 <el-option v-for="item in workLoadStatistics" :key="item.taskId" :label="item.reportWorkName" :value="item.taskId" />
               </el-select>
@@ -21,8 +21,9 @@
                   <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
+              <!-- multiple collapse-tags -->
               <el-form-item label="报工类别:" prop="workLoadIds">
-                <el-select v-model="formData.workLoadIds" multiple collapse-tags placeholder="请选择报工类别" clearable>
+                <el-select v-model="formData.workLoadIds" placeholder="请选择报工类别" clearable>
                   <el-option v-for="item in categories" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -118,7 +119,8 @@ export default {
         //团队负责人
         teamLeader: [],
         //报工类别
-        workLoadIds: [],
+        // workLoadIds: [],
+        workLoadIds: '',
         //成本项目
         costItem: [],
         //项目经理
@@ -210,7 +212,8 @@ export default {
         empId: this.formData.empId,
         deptIds: this.formData.deptIds.toString(),
         teamIds: this.formData.teamIds.toString(),
-        workloadType: this.formData.workLoadIds.toString(),
+        // workloadType: this.formData.workLoadIds.toString(),
+        workloadType: this.formData.workLoadIds,
         teamPersonIds: this.formData.teamLeader.toString(),
         projectIds: this.formData.costItem.toString(),
         managerIds: this.formData.projectManager.toString()
@@ -218,6 +221,9 @@ export default {
       if (!params.taskId) {
         return
       }
+      this.$refs.taskDetialTable.options.multipleSelection = []
+      this.count = 0
+      this.checkedData = []
       this.$refs.taskDetialTable.refresh(params)
     },
     //查询任务列表
@@ -324,7 +330,7 @@ export default {
     // },
     selectData(selection) {
       this.count = selection.length
-      this.checkedData = selection
+      this.checkedData = [...selection]
     },
     //批量下载
     batchDownLoad() {

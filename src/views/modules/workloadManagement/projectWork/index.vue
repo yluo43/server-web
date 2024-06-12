@@ -232,7 +232,6 @@ export default {
       this.dataForm.projectId = data.id
       if (this.activeName === 'first') {
         this.selectTaskList()
-        //this.projectList()
       } else if (this.activeName === 'second') {
         this.$nextTick(() => {
           this.$refs.workerHourApproval.init({
@@ -251,7 +250,7 @@ export default {
       this.projectListRefresh()
     },
     async activeNameChange() {
-      this.projectName = ''
+      this.projectName = null
       if (this.activeName === 'first') {
         this.projectList()
       } else if (this.activeName === 'second') {
@@ -282,9 +281,7 @@ export default {
               isConfirm: item.isConfirm
             })
           })
-          if (list.length !== 0) {
-            this.dataForm.projectId = list[0].id
-          }
+          this.dataForm.projectId = list[0].id
         } else {
           this.dataForm.projectId = null
         }
@@ -319,45 +316,62 @@ export default {
                 isConfirm: item.isConfirm
               })
             })
-            if (list.length !== 0) {
-              this.dataForm.projectId = list[0].id
-              this.data = list
-              if (this.activeName == 'first') {
-                this.$nextTick(() => {
-                  this.selectTaskList()
-                })
-              } else if (this.activeName == 'second') {
-                this.$nextTick(() => {
-                  this.$refs.workerHourApproval.init({
-                    projectId: this.dataForm.projectId
-                  })
-                })
-              } else if (this.activeName == 'third') {
-                this.$nextTick(() => {
-                  this.$refs.taskDetails.init({
-                    projectId: this.dataForm.projectId
-                  })
-                })
-              }
-              this.selectFirstNode()
-            }
+            this.dataForm.projectId = list[0].id
           } else {
             this.dataForm.projectId = null
-            this.data = list
-            if (this.activeName == 'first') {
-              this.$nextTick(() => {
-                this.$refs.table.options.dataList = []
-              })
-            } else if (this.activeName == 'second') {
-              this.$nextTick(() => {
-                this.$refs.workerHourApproval.clearTable()
-              })
-            } else if (this.activeName == 'third') {
-              this.$refs.taskDetails.clearTable()
-            }
-
-            this.selectFirstNode()
           }
+          this.data = list
+          this.selectFirstNode()
+          if (this.data.length > 0) {
+            this.selectTaskList()
+          }
+          // if (data.payload.length > 0) {
+          //   data.payload.forEach((item) => {
+          //     list.push({
+          //       label: item.name,
+          //       id: item.id,
+          //       isConfirm: item.isConfirm
+          //     })
+          //   })
+          //   if (list.length !== 0) {
+          //     this.dataForm.projectId = list[0].id
+          //     this.data = list
+          //     if (this.activeName == 'first') {
+          //       this.$nextTick(() => {
+          //         this.selectTaskList()
+          //       })
+          //     } else if (this.activeName == 'second') {
+          //       this.$nextTick(() => {
+          //         this.$refs.workerHourApproval.init({
+          //           projectId: this.dataForm.projectId
+          //         })
+          //       })
+          //     } else if (this.activeName == 'third') {
+          //       this.$nextTick(() => {
+          //         this.$refs.taskDetails.init({
+          //           projectId: this.dataForm.projectId
+          //         })
+          //       })
+          //     }
+          //     this.selectFirstNode()
+          //   }
+          // } else {
+          //   this.dataForm.projectId = null
+          //   this.data = list
+          //   if (this.activeName == 'first') {
+          //     this.$nextTick(() => {
+          //       this.$refs.table.options.dataList = []
+          //     })
+          //   } else if (this.activeName == 'second') {
+          //     this.$nextTick(() => {
+          //       this.$refs.workerHourApproval.clearTable()
+          //     })
+          //   } else if (this.activeName == 'third') {
+          //     this.$refs.taskDetails.clearTable()
+          //   }
+
+          //   this.selectFirstNode()
+          // }
         } else {
           this.$message.error(data.msg)
         }
@@ -383,7 +397,9 @@ export default {
     },
     //查询
     selectTaskList() {
-      this.$refs.table.refresh(this.dataForm)
+      this.$nextTick(() => {
+        this.$refs.table.refresh(this.dataForm)
+      })
     },
     //切换radio
     handlerRadio() {

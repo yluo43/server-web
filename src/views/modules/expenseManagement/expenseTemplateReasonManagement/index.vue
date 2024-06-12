@@ -217,6 +217,9 @@ export default {
         projectId: this.dataForm.projectId.toString(),
         projectDeptId: this.dataForm.projectDeptId.toString()
       }
+      this.$refs.table.options.multipleSelection = []
+      this.count = 0
+      this.deleteIds = []
       this.$refs.table.refresh(params)
     },
     //表格选中
@@ -344,9 +347,6 @@ export default {
     },
     //保存
     editSubmit(formName) {
-      // let user = getCName()
-      // this.editDataForm.updateUser = user
-
       this.departments.forEach((item) => {
         if (item.name == this.editDataForm.deptName) {
           this.editDataForm.deptId = item.id

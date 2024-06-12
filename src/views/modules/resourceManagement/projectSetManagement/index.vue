@@ -278,6 +278,9 @@ export default {
           return false
         }
         this.dataForm.state = this.state.toString()
+        this.$refs.table.options.multipleSelection = []
+        this.chooseStr = '已选中 0 项'
+        this.checkData = []
         this.$refs.table.refresh(this.dataForm)
       })
     },
