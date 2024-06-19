@@ -93,9 +93,13 @@
                 <template v-if="row.item.taskStatus == 1">
                   <span>填报中</span>
                 </template>
-                <template v-if="row.item.taskStatus == 2">
+                <template v-if="row.item.taskStatus == 2 && row.item.hasReject ==0">
                   <span>确认中</span>
                 </template>
+                <template v-if="row.item.taskStatus == 2 && row.item.hasReject >0">
+                  <span>存在驳回记录</span>
+                </template>
+
                 <template v-if="row.item.taskStatus == 3">
                   <span>待归档</span>
                 </template>
@@ -105,7 +109,7 @@
               </template>
               <!-- 操作 -->
               <template v-slot:clientType="row">
-                <el-button :disabled="row.item.taskStatus != 1" type="text" @click="goToReportingWorkload(row)" style="width: 100px">填报工作量</el-button>
+                <el-button :disabled="checkStatus(row) " type="text" @click="goToReportingWorkload(row)" style="width: 100px">填报工作量</el-button>
                 <el-button
                   :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 4"
                   type="text"
@@ -197,6 +201,16 @@ export default {
       }
       this.$refs.taskListTable.refresh(params)
     },
+    checkStatus(row){
+      if( row.item.taskStatus ==2 && row.item.hasReject > 0 ){
+        return false;
+      }
+      if( row.item.taskStatus != 1){
+        return true;
+      }
+
+    }
+    ,
 
     //获取代办信息
     getMyTaskCount() {

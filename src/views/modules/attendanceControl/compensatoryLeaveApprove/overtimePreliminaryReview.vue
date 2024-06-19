@@ -265,7 +265,7 @@ export default {
   mounted() {
     this.getProjectList()
     this.getOvertimeListDeptAndTeam()
-    this.selectTableData()
+    //this.selectTableData()
   },
   methods: {
     renderContent(h, { node, data, store }) {
@@ -326,6 +326,7 @@ export default {
           }
           this.treeData = list
           this.selectFirstNode()
+          this.selectTableData()
         } else {
           this.$message.error(data.msg)
         }
@@ -359,6 +360,12 @@ export default {
       this.$refs.table.options.multipleSelection = []
       this.count = 0
       this.selData = []
+      //console.log(this.treeData)
+      //console.log(      this.treeData[0]);
+      //console.log(      this.treeData[0].id);
+
+      this.dataForm.projectId = this.treeData[0].id
+
       this.$refs.table.refresh(this.dataConversion(this.dataForm))
     },
     //查询条件数据转换
