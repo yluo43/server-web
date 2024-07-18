@@ -1,7 +1,7 @@
 <template>
-  <div style="height: 100%">
+  <div>
     <el-container>
-      <el-header style="height: 100%">
+      <el-header style="height: auto">
         <el-form :inline="true" label-width="60px" label-position="right" :model="dataForm" ref="dataForm">
           <el-form-item label="客户编号:" prop="customerNumber">
             <el-input v-model="dataForm.customerNumber" placeholder="请输入客户编号" clearable></el-input>
@@ -23,7 +23,7 @@
       </div>
       <div class="operate-button">
         <el-button class="btn-download" icon="el-icon-download" type="primary" @click="download()" v-auth="'dailyCost:export'">批量下载</el-button>
-        <el-button class="el-button-func" type="primary" icon="el-icon-circle-plus-outline" @click="addCustomer()">新建客户</el-button>
+        <el-button class="btn-download" type="primary" icon="el-icon-circle-plus-outline" @click="addCustomer()">新建客户</el-button>
       </div>
       <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
         <template v-slot:clientType="row">
@@ -39,19 +39,29 @@
         </template>
       </baseTable>
     </el-container>
+    <base-drawer ref="addOrEditCustomerDrawer" :title="drawerTitle" size="23%">
+      <template>
+        <addOrEditCustomer ref="addOrEditCustomer" @closeDrawer="closeAddOrEditCustomerDrawer" />
+      </template>
+    </base-drawer>
   </div>
 </template>
 <script>
 import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
+import baseDrawer from '@/views/modules/base/baseDrawer.vue'
+import addOrEditCustomer from '@/views/modules/outsourcingProjectManagement/customerManagement/addOrEditCustomer.vue'
 export default {
   components: {
-    baseTable
+    baseTable,
+    baseDrawer,
+    addOrEditCustomer
   },
   data() {
     return {
       count: 0,
       //选中的数据
       checkedIds: [],
+      drawerTitle: '',
       dataForm: {
         //客户编号
         customerNumber: '',
@@ -73,6 +83,7 @@ export default {
   },
 
   mounted() {
+    console.log(this.$router)
     this.refresh()
   },
   methods: {
@@ -107,9 +118,26 @@ export default {
       this.$http.downloadPost(this.$http.adornUrl('/dailyCost/export'), this.$http.adornParams(form), this)
     },
     //新建客户
-    addCustomer() {},
+    addCustomer() {
+      this.$refs.addOrEditCustomerDrawer.show()
+      this.drawerTitle = '新建'
+      this.$nextTick(() => {
+        this.$refs.addOrEditCustomer.init({ operateType: 'add' })
+      })
+    },
     //编辑
-    alter(row) {},
+    alter(row) {
+      this.$refs.addOrEditCustomerDrawer.show()
+      this.drawerTitle = '编辑'
+      this.$nextTick(() => {
+        this.$refs.addOrEditCustomer.init({ operateType: 'update', rowData: row })
+      })
+    },
+    //关闭drawer
+    closeAddOrEditCustomerDrawer() {
+      this.$refs.addOrEditCustomerDrawer.hide()
+      this.refresh()
+    },
     deleteItem(row) {
       const message = `确定删除[${row.deptName}-${row.account}]${row.costDate}的日常费用(${row.reason}:${row.costName}:${row.totalMoney})记录吗？删除后将无法恢复!`
       this.$confirm(message, '提示', {
@@ -153,35 +181,6 @@ export default {
 .el-input {
   width: 200px;
 }
-// ::v-deep .editForm .el-form-item__label {
-//   width: 80px !important;
-// }
-// ::v-deep .editForm .el-form-item {
-//   width: 100% !important;
-// }
-// ::v-deep .editForm .el-form-item__content {
-//   width: calc(100% - 80px);
-// }
-// ::v-deep .searchForm .el-form-item__label {
-//   text-align: justify;
-//   text-align-last: justify;
-// }
-::v-deep .drawerForm {
-  .el-form-item__label {
-    width: 60px !important;
-  }
-  .el-form-item {
-    width: 100% !important;
-  }
-  .el-form-item__content {
-    width: calc(100% - 60px);
-  }
-  .el-input,
-  .el-select {
-    width: 100%;
-  }
-}
-
 ::v-deep .el-table__cell {
   text-align: center;
 }
