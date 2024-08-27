@@ -79,7 +79,7 @@ export default {
   mounted() {},
   methods: {
     confirm() {
-      this.$refs.customerFormData.validate((valid) => {
+      this.$refs.projectFormData.validate((valid) => {
         if (!valid) {
           return false
         }

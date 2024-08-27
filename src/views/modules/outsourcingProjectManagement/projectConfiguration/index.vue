@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container>
+    <el-container v-if="flag == 1">
       <el-header style="height: auto">
         <el-form :inline="true" label-width="auto" label-position="right" :model="dataForm" ref="dataForm">
           <el-form-item label="项目名称:" prop="projectName">
@@ -19,7 +19,6 @@
               <el-option v-for="item in customerNames" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-
           <div v-if="showFlag" style="display: contents">
             <el-form-item label="客户所属集团:" prop="membershipGroupIds">
               <el-select v-model="dataForm.membershipGroupIds" multiple placeholder="请选择客户所属集团" clearable>
@@ -59,6 +58,7 @@
             </div>
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
             <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
+            <el-button type="primary" @click="goToDetails()">详情</el-button>
           </el-form-item>
         </el-form>
       </el-header>
@@ -74,7 +74,7 @@
           <!--类型插槽-->
           <template>
             <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
-              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="goToDetails(row.item)" />
+              <svg-icon :icon-class="'detials-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="goToDetails(row.item)" />
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
               <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteItem(row.item)" />
@@ -88,20 +88,27 @@
         </template>
       </base-drawer>
     </el-container>
+    <div v-if="flag == 2">
+      <projectDetail @changeFlag="changeFlag" />
+    </div>
   </div>
 </template>
 <script>
 import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDrawer from '@/views/modules/base/baseDrawer.vue'
 import addProject from '@/views/modules/outsourcingProjectManagement/projectConfiguration/addProject.vue'
+import projectDetail from './projectDetail'
 export default {
   components: {
     baseTable,
     baseDrawer,
-    addProject
+    addProject,
+    projectDetail
   },
   data() {
     return {
+      //1为当前页 2为详情页
+      flag: 1,
       showFlag: false,
       count: 0,
       drawerTitle: '',
@@ -147,6 +154,9 @@ export default {
     this.refresh()
   },
   methods: {
+    changeFlag() {
+      this.flag = 1
+    },
     //查询表格
     refresh() {
       this.$refs.table.refresh(this.dataConversion(this.dataForm))
@@ -203,7 +213,9 @@ export default {
       this.drawerTitle = '新建项目'
     },
     //详情
-    goToDetails(row) {},
+    goToDetails(row) {
+      this.flag = 2
+    },
     //删除
     deleteItem(row) {
       const message = `确定删除[${row.deptName}-${row.account}]${row.costDate}的日常费用(${row.reason}:${row.costName}:${row.totalMoney})记录吗？删除后将无法恢复!`

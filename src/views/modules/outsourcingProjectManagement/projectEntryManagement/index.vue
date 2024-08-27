@@ -82,26 +82,37 @@
         <template v-slot:clientType="row">
           <!--类型插槽-->
           <template>
-            <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
-              <svg-icon :icon-class="'edit-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="goToDetails(row.item)" />
+            <el-tooltip class="item" effect="dark" content="新建" placement="bottom">
+              <svg-icon :icon-class="'add-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="addProject(row.item)" />
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-              <svg-icon :icon-class="'delete-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="deleteItem(row.item)" />
+            <el-tooltip class="item" effect="dark" content="全部记录" placement="bottom">
+              <svg-icon :icon-class="'detials-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="recordAll(row.item)" />
             </el-tooltip>
           </template>
         </template>
       </baseTable>
     </el-container>
+    <!-- 添加入场项目 -->
+    <base-dialog ref="addProjectDialog" :title="title" :width="'500px'">
+      <template>
+        <addProject @selectTableData="refresh" ref="addProject"></addProject>
+      </template>
+    </base-dialog>
   </div>
 </template>
 <script>
 import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
+import baseDialog from '@/views/modules/base/baseDialog.vue'
+import addProject from '@/views/modules/outsourcingProjectManagement/projectEntryManagement/addProject.vue'
 export default {
   components: {
-    baseTable
+    baseTable,
+    baseDialog,
+    addProject
   },
   data() {
     return {
+      title: '添加',
       showFlag: false,
       count: 0,
       //选中的数据
@@ -220,41 +231,13 @@ export default {
       form.ids = this.checkedIds
       this.$http.downloadPost(this.$http.adornUrl('/dailyCost/export'), this.$http.adornParams(form), this)
     },
-    //详情
-    goToDetails(row) {},
-    //删除
-    deleteItem(row) {
-      const message = `确定删除[${row.deptName}-${row.account}]${row.costDate}的日常费用(${row.reason}:${row.costName}:${row.totalMoney})记录吗？删除后将无法恢复!`
-      this.$confirm(message, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        center: true
-      })
-        .then(() => {
-          this.$http({
-            url: this.$http.adornUrl(''),
-            method: 'post',
-            data: row.id
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-              this.refresh()
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          })
-        })
-    }
+    //添加项目
+    addProject(row) {
+      this.title = '添加'
+      this.$refs.addProjectDialog.show(row)
+    },
+    //全部记录
+    recordAll(row) {}
   }
 }
 </script>
