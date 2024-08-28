@@ -1,5 +1,9 @@
 <template>
   <div class="main-box">
+    <div style="margin-bottom: 16px">
+      <el-button v-auth="'costItems:export'" class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
+      <el-button v-auth="'costItems:add'" class="btn-download" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">添加人员</el-button>
+    </div>
     <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
       <template v-slot:clientType="row">
         <!--类型插槽-->
@@ -43,6 +47,12 @@ export default {
   methods: {
     refreshTable(params) {
       this.$refs.table.refresh(params)
+    },
+    batchDownload() {},
+    addProjectInfo() {
+      this.$router.push({
+        path: '/projectEntryManagement'
+      })
     }
   }
 }

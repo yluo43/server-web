@@ -8,7 +8,7 @@
         <el-tab-pane label="结算信息" name="fourth"></el-tab-pane>
       </el-tabs>
     </div>
-    <div v-else class="second-header">
+    <div v-else class="second-header" :style="showFlag?'height:165px;':'height:124px;'">
       <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick">
         <el-tab-pane label="项目信息" name="first"></el-tab-pane>
         <el-tab-pane label="入场人员" name="second"></el-tab-pane>
@@ -33,10 +33,52 @@
               <el-option v-for="item in jobList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
+          <div v-if="showFlag" style="display: contents">
+            <el-form-item label="级别:" prop="level">
+              <el-select v-model="personnelDataForm.level"  placeholder="请选择级别" clearable>
+                <el-option v-for="item in levels" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="入场标记:" prop="entryMark">
+              <el-select v-model="personnelDataForm.entryMark"  placeholder="请选择入场标记" clearable>
+                <el-option v-for="item in entryMarks" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="入场时间:" prop="entryTime">
+              <el-date-picker
+                style="width: 200px"
+                v-model="personnelDataForm.entryTime"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+            <el-form-item label="离场时间:" prop="departureTime">
+              <el-date-picker
+                style="width: 200px"
+                v-model="personnelDataForm.departureTime"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="年/月/日"
+                end-placeholder="年/月/日"
+              />
+            </el-form-item>
+          </div>
           <el-form-item>
-            <el-button type="primary" @click="searchTableData(activeName)" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
+            <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+              <svg-icon :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'" style="height: 1.3em; width: 1.3em; position: relative; top: 3px" />
+              <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+              <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
+            </div>
+            <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
             <el-button @click="resetForm()" icon="el-icon-refresh-right">重置</el-button>
           </el-form-item>
+        </el-form>
         </el-form>
       </div>
     </div>
@@ -49,7 +91,10 @@
     <div v-if="activeName == 'third'" class="main">
       <departurePersonnel ref="departurePersonnel" />
     </div>
-    <el-button type="primary" @click="IndexPage">返回</el-button>
+    <div class="bottom-btn">
+        <el-button type="primary" style="margin-right: 10px" @click="returnIndexPage">确定</el-button>
+        <el-button @click="returnIndexPage">取消</el-button>
+      </div>
   </div>
 </template>
 <script>
@@ -61,21 +106,28 @@ export default {
   data() {
     return {
       activeName: 'first',
+      showFlag:false,
       personnelDataForm: {
         empId: '',
         name: '',
         deptId: '',
-        jobId: ''
+        jobId: '',
+        level:'',
+        entryMark:'',
+        entryTime:[],
+        departureTime:[]
       },
       deptList: [],
-      jobList: []
+      jobList: [],
+      levels:[],
+      entryMarks:[]
     }
   },
 
   mounted() {},
   methods: {
-    IndexPage() {
-      this.$emit('changeFlag')
+    returnIndexPage() {
+      this.$emit('changePageFlag',1)
     },
     //初始化
     init() {},
@@ -115,7 +167,8 @@ export default {
     },
     //tab切换
     tabClick() {
-      this.personnelDataForm = {}
+     this.$refs.entryPersonnelForm.resetFields()
+     this.showFlag=false
     }
   }
 }
@@ -131,13 +184,15 @@ export default {
   }
   .second-header {
     padding: 24px 0 0 24px;
-    height: 124px;
     background: #ffffff;
     border-radius: 4px 4px 4px 4px;
   }
   .search-form {
     margin-top: 20px;
   }
+}
+.el-input{
+  width:200px;
 }
 ::v-deep .el-tabs--border-card > .el-tabs__content {
   padding: 0;
@@ -152,4 +207,14 @@ export default {
   height: 32px;
   line-height: 22px;
 }
+.bottom-btn {
+    height: 60px;
+    padding-right: 20px;
+    margin-top:20px;
+    background:#fff;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-shadow: 0px -3px 12px 0px rgba(0, 0, 0, 0.1);
+  }
 </style>

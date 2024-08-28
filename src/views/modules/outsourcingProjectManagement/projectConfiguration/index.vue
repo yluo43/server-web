@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-container v-if="flag == 1">
+    <el-container v-if="pageFlag == 1">
       <el-header style="height: auto">
         <el-form :inline="true" label-width="auto" label-position="right" :model="dataForm" ref="dataForm">
           <el-form-item label="项目名称:" prop="projectName">
@@ -88,8 +88,8 @@
         </template>
       </base-drawer>
     </el-container>
-    <div v-if="flag == 2">
-      <projectDetail @changeFlag="changeFlag" />
+    <div v-if="pageFlag == 2">
+      <projectDetail @changePageFlag="changePageFlag" ref="projectDetail" />
     </div>
   </div>
 </template>
@@ -108,7 +108,8 @@ export default {
   data() {
     return {
       //1为当前页 2为详情页
-      flag: 1,
+      pageFlag: 1,
+      //展开收起标识
       showFlag: false,
       count: 0,
       drawerTitle: '',
@@ -154,12 +155,15 @@ export default {
     this.refresh()
   },
   methods: {
-    changeFlag() {
-      this.flag = 1
+    //切换页面
+    changePageFlag(pageFlag) {
+      this.pageFlag = pageFlag
     },
-    //查询表格
+    //查询表格数据
     refresh() {
-      this.$refs.table.refresh(this.dataConversion(this.dataForm))
+      this.$nextTick(() => {
+        this.$refs.table.refresh(this.dataConversion(this.dataForm))
+      })
     },
     //查询条件数据转换
     dataConversion(form) {
@@ -214,11 +218,14 @@ export default {
     },
     //详情
     goToDetails(row) {
-      this.flag = 2
+      this.pageFlag = 2
+      this.$nextTick(() => {
+        this.$refs.projectDetail.init(row)
+      })
     },
     //删除
     deleteItem(row) {
-      const message = `确定删除[${row.deptName}-${row.account}]${row.costDate}的日常费用(${row.reason}:${row.costName}:${row.totalMoney})记录吗？删除后将无法恢复!`
+      const message = `确定删除${row.projectName}项目吗？`
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -249,6 +256,7 @@ export default {
           })
         })
     },
+    //关闭添加项目抽屉
     closeAddProjectDrawer() {
       this.$refs.addProjectDrawer.hide()
       this.refresh()

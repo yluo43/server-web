@@ -1,5 +1,8 @@
 <template>
   <div class="main-box">
+    <div style="margin-bottom: 16px">
+      <el-button v-auth="'costItems:export'" class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
+    </div>
     <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData"></baseTable>
   </div>
 </template>

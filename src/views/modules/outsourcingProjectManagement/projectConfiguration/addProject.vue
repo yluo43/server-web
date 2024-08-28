@@ -104,7 +104,6 @@ export default {
   }
 }
 </script>
-
 <style scoped lang="scss">
 .container {
   width: 100%;
