@@ -92,11 +92,11 @@ export default {
       startDate: '',
       endDate: '',
       categories: [],
-      dataList: [],
       data: {},
       users: [],
       costItems: [],
       name: '',
+      deptId: '',
       projectName: '',
       workloadName: '',
       managerName: '',
@@ -135,9 +135,11 @@ export default {
     },
     //初始化数据
     init(initData, teamId) {
-      this.dataList = initData.pmsWorkloadVoList
-      this.data = initData
+      Object.assign(this.data, initData)
       this.teamId = teamId
+      if (!this.data?.taskId || !this.teamId) {
+        return
+      }
       this.getTeamManager()
       this.getDates(this.data.reportWorkName)
     },
@@ -146,11 +148,11 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/teamWork/employeeListByTeamManager'),
         method: 'get',
-        params: { taskId: this.dataList[0].taskId, teamId: this.teamId }
+        params: { taskId: this.data.taskId, teamId: this.teamId }
       }).then(({ data }) => {
         if (data && data.code === 200) {
           data.payload.map((item) => {
-            this.users.push({ empId: item.empId, name: item.name })
+            this.users.push({ empId: item.empId, name: item.name, deptId: item.deptId })
           })
         } else {
           this.$message.error(data.msg)
@@ -178,6 +180,7 @@ export default {
           this.users.forEach((item) => {
             if (item.empId === this.formData.empId) {
               this.name = item.name
+              this.deptId = item.deptId
             }
           })
           this.costItems.forEach((item) => {
@@ -191,12 +194,12 @@ export default {
               this.workloadName = item.name
             }
           })
-          let data = {
+          let params = {
             id: '',
             name: this.name,
             empId: this.formData.empId,
             teamId: this.teamId,
-            taskId: this.dataList[0].taskId,
+            taskId: this.data.taskId,
             projectId: this.formData.projectId,
             projectName: this.projectName,
             workloadType: this.formData.workloadType,
@@ -206,11 +209,11 @@ export default {
             managerName: this.managerName,
             //  startTime: this.formData.investTime[0],
             //  overTime: this.formData.investTime[1],
-            startTime: this.dataList[0].jobStartTime,
-            overTime: this.dataList[0].jobOverTime,
+            startTime: this.data.startTime,
+            overTime: this.data.overTime,
             workStatus: '',
-            deptId: this.dataList[0].deptId,
-            deptName: this.dataList[0].deptName,
+            deptId: this.deptId,
+            deptName: '',
             teamName: this.data.teamName,
             commitTime: '',
             approveTime: '',
@@ -220,7 +223,7 @@ export default {
             teamManagerName: this.data.manageName,
             marks: this.formData.marks
           }
-          this.$emit('addData', data)
+          this.$emit('addData', params)
           this.cancelDialog()
         } else {
           return false
