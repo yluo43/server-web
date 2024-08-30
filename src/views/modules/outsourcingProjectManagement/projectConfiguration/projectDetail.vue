@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div v-if="activeName == 'first'" class="first-header">
-      <el-tabs v-model="activeName" type="border-card">
+      <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick">
         <el-tab-pane label="项目信息" name="first"></el-tab-pane>
         <el-tab-pane label="入场人员" name="second"></el-tab-pane>
         <el-tab-pane label="离场人员" name="third"></el-tab-pane>
@@ -123,14 +123,22 @@ export default {
       entryMarks:[]
     }
   },
-
-  mounted() {},
+  mounted() {
+    this.getDept()
+  },
   methods: {
+     //初始化
+    init(initData){
+     
+    },
+    //返回主页面
     returnIndexPage() {
       this.$emit('changePageFlag',1)
     },
-    //初始化
-    init() {},
+    //获取项目基本信息
+    getProjectInfo(){
+
+    },
     //获取所属部门
     getDept() {
       this.$http({
@@ -167,8 +175,20 @@ export default {
     },
     //tab切换
     tabClick() {
-     this.$refs.entryPersonnelForm.resetFields()
-     this.showFlag=false
+     if (this.activeName == 'second') {
+      this.showFlag=false
+      this.$nextTick(()=>{
+        this.$refs.entryPersonnelForm.resetFields()
+        this.$refs.entryPersonnel.refreshTable(this.personnelDataForm)
+      })
+      } else if (this.activeName == 'third') {
+       this.showFlag=false
+        this.$nextTick(()=>{
+          this.$refs.entryPersonnelForm.resetFields()
+          this.$refs.departurePersonnel.refreshTable(this.personnelDataForm)
+        })
+       
+      }
     }
   }
 }

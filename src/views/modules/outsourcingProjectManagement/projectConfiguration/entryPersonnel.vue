@@ -8,22 +8,33 @@
       <template v-slot:clientType="row">
         <!--类型插槽-->
         <template>
-          <el-tooltip class="item" effect="dark" content="离场" placement="bottom">
-            <svg-icon :icon-class="'detials-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="goToDetails(row.item)" />
-          </el-tooltip>
+          <el-button type="text" @click="departure(row.item)">离场</el-button>
+          <!-- <el-tooltip class="item" effect="dark" content="离场" placement="bottom">
+            <svg-icon :icon-class="'detials-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="departure(row.item)" />
+          </el-tooltip> -->
         </template>
       </template>
     </baseTable>
+    <baseDialog title="离场" ref="departureDialog" width="500px">
+      <template>
+        <departure ref="departure" @refreshTableData="selectTableData"></departure>
+      </template>
+    </baseDialog>
   </div>
 </template>
 
 <script>
 import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
+import baseDialog from '@/views/modules/base/baseDialog.vue'
+import departure from './departure.vue'
 export default {
-  components: { baseTable },
+  components: { baseTable, baseDialog, departure },
   props: {},
   data() {
     return {
+      count: 0,
+      checkedIds: [],
+      queryParams: {},
       tableData: {
         theads: [
           { label: '工号', prop: 'empId' },
@@ -46,12 +57,51 @@ export default {
   mounted() {},
   methods: {
     refreshTable(params) {
-      this.$refs.table.refresh(params)
+      this.queryParams = params
+      this.$refs.table.refresh(this.queryParams)
     },
-    batchDownload() {},
+    selectTableData() {
+      this.$nextTick(() => {
+        this.$refs.table.refresh(this.queryParams)
+      })
+    },
+    //选中的数据
+    selectData(selection) {
+      this.checkedIds = []
+      if (selection.length > 0) {
+        selection.forEach((item) => {
+          this.checkedIds.push(item.id)
+        })
+        this.count = this.checkedIds.length
+      } else {
+        this.count = 0
+      }
+    },
+    //批量下载
+    batchDownload() {
+      if (this.count === 0) {
+        this.$message.warning('请至少选择一条数据！')
+        return
+      }
+      let data = { ...this.queryParams, ids: this.checkedIds }
+      Object.keys(data).map((key) => {
+        if (!data[key]) {
+          delete data[key]
+        }
+      })
+      this.$http.downloadPost(this.$http.adornUrl('/attendance/export'), this.$http.adornParams(data), this)
+    },
+    //添加人员 跳转到外协项目入场管理页面
     addProjectInfo() {
       this.$router.push({
         path: '/projectEntryManagement'
+      })
+    },
+    //离场
+    departure(row) {
+      this.$refs.departureDialog.show()
+      this.$nextTick(() => {
+        this.$refs.departure.init(row)
       })
     }
   }
