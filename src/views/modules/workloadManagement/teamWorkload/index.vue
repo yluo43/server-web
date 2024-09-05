@@ -80,7 +80,7 @@
           <div>
             <baseTable ref="taskListTable" :table-data="taskList" :type="null" propHeight="425px">
               <template v-slot:reportWorkName="row">
-                <div v-if="row.item.taskStatus == 1">
+                <div v-if="row.item.taskStatus == 1 || (row.item.taskStatus == 2 && row.item.hasReject > 0)">
                   {{ row.item.reportWorkName }}
                   <el-tag type="danger" effect="dark">待填报</el-tag>
                 </div>
@@ -109,7 +109,7 @@
               </template>
               <!-- 操作 -->
               <template v-slot:clientType="row">
-                <el-button :disabled="checkStatus(row)" type="text" @click="goToReportingWorkload(row)" style="width: 100px">填报工作量</el-button>
+                <el-button :disabled="row.item.taskStatus != 1" type="text" @click="goToReportingWorkload(row)" style="width: 100px">填报工作量</el-button>
                 <el-button
                   :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 4"
                   type="text"
