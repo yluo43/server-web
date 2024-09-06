@@ -13,7 +13,7 @@
       :class="speailStyle ? 'speail-style' : ''"
     >
       <transition name="el-fade-in-linear">
-        <div v-if="this.visible" class="el-card__mdgView" style="overflow-x: hidden; max-height: 600px">
+        <div v-if="this.visible" class="el-card__mdgView" style="overflow-x: hidden; max-height: 620px">
           <slot></slot>
         </div>
       </transition>

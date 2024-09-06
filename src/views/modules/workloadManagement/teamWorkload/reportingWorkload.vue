@@ -36,7 +36,7 @@
             </div>
           </div>
           <div>
-            <el-table :data="tableData" style="width: 100%" border height="300px" :span-method="objectSpanMethod">
+            <el-table :data="tableData" style="width: 100%" border height="395px" :span-method="objectSpanMethod">
               <el-table-column prop="name" label="姓名" min-width="70px" align="center"></el-table-column>
               <el-table-column prop="empId" label="工号" min-width="70px" align="center"></el-table-column>
               <el-table-column prop="startTime" label="开始时间" min-width="90px" align="center"></el-table-column>
@@ -534,7 +534,7 @@ export default {
     margin: 20px 0 20px 30px;
   }
   .desc {
-    height: 40px;
+    height: 30px;
     margin-left: 30px;
   }
 }
@@ -548,7 +548,6 @@ export default {
 }
 .table {
   background-color: white;
-  margin-top: 10px;
   border: 1px solid lightgray;
   .table-title {
     height: 50px;
