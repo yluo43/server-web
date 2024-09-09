@@ -1,21 +1,113 @@
 <template>
   <div class="main-box">
+    <el-form
+      ref="entryPersonnelForm"
+      :inline="true"
+      label-width="auto"
+      label-position="left"
+      :model="queryParams"
+    >
+      <el-form-item label="工号:" prop="empId">
+        <el-input v-model="queryParams.empId" placeholder="请输入工号" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="姓名:" prop="name">
+        <el-input v-model="queryParams.name" placeholder="请输入姓名" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="归属部门:" prop="deptId">
+        <el-select v-model="queryParams.deptId" placeholder="请选择归属部门" clearable>
+          <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="岗位:" prop="postId">
+        <el-select v-model="queryParams.postId" placeholder="请选择岗位" clearable>
+          <el-option v-for="item in jobList" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
+      <div v-if="showFlag" style="display: contents">
+        <!--        <el-form-item label="级别:" prop="level">-->
+        <!--          <el-select v-model="queryParams.level" placeholder="请选择级别" clearable>-->
+        <!--            <el-option v-for="item in levels" :key="item" :label="item." :value="item.id"></el-option>-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
+        <el-form-item label="入场标记:" prop="entryMark">
+          <el-select v-model="queryParams.entryMark" placeholder="请选择入场标记" clearable>
+            <el-option v-for="item in entryMarks" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入场时间:" prop="entryTime">
+          <el-date-picker
+            v-model="entryTime"
+            style="width: 200px"
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="年/月/日"
+            end-placeholder="年/月/日"
+          />
+        </el-form-item>
+        <el-form-item label="离场时间:" prop="planExitTime">
+          <el-date-picker
+            v-model="planExitTime"
+            style="width: 200px"
+            value-format="yyyy-MM-dd"
+            format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="年/月/日"
+            end-placeholder="年/月/日"
+          />
+        </el-form-item>
+      </div>
+      <el-form-item>
+        <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
+          <svg-icon
+            :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'"
+            style="height: 1.3em; width: 1.3em; position: relative; top: 3px"
+          />
+          <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
+          <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
+        </div>
+        <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="refreshTable()">查询
+        </el-button>
+        <el-button icon="el-icon-refresh-right" @click="resetForm()">重置</el-button>
+      </el-form-item>
+    </el-form>
     <div style="margin-bottom: 16px">
-      <el-button v-auth="'costItems:export'" class="btn-download" type="primary" icon="el-icon-download" @click="batchDownload">批量下载</el-button>
-      <el-button v-auth="'costItems:add'" class="btn-download" type="primary" icon="el-icon-circle-plus-outline" @click="addProjectInfo">添加人员</el-button>
+      <el-button
+        v-auth="'costItems:export'"
+        class="btn-download"
+        type="primary"
+        icon="el-icon-download"
+        @click="batchDownload"
+      >批量下载
+      </el-button>
+      <el-button
+        v-if="isEntry"
+        v-auth="'costItems:add'"
+        class="btn-download"
+        type="primary"
+        icon="el-icon-circle-plus-outline"
+        @click="addProjectInfo"
+      >添加人员
+      </el-button>
     </div>
-    <baseTable :tableData="tableData" ref="table" :multiSelect="true" @selectData="selectData">
-      <template v-slot:clientType="row">
+    <baseTable ref="table" :table-data="tableData" :multi-select="true" @selectData="selectData">
+      <template  v-slot:clientType="row">
         <!--类型插槽-->
         <template>
           <el-button type="text" @click="departure(row.item)">离场</el-button>
-          <!-- <el-tooltip class="item" effect="dark" content="离场" placement="bottom">
-            <svg-icon :icon-class="'detials-icon'" style="height: 1.5em; width: 1.5em; margin-right: 2em" @click="departure(row.item)" />
-          </el-tooltip> -->
+
         </template>
       </template>
+
+      <template v-slot:entryMark="row">
+        <div :class="row.item.entryMark===0?'ownBar':'notOwnBar'">
+          {{ row.item.entryMark === 0 ? '真实入场' : '虚拟入场' }}
+        </div>
+      </template>
     </baseTable>
-    <baseDialog title="离场" ref="departureDialog" width="500px">
+    <baseDialog ref="departureDialog" title="离场" width="500px">
       <template>
         <departure ref="departure" @refreshTableData="selectTableData"></departure>
       </template>
@@ -27,37 +119,84 @@
 import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import departure from './departure.vue'
+
 export default {
   components: { baseTable, baseDialog, departure },
-  props: {},
+  props: {
+    isEntry: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {
       count: 0,
       checkedIds: [],
-      queryParams: {},
-      tableData: {
+      entryPersonnelForm: {},
+      entryMarks: [{ id: 0, name: '真实入场' }, { id: 1, name: '虚拟入场' }],
+      tableData: this.isEntry?{
         theads: [
           { label: '工号', prop: 'empId' },
           { label: '姓名', prop: 'name' },
-          { label: '部门', prop: '' },
-          { label: '岗位', prop: '' },
-          { label: '级别', prop: '' },
-          { label: '入场日期', prop: '' },
-          { label: '计划离场日期', prop: '' },
-          { label: '入场标记', prop: '' },
-          { label: '入场原因', prop: '' },
-          { label: '在离职状态', prop: '' },
+          { label: '部门', prop: 'deptName' },
+          { label: '岗位', prop: 'postName' },
+          { label: '级别', prop: 'level' },
+          { label: '入场日期', prop: 'entryTime' },
+          { label: '计划离场日期', prop: 'planExitTime' },
+          { label: '入场标记', slotName: 'entryMark' },
+          { label: '入场原因', prop: 'entryReason' },
+          { label: '在离职状态', prop: 'departStatusName' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
-        url: ''
-      }
+        url: '/externalProject/listProjectEntryPage'
+      } :{
+        theads: [
+          { label: '工号', prop: 'empId' },
+          { label: '姓名', prop: 'name' },
+          { label: '部门', prop: 'deptName' },
+          { label: '岗位', prop: 'postName' },
+          { label: '级别', prop: 'level' },
+          { label: '入场日期', prop: 'entryTime' },
+          { label: '入场标记', slotName: 'entryMark' },
+          { label: '入场原因', prop: 'entryReason' },
+          { label: '离场日期', prop: 'exitTime' },
+          { label: '离场原因', prop: 'exitReason' },
+          { label: '在离职状态', prop: 'departStatusName' },
+        ],
+        url: '/externalProject/listProjectExitPage'
+      },
+      deptList: [],
+      jobList: [],
+      showFlag: false,
+      entryTime: [],
+      planExitTime: [],
+      queryParams: {
+        empId: '',
+        name: '',
+        deptId: '',
+        postId: '',
+        level: '',
+        entryMark: ''
+      },
+      initData: {}
     }
   },
 
-  mounted() {},
+  mounted() {
+    this.getDept()
+  },
   methods: {
-    refreshTable(params) {
-      this.queryParams = params
+    refreshTable() {
+      this.queryParams.projectId = this.initData.id
+      this.queryParams.entryIs = this.isEntry ? 1 : 0
+      if (this.planExitTime.length > 0) {
+        this.queryParams.planExitTimeStart = this.planExitTime[0]
+        this.queryParams.planExitTimeEnd = this.planExitTime[1]
+      }
+      if (this.entryTime.length > 0) {
+        this.queryParams.entryTimeStart = this.entryTime[0]
+        this.queryParams.entryTimeEnd = this.entryTime[1]
+      }
       this.$refs.table.refresh(this.queryParams)
     },
     selectTableData() {
@@ -65,7 +204,38 @@ export default {
         this.$refs.table.refresh(this.queryParams)
       })
     },
-    //选中的数据
+    init(initData) {
+      this.initData = initData
+      this.getJob()
+      this.refreshTable()
+    },
+    // 获取所属部门
+    getDept() {
+      this.$http({
+        url: this.$http.adornUrl('/common/getDeptByRole'),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.deptList = data.payload.filter((item) => item.id !== 0)
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    // 获取岗位信息
+    getJob() {
+      this.$http({
+        url: this.$http.adornUrl('/externalProject/listProjectUnitPrice?projectId=' + this.initData.id),
+        method: 'get'
+      }).then(({ data }) => {
+        if (data && data.code === 200) {
+          this.jobList = data.payload.list
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    // 选中的数据
     selectData(selection) {
       this.checkedIds = []
       if (selection.length > 0) {
@@ -77,7 +247,7 @@ export default {
         this.count = 0
       }
     },
-    //批量下载
+    // 批量下载
     batchDownload() {
       if (this.count === 0) {
         this.$message.warning('请至少选择一条数据！')
@@ -89,20 +259,27 @@ export default {
           delete data[key]
         }
       })
-      this.$http.downloadPost(this.$http.adornUrl('/attendance/export'), this.$http.adornParams(data), this)
+      this.$http.downloadPost(this.$http.adornUrl('/externalProject/exportEntryExitRecord'), this.$http.adornParams(data), this)
     },
-    //添加人员 跳转到外协项目入场管理页面
+    // 添加人员 跳转到外协项目入场管理页面
     addProjectInfo() {
       this.$router.push({
-        path: '/projectEntryManagement'
+        path: '/projectEntryManagement?projectId=' + this.initData.id
       })
     },
-    //离场
+    // 离场
     departure(row) {
       this.$refs.departureDialog.show()
       this.$nextTick(() => {
         this.$refs.departure.init(row)
       })
+    },
+    resetForm() {
+      this.$refs.entryPersonnelForm.resetFields()
+      this.queryParams.projectId = this.initData.id
+      this.queryParams.entryIs = this.isEntry ? 1 : 0
+      this.planExitTime = []
+      this.entryTime = []
     }
   }
 }
@@ -111,5 +288,15 @@ export default {
 .main-box {
   height: 100%;
   margin-top: 24px;
+}
+
+.ownBar {
+  color: #666EE8;
+  background-color: #F0F1FD;
+}
+
+.notOwnBar {
+  color: #666EE8;
+  background-color: #FBD4A1;
 }
 </style>

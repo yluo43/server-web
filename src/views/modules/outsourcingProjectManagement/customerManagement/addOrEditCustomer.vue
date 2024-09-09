@@ -2,14 +2,14 @@
   <div>
     <el-container class="container" direction="vertical">
       <el-form ref="customerFormData" :rules="customerFormRules" :model="customerFormData" label-width="auto" class="form-item">
-        <el-form-item label="客户名称:" prop="customerName">
-          <el-input v-model="customerFormData.customerName" placeholder="请输入客户名称" clearable></el-input>
+        <el-form-item label="项目客户:" prop="name">
+          <el-input v-model="customerFormData.name" placeholder="请输入项目客户" clearable></el-input>
         </el-form-item>
-        <el-form-item v-if="operateType == 'update'" label="客户编号:" prop="customerNumber">
-          <el-input v-model="customerFormData.customerNumber" disabled clearable></el-input>
+        <el-form-item v-if="operateType == 'update'" label="客户编号:" prop="id">
+          <el-input v-model="customerFormData.id" disabled clearable></el-input>
         </el-form-item>
-        <el-form-item label="所属集团:" prop="membershipGroup">
-          <el-input v-model="customerFormData.membershipGroup" placeholder="请输入所属集团" clearable></el-input>
+        <el-form-item label="所属集团:" prop="belongGroup">
+          <el-input v-model="customerFormData.belongGroup" placeholder="请输入所属集团" clearable></el-input>
         </el-form-item>
       </el-form>
       <el-row class="btn-box">
@@ -25,14 +25,14 @@ export default {
   data() {
     return {
       customerFormRules: {
-        customerName: [{ required: true, message: '请输入客户名称', trigger: ['blur', 'change'] }],
-        customerNumber: [{ required: true, message: '请输入客户编号', trigger: ['blur', 'change'] }],
-        membershipGroup: [{ required: true, message: '请输入所属集团', trigger: ['blur', 'change'] }]
+        name: [{ required: true, message: '请输入项目客户', trigger: ['blur', 'change'] }],
+        id: [{ required: true, message: '请输入客户编号', trigger: ['blur', 'change'] }],
+        belongGroup: [{ required: true, message: '请输入所属集团', trigger: ['blur', 'change'] }]
       },
       customerFormData: {
-        customerName: '',
-        membershipGroup: '',
-        customerNumber: ''
+        name: '',
+        belongGroup: '',
+        id: ''
       },
       operateType: 'add'
     }
@@ -58,10 +58,10 @@ export default {
     },
     // 保存
     save() {
-      let url = '/costItems/add'
+      let url = '/externalProject/insertCustomer'
       let method = 'post'
       if (this.operateType === 'update') {
-        url = '/costItems/update'
+        url = '/externalProject/updateCustomer'
       }
       this.$http({
         url: this.$http.adornUrl(url),

@@ -3,14 +3,14 @@
     <el-container>
       <el-header style="height: auto">
         <el-form :inline="true" label-width="60px" label-position="right" :model="dataForm" ref="dataForm">
-          <el-form-item label="客户编号:" prop="customerNumber">
-            <el-input v-model="dataForm.customerNumber" placeholder="请输入客户编号" clearable></el-input>
+          <el-form-item label="客户编号:" prop="id">
+            <el-input v-model="dataForm.id" placeholder="请输入客户编号" clearable></el-input>
           </el-form-item>
-          <el-form-item label="客户名称:" prop="customerName">
-            <el-input v-model="dataForm.customerName" placeholder="请输入客户名称" clearable></el-input>
+          <el-form-item label="项目客户:" prop="name">
+            <el-input v-model="dataForm.name" placeholder="请输入项目客户" clearable></el-input>
           </el-form-item>
-          <el-form-item label="所属集团:" prop="membershipGroup">
-            <el-input v-model="dataForm.membershipGroup" placeholder="请输入所属集团" clearable></el-input>
+          <el-form-item label="所属集团:" prop="belongGroup">
+            <el-input v-model="dataForm.belongGroup" placeholder="请输入所属集团" clearable></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="refresh()" icon="el-icon-search" style="margin-right: 10px">查询</el-button>
@@ -64,20 +64,20 @@ export default {
       drawerTitle: '',
       dataForm: {
         //客户编号
-        customerNumber: '',
-        //客户名称
-        customerName: '',
+        id: '',
+        //项目客户
+        name: '',
         //所属集团
-        membershipGroup: ''
+        belongGroup: ''
       },
       tableData: {
         theads: [
-          { label: '客户编号', prop: 'customerNumber' },
-          { label: '客户名称', prop: 'customerName' },
-          { label: '所属集团', prop: 'membershipGroup' },
+          { label: '客户编号', prop: 'id' },
+          { label: '项目客户', prop: 'name' },
+          { label: '所属集团', prop: 'belongGroup' },
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
-        url: ''
+        url: '/externalProject/listCustomer'
       }
     }
   },
@@ -115,7 +115,7 @@ export default {
       }
       let form = { ...this.dataForm }
       form.ids = this.checkedIds
-      this.$http.downloadPost(this.$http.adornUrl('/dailyCost/export'), this.$http.adornParams(form), this)
+      this.$http.downloadPost(this.$http.adornUrl('/externalProject/exportCustomer'), this.$http.adornParams(form), this)
     },
     //新建客户
     addCustomer() {
@@ -148,9 +148,8 @@ export default {
       })
         .then(() => {
           this.$http({
-            url: this.$http.adornUrl(''),
-            method: 'post',
-            data: row.id
+            url: this.$http.adornUrl('/externalProject/deleteCustomer')+"?id="+row.id,
+            method: 'delete'
           }).then(({ data }) => {
             if (data && data.code === 200) {
               this.$message({

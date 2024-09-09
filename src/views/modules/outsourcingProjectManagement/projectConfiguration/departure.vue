@@ -7,8 +7,8 @@
       <el-form-item label="姓名:" prop="name">
         {{ departurePersonnelInfo.name }}
       </el-form-item>
-      <el-form-item label="岗位:" prop="job">
-        {{ departurePersonnelInfo.job }}
+      <el-form-item label="岗位:" prop="postName">
+        {{ departurePersonnelInfo.postName }}
       </el-form-item>
       <el-form-item label="级别:" prop="level">
         {{ departurePersonnelInfo.level }}
@@ -16,21 +16,21 @@
       <el-form-item label="入场时间:" prop="entryTime">
         {{ departurePersonnelInfo.entryTime }}
       </el-form-item>
-      <el-form-item label="计划离场时间:" prop="leavingTime">
-        {{ departurePersonnelInfo.leavingTime }}
+      <el-form-item label="计划离场时间:" prop="planExitTime">
+        {{ departurePersonnelInfo.planExitTime }}
       </el-form-item>
-      <el-form-item label="实际离场时间:" prop="ActualDepartureTime">
+      <el-form-item label="实际离场时间:" prop="exitTime">
         <el-date-picker
           style="width: 300px"
-          v-model="departurePersonnelInfo.ActualDepartureTime"
+          v-model="departurePersonnelInfo.exitTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择实际离场时间"
           clearable
         />
       </el-form-item>
-      <el-form-item label="离场原因:" prop="departureReason">
-        <el-input v-model="departurePersonnelInfo.departureReason" style="width: 300px" type="textarea" rows="5" :maxlength="100" show-word-limit />
+      <el-form-item label="离场原因:" prop="exitReason">
+        <el-input v-model="departurePersonnelInfo.exitReason" style="width: 300px" type="textarea" rows="5" :maxlength="100" show-word-limit />
       </el-form-item>
       <div class="btn-group">
         <el-button plain style="margin-right: 10px" @click="cancelDialog">取消</el-button>
@@ -47,12 +47,12 @@ export default {
       departurePersonnelInfo: {
         empId: '',
         name: '',
-        job: '',
+        postName: '',
         level: '',
         entryTime: '',
-        leavingTime: '',
-        ActualDepartureTime: '',
-        departureReason: ''
+        planExitTime: '',
+        exitTime: '',
+        exitReason: ''
       }
     }
   },
@@ -69,8 +69,8 @@ export default {
           return
         }
         this.$http({
-          url: this.$http.adornUrl(''),
-          method: 'post',
+          url: this.$http.adornUrl('/externalProject/exitProject'),
+          method: 'put',
           data: this.departurePersonnelInfo
         }).then((result) => {
           if (result.data.success) {
