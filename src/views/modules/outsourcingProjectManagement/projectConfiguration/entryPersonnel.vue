@@ -97,10 +97,21 @@
         <!--类型插槽-->
         <template>
           <el-button type="text" @click="departure(row.item)">离场</el-button>
-
         </template>
       </template>
-
+      <template v-slot:departStatusName="row">
+        <!--类型插槽-->
+        <template>
+          <div v-if="row.item.departStatusName==='在职'" style="background-color: #E8FFEA ;color: #00B42A;display: flex">
+            <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #00B42A;margin-top: 8.5px;margin-right: 5px"/>
+            <div>{{row.item.departStatusName}}</div>
+          </div>
+          <div v-else style="background-color: #FFF0ED ;color: #D54941;display: flex">
+            <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #D54941;margin-top: 8.5px;margin-right: 5px"/>
+            <div>{{row.item.departStatusName}}</div>
+          </div>
+        </template>
+      </template>
       <template v-slot:entryMark="row">
         <div :class="row.item.entryMark===0?'ownBar':'notOwnBar'">
           {{ row.item.entryMark === 0 ? '真实入场' : '虚拟入场' }}
@@ -145,7 +156,7 @@ export default {
           { label: '计划离场日期', prop: 'planExitTime' },
           { label: '入场标记', slotName: 'entryMark' },
           { label: '入场原因', prop: 'entryReason' },
-          { label: '在离职状态', prop: 'departStatusName' },
+          { label: '在离职状态', prop: 'departStatusName',slotName: 'departStatusName'},
           { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         url: '/externalProject/listProjectEntryPage'
@@ -161,7 +172,7 @@ export default {
           { label: '入场原因', prop: 'entryReason' },
           { label: '离场日期', prop: 'exitTime' },
           { label: '离场原因', prop: 'exitReason' },
-          { label: '在离职状态', prop: 'departStatusName' },
+          { label: '在离职状态', prop: 'departStatusName',slotName: 'departStatusName'}
         ],
         url: '/externalProject/listProjectExitPage'
       },

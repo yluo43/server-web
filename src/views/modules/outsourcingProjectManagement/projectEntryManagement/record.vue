@@ -132,6 +132,19 @@
             {{ row.item.entryMark === 0 ? '真实入场' : '虚拟入场' }}
           </div>
         </template>
+        <template v-slot:entryIsName="row">
+          <!--类型插槽-->
+          <template>
+            <div v-if="row.item.entryIsName==='在场'" style="background-color: #E8FFEA ;color: #00B42A;display: flex">
+              <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #00B42A;margin-top: 8.5px;margin-right: 5px"/>
+              <div>{{row.item.entryIsName}}</div>
+            </div>
+            <div v-else style="background-color: #FFF0ED ;color: #D54941;display: flex">
+              <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #D54941;margin-top: 8.5px;margin-right: 5px"/>
+              <div>{{row.item.entryIsName}}</div>
+            </div>
+          </template>
+        </template>
       </baseTable>
 
     </div>
@@ -169,7 +182,7 @@ export default {
           { label: '级别', prop: 'postLevel' },
           { label: '离场日期', prop: 'exitTime' },
           { label: '离场原因', prop: 'exitReason' },
-          { label: '状态', prop: 'entryIsName' },
+          { label: '状态', prop: 'entryIsName',slotName: 'entryIsName'},
         ],
         url: '/externalProject/listEntryExitRecord'
       },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-show="isList">
+    <div v-show="isList && !isProject">
       <el-container>
         <el-header style="height: auto">
           <el-form ref="dataForm" :inline="true" label-width="auto" label-position="right" :model="dataForm">
@@ -116,20 +116,27 @@
                   </div>
                 </div>
                 <div :class="(!!item.belongSelf?'toolbar0 ':'toolbar1 ')+(!!item.entryMark?'ownBar':'notOwnBar')">
-                  <svg-icon v-if="!!item.belongSelf" :icon-class="'star'" style="height: 1.5em; width: 1.5em;"
-                            @click="addProject(row.item)"/>
+<!--                  <svg-icon v-if="!!item.belongSelf" :icon-class="'star'" style="height: 1.5em; width: 1.5em;"-->
+<!--                            @click="addProject(row.item)"/>-->
+                  <img style="width: 14px;height: 14px;margin-top: 5px  " v-if="!!item.belongSelf" src="@/assets/star-s-fill.png" @click="addProject(row.item)"/>
+                  <a v-if="item.belongSelf" style="margin-top: 2px" @click="openProject(item.projectId)">
                   {{ item.belongGroup }}
+                  </a>
+                  <div v-else style="margin-top: 2px">
+                    {{ item.belongGroup }}
+                  </div>
                 </div>
               </el-tooltip>
 
-              <div class="add toolbar1">
-                <svg-icon :icon-class="'add'" style="height: 1.5em; width: 1.5em;" @click="addProject(row.item)"/>
-              </div>
+
             </div>
           </template>
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
+              <el-tooltip class="item" effect="dark" content="新增入场项目" placement="bottom">
+              <svg-icon :icon-class="'add-icon'" style="height: 18px; width: 18px; margin-right:20px" @click="addProject(row.item)"/>
+              </el-tooltip>
               <el-tooltip class="item" effect="dark" content="全部记录" placement="bottom">
                 <svg-icon
                     :icon-class="'detials-icon'"
@@ -137,6 +144,19 @@
                     @click="recordAll(row.item)"
                 />
               </el-tooltip>
+            </template>
+          </template>
+          <template v-slot:departStatusName="row">
+            <!--类型插槽-->
+            <template>
+              <div v-if="row.item.departStatusName==='在职'" style="background-color: #E8FFEA ;color: #00B42A;display: flex;width: 50px">
+                <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #00B42A;margin-top: 8.5px;margin-right: 5px;margin-left: 5px"/>
+                <div>{{row.item.departStatusName}}</div>
+              </div>
+              <div v-else style="background-color: #FFF0ED ;color: #D54941;display: flex;width: 50px">
+                <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #D54941;margin-top: 8.5px;margin-right: 5px;margin-left: 5px"/>
+                <div>{{row.item.departStatusName}}</div>
+              </div>
             </template>
           </template>
         </baseTable>
@@ -151,16 +171,21 @@
     <div v-show="!isList">
       <record ref="record" :syncIsList.sync="isList"></record>
     </div>
+    <div v-if="isProject">
+      <projectDetail ref="projectDetail" @changePageFlag="changePageFlag" />
+    </div>
   </div>
 </template>
 <script>
 import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import addProject from '@/views/modules/outsourcingProjectManagement/projectEntryManagement/addProject.vue'
+import projectDetail from '../projectConfiguration/projectDetail'
 import record from './record'
 
 export default {
   components: {
+    projectDetail,
     baseTable,
     baseDialog,
     addProject,
@@ -171,6 +196,7 @@ export default {
       title: '添加',
       showFlag: false,
       isList: true,
+      isProject: false,
       count: 0,
       // 选中的数据
       checkedIds: [],
@@ -211,7 +237,7 @@ export default {
           {label: '入职日期', prop: 'entryTime'},
           {label: '司龄', prop: 'departAge'},
           {label: '部门', prop: 'department'},
-          {label: '在离职状态', prop: 'departStatusName'},
+          {label: '在离职状态', prop: 'departStatusName' ,slotName: 'departStatusName'},
           {label: '入场外协项目', prop: 'departStatus', slotName: 'projectList', width: '200px'},
           {label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px'}
         ],
@@ -227,6 +253,20 @@ export default {
     this.getQueryParam()
   },
   methods: {
+    openProject(projectId) {
+      this.isProject = true
+      this.$http({
+        url: this.$http.adornUrl('/externalProject/getExternalProjectDetail?id='+projectId),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.$refs.projectDetail.init(data.payload)
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+
+    },
     // 查询表格
     refresh() {
       this.$refs.table.refresh(this.dataConversion(this.dataForm))
@@ -252,7 +292,6 @@ export default {
       const params = new URLSearchParams(queryString);
       // 返回指定参数的值
       let projectId = params.get('projectId')
-      debugger
       if(!!projectId){
         this.dataForm.unProjectIds.push(parseInt(projectId))
       }

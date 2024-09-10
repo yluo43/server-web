@@ -4,7 +4,7 @@
       <div style="width: 100%">
         <el-form ref="formData" :model="formData" label-width="100px" :rules="rules">
           <el-form-item label="项目名称:" prop="projectIndex">
-            <el-select v-model="formData.projectIndex" placeholder="请选择项目名称" clearable @change="changeProject">
+            <el-select v-model="formData.projectIndex" placeholder="请选择项目名称" clearable @change="changeProject" style="width: 300px">
               <el-option
                   v-for="(item,i) in projectList"
                   :key="item.projectId"
@@ -18,7 +18,7 @@
                 v-model="formData.managerName"
                 disabled
                 type="text"
-                style="width: 200px"
+                style="width: 300px"
                 placeholder="请输入项目经理"
             ></el-input>
           </el-form-item>
@@ -27,7 +27,7 @@
                 v-model="formData.customerName"
                 disabled
                 type="text"
-                style="width: 200px"
+                style="width: 300px"
                 placeholder="请输入项目客户"
             ></el-input>
           </el-form-item>
@@ -36,7 +36,7 @@
                 v-model="formData.belongGroup"
                 disabled
                 type="text"
-                style="width: 200px"
+                style="width: 300px"
                 placeholder="请输入客户所属集团"
             ></el-input>
           </el-form-item>
@@ -44,7 +44,7 @@
             <el-date-picker
                 v-model="formData.startTime"
                 disabled
-                style="width: 200px"
+                style="width: 300px"
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="项目开始时间"
@@ -55,7 +55,7 @@
             <el-date-picker
                 v-model="formData.endTime"
                 disabled
-                style="width: 200px"
+                style="width: 300px"
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="项目结束时间"
@@ -65,7 +65,7 @@
           <el-form-item label="入场日期:" prop="entryTime">
             <el-date-picker
                 v-model="formData.entryTime"
-                style="width: 200px"
+                style="width: 300px"
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择入场日期"
@@ -75,7 +75,7 @@
           <el-form-item label="计划离场日期:" prop="planExitTime">
             <el-date-picker
                 v-model="formData.planExitTime"
-                style="width: 200px"
+                style="width: 300px"
                 type="date"
                 value-format="yyyy-MM-dd"
                 placeholder="请选择计划离场日期"
@@ -83,18 +83,17 @@
             />
           </el-form-item>
           <el-form-item label="人员岗位:" prop="postId">
-            <el-select v-model="formData.postId" placeholder="请选择岗位" clearable>
+            <el-select v-model="formData.postId" placeholder="请选择岗位" clearable style="width: 300px">
                             <el-option v-for="item in jobList" :key="item.postId" :label="item.postName" :value="item.postId"/>
-<!--              <el-option v-for="item in jobList" :key="item" :label="item" :value="item"/>-->
             </el-select>
           </el-form-item>
           <el-form-item label="人员等级:" prop="level">
-            <el-select v-model="formData.level" style="width: 200px">
+            <el-select v-model="formData.level" style="width: 300px">
               <el-option v-for="item in postLevelSet" :key="item" :label="item" :value="item"/>
             </el-select>
           </el-form-item>
           <el-form-item label="入场标记:" prop="entryMark">
-            <el-radio-group v-model="formData.entryMark" style="width: 200px">
+            <el-radio-group v-model="formData.entryMark" style="width: 300px">
               <el-radio :label="0">
                 真实入场
               </el-radio>
@@ -103,11 +102,11 @@
               </el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="入场原因:" prop="projectManager">
+          <el-form-item label="入场原因:" prop="entryReason">
             <el-input
-                v-model="formData.projectManager"
+                v-model="formData.entryReason"
                 type="textarea"
-                style="width: 200px"
+                style="width: 300px"
                 placeholder="请输入入场原因"
             ></el-input>
           </el-form-item>
@@ -142,7 +141,8 @@ export default {
         entryMark: '',
         empId: '',
         postId: '',
-        postName: ''
+        postName: '',
+        entryReason:''
       },
       postLevelSet: [],
       rules: {
@@ -153,7 +153,11 @@ export default {
         startTime: [{required: true, message: '项目开始时间不能为空', trigger: 'blur'}],
         endTime: [{required: true, message: '项目结束时间不能为空', trigger: 'blur'}],
         entryTime: [{required: true, message: '请选择入场时间', trigger: 'change'}],
-        planExitTime: [{required: true, message: '请选择计划离场时间', trigger: 'change'}]
+        planExitTime: [{required: true, message: '请选择计划离场时间', trigger: 'change'}],
+        postId: [{required: true, message: '请选择人员岗位', trigger: 'change'}],
+        entryMark: [{required: true, message: '请选择入场标记', trigger: 'change'}],
+        level: [{required: true, message: '请选择人员登记', trigger: 'change'}],
+        entryReason: [{required: true, message: '请选择入场原因', trigger: 'change'}]
       }
     }
   },
