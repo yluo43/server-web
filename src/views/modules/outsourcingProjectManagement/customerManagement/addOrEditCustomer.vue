@@ -1,7 +1,8 @@
 <template>
   <div>
     <el-container class="container" direction="vertical">
-      <el-form ref="customerFormData" :rules="customerFormRules" :model="customerFormData" label-width="auto" class="form-item">
+      <el-form ref="customerFormData" :rules="customerFormRules" :model="customerFormData" label-width="auto"
+               class="form-item">
         <el-form-item label="项目客户:" prop="name">
           <el-input v-model="customerFormData.name" placeholder="请输入项目客户" clearable></el-input>
         </el-form-item>
@@ -25,9 +26,9 @@ export default {
   data() {
     return {
       customerFormRules: {
-        name: [{ required: true, message: '请输入项目客户', trigger: ['blur', 'change'] }],
-        id: [{ required: true, message: '请输入客户编号', trigger: ['blur', 'change'] }],
-        belongGroup: [{ required: true, message: '请输入所属集团', trigger: ['blur', 'change'] }]
+        name: [{required: true, message: '请输入项目客户', trigger: ['blur', 'change']}],
+        id: [{required: true, message: '请输入客户编号', trigger: ['blur', 'change']}],
+        belongGroup: [{required: true, message: '请输入所属集团', trigger: ['blur', 'change']}]
       },
       customerFormData: {
         name: '',
@@ -59,15 +60,14 @@ export default {
     // 保存
     save() {
       let url = '/externalProject/insertCustomer'
-      let method = 'post'
       if (this.operateType === 'update') {
         url = '/externalProject/updateCustomer'
       }
       this.$http({
         url: this.$http.adornUrl(url),
-        method: method,
+        method: this.operateType === 'update' ? 'put' : 'post',
         data: this.$http.adornData(this.customerFormData)
-      }).then(({ data }) => {
+      }).then(({data}) => {
         if (data.success) {
           this.cancel()
           this.$message.success('操作成功')
@@ -93,10 +93,12 @@ export default {
   width: 100%;
   padding: 0 50px;
 }
+
 .btn-box {
   display: flex;
   justify-content: flex-end;
   margin: 60px 0;
+
   .confirm-btn {
     margin-right: 20px;
   }

@@ -21,7 +21,7 @@
           </el-form-item>
           <div v-if="showFlag" style="display: contents">
             <el-form-item label="客户所属集团:" prop="relBelongGroups">
-              <el-select v-model="dataForm.relBelongGroups" multiple placeholder="请选择客户所属集团"  clearable>
+              <el-select v-model="dataForm.relBelongGroups" multiple placeholder="请选择客户所属集团"   clearable>
                 <el-option v-for="item in membershipGroups" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
@@ -60,14 +60,13 @@
             <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
               <svg-icon
                 :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'"
-                style="height: 1.3em; width: 1.3em; position: relative; top: 3px"
+                style="height: 1.3em; width: 1.3em; top: 3px"
               />
               <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
               <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
             </div>
             <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="refresh()">查询</el-button>
             <el-button icon="el-icon-refresh-right" @click="resetForm()">重置</el-button>
-            <el-button type="primary" @click="goToDetails()">详情</el-button>
           </el-form-item>
         </el-form>
       </el-header>
@@ -238,6 +237,7 @@ export default {
       this.$refs.dataForm.resetFields()
       this.dataForm.startTime= []
       this.dataForm.endTime= []
+      this.refresh()
     },
     // 获取选中的数据
     selectData(selection) {

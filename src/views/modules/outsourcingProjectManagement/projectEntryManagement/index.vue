@@ -11,67 +11,87 @@
               <el-input v-model="dataForm.speciality" placeholder="请输入专业" clearable></el-input>
             </el-form-item>
             <el-form-item label="工龄:" prop="jobAge">
-              <el-input v-model="dataForm.jobAgeStart" ref="jobAgeStart" style="width:50px;display: inline-block"   @input="handleInput0"  ></el-input>
+              <el-input
+                ref="jobAgeStart"
+                v-model="dataForm.jobAgeStart"
+                style="width:50px;display: inline-block"
+                @input="handleInput0"
+              ></el-input>
               <span> - </span>
-              <el-input v-model="dataForm.jobAgeEnd" ref="jobAgeEnd" style="width:50px; display: inline-block"  @input="handleInput1"  ></el-input>
+              <el-input
+                ref="jobAgeEnd"
+                v-model="dataForm.jobAgeEnd"
+                style="width:50px; display: inline-block"
+                @input="handleInput1"
+              ></el-input>
             </el-form-item>
             <el-form-item label="司龄:" prop="departAge">
-              <el-input v-model="dataForm.departAgeStart" ref="departAgeStart" style="width:50px;display: inline-block"   @input="handleInput2"  ></el-input>
+              <el-input
+                ref="departAgeStart"
+                v-model="dataForm.departAgeStart"
+                style="width:50px;display: inline-block"
+                @input="handleInput2"
+              ></el-input>
               <span> - </span>
-              <el-input v-model="dataForm.departAgeEnd" ref="departAgeEnd" style="width:50px; display: inline-block"  @input="handleInput3"  ></el-input>
+              <el-input
+                ref="departAgeEnd"
+                v-model="dataForm.departAgeEnd"
+                style="width:50px; display: inline-block"
+                @input="handleInput3"
+              ></el-input>
             </el-form-item>
             <el-form-item label="归属部门:" prop="deptId">
               <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
-                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id"/>
+                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
             <div v-if="showFlag" style="display: contents">
               <el-form-item label="工号:" prop="empId">
                 <el-input
-                    v-model="dataForm.empId"
-                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                    placeholder="请输入工号"
-                    clearable
+                  v-model="dataForm.empId"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                  placeholder="请输入工号"
+                  clearable
                 />
               </el-form-item>
               <el-form-item label="姓名:" prop="name">
-                <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable/>
+                <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable />
               </el-form-item>
               <el-form-item label="毕业时间:" prop="graduationDate">
                 <el-date-picker
-                    v-model="dataForm.graduationDate"
-                    style="width: 200px"
-                    value-format="yyyy-MM-dd"
-                    format="yyyy-MM-dd"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="年/月/日"
-                    end-placeholder="年/月/日"
+                  v-model="dataForm.graduationDate"
+                  style="width: 200px"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="年/月/日"
+                  end-placeholder="年/月/日"
                 />
               </el-form-item>
               <el-form-item label="入职时间:" prop="entryTime">
                 <el-date-picker
-                    v-model="dataForm.entryTime"
-                    style="width: 200px"
-                    value-format="yyyy-MM-dd"
-                    format="yyyy-MM-dd"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="年/月/日"
-                    end-placeholder="年/月/日"
+                  v-model="dataForm.entryTime"
+                  style="width: 200px"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="年/月/日"
+                  end-placeholder="年/月/日"
                 />
               </el-form-item>
               <el-form-item label="不看所选项目:" prop="unProjectIds">
                 <el-select v-model="dataForm.unProjectIds" multiple placeholder="请选择项目" clearable>
-                  <el-option v-for="item in chooseProjectList" :key="item.id" :label="item.name" :value="item.id"/>
+                  <el-option v-for="item in chooseProjectList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
             </div>
             <el-form-item>
               <div style="display: inline-block; margin-right: 15px" @click="showFlag = !showFlag">
                 <svg-icon
-                    :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'"
-                    style="height: 1.3em; width: 1.3em; position: relative; top: 3px"
+                  :icon-class="showFlag ? 'arrow-up-icon' : 'arrow-down-icon'"
+                  style="height: 1.3em; width: 1.3em; position: relative; top: 3px"
                 />
                 <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
                 <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
@@ -95,19 +115,19 @@
               <el-tooltip v-for="item in row.item.entryProjectList" class="item" effect="dark" placement="bottom">
                 <div slot="content">
                   项目名称：{{ item.name }}
-                  <br/>
+                  <br />
                   项目经理：{{ item.managerName }}
-                  <br/>
+                  <br />
                   项目客户：{{ item.customerName }}
-                  <br/>
+                  <br />
                   所属集团：{{ item.belongGroup }}
-                  <br/>
+                  <br />
                   入场时间：{{ item.entryTime }}
-                  <br/>
+                  <br />
                   计划离场时间：{{ item.planExitTime }}
-                  <br/>
+                  <br />
                   岗位：{{ item.postName }}
-                  <br/>
+                  <br />
                   <div v-if="item.belongSelf">
                     （项目归属于您，可以点击查看项目详情）
                   </div>
@@ -116,11 +136,16 @@
                   </div>
                 </div>
                 <div :class="(!!item.belongSelf?'toolbar0 ':'toolbar1 ')+(!!item.entryMark?'ownBar':'notOwnBar')">
-<!--                  <svg-icon v-if="!!item.belongSelf" :icon-class="'star'" style="height: 1.5em; width: 1.5em;"-->
-<!--                            @click="addProject(row.item)"/>-->
-                  <img style="width: 14px;height: 14px;margin-top: 5px  " v-if="!!item.belongSelf" src="@/assets/star-s-fill.png" @click="addProject(row.item)"/>
+                  <!--                  <svg-icon v-if="!!item.belongSelf" :icon-class="'star'" style="height: 1.5em; width: 1.5em;"-->
+                  <!--                            @click="addProject(row.item)"/>-->
+                  <img
+                    v-if="!!item.belongSelf"
+                    style="width: 14px;height: 14px;margin-top: 5px  "
+                    src="@/assets/star-s-fill.png"
+                    @click="addProject(row.item)"
+                  />
                   <a v-if="item.belongSelf" style="margin-top: 2px" @click="openProject(item.projectId)">
-                  {{ item.belongGroup }}
+                    {{ item.belongGroup }}
                   </a>
                   <div v-else style="margin-top: 2px">
                     {{ item.belongGroup }}
@@ -128,20 +153,23 @@
                 </div>
               </el-tooltip>
 
-
             </div>
           </template>
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
               <el-tooltip class="item" effect="dark" content="新增入场项目" placement="bottom">
-              <svg-icon :icon-class="'add-icon'" style="height: 18px; width: 18px; margin-right:20px" @click="addProject(row.item)"/>
+                <svg-icon
+                  :icon-class="'add-icon'"
+                  style="height: 18px; width: 18px; margin-right:20px"
+                  @click="addProject(row.item)"
+                />
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="全部记录" placement="bottom">
                 <svg-icon
-                    :icon-class="'detials-icon'"
-                    style="height: 1.5em; width: 1.5em; margin-right: 2em"
-                    @click="recordAll(row.item)"
+                  :icon-class="'detials-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="recordAll(row.item)"
                 />
               </el-tooltip>
             </template>
@@ -149,13 +177,20 @@
           <template v-slot:departStatusName="row">
             <!--类型插槽-->
             <template>
-              <div v-if="row.item.departStatusName==='在职'" style="background-color: #E8FFEA ;color: #00B42A;display: flex;width: 50px">
-                <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #00B42A;margin-top: 8.5px;margin-right: 5px;margin-left: 5px"/>
-                <div>{{row.item.departStatusName}}</div>
+              <div
+                v-if="row.item.departStatusName==='在职'"
+                style="background-color: #E8FFEA ;color: #00B42A;display: flex;width: 50px"
+              >
+                <div
+                  style="width: 5px;height: 5px;border-radius: 5px;background-color: #00B42A;margin-top: 8.5px;margin-right: 5px;margin-left: 5px"
+                />
+                <div>{{ row.item.departStatusName }}</div>
               </div>
               <div v-else style="background-color: #FFF0ED ;color: #D54941;display: flex;width: 50px">
-                <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #D54941;margin-top: 8.5px;margin-right: 5px;margin-left: 5px"/>
-                <div>{{row.item.departStatusName}}</div>
+                <div
+                  style="width: 5px;height: 5px;border-radius: 5px;background-color: #D54941;margin-top: 8.5px;margin-right: 5px;margin-left: 5px"
+                />
+                <div>{{ row.item.departStatusName }}</div>
               </div>
             </template>
           </template>
@@ -169,10 +204,10 @@
       </base-dialog>
     </div>
     <div v-show="!isList">
-      <record ref="record" :syncIsList.sync="isList"></record>
+      <record ref="record" :sync-is-list.sync="isList"></record>
     </div>
     <div v-if="isProject">
-      <projectDetail ref="projectDetail" @changePageFlag="changePageFlag" />
+      <projectDetail ref="projectDetail" />
     </div>
   </div>
 </template>
@@ -207,6 +242,10 @@ export default {
         speciality: '',
         // 工龄
         jobAge: [],
+        jobAgeStart: '',
+        jobAgeEnd: '',
+        departAgeStart: '',
+        departAgeEnd: '',
         // 司龄
         departAge: [],
         // 部门
@@ -228,18 +267,18 @@ export default {
       chooseProjectList: [],
       tableData: {
         theads: [
-          {label: '工号', prop: 'empId'},
-          {label: '姓名', prop: 'name'},
-          {label: '专业', prop: 'major'},
-          {label: '学历', prop: 'education'},
-          {label: '毕业日期', prop: 'graduateDate'},
-          {label: '工龄', prop: 'jobAge'},
-          {label: '入职日期', prop: 'entryTime'},
-          {label: '司龄', prop: 'departAge'},
-          {label: '部门', prop: 'department'},
-          {label: '在离职状态', prop: 'departStatusName' ,slotName: 'departStatusName'},
-          {label: '入场外协项目', prop: 'departStatus', slotName: 'projectList', width: '200px'},
-          {label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px'}
+          { label: '工号', prop: 'empId' },
+          { label: '姓名', prop: 'name' },
+          { label: '专业', prop: 'major' },
+          { label: '学历', prop: 'education' },
+          { label: '毕业日期', prop: 'graduateDate' },
+          { label: '工龄', prop: 'jobAge' },
+          { label: '入职日期', prop: 'entryTime' },
+          { label: '司龄', prop: 'departAge' },
+          { label: '部门', prop: 'department' },
+          { label: '在离职状态', prop: 'departStatusName', slotName: 'departStatusName' },
+          { label: '入场外协项目', prop: 'departStatus', slotName: 'projectList', width: '200px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         url: '/externalProject/listEmpProjectEntry'
       }
@@ -256,16 +295,15 @@ export default {
     openProject(projectId) {
       this.isProject = true
       this.$http({
-        url: this.$http.adornUrl('/externalProject/getExternalProjectDetail?id='+projectId),
+        url: this.$http.adornUrl('/externalProject/getExternalProjectDetail?id=' + projectId),
         method: 'get'
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
           this.$refs.projectDetail.init(data.payload)
         } else {
           this.$message.error(data.msg)
         }
       })
-
     },
     // 查询表格
     refresh() {
@@ -273,63 +311,63 @@ export default {
     },
     handleInput0(value) {
       // 使用正则表达式来匹配数字
-      const regex = /^\d*(\.\d{0,2})?$/; // 示例：允许最多两位小数的数字
+      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
       if (!regex.test(value)) {
-        this.$refs.jobAgeStart.blur(); // 移除焦点，避免用户继续输入
+        this.$refs.jobAgeStart.blur() // 移除焦点，避免用户继续输入
         this.$nextTick(() => {
           // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
-          this.dataForm.jobAgeStart = value.substring(0, value.length - 1);
+          this.dataForm.jobAgeStart = value.substring(0, value.length - 1)
           // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
-        });
+        })
       }
     },
     getQueryParam() {
       // 获取当前页面的URL
-      const url = window.location.href;
+      const url = window.location.href
       // 获取查询字符串（URL中"?"符后的部分）
-      const queryString = url.split('?')[1];
+      const queryString = url.split('?')[1]
       // 将查询字符串分割成键值对数组
-      const params = new URLSearchParams(queryString);
+      const params = new URLSearchParams(queryString)
       // 返回指定参数的值
       let projectId = params.get('projectId')
-      if(!!projectId){
+      if (projectId) {
         this.dataForm.unProjectIds.push(parseInt(projectId))
       }
     },
     handleInput1(value) {
       // 使用正则表达式来匹配数字
-      const regex = /^\d*(\.\d{0,2})?$/; // 示例：允许最多两位小数的数字
+      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
       if (!regex.test(value)) {
-        this.$refs.jobAgeEnd.blur(); // 移除焦点，避免用户继续输入
+        this.$refs.jobAgeEnd.blur() // 移除焦点，避免用户继续输入
         this.$nextTick(() => {
           // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
-          this.dataForm.jobAgeEnd = value.substring(0, value.length - 1);
+          this.dataForm.jobAgeEnd = value.substring(0, value.length - 1)
           // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
-        });
+        })
       }
     },
     handleInput2(value) {
       // 使用正则表达式来匹配数字
-      const regex = /^\d*(\.\d{0,2})?$/; // 示例：允许最多两位小数的数字
+      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
       if (!regex.test(value)) {
-        this.$refs.departAgeStart.blur(); // 移除焦点，避免用户继续输入
+        this.$refs.departAgeStart.blur() // 移除焦点，避免用户继续输入
         this.$nextTick(() => {
           // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
-          this.dataForm.departAgeStart = value.substring(0, value.length - 1);
+          this.dataForm.departAgeStart = value.substring(0, value.length - 1)
           // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
-        });
+        })
       }
     },
     handleInput3(value) {
       // 使用正则表达式来匹配数字
-      const regex = /^\d*(\.\d{0,2})?$/; // 示例：允许最多两位小数的数字
+      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
       if (!regex.test(value)) {
-        this.$refs.departAgeEnd.blur(); // 移除焦点，避免用户继续输入
+        this.$refs.departAgeEnd.blur() // 移除焦点，避免用户继续输入
         this.$nextTick(() => {
           // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
-          this.dataForm.departAgeEnd = value.substring(0, value.length - 1);
+          this.dataForm.departAgeEnd = value.substring(0, value.length - 1)
           // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
-        });
+        })
       }
     },
     // 查询条件数据转换
@@ -357,7 +395,7 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/common/getDeptByRole'),
         method: 'get'
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
           this.deptList = data.payload.filter((item) => item.id !== 0)
         } else {
@@ -370,7 +408,7 @@ export default {
       this.$http({
         url: this.$http.adornUrl('/externalProject/listExternalProjectData'),
         method: 'get'
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
           this.chooseProjectList = data.payload.filter((item) => item.id !== 0)
         } else {
@@ -381,6 +419,11 @@ export default {
     // 重置表格
     resetForm() {
       this.$refs.dataForm.resetFields()
+      this.dataForm.jobAgeStart = ''
+      this.dataForm.jobAgeEnd = ''
+      this.dataForm.departAgeStart = ''
+      this.dataForm.departAgeEnd = ''
+      this.refresh()
     },
     // 获取选中的数据
     selectData(selection) {
@@ -400,9 +443,9 @@ export default {
         this.$message.warning('请至少选择一条数据！')
         return
       }
-      let form = {...this.dataForm}
+      let form = {}
       form.ids = this.checkedIds
-      this.$http.downloadPost(this.$http.adornUrl('/dailyCost/export'), this.$http.adornParams(form), this)
+      this.$http.downloadPost(this.$http.adornUrl('/externalProject/exportEmpProjectEntry'), this.$http.adornParams(form), this)
     },
     // 添加项目
     addProject(row) {
@@ -412,7 +455,7 @@ export default {
         this.$refs.addProject.init(row)
       })
     },
-    closeAddProject(){
+    closeAddProject() {
       this.$refs.addProjectDialog.hide()
       this.refresh()
     },

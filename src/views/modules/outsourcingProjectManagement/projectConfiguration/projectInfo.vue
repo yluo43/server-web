@@ -17,41 +17,55 @@
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerId">
             <el-cascader
-              v-model="projectManagerId"
-              :options="projectManagers"
-              placeholder="请选择项目经理"
-              :show-all-levels="false"
+                v-model="projectManagerId"
+                :options="projectManagers"
+                placeholder="请选择项目经理"
+                :show-all-levels="false"
+                @change="changeManagerId"
             >
             </el-cascader>
           </el-form-item>
           <el-form-item label="关联项目:" prop="projectId">
             <el-select v-model="projectFormData.projectId" placeholder="请选择关联项目" clearable>
               <el-option
-                v-for="item in associatedProjects"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
+                  v-for="item in associatedProjects"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="项目客户:" prop="customerId">
+            <el-select v-model="projectFormData.customerId" placeholder="请选择项目客户" clearable @change="customerChange">
+              <el-option
+                  v-for="item in customerNames"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="客户所属集团:" prop="belongGroup">
+            <el-input v-model="projectFormData.belongGroup" placeholder="客户所属集团" disabled></el-input>
+          </el-form-item>
           <el-form-item label="项目开始日期:" prop="startTime">
             <el-date-picker
-              v-model="projectFormData.startTime"
-              style="width: 100%"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择开始日期"
-              clearable
+                v-model="projectFormData.startTime"
+                style="width: 100%"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择开始日期"
+                clearable
             />
           </el-form-item>
           <el-form-item label="项目结束日期:" prop="endTime">
             <el-date-picker
-              v-model="projectFormData.endTime"
-              style="width: 100%"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择结束日期"
-              clearable
+                v-model="projectFormData.endTime"
+                style="width: 100%"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择结束日期"
+                clearable
             />
           </el-form-item>
           <el-form-item label="备注:" prop="notes">
@@ -60,30 +74,30 @@
         </el-form>
       </div>
       <div v-else class="form-info">
-        <el-form ref="projectForm" :model="projectFormData" label-width="100px" class="form-item">
+        <el-form ref="projectForm" :model="projectFormDataOrigin" label-width="100px" class="form-item">
           <el-form-item label="项目名称:" prop="name">
-            {{ projectFormData.name }}
+            {{ projectFormDataOrigin.name }}
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerName">
-            {{ projectFormData.managerName }}
+            {{ projectFormDataOrigin.managerName }}
           </el-form-item>
           <el-form-item label="关联项目:" prop="projectName">
-            {{ projectFormData.projectName }}
+            {{ projectFormDataOrigin.projectName }}
           </el-form-item>
           <el-form-item label="项目客户:" prop="customerName">
-            {{ projectFormData.customerName }}
+            {{ projectFormDataOrigin.customerName }}
           </el-form-item>
           <el-form-item label="客户所属集团:" prop="belongGroup">
-            {{ projectFormData.belongGroup }}
+            {{ projectFormDataOrigin.belongGroup }}
           </el-form-item>
           <el-form-item label="项目开始日期:" prop="startTime">
-            {{ projectFormData.startTime }}
+            {{ projectFormDataOrigin.startTime }}
           </el-form-item>
           <el-form-item label="项目结束日期:" prop="endTime">
-            {{ projectFormData.endTime }}
+            {{ projectFormDataOrigin.endTime }}
           </el-form-item>
           <el-form-item label="备注" prop="remark">
-            {{ projectFormData.remark }}
+            {{ projectFormDataOrigin.remark }}
           </el-form-item>
         </el-form>
       </div>
@@ -101,15 +115,15 @@
       </div>
       <el-divider></el-divider>
       <div style="margin-left: 20px;margin-top: 20px">
-        <baseTable ref="table" :table-data="tableData" :multi-select="true">
+        <baseTable ref="table" :table-data="tableData" :multi-select="true" @updateTable="updateTable">
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
               <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
                 <svg-icon
-                  :icon-class="'delete-icon'"
-                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
-                  @click="deleteItem(row.item)"
+                    :icon-class="'delete-icon'"
+                    style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                    @click="deleteItem(row.item)"
                 />
               </el-tooltip>
             </template>
@@ -119,37 +133,61 @@
     </div>
     <base-drawer ref="addUnitDrawer" title="新增岗位" size="23%">
       <template>
-        <addUnit ref="addUnit" @closeDrawer="closeAddUnitDrawer" />
+        <addUnit ref="addUnit" @closeDrawer="closeAddUnitDrawer"/>
       </template>
     </base-drawer>
   </div>
 </template>
 
 <script>
-import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
+import baseTable from '@/views/modules/base/baseTableEdit.vue'
 import baseDrawer from '@/views/modules/base/baseDrawer.vue'
 import addUnit from './addUnit.vue'
+
 export default {
-  components: { baseTable, baseDrawer, addUnit},
+  components: {baseTable, baseDrawer, addUnit},
   data() {
     return {
       // 是否是编辑模式
       editMode: false,
       associatedProjects: [],
+      membershipGroups: [],
       tableData: {
         theads: [
-          { label: '岗位', prop: 'name' },
-          { label: '级别', prop: 'level' },
-          { label: '单价（含税/元）', prop: 'unitPrice' },
-          { label: '单价（不含税/元）', prop: 'taxUnitPrice' },
-          { label: '类型（按n天计）', prop: 'type' },
-          { label: '操作', slotName: 'clientType' }
+          {label: '岗位', prop: 'name'},
+          {label: '级别', prop: 'level'},
+          {label: '单价（含税/元）', prop: 'unitPrice'},
+          {label: '单价（不含税/元）', prop: 'taxUnitPrice'},
+          {label: '类型（按n天计）', prop: 'type'},
+          {label: '操作', slotName: 'clientType'}
         ],
         url: '/externalProject/listProjectUnitPrice'
       },
       projectManagerId: [],
       projectManagers: [],
+      customerNames: [],
       projectFormData: {
+        // 项目名称
+        name: '',
+        // 项目经理
+        managerId: '',
+        managerName: '',
+        // 关联项目
+        projectId: '',
+        projectName: '',
+        customerName: '',
+        // 项目客户
+        customerId: '',
+        // 客户所属集团
+        belongGroup: '',
+        // 开始时间
+        startTime: '',
+        // 结束时间
+        endTime: '',
+        // 备注
+        remark: ''
+      },
+      projectFormDataOrigin: {
         // 项目名称
         name: '',
         // 项目经理
@@ -177,18 +215,17 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/externalProject/listRelProjectData'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.associatedProjects = data.payload.filter((item) => item.id != 0)
       } else {
         this.$message.error(data.msg)
       }
     })
-
     this.$http({
       url: this.$http.adornUrl('/common/getManagerData'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.projectManagers = data.payload.map(dept => {
           const transformedDept = {
@@ -205,12 +242,61 @@ export default {
         this.$message.error(data.msg)
       }
     })
+
+    this.$http({
+      url: this.$http.adornUrl('/externalProject/listCustomer?pageSize=999'),
+      method: 'get'
+    }).then(({ data }) => {
+      if (data && data.code === 200) {
+        this.customerNames = data.payload.list.filter((item) => item.id != 0)
+      } else {
+        this.$message.error(data.msg)
+      }
+    })
   },
   methods: {
     init(projectFormData) {
       this.projectFormData = projectFormData
       this.projectManagerId = [projectFormData.deptId, projectFormData.managerId]
+      Object.assign(this.projectFormDataOrigin,this.projectFormData)
       this.refreshTable()
+    },
+    updateTable(row){
+      this.$http({
+        url: this.$http.adornUrl('/externalProject/updateProjectUnitPrice'),
+        method: 'put',
+        data: row
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    changeManagerId(a) {
+      this.projectManagers.forEach(e => {
+        if (e.value === a[0]) {
+          e.children.forEach(f => {
+            if (f.value === a[1]) {
+              this.projectFormData.managerName = f.label
+              return
+            }
+          })
+        }
+      })
+    },
+    customerChange(i){
+      this.customerNames.forEach(e=>{
+        if(i === e.id){
+          this.projectFormData.customerName = e.name
+          this.projectFormData.belongGroup = e.belongGroup
+          return
+        }
+      })
     },
     refreshTable() {
       let queryParams = {}
@@ -228,12 +314,13 @@ export default {
         url: this.$http.adornUrl('/externalProject/updateExternalProject'),
         method: 'put',
         data: this.projectFormData
-      }).then(({ data }) => {
+      }).then(({data}) => {
         if (data && data.code === 200) {
           this.$message({
             message: '修改成功',
             type: 'success'
           })
+          Object.assign(this.projectFormDataOrigin,this.projectFormData)
           this.editMode = false
         } else {
           this.$message.error(data.msg)
@@ -249,28 +336,28 @@ export default {
         type: 'warning',
         center: true
       })
-        .then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/externalProject/deleteProjectUnitPrice?id=' + row.id),
-            method: 'delete'
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-              this.refreshTable()
-            } else {
-              this.$message.error(data.msg)
-            }
+          .then(() => {
+            this.$http({
+              url: this.$http.adornUrl('/externalProject/deleteProjectUnitPrice?id=' + row.id),
+              method: 'delete'
+            }).then(({data}) => {
+              if (data && data.code === 200) {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+                this.refreshTable()
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
           })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
           })
-        })
     },
     // 新增
     addUnit() {

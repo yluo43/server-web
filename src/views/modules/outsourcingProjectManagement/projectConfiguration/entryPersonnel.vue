@@ -18,23 +18,23 @@
           <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </el-form-item>
-      <el-form-item label="岗位:" prop="postId">
-        <el-select v-model="queryParams.postId" placeholder="请选择岗位" clearable>
-          <el-option v-for="item in jobList" :key="item.id" :label="item.name" :value="item.id" />
+      <el-form-item label="岗位:" prop="postNameList">
+        <el-select v-model="queryParams.postNameList" placeholder="请选择岗位" clearable multiple>
+          <el-option v-for="item in jobList" :key="item.name" :label="item.name" :value="item.name"/>
         </el-select>
       </el-form-item>
       <div v-if="showFlag" style="display: contents">
-        <!--        <el-form-item label="级别:" prop="level">-->
-        <!--          <el-select v-model="queryParams.level" placeholder="请选择级别" clearable>-->
-        <!--            <el-option v-for="item in levels" :key="item" :label="item." :value="item.id"></el-option>-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
+        <el-form-item label="级别:" prop="levelList">
+          <el-select v-model="queryParams.levelList" placeholder="请选择岗位" clearable multiple>
+            <el-option v-for="item in levelNameList" :key="item" :label="item" :value="item" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="入场标记:" prop="entryMark">
           <el-select v-model="queryParams.entryMark" placeholder="请选择入场标记" clearable>
             <el-option v-for="item in entryMarks" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="入场时间:" prop="entryTime">
+        <el-form-item label="入场日期:" prop="entryTime">
           <el-date-picker
             v-model="entryTime"
             style="width: 200px"
@@ -46,7 +46,7 @@
             end-placeholder="年/月/日"
           />
         </el-form-item>
-        <el-form-item label="离场时间:" prop="planExitTime">
+        <el-form-item v-if="isEntry" :label="'计划离场日期'" prop="planExitTime">
           <el-date-picker
             v-model="planExitTime"
             style="width: 200px"
@@ -56,6 +56,18 @@
             range-separator="至"
             start-placeholder="年/月/日"
             end-placeholder="年/月/日"
+          />
+        </el-form-item>
+        <el-form-item v-if="!isEntry" :label="'离场日期:'" prop="planExitTime">
+          <el-date-picker
+              v-model="exitTime"
+              style="width: 200px"
+              value-format="yyyy-MM-dd"
+              format="yyyy-MM-dd"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="年/月/日"
+              end-placeholder="年/月/日"
           />
         </el-form-item>
       </div>
@@ -68,7 +80,7 @@
           <span v-if="showFlag" class="btn-font-size" style="color: #2462f9">收起</span>
           <span v-else class="btn-font-size" style="color: #2462f9">展开</span>
         </div>
-        <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="refreshTable()">查询
+        <el-button type="primary" icon="el-icon-search" style="margin-right: 10px" @click="refresh()">查询
         </el-button>
         <el-button icon="el-icon-refresh-right" @click="resetForm()">重置</el-button>
       </el-form-item>
@@ -178,15 +190,19 @@ export default {
       },
       deptList: [],
       jobList: [],
+      levelNameList: [],
       showFlag: false,
       entryTime: [],
       planExitTime: [],
+      exitTime: [],
       queryParams: {
         empId: '',
         name: '',
         deptId: '',
         postId: '',
         level: '',
+        postNameList: [],
+        levelList: [],
         entryMark: ''
       },
       initData: {}
@@ -197,28 +213,45 @@ export default {
     this.getDept()
   },
   methods: {
-    refreshTable() {
-      this.queryParams.projectId = this.initData.id
-      this.queryParams.entryIs = this.isEntry ? 1 : 0
-      if (this.planExitTime.length > 0) {
-        this.queryParams.planExitTimeStart = this.planExitTime[0]
-        this.queryParams.planExitTimeEnd = this.planExitTime[1]
-      }
-      if (this.entryTime.length > 0) {
-        this.queryParams.entryTimeStart = this.entryTime[0]
-        this.queryParams.entryTimeEnd = this.entryTime[1]
-      }
-      this.$refs.table.refresh(this.queryParams)
+    refresh() {
+      this.$refs.table.refresh(this.dataConversion(this.queryParams))
     },
     selectTableData() {
       this.$nextTick(() => {
         this.$refs.table.refresh(this.queryParams)
       })
     },
+
+    // 查询条件数据转换
+    dataConversion(form) {
+      let params = JSON.parse(JSON.stringify(form))
+      params.projectId = this.initData.id
+      params.entryIs = this.isEntry ? 1 : 0
+      if (this.planExitTime.length > 0) {
+        params.planExitTimeStart = this.planExitTime[0]
+        params.planExitTimeEnd = this.planExitTime[1]
+      }
+      if (this.exitTime.length > 0) {
+        params.exitTimeStart = this.exitTime[0]
+        params.exitTimeEnd = this.exitTime[1]
+      }
+      if (this.entryTime.length > 0) {
+        params.entryTimeStart = this.entryTime[0]
+        params.entryTimeEnd = this.entryTime[1]
+      }
+      Object.keys(params).forEach((key) => {
+        if (Array.isArray(params[key])) {
+          params[key] = params[key].toString()
+        }
+      })
+      delete params.startTime
+      delete params.endTime
+      return params
+    },
     init(initData) {
       this.initData = initData
       this.getJob()
-      this.refreshTable()
+      this.refresh()
     },
     // 获取所属部门
     getDept() {
@@ -241,6 +274,7 @@ export default {
       }).then(({ data }) => {
         if (data && data.code === 200) {
           this.jobList = data.payload.list
+          this.levelNameList = [...new Set(data.payload.list.map(item => item.level))];
         } else {
           this.$message.error(data.msg)
         }
@@ -270,7 +304,7 @@ export default {
           delete data[key]
         }
       })
-      this.$http.downloadPost(this.$http.adornUrl('/externalProject/exportEntryExitRecord'), this.$http.adornParams(data), this)
+      this.$http.downloadPost(this.$http.adornUrl('/externalProject/'+(this.isEntry?'exportProjectEntry':'exportProjectExit')), this.$http.adornParams(data), this)
     },
     // 添加人员 跳转到外协项目入场管理页面
     addProjectInfo() {
@@ -291,6 +325,7 @@ export default {
       this.queryParams.entryIs = this.isEntry ? 1 : 0
       this.planExitTime = []
       this.entryTime = []
+      this.refresh()
     }
   }
 }

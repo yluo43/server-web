@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form ref="departurePersonnelInfoForm" :model="departurePersonnelInfo" label-width="100px" label-position="right">
+    <el-form ref="departurePersonnelInfoForm" :model="departurePersonnelInfo" label-width="100px" label-position="right" :rules="rules">
       <el-form-item label="工号:" prop="empId">
         {{ departurePersonnelInfo.empId }}
       </el-form-item>
@@ -53,6 +53,10 @@ export default {
         planExitTime: '',
         exitTime: '',
         exitReason: ''
+      },
+      rules: {
+        exitTime: [{ required: true, trigger: 'blur', message: '请选择实际离场时间' }],
+        exitReason: [{ required: true, trigger: 'blur', message: '请输入离场原因' }]
       }
     }
   },

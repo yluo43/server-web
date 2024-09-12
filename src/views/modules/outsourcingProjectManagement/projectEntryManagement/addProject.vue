@@ -93,7 +93,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="入场标记:" prop="entryMark">
-            <el-radio-group v-model="formData.entryMark" style="width: 300px">
+            <el-radio-group v-model="formData.entryMark" style="width: 300px" @change="changeEntryMark">
               <el-radio :label="0">
                 真实入场
               </el-radio>
@@ -106,7 +106,7 @@
             <el-input
                 v-model="formData.entryReason"
                 type="textarea"
-                style="width: 300px"
+                style="width: 300px;margin-block: 6px"
                 placeholder="请输入入场原因"
             ></el-input>
           </el-form-item>
@@ -138,11 +138,11 @@ export default {
         endTime: '',
         entryTime: '',
         planExitTime: '',
-        entryMark: '',
+        entryMark: 0,
         empId: '',
         postId: '',
         postName: '',
-        entryReason:''
+        entryReason: ''
       },
       postLevelSet: [],
       rules: {
@@ -157,7 +157,7 @@ export default {
         postId: [{required: true, message: '请选择人员岗位', trigger: 'change'}],
         entryMark: [{required: true, message: '请选择入场标记', trigger: 'change'}],
         level: [{required: true, message: '请选择人员登记', trigger: 'change'}],
-        entryReason: [{required: true, message: '请选择入场原因', trigger: 'change'}]
+        entryReason: [{required: false, message: '请选择入场原因', trigger: 'change'}]
       }
     }
   },
@@ -186,6 +186,13 @@ export default {
           this.$message.error(data.msg)
         }
       })
+    },
+    changeEntryMark(){
+      if(this.formData.entryMark === 1){
+        this.rules.entryReason[0].required = true
+      }else{
+        this.rules.entryReason[0].required = false
+      }
     },
     changeProject(row) {
       this.formData = this.projectList[row]

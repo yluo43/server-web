@@ -2,37 +2,38 @@
   <div>
     <el-container class="container" direction="vertical">
       <el-form
-        ref="projectFormData"
-        :rules="projectFormRules"
-        :model="projectFormData"
-        label-width="auto"
-        class="form-item"
+          ref="projectFormData"
+          :rules="projectFormRules"
+          :model="projectFormData"
+          label-width="auto"
+          class="form-item"
       >
-        <el-form-item label="项目名称:" prop="projectName">
+        <el-form-item label="项目名称:" prop="name">
           <el-input v-model="projectFormData.name" placeholder="请输入项目名称" clearable></el-input>
         </el-form-item>
         <el-form-item label="项目经理:" prop="projectManagerId">
           <el-cascader
-            v-model="projectManagerId"
-            :options="projectManagers"
-            placeholder="请选择项目经理"
-            :show-all-levels="false"
+              v-model="projectFormData.projectManagerId"
+              :options="projectManagers"
+              placeholder="请选择项目经理"
+              :show-all-levels="false"
+              style="width: 100%"
           >
           </el-cascader>
         </el-form-item>
         <el-form-item label="关联项目:" prop="associatedProjectId">
           <el-select v-model="projectFormData.projectId" placeholder="请选择关联项目" clearable>
             <el-option
-              v-for="item in associatedProjects"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+                v-for="item in associatedProjects"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="项目客户:" prop="customerId">
           <el-select v-model="projectFormData.customerId" placeholder="请选择项目客户" clearable @change="customChange">
-            <el-option v-for="item in customerNames" :key="item.id" :label="item.name" :value="item.id" ></el-option>
+            <el-option v-for="item in customerNames" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="所属集团:" prop="membershipGroup">
@@ -40,24 +41,25 @@
         </el-form-item>
         <el-form-item label="开始日期:" prop="startTime">
           <el-date-picker
-            v-model="projectFormData.startTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择开始日期"
-            clearable
+              v-model="projectFormData.startTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择开始日期"
+              clearable
           />
         </el-form-item>
         <el-form-item label="结束日期:" prop="endTime">
           <el-date-picker
-            v-model="projectFormData.endTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择结束日期"
-            clearable
+              v-model="projectFormData.endTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择结束日期"
+              clearable
           />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="projectFormData.remark" type="textarea" maxlength="100" show-word-limit></el-input>
+          <el-input v-model="projectFormData.remark" style="margin-block: 6px" type="textarea" maxlength="100"
+                    show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <el-row class="btn-box">
@@ -73,11 +75,11 @@ export default {
   data() {
     return {
       projectFormRules: {
-        name: [{ required: true, message: '请输入项目名称', trigger: ['blur', 'change'] }],
-        managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
-        customerId: [{ required: true, message: '请选择项目客户', trigger: 'change' }],
-        startTime: [{  required: true, message: '请选择开始日期', trigger: 'change' }],
-        endTime: [{  required: true, message: '请选择结束日期', trigger: 'change' }]
+        name: [{required: true, message: '请输入项目名称', trigger: ['blur', 'change']}],
+        projectManagerId: [{required: true, message: '请选择项目经理', trigger: 'change'}],
+        customerId: [{required: true, message: '请选择项目客户', trigger: 'change'}],
+        startTime: [{required: true, message: '请选择开始日期', trigger: 'change'}],
+        endTime: [{required: true, message: '请选择结束日期', trigger: 'change'}]
       },
       projectFormData: {
         // 项目名称
@@ -97,7 +99,7 @@ export default {
         // 备注
         remark: ''
       },
-      projectManagerId:[],
+      projectManagerId: [],
       projectManagers: [],
       associatedProjects: [],
       customerNames: [],
@@ -109,7 +111,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/common/getManagerData'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.projectManagers = data.payload.map(dept => {
           const transformedDept = {
@@ -130,7 +132,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/projectSet/listRelProject'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.associatedProjects = data.payload.filter((item) => item.id != 0)
       } else {
@@ -141,7 +143,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/externalProject/listCustomer?pageSize=999'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.customerNames = data.payload.list.filter((item) => item.id != 0)
       } else {
@@ -160,7 +162,7 @@ export default {
           url: this.$http.adornUrl('/externalProject/insertExternalProject'),
           method: 'post',
           data: this.$http.adornData(this.projectFormData)
-        }).then(({ data }) => {
+        }).then(({data}) => {
           if (data.success) {
             this.cancel()
             this.$message.success('操作成功')
@@ -174,8 +176,13 @@ export default {
     cancel() {
       this.$emit('closeDrawer')
     },
-    customChange(i){
-      this.projectFormData.membershipGroup = this.customerNames[i].belongGroup
+    customChange(i) {
+      this.customerNames.forEach(e => {
+        if (e.id === i) {
+          this.projectFormData.membershipGroup = e.belongGroup
+          return
+        }
+      })
     }
   }
 }

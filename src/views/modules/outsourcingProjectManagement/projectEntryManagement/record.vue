@@ -16,6 +16,9 @@
         <el-form-item label="毕业时间:" prop="graduateDate">
           {{ baseData.graduateDate }}
         </el-form-item>
+        <el-form-item label="司龄:" prop="departAge">
+          {{ baseData.departAge }}
+        </el-form-item>
         <el-form-item label="工龄:" prop="jobAge">
           {{ baseData.jobAge }}
         </el-form-item>
@@ -175,7 +178,6 @@ export default {
           { label: '项目客户', prop: 'customerName' },
           { label: '客户所属集团', prop: 'belongGroup' },
           { label: '入场日期', prop: 'entryTime' },
-          { label: '计划离场日期', prop: 'planExitTime' },
           { label: '入场标记', slotName: 'entryMark' },
           { label: '入场原因', prop: 'entryReason' },
           { label: '岗位', prop: 'postName' },
@@ -206,6 +208,7 @@ export default {
         empId: '',
         name: '',
         major: '',
+        departAge: '',
         graduateDate: '',
         jobAge: '',
         entryTime: '',
