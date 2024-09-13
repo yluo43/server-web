@@ -97,9 +97,9 @@ export default {
         // 结束时间
         endTime: '',
         // 备注
-        remark: ''
+        remark: '',
+        projectManagerId: []
       },
-      projectManagerId: [],
       projectManagers: [],
       associatedProjects: [],
       customerNames: [],
@@ -157,7 +157,7 @@ export default {
         if (!valid) {
           return false
         }
-        this.projectFormData.managerId = this.projectManagerId[1]
+        this.projectFormData.managerId = this.projectFormData.projectManagerId[1]
         this.$http({
           url: this.$http.adornUrl('/externalProject/insertExternalProject'),
           method: 'post',
@@ -165,7 +165,7 @@ export default {
         }).then(({data}) => {
           if (data.success) {
             this.cancel()
-            this.$message.success('操作成功')
+            this.$emit('goDetail',data.payload)
           } else {
             this.$message.error(data.msg)
           }
@@ -214,4 +214,6 @@ export default {
 .el-date-editor.el-input {
   width: 100%;
 }
+
+
 </style>

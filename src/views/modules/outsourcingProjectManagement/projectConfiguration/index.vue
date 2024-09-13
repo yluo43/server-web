@@ -101,13 +101,34 @@
       </baseTable>
       <base-drawer ref="addProjectDrawer" :title="drawerTitle" size="23%">
         <template>
-          <addProject ref="addProject" @closeDrawer="closeAddProjectDrawer" />
+          <addProject ref="addProject" @closeDrawer="closeAddProjectDrawer" @goDetail="confirm" />
         </template>
       </base-drawer>
     </el-container>
     <div v-if="pageFlag == 2">
       <projectDetail ref="projectDetail" @changePageFlag="changePageFlag" />
     </div>
+    <el-dialog
+
+        title="提示"
+        :visible.sync="dialogVisible"
+        :modal="false"
+        width="30%">
+      <div style="display: flex;justify-content: center;align-items: center;">
+        <svg-icon
+            icon-class="right"
+            style="height: 70px; width: 70px; position: relative; top: 3px"
+        />
+      </div>
+      <h1 style="text-align: center;">新建成功</h1>
+      <div style="text-align: center;color: #0000FF">还需要去项目详情里完善项目的岗位单价信息</div>
+      <span slot="footer" class="dialog-footer">
+         <div style="display: flex;justify-content: center;align-items: center;">
+            <el-button class="button" @click="dialogVisible = false">暂不填</el-button>
+            <el-button class="button" type="primary" @click="goToDetails(singleRow)">去填写</el-button>
+         </div>
+         </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -125,6 +146,8 @@ export default {
   },
   data() {
     return {
+      singleRow: {},
+      dialogVisible: false,
       // 1为当前页 2为详情页
       pageFlag: 1,
       // 展开收起标识
@@ -133,7 +156,6 @@ export default {
       drawerTitle: '',
       // 选中的数据
       checkedIds: [],
-      row:{},
       dataForm: {
         // 项目名称
         name: '',
@@ -245,7 +267,6 @@ export default {
       if (selection.length > 0) {
         selection.forEach((item) => {
           this.checkedIds.push(item.id)
-          this.row = item
         })
         this.count = this.checkedIds.length
       } else {
@@ -267,18 +288,9 @@ export default {
     },
     // 详情
     goToDetails(row) {
-      if (!row) {
-        row = this.row
-        if (this.checkedIds.length === 0) {
-          this.$message.warning('请至少选择一条数据！')
-          return;
-        }
-        if (this.checkedIds.length > 1) {
-          this.$message.warning('请选择其中一条数据！')
-          return;
-        }
-      }
+      this.dialogVisible = false
       this.pageFlag = 2
+      this.singleRow = null
       this.$nextTick(() => {
         this.$refs.projectDetail.init(row)
       })
@@ -322,6 +334,10 @@ export default {
     },
     memberChange(){
       this.customerNames = this.customers[this.dataForm.membershipGroupIds]
+    },
+    confirm(row) {
+      this.dialogVisible = true
+      this.singleRow = row
     }
   }
 }
@@ -357,5 +373,11 @@ export default {
 
 ::v-deep .el-table__cell {
   text-align: center;
+}
+
+.button {
+  width: 100px;
+  height: 40px;
+  margin: 20px;
 }
 </style>

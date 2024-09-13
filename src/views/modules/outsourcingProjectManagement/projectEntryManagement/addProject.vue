@@ -4,7 +4,8 @@
       <div style="width: 100%">
         <el-form ref="formData" :model="formData" label-width="100px" :rules="rules">
           <el-form-item label="项目名称:" prop="projectIndex">
-            <el-select v-model="formData.projectIndex" placeholder="请选择项目名称" clearable @change="changeProject" style="width: 300px">
+            <el-select v-model="formData.projectIndex" placeholder="请选择项目名称" clearable @change="changeProject"
+                       style="width: 300px">
               <el-option
                   v-for="(item,i) in projectList"
                   :key="item.projectId"
@@ -84,7 +85,7 @@
           </el-form-item>
           <el-form-item label="人员岗位:" prop="postId">
             <el-select v-model="formData.postId" placeholder="请选择岗位" clearable style="width: 300px">
-                            <el-option v-for="item in jobList" :key="item.postId" :label="item.postName" :value="item.postId"/>
+              <el-option v-for="item in jobList" :key="item.postId" :label="item.postName" :value="item.postId"/>
             </el-select>
           </el-form-item>
           <el-form-item label="人员等级:" prop="level">
@@ -187,10 +188,10 @@ export default {
         }
       })
     },
-    changeEntryMark(){
-      if(this.formData.entryMark === 1){
+    changeEntryMark() {
+      if (this.formData.entryMark === 1) {
         this.rules.entryReason[0].required = true
-      }else{
+      } else {
         this.rules.entryReason[0].required = false
       }
     },
@@ -208,6 +209,12 @@ export default {
           return
         }
         this.formData.empId = this.initData.empId
+        this.jobList.forEach(e => {
+          if (e.postId === this.formData.postId) {
+            this.formData.postName = e.postName
+            return
+          }
+        })
         this.$http({
           url: this.$http.adornUrl('/externalProject/checkEntryProject'),
           method: 'post',

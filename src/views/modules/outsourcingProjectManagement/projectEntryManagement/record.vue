@@ -1,6 +1,13 @@
 <template>
   <div class="container">
-    <el-button @click="back">返回</el-button>
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center;">
+        <span style="cursor: text;font-size: 14px;font-weight: 600;color: #303133;line-height: 40px;">{{ baseData.name }} 入离场记录</span>
+      </div>
+      <div style="display: flex; align-items: center; margin-left: auto;">
+        <el-button @click="back">返回</el-button>
+      </div>
+    </div>
     <div class="main-box">
       <el-header class="projectName-header">基本信息</el-header>
       <el-form ref="projectForm" class="form-info" :inline="true" :model="baseData" label-width="100px">
