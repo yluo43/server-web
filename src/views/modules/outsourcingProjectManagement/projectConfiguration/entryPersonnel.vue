@@ -114,13 +114,13 @@
       <template v-slot:departStatusName="row">
         <!--类型插槽-->
         <template>
-          <div v-if="row.item.departStatusName==='在职'" style="background-color: #E8FFEA ;color: #00B42A;display: flex">
-            <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #00B42A;margin-top: 8.5px;margin-right: 5px"/>
-            <div>{{row.item.departStatusName}}</div>
+          <div v-if="row.item.departStatusName==='在职'" style="background-color: #E8FFEA ;color: #00B42A;display: inline-block;width: 50px;">
+            <div style="display:inline-block; width: 5px;height: 5px;border-radius: 50%;background-color: #00B42A;margin-right: 5px;vertical-align: middle;"/>
+            <div style="display:inline-block; ">{{row.item.departStatusName}}</div>
           </div>
-          <div v-else style="background-color: #FFF0ED ;color: #D54941;display: flex">
-            <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #D54941;margin-top: 8.5px;margin-right: 5px"/>
-            <div>{{row.item.departStatusName}}</div>
+          <div v-else style="background-color: #FFF0ED ;color: #D54941;display: inline-block;width: 50px;">
+            <div style="display:inline-block;width: 5px;height: 5px;border-radius: 50%;background-color: #D54941;margin-right: 5px;vertical-align: middle;"/>
+            <div style="display:inline-block; ">{{row.item.departStatusName}}</div>
           </div>
         </template>
       </template>
@@ -334,10 +334,16 @@ export default {
 .ownBar {
   color: #666EE8;
   background-color: #F0F1FD;
+  display: inline-block;
+  border-radius: 3px;
+  width: 65px;
 }
 
 .notOwnBar {
   color: #666EE8;
   background-color: #FBD4A1;
+  display: inline-block;
+  border-radius: 3px;
+  width: 65px;
 }
 </style>

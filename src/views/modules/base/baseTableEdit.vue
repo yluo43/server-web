@@ -40,7 +40,7 @@
       </el-table>
     </div>
     <!-- Footer Area -->
-    <div class="foot-area">
+    <div class="foot-area" style="margin-top: 10px">
       <el-pagination style="text-align: right" @size-change="__sizeChangeHandle" @current-change="__currentChangeHandle"
         :current-page="options.curPage" :page-sizes="[10, 20, 30]" :page-size="options.pageSize" :total="options.count"
         layout="total, sizes, prev, pager, next, jumper">

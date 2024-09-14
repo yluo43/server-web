@@ -179,18 +179,18 @@
             <template>
               <div
                 v-if="row.item.departStatusName==='在职'"
-                style="background-color: #E8FFEA ;color: #00B42A;display: flex;width: 50px"
+                style="background-color: #E8FFEA ;color: #00B42A;display: inline-block;width: 50px"
               >
                 <div
-                  style="width: 5px;height: 5px;border-radius: 5px;background-color: #00B42A;margin-top: 8.5px;margin-right: 5px;margin-left: 5px"
+                  style="display:inline-block; width: 5px;height: 5px;border-radius: 50%;background-color: #00B42A;margin-right: 5px;vertical-align: middle;"
                 />
-                <div>{{ row.item.departStatusName }}</div>
+                <div style="display:inline-block; ">{{ row.item.departStatusName }}</div>
               </div>
-              <div v-else style="background-color: #FFF0ED ;color: #D54941;display: flex;width: 50px">
+              <div v-else style="background-color: #FFF0ED ;color: #D54941;display: inline-block;width: 50px">
                 <div
-                  style="width: 5px;height: 5px;border-radius: 5px;background-color: #D54941;margin-top: 8.5px;margin-right: 5px;margin-left: 5px"
+                  style="display:inline-block; width: 5px;height: 5px;border-radius: 50%;background-color: #D54941;margin-right: 5px;vertical-align: middle;"
                 />
-                <div>{{ row.item.departStatusName }}</div>
+                <div style="display:inline-block; ">{{ row.item.departStatusName }}</div>
               </div>
             </template>
           </template>
@@ -277,8 +277,8 @@ export default {
           { label: '司龄', prop: 'departAge' },
           { label: '部门', prop: 'department' },
           { label: '在离职状态', prop: 'departStatusName', slotName: 'departStatusName' },
-          { label: '入场外协项目', prop: 'departStatus', slotName: 'projectList', width: '200px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
+          { label: '入场外协项目', prop: 'departStatus', slotName: 'projectList', width: '250px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
         ],
         url: '/externalProject/listEmpProjectEntry'
       }
@@ -503,11 +503,11 @@ export default {
 .toolbar0 {
   display: flex;
   line-height: 20px;
-  padding-inline: 10px;
+  padding: 2px 6px;
   border-radius: 5px;
   font-size: 12px;
   text-align: center;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .toolbar1 {

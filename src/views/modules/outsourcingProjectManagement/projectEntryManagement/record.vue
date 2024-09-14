@@ -145,13 +145,13 @@
         <template v-slot:entryIsName="row">
           <!--类型插槽-->
           <template>
-            <div v-if="row.item.entryIsName==='在场'" style="background-color: #E8FFEA ;color: #00B42A;display: flex">
-              <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #00B42A;margin-top: 8.5px;margin-right: 5px"/>
-              <div>{{row.item.entryIsName}}</div>
+            <div v-if="row.item.entryIsName==='在场'" style="background-color: #E8FFEA ;color: #00B42A;display: inline-block;width: 50px;">
+              <div style="display:inline-block; width: 5px;height: 5px;border-radius: 50%;background-color: #00B42A;margin-right: 5px;vertical-align: middle;"/>
+              <div style="display:inline-block;">{{row.item.entryIsName}}</div>
             </div>
-            <div v-else style="background-color: #FFF0ED ;color: #D54941;display: flex">
-              <div style="width: 5px;height: 5px;border-radius: 5px;background-color: #D54941;margin-top: 8.5px;margin-right: 5px"/>
-              <div>{{row.item.entryIsName}}</div>
+            <div v-else style="background-color: #FFF0ED ;color: #D54941;display: inline-block;width: 50px;">
+              <div style="display:inline-block;width: 5px;height: 5px;border-radius: 50%;background-color: #D54941;margin-right: 5px;vertical-align: middle;"/>
+              <div style="display:inline-block;">{{row.item.entryIsName}}</div>
             </div>
           </template>
         </template>
@@ -180,7 +180,7 @@ export default {
       entryMarks: [{ id: '', name: '全部' },{ id: 0, name: '真实入场' }, { id: 1, name: '虚拟入场' }],
       tableData: {
         theads: [
-          { label: '项目名称', prop: 'projectName' },
+          { label: '项目名称', prop: 'projectName', width: '250px' },
           { label: '项目经理', prop: 'managerName' },
           { label: '项目客户', prop: 'customerName' },
           { label: '客户所属集团', prop: 'belongGroup' },
@@ -363,11 +363,17 @@ export default {
 .ownBar {
   color: #666EE8;
   background-color: #F0F1FD;
+  display: inline-block;
+  border-radius: 3px;
+  width: 65px;
 }
 
 .notOwnBar {
   color: #666EE8;
   background-color: #FBD4A1;
+  display: inline-block;
+  border-radius: 3px;
+  width: 65px;
 }
 
 .left-right-header {

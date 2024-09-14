@@ -114,7 +114,7 @@
         </el-button>
       </div>
       <el-divider></el-divider>
-      <div style="margin-left: 20px;margin-top: 20px">
+      <div style="margin: 20px">
         <baseTable ref="table" :table-data="tableData" :multi-select="true" @updateTable="updateTable">
           <template v-slot:clientType="row">
             <!--类型插槽-->
@@ -383,7 +383,7 @@ export default {
   display: flex;
 
   .left {
-    width: 403px;
+    width: 500px;
     background: #fff;
     border-radius: 4px 4px 4px 4px;
 
