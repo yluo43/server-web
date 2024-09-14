@@ -132,7 +132,7 @@
     </baseTable>
     <baseDialog ref="departureDialog" title="离场" width="500px">
       <template>
-        <departure ref="departure" @refreshTableData="selectTableData"></departure>
+        <departure ref="departure" @refreshTableData="refresh"></departure>
       </template>
     </baseDialog>
   </div>
@@ -216,12 +216,6 @@ export default {
     refresh() {
       this.$refs.table.refresh(this.dataConversion(this.queryParams))
     },
-    selectTableData() {
-      this.$nextTick(() => {
-        this.$refs.table.refresh(this.queryParams)
-      })
-    },
-
     // 查询条件数据转换
     dataConversion(form) {
       let params = JSON.parse(JSON.stringify(form))
@@ -325,6 +319,7 @@ export default {
       this.queryParams.entryIs = this.isEntry ? 1 : 0
       this.planExitTime = []
       this.entryTime = []
+      this.exitTime = []
       this.refresh()
     }
   }

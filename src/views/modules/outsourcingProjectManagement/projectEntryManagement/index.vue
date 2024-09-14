@@ -158,7 +158,7 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-tooltip class="item" effect="dark" content="新增入场项目" placement="bottom">
+              <el-tooltip class="item" effect="dark" content="标记入场" placement="bottom">
                 <svg-icon
                   :icon-class="'add-icon'"
                   style="height: 18px; width: 18px; margin-right:20px"
@@ -287,9 +287,9 @@ export default {
 
   mounted() {
     this.getDept()
-    this.refresh()
     this.getProject()
     this.getQueryParam()
+    this.refresh()
   },
   methods: {
     openProject(projectId) {

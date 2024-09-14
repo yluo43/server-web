@@ -310,6 +310,7 @@ export default {
       this.editMode = false
     },
     confirm() {
+      this.projectFormData.managerId = this.projectManagerId[1]
       this.$http({
         url: this.$http.adornUrl('/externalProject/updateExternalProject'),
         method: 'put',
@@ -320,7 +321,7 @@ export default {
             message: '修改成功',
             type: 'success'
           })
-          Object.assign(this.projectFormDataOrigin,this.projectFormData)
+          Object.assign(this.projectFormDataOrigin, this.projectFormData)
           this.editMode = false
         } else {
           this.$message.error(data.msg)
