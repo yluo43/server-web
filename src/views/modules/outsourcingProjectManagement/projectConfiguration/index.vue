@@ -297,7 +297,7 @@ export default {
     },
     // 删除
     deleteItem(row) {
-      const message = `确定删除${row.projectName}项目吗？`
+      const message = `确定删除${row.name}项目吗？`
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

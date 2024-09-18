@@ -213,7 +213,7 @@ export default {
 
   mounted() {
     this.$http({
-      url: this.$http.adornUrl('/externalProject/listRelProjectData'),
+      url: this.$http.adornUrl('/projectSet/listRelProject'),
       method: 'get'
     }).then(({data}) => {
       if (data && data.code === 200) {

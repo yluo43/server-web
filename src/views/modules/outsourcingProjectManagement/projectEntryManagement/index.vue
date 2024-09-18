@@ -393,7 +393,7 @@ export default {
     // 获取所属部门
     getDept() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDeptByRole'),
+        url: this.$http.adornUrl('/common/getDept'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {

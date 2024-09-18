@@ -195,7 +195,6 @@ export default {
         ],
         url: '/externalProject/listEntryExitRecord'
       },
-      deptList: [],
       jobList: [],
       showFlag: false,
       entryTime: [],
@@ -226,7 +225,6 @@ export default {
   },
 
   mounted() {
-    this.getDept()
     this.getCustomers()
   },
   methods: {
@@ -286,19 +284,7 @@ export default {
         }
       })
     },
-    // 获取所属部门
-    getDept() {
-      this.$http({
-        url: this.$http.adornUrl('/common/getDeptByRole'),
-        method: 'get'
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.deptList = data.payload.filter((item) => item.id !== 0)
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
+
     // 获取岗位信息
     getJob() {
       this.$http({
@@ -346,6 +332,7 @@ export default {
       this.queryParams.projectId = this.baseData.id
       this.planExitTime = []
       this.entryTime = []
+      this.refreshTable()
     },
     back(){
       this.$emit('update:syncIsList', true);
