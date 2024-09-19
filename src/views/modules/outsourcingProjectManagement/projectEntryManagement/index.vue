@@ -135,7 +135,7 @@
                     （项目不归属于您，不点击查看项目详情）
                   </div>
                 </div>
-                <div :class="(!!item.belongSelf?'toolbar0 ':'toolbar1 ')+(!!item.entryMark?'ownBar':'notOwnBar')">
+                <div :class="(!!item.belongSelf?'toolbar0 ':'toolbar1 ')+(!!item.entryMark?'notOwnBar':'ownBar')">
                   <!--                  <svg-icon v-if="!!item.belongSelf" :icon-class="'star'" style="height: 1.5em; width: 1.5em;"-->
                   <!--                            @click="addProject(row.item)"/>-->
                   <img

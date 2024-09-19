@@ -15,13 +15,13 @@
           <el-input v-model="projectFormData.level" placeholder="岗位级别" clearable></el-input>
         </el-form-item>
         <el-form-item label="单价（含税/元）:" prop="unitPrice">
-          <el-input v-model="projectFormData.unitPrice" placeholder="单价（含税/元）" clearable></el-input>
+          <el-input v-model="projectFormData.unitPrice" placeholder="单价（含税/元）" clearable ref="unitPrice" @input="handleInput1"></el-input>
         </el-form-item>
         <el-form-item label="单价（不含税/元）:" prop="unitPrice">
-          <el-input v-model="projectFormData.taxUnitPrice" placeholder="单价（不含税/元）" clearable></el-input>
+          <el-input v-model="projectFormData.taxUnitPrice" placeholder="单价（不含税/元）" clearable ref="taxUnitPrice" @input="handleInput2"></el-input>
         </el-form-item>
         <el-form-item label="类型（按n天计）:" prop="type">
-          <el-input v-model="projectFormData.type" placeholder="类型（按n天计）" clearable></el-input>
+          <el-input v-model="projectFormData.type" placeholder="类型（按n天计）" clearable ref="type" @input="handleInput"></el-input>
         </el-form-item>
       </el-form>
       <el-row class="btn-box">
@@ -63,6 +63,42 @@ export default {
   methods: {
     init(initData){
       this.projectFormData.projectId = initData.id
+    },
+    handleInput(value) {
+      // 使用正则表达式来匹配数字
+      const regex = /^\d+$/
+      if (!regex.test(value)) {
+        this.$refs.type.blur()
+        this.$nextTick(() => {
+          // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
+          this.projectFormData.type = value.substring(0, value.length - 1)
+          // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
+        })
+      }
+    },
+    handleInput1(value) {
+      // 使用正则表达式来匹配数字
+      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
+      if (!regex.test(value)) {
+        this.$refs.unitPrice.blur()
+        this.$nextTick(() => {
+          // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
+          this.projectFormData.unitPrice = value.substring(0, value.length - 1)
+          // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
+        })
+      }
+    },
+    handleInput2(value) {
+      // 使用正则表达式来匹配数字
+      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
+      if (!regex.test(value)) {
+        this.$refs.taxUnitPrice.blur()
+        this.$nextTick(() => {
+          // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
+          this.projectFormData.taxUnitPrice = value.substring(0, value.length - 1)
+          // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
+        })
+      }
     },
     confirm() {
       this.$refs.projectFormData.validate((valid) => {

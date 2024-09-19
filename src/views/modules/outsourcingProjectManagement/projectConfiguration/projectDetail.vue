@@ -8,6 +8,10 @@
 <!--        <el-tab-pane label="结算信息" name="fourth"></el-tab-pane>-->
       </el-tabs>
     </div>
+    <div style=" margin-top: 24px;display: flex; align-items: center; padding: 16px 0 16px 20px;background: #fff;">
+      <div class="circular"></div>
+      <span style="font-size: 20px;margin-left: 10px;">{{ initData.name }}</span>
+    </div>
     <div v-show="activeName == 'projectName'" class="main">
       <projectInfo ref="projectInfo"/>
     </div>
@@ -29,7 +33,8 @@ export default {
     return {
       activeName: 'projectName',
       levels: [],
-      entryMarks: []
+      entryMarks: [],
+      initData: {}
     }
   },
   mounted() {
@@ -37,6 +42,7 @@ export default {
   methods: {
     // 初始化
     init(initData) {
+      this.initData = initData
       this.$refs.projectInfo.init(initData)
       this.$refs.entryPersonnel.init(initData)
       this.$refs.departurePersonnel.init(initData)
@@ -116,5 +122,11 @@ export default {
   align-items: center;
   justify-content: flex-end;
   box-shadow: 0px -3px 12px 0px rgba(0, 0, 0, 0.1);
+}
+.circular {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(311deg, #3d6ce1 0%, #4d82ff 100%);
 }
 </style>

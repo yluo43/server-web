@@ -328,7 +328,8 @@ export default {
 <style scoped lang="scss">
 .main-box {
   height: 100%;
-  margin-top: 24px;
+  padding: 0 24px 0 16px;
+  background: #fff;
 }
 
 .ownBar {

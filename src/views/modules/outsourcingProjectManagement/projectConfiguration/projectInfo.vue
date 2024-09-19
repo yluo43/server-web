@@ -11,7 +11,11 @@
       </div>
       <el-divider></el-divider>
       <div v-if="editMode" class="form-info">
-        <el-form ref="projectForm" :model="projectFormData" label-width="100px">
+        <el-form
+            ref="projectForm"
+            :rules="projectFormRules"
+            :model="projectFormData"
+            label-width="100px">
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectFormData.name" placeholder="请输入项目名称" clearable></el-input>
           </el-form-item>
@@ -22,6 +26,7 @@
                 placeholder="请选择项目经理"
                 :show-all-levels="false"
                 @change="changeManagerId"
+                style="width: 100%"
             >
             </el-cascader>
           </el-form-item>
@@ -69,7 +74,7 @@
             />
           </el-form-item>
           <el-form-item label="备注:" prop="notes">
-            <el-input v-model="projectFormData.remark" type="textarea" maxlength="100" show-word-limit></el-input>
+            <el-input v-model="projectFormData.remark" style="margin-block: 6px" type="textarea" maxlength="100" show-word-limit></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -148,6 +153,23 @@ export default {
   components: {baseTable, baseDrawer, addUnit},
   data() {
     return {
+      projectFormRules: {
+        name: [{ required: true, message: '请输入项目名称', trigger: ['blur', 'change'] },
+          {
+            validator: (rule, value, callback) => {
+              if (value.length > 30) {
+                callback(new Error('项目名称最长不能超过30个字符'));
+              } else {
+                callback();
+              }
+            },
+            trigger: ['blur', 'change']
+          }],
+        managerId: [{required: true, message: '请选择项目经理', trigger: 'change'}],
+        customerId: [{required: true, message: '请选择项目客户', trigger: 'change'}],
+        startTime: [{required: true, message: '请选择开始日期', trigger: 'change'}],
+        endTime: [{required: true, message: '请选择结束日期', trigger: 'change'}]
+      },
       // 是否是编辑模式
       editMode: false,
       associatedProjects: [],
@@ -246,7 +268,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/externalProject/listCustomer?pageSize=999'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.customerNames = data.payload.list.filter((item) => item.id != 0)
       } else {
@@ -258,10 +280,10 @@ export default {
     init(projectFormData) {
       this.projectFormData = projectFormData
       this.projectManagerId = [projectFormData.deptId, projectFormData.managerId]
-      Object.assign(this.projectFormDataOrigin,this.projectFormData)
+      Object.assign(this.projectFormDataOrigin, this.projectFormData)
       this.refreshTable()
     },
-    updateTable(row){
+    updateTable(row) {
       this.$http({
         url: this.$http.adornUrl('/externalProject/updateProjectUnitPrice'),
         method: 'put',
@@ -289,9 +311,9 @@ export default {
         }
       })
     },
-    customerChange(i){
-      this.customerNames.forEach(e=>{
-        if(i === e.id){
+    customerChange(i) {
+      this.customerNames.forEach(e => {
+        if (i === e.id) {
           this.projectFormData.customerName = e.name
           this.projectFormData.belongGroup = e.belongGroup
           return
@@ -379,7 +401,6 @@ export default {
 <style scoped lang="scss">
 .main-box {
   height: 100%;
-  margin-top: 24px;
   display: flex;
 
   .left {
@@ -395,12 +416,12 @@ export default {
   .right {
     flex: 1;
     background: #fff;
-    margin-left: 24px;
+    margin-left: 1px;
   }
 
   .left-right-header {
     height: 64px;
-    padding: 0 24px 0 16px;
+    padding: 0 0px 0 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;

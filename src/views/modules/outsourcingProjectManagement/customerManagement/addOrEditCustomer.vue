@@ -1,8 +1,12 @@
 <template>
   <div>
     <el-container class="container" direction="vertical">
-      <el-form ref="customerFormData" :rules="customerFormRules" :model="customerFormData" label-width="auto"
-               class="form-item">
+      <el-form
+          ref="customerFormData"
+          :rules="customerFormRules"
+          :model="customerFormData"
+          label-width="auto"
+          class="form-item">
         <el-form-item label="项目客户:" prop="name">
           <el-input v-model="customerFormData.name" placeholder="请输入项目客户" clearable></el-input>
         </el-form-item>
@@ -26,9 +30,28 @@ export default {
   data() {
     return {
       customerFormRules: {
-        name: [{required: true, message: '请输入项目客户', trigger: ['blur', 'change']}],
-        id: [{required: true, message: '请输入客户编号', trigger: ['blur', 'change']}],
-        belongGroup: [{required: true, message: '请输入所属集团', trigger: ['blur', 'change']}]
+        name: [{required: true, message: '请输入项目客户', trigger: ['blur', 'change']},
+          {
+            validator: (rule, value, callback) => {
+              if (value.length > 30) {
+                callback(new Error('项目客户最长不能超过30个字符'));
+              } else {
+                callback();
+              }
+            },
+            trigger: ['blur', 'change']
+          }],
+        belongGroup: [{required: true, message: '请输入所属集团', trigger: ['blur', 'change']},
+          {
+            validator: (rule, value, callback) => {
+              if (value.length > 30) {
+                callback(new Error('所属集团最长不能超过30个字符'));
+              } else {
+                callback();
+              }
+            },
+            trigger: ['blur', 'change']
+          }]
       },
       customerFormData: {
         name: '',

@@ -135,11 +135,11 @@ export default {
       pickerOptions: {
         disabledDate(time) {
           // 获取今天的日期
-          const today = new Date();
+          const today = new Date()
           // 设置今天的日期时间为00:00:00
-          today.setHours(0, 0, 0, 0);
+          today.setHours(0, 0, 0, 0)
           // 如果传入的日期小于今天的日期，则返回true，表示该日期被禁用
-          return time.getTime() < today.getTime();
+          return time.getTime() < today.getTime()
         }
       },
       projectList: [],
@@ -163,7 +163,7 @@ export default {
       },
       postLevelSet: [],
       rules: {
-        projectName: [{ required: true, message: '请选择项目名称', trigger: 'change' }],
+        projectIndex: [{ required: true, message: '请选择项目名称', trigger: 'change' }],
         projectManager: [{ required: true, message: '项目经理不能为空', trigger: 'blur' }],
         customerName: [{ required: true, message: '项目客户不能为空', trigger: 'blur' }],
         belongGroup: [{ required: true, message: '客户所属集团不能为空', trigger: 'blur' }],
@@ -258,9 +258,16 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 200) {
             if (data.payload.length !== 0) {
-              this.$confirm(data.payload + ', 是否继续?', '提示', {
+              console.log(data.payload)
+              let text = ''
+              let texts = data.payload.split('\n')
+              texts.forEach(e => {
+                text += '<div>' + e + '</div><div>&nbsp;</div>'
+              })
+              this.$confirm(text, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
+                dangerouslyUseHTMLString: true,
                 type: 'warning'
               }).then(() => {
                 this.submit()
