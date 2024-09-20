@@ -127,7 +127,7 @@
       </div>
       <el-divider></el-divider>
       <div style="margin: 20px">
-        <baseTable ref="table" :table-data="tableData" :multi-select="true" @updateTable="updateTable">
+        <baseTable ref="table" :table-data="tableData" :multi-select="true" @updateTable="updateTable" @handleInput="handleInput">
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
@@ -289,6 +289,27 @@ export default {
       this.projectManagerId = [projectFormData.deptId, projectFormData.managerId]
       Object.assign(this.projectFormDataOrigin, this.projectFormData)
       this.refreshTable()
+    },
+    handleInput(value,prop,scope,options){
+      if (prop === 'type'){
+        // 使用正则表达式匹配并保留数字部分
+        let numericValue = value.replace(/\D/g, '');
+        // 如果输入值发生了变化（即包含非数字字符），则更新绑定的数据
+        if (value !== numericValue) {
+          // 直接更新绑定的数据，Vue 会自动更新 DOM
+          options.dataList[scope.$index][prop] = numericValue;
+        }
+      } else if (prop === 'unitPrice' || prop === 'taxUnitPrice'){
+        const regex = /^\d*(\.\d{0,2})?$/
+        // 如果不匹配，处理输入
+        if (!regex.test(value)) {
+          this.$nextTick(() => {
+            // 找到最后一个有效的数字部分并更新输入框的值
+            const validValue = value.match(/^\d*(\.\d{0,2})?/)[0] || ''
+            options.dataList[scope.$index][prop] = validValue
+          })
+        }
+      }
     },
     updateTable(row) {
       this.$http({

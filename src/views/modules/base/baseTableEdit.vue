@@ -2,15 +2,17 @@
   <div class="el-main__mdgMainTable" style="width: 100%; height: 100%">
     <div>
       <el-table border stripe highlight-current-row fixed :data="options.dataList" default-expand-all
-        v-loading="options.tableLoading" :height="options.height" :max-height="options.maxHeight" style="width: 100%"
-        v-bind:style="{ 'min-height': options.minHeight }" @selection-change="__handleSelectionChange"
-        @sort-change="__changeTableSort" @row-dblclick="__rowDblclick" @row-click="__rowClick" @select="__select"
-        @cell-click="__cellMouseClick"
-        @select-all="__selectAll" size="mini" ref="table">
+                v-loading="options.tableLoading" :height="options.height" :max-height="options.maxHeight"
+                style="width: 100%"
+                v-bind:style="{ 'min-height': options.minHeight }" @selection-change="__handleSelectionChange"
+                @sort-change="__changeTableSort" @row-dblclick="__rowDblclick" @row-click="__rowClick"
+                @select="__select"
+                @cell-click="__cellMouseClick"
+                @select-all="__selectAll" size="mini" ref="table">
         <template v-for="(item, index) in options.theads">
           <template v-if="item.slotName != null">
             <el-table-column :key="index" :label="item.label" :prop="item.prop" :show-overflow-tooltip="true"
-              :formatter="item.formatter" :sortable="item.sortName != null" :min-width="item.width">
+                             :formatter="item.formatter" :sortable="item.sortName != null" :min-width="item.width">
               <template slot-scope="scope">
                 <div @click.stop="__clickStop" style="display: inline">
                   <slot :name="item.slotName" v-bind:item="scope.row"></slot>
@@ -20,12 +22,13 @@
           </template>
           <template v-else>
             <el-table-column :key="index" :label="item.label" :prop="item.prop" :show-overflow-tooltip="true"
-              :formatter="item.formatter" :sortable="item.sortName != null" :width="item.width">
+                             :formatter="item.formatter" :sortable="item.sortName != null" :width="item.width">
               <template slot-scope="scope">
                 <el-input
                     v-if="editingIndex === scope.$index && editingProp ===  item.prop"
                     v-model="scope.row[item.prop]"
                     @blur="handleBlur()"
+                    @input="handleInput($event,scope,item.prop)"
                 ></el-input>
                 <span v-else @click="handleEdit(scope.$index,item.prop)">{{ scope.row[item.prop] }}</span>
               </template>
@@ -42,8 +45,9 @@
     <!-- Footer Area -->
     <div class="foot-area" style="margin-top: 10px">
       <el-pagination style="text-align: right" @size-change="__sizeChangeHandle" @current-change="__currentChangeHandle"
-        :current-page="options.curPage" :page-sizes="[10, 20, 30]" :page-size="options.pageSize" :total="options.count"
-        layout="total, sizes, prev, pager, next, jumper">
+                     :current-page="options.curPage" :page-sizes="[10, 20, 30]" :page-size="options.pageSize"
+                     :total="options.count"
+                     layout="total, sizes, prev, pager, next, jumper">
       </el-pagination>
     </div>
   </div>
@@ -107,6 +111,9 @@ export default {
     })
   },
   methods: {
+    handleInput(value, scope, prop) {
+      this.$emit('handleInput', value, prop, scope, this.options)
+    },
     __calculateHeight() {
       // 根据屏幕高度算表格高度
       if (window.innerHeight < 800) {
@@ -120,23 +127,23 @@ export default {
       }
     },
     handleEdit(index, propName) {
-      if(this.editingIndex !== null || this.editingProp !== null){
-        this.$emit('updateTable',this.options.dataList[this.editingIndex])
+      if (this.editingIndex !== null || this.editingProp !== null) {
+        this.$emit('updateTable', this.options.dataList[this.editingIndex])
       }
       this.editingIndex = index
       this.editingProp = propName
       this.editingId = this.options.dataList[this.editingIndex].id
     },
     handleBlur() {
-      if(this.editingIndex !== null || this.editingProp !== null) {
+      if (this.editingIndex !== null || this.editingProp !== null) {
         this.$emit('updateTable', this.options.dataList[this.editingIndex])
       }
       this.editingIndex = null
       this.editingProp = null
       this.editingId = null
     },
-    __cellMouseClick(row, column, cell, event){
-      if(this.editingId !== row.id || this.editingProp !== column.property){
+    __cellMouseClick(row, column, cell, event) {
+      if (this.editingId !== row.id || this.editingProp !== column.property) {
         this.handleBlur()
       }
     },
@@ -188,8 +195,8 @@ export default {
       if (!this.multiSelect) {
         // 单选
         if (
-          this.$refs.table.selection == null ||
-          this.$refs.table.selection[0] !== row
+            this.$refs.table.selection == null ||
+            this.$refs.table.selection[0] !== row
         ) {
           this.$refs.table.clearSelection()
           this.$refs.table.toggleRowSelection(row)
@@ -233,7 +240,7 @@ export default {
         this.$refs.table.toggleRowSelection(row, true)
       }
     },
-    __clickStop: function() {
+    __clickStop: function () {
       // 该方法为了阻止冒泡事件，没什么软用
     },
     // 获取当前选项
@@ -269,37 +276,37 @@ export default {
         url: this.$http.adornUrl(this.options.url),
         method: 'get',
         params: this.$http.adornParams(
-          Object.assign(searchParams, {
-            curPage: this.options.curPage,
-            pageSize: this.options.pageSize,
-            order: this.options.order,
-            orderKey: this.options.orderKey
-          })
+            Object.assign(searchParams, {
+              curPage: this.options.curPage,
+              pageSize: this.options.pageSize,
+              order: this.options.order,
+              orderKey: this.options.orderKey
+            })
         )
       })
-        .then(({ data }) => {
-          if (data && data.code === 200) {
-            data.page=data.payload
-            this.options.dataList = data.page.list
-            this.options.count = data.page.totalCount
-            this.options.data = data
-          } else {
-            this.options.dataList = []
-            this.options.totalPage = 0
-            this.$alert(data.msg)
-          }
-          this.options.tableLoading = false
-          if (this.$listeners['afterQuery']) {
-            this.$emit('afterQuery')
-          }
-          // 修改错位问题
-          this.$nextTick(() => {
-            this.$refs.table.doLayout()
+          .then(({data}) => {
+            if (data && data.code === 200) {
+              data.page = data.payload
+              this.options.dataList = data.page.list
+              this.options.count = data.page.totalCount
+              this.options.data = data
+            } else {
+              this.options.dataList = []
+              this.options.totalPage = 0
+              this.$alert(data.msg)
+            }
+            this.options.tableLoading = false
+            if (this.$listeners['afterQuery']) {
+              this.$emit('afterQuery')
+            }
+            // 修改错位问题
+            this.$nextTick(() => {
+              this.$refs.table.doLayout()
+            })
           })
-        })
-        .catch((e) => {
-          this.options.tableLoading = false
-        })
+          .catch((e) => {
+            this.options.tableLoading = false
+          })
     },
     refresh(params) {
       // 对象为空刷新，就是找上一次的查询条件刷
@@ -322,7 +329,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.el-table thead th{
+.el-table thead th {
   background: #cbe5ff !important;
   color: rgb(90, 89, 89);
   height: 45px;

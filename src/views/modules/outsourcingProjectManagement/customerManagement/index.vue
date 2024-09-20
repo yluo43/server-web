@@ -97,15 +97,12 @@ export default {
       this.refresh()
     },
     handleInput(value) {
-      // 使用正则表达式来匹配数字
-      const regex = /^\d+$/
-      if (!regex.test(value)) {
-        this.$refs.id.blur()
-        this.$nextTick(() => {
-          // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
-          this.dataForm.id = value.substring(0, value.length - 1)
-          // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
-        })
+      // 使用正则表达式匹配并保留数字部分
+      let numericValue = value.replace(/\D/g, '');
+      // 如果输入值发生了变化（即包含非数字字符），则更新绑定的数据
+      if (value !== numericValue) {
+        // 直接更新绑定的数据，Vue 会自动更新 DOM
+        this.dataForm.id = numericValue;
       }
     },
     // 获取选中的数据

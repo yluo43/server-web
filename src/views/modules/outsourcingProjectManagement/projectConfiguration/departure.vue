@@ -55,16 +55,7 @@ export default {
         exitTime: '',
         exitReason: ''
       },
-      pickerOptions: {
-        disabledDate(time) {
-          // 获取今天的日期
-          const today = new Date();
-          // 设置今天的日期时间为00:00:00
-          today.setHours(0, 0, 0, 0);
-          // 如果传入的日期小于今天的日期，则返回true，表示该日期被禁用
-          return time.getTime() > today.getTime();
-        }
-      },
+      pickerOptions: {},
       rules: {
         exitTime: [{ required: true, trigger: 'blur', message: '请选择实际离场时间' }],
         // exitReason: [{ required: true, trigger: 'blur', message: '请输入离场原因' }]
@@ -76,6 +67,15 @@ export default {
   methods: {
     init(initData) {
       Object.assign(this.departurePersonnelInfo, initData)
+      this.pickerOptions = {
+        disabledDate: (time) => {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const targetDate = new Date(this.departurePersonnelInfo.entryTime);
+          targetDate.setHours(0, 0, 0, 0);
+          return time.getTime() > today.getTime() || time.getTime() < targetDate.getTime();
+        }
+      };
     },
     //确认
     confirm() {

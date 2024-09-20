@@ -310,14 +310,13 @@ export default {
       this.$refs.table.refresh(this.dataConversion(this.dataForm))
     },
     handleInput0(value) {
-      // 使用正则表达式来匹配数字
-      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
+      const regex = /^\d*(\.\d{0,2})?$/
+      // 如果不匹配，处理输入
       if (!regex.test(value)) {
-        this.$refs.jobAgeStart.blur() // 移除焦点，避免用户继续输入
         this.$nextTick(() => {
-          // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
-          this.dataForm.jobAgeStart = value.substring(0, value.length - 1)
-          // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
+          // 找到最后一个有效的数字部分并更新输入框的值
+          const validValue = value.match(/^\d*(\.\d{0,2})?/)[0] || ''
+          this.dataForm.jobAgeStart = validValue
         })
       }
     },
@@ -335,38 +334,35 @@ export default {
       }
     },
     handleInput1(value) {
-      // 使用正则表达式来匹配数字
-      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
+      const regex = /^\d*(\.\d{0,2})?$/
+      // 如果不匹配，处理输入
       if (!regex.test(value)) {
-        this.$refs.jobAgeEnd.blur() // 移除焦点，避免用户继续输入
         this.$nextTick(() => {
-          // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
-          this.dataForm.jobAgeEnd = value.substring(0, value.length - 1)
-          // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
+          // 找到最后一个有效的数字部分并更新输入框的值
+          const validValue = value.match(/^\d*(\.\d{0,2})?/)[0] || ''
+          this.dataForm.jobAgeEnd = validValue
         })
       }
     },
     handleInput2(value) {
-      // 使用正则表达式来匹配数字
-      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
+      const regex = /^\d*(\.\d{0,2})?$/
+      // 如果不匹配，处理输入
       if (!regex.test(value)) {
-        this.$refs.departAgeStart.blur() // 移除焦点，避免用户继续输入
         this.$nextTick(() => {
-          // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
-          this.dataForm.departAgeStart = value.substring(0, value.length - 1)
-          // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
+          // 找到最后一个有效的数字部分并更新输入框的值
+          const validValue = value.match(/^\d*(\.\d{0,2})?/)[0] || ''
+          this.dataForm.departAgeStart = validValue
         })
       }
     },
     handleInput3(value) {
-      // 使用正则表达式来匹配数字
-      const regex = /^\d*(\.\d{0,2})?$/ // 示例：允许最多两位小数的数字
+      const regex = /^\d*(\.\d{0,2})?$/
+      // 如果不匹配，处理输入
       if (!regex.test(value)) {
-        this.$refs.departAgeEnd.blur() // 移除焦点，避免用户继续输入
         this.$nextTick(() => {
-          // 更新输入框的值，可能需要手动截取最后一个有效的数字部分
-          this.dataForm.departAgeEnd = value.substring(0, value.length - 1)
-          // 或者，你可以考虑使用其他逻辑来确保输入框的值为数字
+          // 找到最后一个有效的数字部分并更新输入框的值
+          const validValue = value.match(/^\d*(\.\d{0,2})?/)[0] || ''
+          this.dataForm.departAgeEnd = validValue
         })
       }
     },
