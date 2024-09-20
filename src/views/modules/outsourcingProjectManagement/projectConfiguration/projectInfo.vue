@@ -86,7 +86,7 @@
         </el-form>
       </div>
       <div v-else class="form-info">
-        <el-form ref="projectForm" :model="projectFormDataOrigin" label-width="100px" class="form-item">
+        <el-form ref="projectFormOrigin" :model="projectFormDataOrigin" label-width="100px" class="form-item">
           <el-form-item label="项目名称:" prop="name">
             {{ projectFormDataOrigin.name }}
           </el-form-item>
@@ -216,6 +216,9 @@ export default {
         // 备注
         remark: ''
       },
+      projectFormDataBak: {
+
+      },
       projectFormDataOrigin: {
         // 项目名称
         name: '',
@@ -236,6 +239,19 @@ export default {
         endTime: '',
         // 备注
         remark: ''
+      }
+    }
+  },
+  watch: {
+    editMode(newVal) {
+      debugger
+      if (!newVal) {
+        Object.assign(this.projectFormDataBak, this.projectFormData)
+        this.$refs.projectForm.resetFields()
+      } else {
+        if (Object.values(this.projectFormDataBak).length > 0) {
+          Object.assign(this.projectFormData, this.projectFormDataBak)
+        }
       }
     }
   },
@@ -290,16 +306,16 @@ export default {
       Object.assign(this.projectFormDataOrigin, this.projectFormData)
       this.refreshTable()
     },
-    handleInput(value,prop,scope,options){
-      if (prop === 'type'){
+    handleInput(value, prop, scope, options) {
+      if (prop === 'type') {
         // 使用正则表达式匹配并保留数字部分
-        let numericValue = value.replace(/\D/g, '');
+        let numericValue = value.replace(/\D/g, '')
         // 如果输入值发生了变化（即包含非数字字符），则更新绑定的数据
         if (value !== numericValue) {
           // 直接更新绑定的数据，Vue 会自动更新 DOM
-          options.dataList[scope.$index][prop] = numericValue;
+          options.dataList[scope.$index][prop] = numericValue
         }
-      } else if (prop === 'unitPrice' || prop === 'taxUnitPrice'){
+      } else if (prop === 'unitPrice' || prop === 'taxUnitPrice') {
         const regex = /^\d*(\.\d{0,2})?$/
         // 如果不匹配，处理输入
         if (!regex.test(value)) {
@@ -324,6 +340,7 @@ export default {
           })
         } else {
           this.$message.error(data.msg)
+          this.refreshTable()
         }
       })
     },
