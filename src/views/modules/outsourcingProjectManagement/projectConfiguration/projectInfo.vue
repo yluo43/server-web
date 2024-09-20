@@ -12,41 +12,42 @@
       <el-divider></el-divider>
       <div v-if="editMode" class="form-info">
         <el-form
-            ref="projectForm"
-            :rules="projectFormRules"
-            :model="projectFormData"
-            label-width="100px">
+          ref="projectForm"
+          :rules="projectFormRules"
+          :model="projectFormData"
+          label-width="100px"
+        >
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectFormData.name" placeholder="请输入项目名称" clearable></el-input>
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerId">
             <el-cascader
-                v-model="projectManagerId"
-                :options="projectManagers"
-                placeholder="请选择项目经理"
-                :show-all-levels="false"
-                @change="changeManagerId"
-                style="width: 100%"
+              v-model="projectManagerId"
+              :options="projectManagers"
+              placeholder="请选择项目经理"
+              :show-all-levels="false"
+              style="width: 100%"
+              @change="changeManagerId"
             >
             </el-cascader>
           </el-form-item>
           <el-form-item label="关联项目:" prop="projectId">
             <el-select v-model="projectFormData.projectId" placeholder="请选择关联项目" clearable>
               <el-option
-                  v-for="item in associatedProjects"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
+                v-for="item in associatedProjects"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="项目客户:" prop="customerId">
             <el-select v-model="projectFormData.customerId" placeholder="请选择项目客户" clearable @change="customerChange">
               <el-option
-                  v-for="item in customerNames"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
+                v-for="item in customerNames"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -55,26 +56,32 @@
           </el-form-item>
           <el-form-item label="项目开始日期:" prop="startTime">
             <el-date-picker
-                v-model="projectFormData.startTime"
-                style="width: 100%"
-                type="date"
-                value-format="yyyy-MM-dd"
-                placeholder="请选择开始日期"
-                clearable
+              v-model="projectFormData.startTime"
+              style="width: 100%"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择开始日期"
+              clearable
             />
           </el-form-item>
           <el-form-item label="项目结束日期:" prop="endTime">
             <el-date-picker
-                v-model="projectFormData.endTime"
-                style="width: 100%"
-                type="date"
-                value-format="yyyy-MM-dd"
-                placeholder="请选择结束日期"
-                clearable
+              v-model="projectFormData.endTime"
+              style="width: 100%"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择结束日期"
+              clearable
             />
           </el-form-item>
           <el-form-item label="备注:" prop="notes">
-            <el-input v-model="projectFormData.remark" style="margin-block: 6px" type="textarea" maxlength="100" show-word-limit></el-input>
+            <el-input
+              v-model="projectFormData.remark"
+              style="margin-block: 6px"
+              type="textarea"
+              maxlength="100"
+              show-word-limit
+            ></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -111,10 +118,10 @@
       <div class="left-right-header">
         <div class="header-title">岗位单价信息</div>
         <el-button
-            class="btn-download"
-            type="primary"
-            icon="el-icon-circle-plus-outline"
-            @click="addUnit"
+          class="btn-download"
+          type="primary"
+          icon="el-icon-circle-plus-outline"
+          @click="addUnit"
         >添加岗位
         </el-button>
       </div>
@@ -126,9 +133,9 @@
             <template>
               <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
                 <svg-icon
-                    :icon-class="'delete-icon'"
-                    style="height: 1.5em; width: 1.5em; margin-right: 2em"
-                    @click="deleteItem(row.item)"
+                  :icon-class="'delete-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="deleteItem(row.item)"
                 />
               </el-tooltip>
             </template>
@@ -138,7 +145,7 @@
     </div>
     <base-drawer ref="addUnitDrawer" title="新增岗位" size="23%">
       <template>
-        <addUnit ref="addUnit" @closeDrawer="closeAddUnitDrawer"/>
+        <addUnit ref="addUnit" @closeDrawer="closeAddUnitDrawer" />
       </template>
     </base-drawer>
   </div>
@@ -150,7 +157,7 @@ import baseDrawer from '@/views/modules/base/baseDrawer.vue'
 import addUnit from './addUnit.vue'
 
 export default {
-  components: {baseTable, baseDrawer, addUnit},
+  components: { baseTable, baseDrawer, addUnit },
   data() {
     return {
       projectFormRules: {
@@ -158,17 +165,17 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (value.length > 30) {
-                callback(new Error('项目名称最长不能超过30个字符'));
+                callback(new Error('项目名称最长不能超过30个字符'))
               } else {
-                callback();
+                callback()
               }
             },
             trigger: ['blur', 'change']
           }],
-        managerId: [{required: true, message: '请选择项目经理', trigger: 'change'}],
-        customerId: [{required: true, message: '请选择项目客户', trigger: 'change'}],
-        startTime: [{required: true, message: '请选择开始日期', trigger: 'change'}],
-        endTime: [{required: true, message: '请选择结束日期', trigger: 'change'}]
+        managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
+        customerId: [{ required: true, message: '请选择项目客户', trigger: 'change' }],
+        startTime: [{ required: true, message: '请选择开始日期', trigger: 'change' }],
+        endTime: [{ required: true, message: '请选择结束日期', trigger: 'change' }]
       },
       // 是否是编辑模式
       editMode: false,
@@ -176,12 +183,12 @@ export default {
       membershipGroups: [],
       tableData: {
         theads: [
-          {label: '岗位', prop: 'name'},
-          {label: '级别', prop: 'level'},
-          {label: '单价（含税/元）', prop: 'unitPrice'},
-          {label: '单价（不含税/元）', prop: 'taxUnitPrice'},
-          {label: '类型（按n天计）', prop: 'type'},
-          {label: '操作', slotName: 'clientType'}
+          { label: '岗位', prop: 'name' },
+          { label: '级别', prop: 'level' },
+          { label: '单价（含税/元）', prop: 'unitPrice' },
+          { label: '单价（不含税/元）', prop: 'taxUnitPrice' },
+          { label: '类型（按n天计）', prop: 'type' },
+          { label: '操作', slotName: 'clientType' }
         ],
         url: '/externalProject/listProjectUnitPrice'
       },
@@ -237,7 +244,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/projectSet/listRelProject'),
       method: 'get'
-    }).then(({data}) => {
+    }).then(({ data }) => {
       if (data && data.code === 200) {
         this.associatedProjects = data.payload.filter((item) => item.id != 0)
       } else {
@@ -247,7 +254,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/common/getManagerData'),
       method: 'get'
-    }).then(({data}) => {
+    }).then(({ data }) => {
       if (data && data.code === 200) {
         this.projectManagers = data.payload.map(dept => {
           const transformedDept = {
@@ -268,7 +275,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/externalProject/listCustomer?pageSize=999'),
       method: 'get'
-    }).then(({data}) => {
+    }).then(({ data }) => {
       if (data && data.code === 200) {
         this.customerNames = data.payload.list.filter((item) => item.id != 0)
       } else {
@@ -278,7 +285,7 @@ export default {
   },
   methods: {
     init(projectFormData) {
-      this.projectFormData = projectFormData
+      Object.assign(this.projectFormData, projectFormData)
       this.projectManagerId = [projectFormData.deptId, projectFormData.managerId]
       Object.assign(this.projectFormDataOrigin, this.projectFormData)
       this.refreshTable()
@@ -288,7 +295,7 @@ export default {
         url: this.$http.adornUrl('/externalProject/updateProjectUnitPrice'),
         method: 'put',
         data: row
-      }).then(({data}) => {
+      }).then(({ data }) => {
         if (data && data.code === 200) {
           this.$message({
             message: '修改成功',
@@ -332,22 +339,28 @@ export default {
       this.editMode = false
     },
     confirm() {
-      this.projectFormData.managerId = this.projectManagerId[1]
-      this.$http({
-        url: this.$http.adornUrl('/externalProject/updateExternalProject'),
-        method: 'put',
-        data: this.projectFormData
-      }).then(({data}) => {
-        if (data && data.code === 200) {
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          })
-          Object.assign(this.projectFormDataOrigin, this.projectFormData)
-          this.editMode = false
-        } else {
-          this.$message.error(data.msg)
+      this.$refs.projectForm.validate((valid) => {
+        if (!valid) {
+          return false
         }
+        this.projectFormData.managerId = this.projectManagerId[1]
+        this.$http({
+          url: this.$http.adornUrl('/externalProject/updateExternalProject'),
+          method: 'put',
+          data: this.projectFormData
+        }).then(({ data }) => {
+          if (data && data.code === 200) {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            Object.assign(this.projectFormDataOrigin, this.projectFormData)
+            this.$emit('changeName', this.projectFormData.name)
+            this.editMode = false
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
       })
     },
     // 删除
@@ -359,28 +372,28 @@ export default {
         type: 'warning',
         center: true
       })
-          .then(() => {
-            this.$http({
-              url: this.$http.adornUrl('/externalProject/deleteProjectUnitPrice?id=' + row.id),
-              method: 'delete'
-            }).then(({data}) => {
-              if (data && data.code === 200) {
-                this.$message({
-                  message: '删除成功',
-                  type: 'success'
-                })
-                this.refreshTable()
-              } else {
-                this.$message.error(data.msg)
-              }
-            })
+        .then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/externalProject/deleteProjectUnitPrice?id=' + row.id),
+            method: 'delete'
+          }).then(({ data }) => {
+            if (data && data.code === 200) {
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              })
+              this.refreshTable()
+            } else {
+              this.$message.error(data.msg)
+            }
           })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
           })
+        })
     },
     // 新增
     addUnit() {

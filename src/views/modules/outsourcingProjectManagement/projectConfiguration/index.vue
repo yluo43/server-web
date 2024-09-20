@@ -227,6 +227,7 @@ export default {
     // 切换页面
     changePageFlag(pageFlag) {
       this.pageFlag = pageFlag
+      this.refresh()
     },
     // 查询表格数据
     refresh() {

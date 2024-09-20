@@ -75,7 +75,6 @@
               type="date"
               value-format="yyyy-MM-dd"
               placeholder="请选择入场日期"
-              :picker-options="pickerOptions"
             />
           </el-form-item>
           <el-form-item label="计划离场日期:" prop="planExitTime">
@@ -132,16 +131,6 @@ export default {
     return {
       initData: {},
       jobList: [],
-      pickerOptions: {
-        disabledDate(time) {
-          // 获取今天的日期
-          const today = new Date()
-          // 设置今天的日期时间为00:00:00
-          today.setHours(0, 0, 0, 0)
-          // 如果传入的日期小于今天的日期，则返回true，表示该日期被禁用
-          return time.getTime() < today.getTime()
-        }
-      },
       projectList: [],
       formData: {
         projectIndex: '',
@@ -258,7 +247,6 @@ export default {
         }).then(({ data }) => {
           if (data && data.code === 200) {
             if (data.payload.length !== 0) {
-              console.log(data.payload)
               let text = ''
               let texts = data.payload.split('\n')
               texts.forEach(e => {

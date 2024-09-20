@@ -20,7 +20,7 @@
       </el-form-item>
       <el-form-item label="岗位:" prop="postNameList">
         <el-select v-model="queryParams.postNameList" placeholder="请选择岗位" clearable multiple>
-          <el-option v-for="item in jobList" :key="item.name" :label="item.name" :value="item.name"/>
+          <el-option v-for="item in jobList" :key="item" :label="item" :value="item"/>
         </el-select>
       </el-form-item>
       <div v-if="showFlag" style="display: contents">
@@ -243,7 +243,7 @@ export default {
       return params
     },
     init(initData) {
-      this.initData = initData
+      Object.assign(this.initData,initData)
       this.getJob()
       this.refresh()
     },
@@ -267,7 +267,7 @@ export default {
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
-          this.jobList = data.payload.list
+          this.jobList = [...new Set(data.payload.list.map(item => item.name))]
           this.levelNameList = [...new Set(data.payload.list.map(item => item.level))];
         } else {
           this.$message.error(data.msg)

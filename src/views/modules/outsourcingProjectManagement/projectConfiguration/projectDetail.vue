@@ -11,9 +11,12 @@
     <div style=" margin-top: 24px;display: flex; align-items: center; padding: 16px 0 16px 20px;background: #fff;">
       <div class="circular"></div>
       <span style="font-size: 20px;margin-left: 10px;">{{ initData.name }}</span>
+      <div style="display: flex; align-items: center; margin-left: auto;margin-right: 20px">
+        <el-button @click="returnIndexPage">返回</el-button>
+      </div>
     </div>
     <div v-show="activeName == 'projectName'" class="main">
-      <projectInfo ref="projectInfo"/>
+      <projectInfo ref="projectInfo" @changeName ="changeName"/>
     </div>
     <div v-show="activeName == 'second'" class="main">
       <entryPersonnel :isEntry="true" ref="entryPersonnel"/>
@@ -42,10 +45,13 @@ export default {
   methods: {
     // 初始化
     init(initData) {
-      this.initData = initData
+      this.initData=initData
       this.$refs.projectInfo.init(initData)
       this.$refs.entryPersonnel.init(initData)
       this.$refs.departurePersonnel.init(initData)
+    },
+    changeName(name){
+      this.initData.name = name
     },
     // 返回主页面
     returnIndexPage() {
