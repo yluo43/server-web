@@ -108,7 +108,7 @@
           <el-form-item label="项目结束日期:" prop="endTime">
             {{ projectFormDataOrigin.endTime }}
           </el-form-item>
-          <el-form-item label="备注" prop="remark">
+          <el-form-item label="备注:" prop="remark">
             {{ projectFormDataOrigin.remark }}
           </el-form-item>
         </el-form>
@@ -455,7 +455,7 @@ export default {
   display: flex;
 
   .left {
-    width: 500px;
+    width: 35%;
     background: #fff;
     border-radius: 4px 4px 4px 4px;
 

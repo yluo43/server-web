@@ -57,7 +57,7 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
+        <el-form-item label="备注:" prop="remark">
           <el-input
             v-model="projectFormData.remark"
             style="margin-block: 6px"

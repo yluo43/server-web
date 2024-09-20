@@ -163,7 +163,7 @@ export default {
         postIndex: [{ required: true, message: '请选择人员岗位', trigger: 'change' }],
         entryMark: [{ required: true, message: '请选择入场标记', trigger: 'change' }],
         postId: [{ required: true, message: '请选择人员等级', trigger: 'change' }],
-        entryReason: [{ required: false, message: '请选择入场原因', trigger: 'change' }]
+        entryReason: [{ required: false, message: '请输入入场原因', trigger: 'change' }]
       }
     }
   },

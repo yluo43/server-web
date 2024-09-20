@@ -140,14 +140,14 @@
                   <!--                            @click="addProject(row.item)"/>-->
                   <img
                     v-if="!!item.belongSelf"
-                    style="width: 14px;height: 14px;margin-top: 5px  "
-                    src="@/assets/star-s-fill.png"
+                    style="width: 14px;height: 14px;margin-top: 5px"
+                    :src="require(!!item.entryMark ? '@/assets/star-orange.png' : '@/assets/star-blue.png')"
                     @click="addProject(row.item)"
                   />
-                  <a v-if="item.belongSelf" style="margin-top: 2px" @click="openProject(item.projectId)">
+                  <a v-if="item.belongSelf" @click="openProject(item.projectId)">
                     {{ item.belongGroup }}
                   </a>
-                  <div v-else style="margin-top: 2px">
+                  <div v-else>
                     {{ item.belongGroup }}
                   </div>
                 </div>
@@ -269,7 +269,7 @@ export default {
         theads: [
           { label: '工号', prop: 'empId' },
           { label: '姓名', prop: 'name' },
-          { label: '专业', prop: 'major' },
+          { label: '专业', prop: 'major',width: '150px'  },
           { label: '学历', prop: 'education' },
           { label: '毕业日期', prop: 'graduateDate' },
           { label: '工龄', prop: 'jobAge' },
@@ -498,7 +498,7 @@ export default {
 
 .toolbar0 {
   display: flex;
-  line-height: 20px;
+  line-height: 24px;
   padding: 2px 6px;
   border-radius: 5px;
   font-size: 12px;
@@ -508,8 +508,8 @@ export default {
 
 .toolbar1 {
   display: inline;
-  line-height: 20px;
-  padding-inline: 10px;
+  line-height: 24px;
+  padding: 2px 6px;
   border-radius: 5px;
   font-size: 12px;
   text-align: center;
@@ -517,24 +517,24 @@ export default {
 }
 
 .ownBar {
-  color: #666EE8;
-  background-color: #F0F1FD;
+  color: #2462F9;
+  background-color: #EEF3FF;
 }
 
-.ownBar:hover {
-  color: white;
-  background-color: #1E9FF2;
-}
+// .ownBar:hover {
+//   color: white;
+//   background-color: #EEF3FF;
+// }
 
 .notOwnBar {
-  color: #666EE8;
-  background-color: #FBD4A1;
+  color: #E37318;
+  background-color: #FDF4ED;
 }
 
-.notOwnBar:hover {
-  color: white;
-  background-color: #B8741A;
-}
+// .notOwnBar:hover {
+//   color: white;
+//   background-color: #FDF4ED;
+// }
 
 .add {
   border: 2px solid black;
