@@ -1,19 +1,20 @@
 <template>
   <div class="container">
     <div  class="projectName-header">
-      <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick">
+      <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick" style="width: 80%">
         <el-tab-pane label="项目信息" name="projectName"></el-tab-pane>
         <el-tab-pane label="入场人员" name="second"></el-tab-pane>
         <el-tab-pane label="离场人员" name="third"></el-tab-pane>
 <!--        <el-tab-pane label="结算信息" name="fourth"></el-tab-pane>-->
       </el-tabs>
+
+      <div style="display: flex; align-items: center; margin-left: auto;margin-right: 20px">
+        <el-button @click="returnIndexPage">返回</el-button>
+      </div>
     </div>
     <div style=" margin-top: 24px;display: flex; align-items: center; padding: 16px 0 16px 20px;background: #fff;">
       <div class="circular"></div>
       <span style="font-size: 20px;margin-left: 10px;">{{ initData.name }}</span>
-      <div style="display: flex; align-items: center; margin-left: auto;margin-right: 20px">
-        <el-button @click="returnIndexPage">返回</el-button>
-      </div>
     </div>
     <div v-show="activeName == 'projectName'" class="main">
       <projectInfo ref="projectInfo" @changeName ="changeName"/>
@@ -85,6 +86,7 @@ export default {
     height: 80px;
     background: #ffffff;
     border-radius: 4px 4px 4px 4px;
+    display: flex; align-items: center;
   }
 
   .second-header {
