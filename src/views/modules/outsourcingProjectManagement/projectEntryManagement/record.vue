@@ -348,16 +348,16 @@ export default {
 }
 
 .ownBar {
-  color: #666EE8;
-  background-color: #F0F1FD;
+  color: #2462F9;
+  background-color: #EEF3FF;
   display: inline-block;
   border-radius: 3px;
   width: 65px;
 }
 
 .notOwnBar {
-  color: #666EE8;
-  background-color: #FBD4A1;
+  color: #E37318;
+  background-color: #FDF4ED;
   display: inline-block;
   border-radius: 3px;
   width: 65px;
