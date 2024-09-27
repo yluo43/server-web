@@ -130,7 +130,7 @@
           <template v-slot:projectList="row">
             <div style="display: flex">
 
-              <el-tooltip v-for="item in row.item.entryProjectList" class="item" effect="dark" placement="bottom">
+              <el-tooltip v-for="item in row.item.entryProjectList" class="item" :effect="!!item.belongSelf?'dark':'light'" placement="bottom">
                 <div slot="content">
                   项目名称：{{ item.name }}
                   <br />
@@ -150,7 +150,7 @@
                     （项目归属于您，可以点击查看项目详情）
                   </div>
                   <div v-else>
-                    （项目不归属于您，不点击查看项目详情）
+                    （项目不归属于您，不能查看项目详情）
                   </div>
                 </div>
                 <div :class="(!!item.belongSelf?'toolbar0 ':'toolbar1 ')+(!!item.entryMark?'notOwnBar':'ownBar')">
@@ -256,13 +256,13 @@ export default {
       showFlag: false,
       isList: true,
       isProject: false,
-      html: ' <div ">\n' +
-          '          <h3>一个标签代表当前或即将要驻场的一个项目</h3>\n' +
-          '          <div style="display: flex;margin: 10px">\n' +
-          '            <div style="width: 80px;height: 20px; background-color: #EABD7F;"></div><span style="margin-left: 10px;line-height: 20px">橙色底色标签代表该用户在此项目中虚拟入场</span>\n' +
+      html: ' <div style="background: rgba(238, 243, 255, 0.9);border: 1px solid #ccc !important;border-radius: 5px;">\n' +
+          '          <h3 style="margin: 10px">一个标签代表当前或即将要驻场的一个项目</h3>\n' +
+          '          <div style="display: flex;margin:2px 10px">\n' +
+          '            <div style="width: 80px;height: 20px; background-color: #D8E0FA;"></div><span style="margin-left: 10px;line-height: 20px">蓝色底色标签代表该用户在此项目中真实入场</span>\n' +
           '          </div>\n' +
-          '          <div style="display: flex;margin: 10px">\n' +
-          '            <div style="width: 80px;height: 20px; background-color: #F0F1FD;"></div><span style="margin-left: 10px;line-height: 20px">紫色底色标签代表该用户在此项目中真实入场</span>\n' +
+          '          <div style="display: flex;margin:2px 10px">\n' +
+          '            <div style="width: 80px;height: 20px; background-color: #EABD7F;"></div><span style="margin-left: 10px;line-height: 20px">橙色底色标签代表该用户在此项目中虚拟入场</span>\n' +
           '          </div>\n' +
           '          <div style="display: flex;margin: 10px">\n' +
           '            <div style="width: 80px">\n' +

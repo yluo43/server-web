@@ -154,6 +154,11 @@ element.style {
   background: rgba(0,0,0,0.7);
 }
 
+.el-tooltip__popper.is-light {
+  background: rgba(238, 243, 255, 0.9);
+  border: 1px solid #ccc !important;
+}
+
 //  修改标签三角的位置
 .el-tabs__nav-next, .el-tabs__nav-prev {
   line-height: 28px;
