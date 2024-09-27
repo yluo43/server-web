@@ -11,6 +11,9 @@
         <el-form-item label="项目名称:" prop="name">
           <el-input v-model="projectFormData.name" placeholder="请输入项目名称" clearable></el-input>
         </el-form-item>
+        <el-form-item label="项目名称:" prop="contractCode">
+          <el-input v-model="projectFormData.contractCode" placeholder="请输入项目名称" clearable></el-input>
+        </el-form-item>
         <el-form-item label="项目经理:" prop="projectManagerId">
           <el-cascader
             v-model="projectFormData.projectManagerId"
@@ -18,6 +21,7 @@
             placeholder="请选择项目经理"
             :show-all-levels="false"
             style="width: 100%"
+            :disabled="isManager"
           >
           </el-cascader>
         </el-form-item>
@@ -94,13 +98,35 @@ export default {
         projectManagerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
         customerId: [{ required: true, message: '请选择项目客户', trigger: 'change' }],
         startTime: [{ required: true, message: '请选择开始日期', trigger: 'change' }],
-        endTime: [{ required: true, message: '请选择结束日期', trigger: 'change' }]
+        endTime: [{ required: true, message: '请选择结束日期', trigger: 'change' }],
+        contractCode: [{ required: true, message: '请选择合同编号', trigger: 'change' },
+          {
+            validator: (rule, value, callback) => {
+              // 使用正则表达式匹配英文、数字和特定特殊字符
+              // 注意：这里的正则表达式仅作为示例，你可能需要根据你的需求进行调整
+              const regex = /^[a-zA-Z0-9!@#$%^&*()_+\-=\\[\]{};':"\\|,.<>\/?]+$/;
+              if (!regex.test(value)) {
+                // 如果输入不匹配，显示错误消息
+                callback(new Error('项目名称只能包含英文、数字和特殊字符（如-、_、.）'));
+              } else if (value.length > 100) {
+                // 如果长度超过100个字符，也显示错误消息
+                callback(new Error('项目名称最长不能超过100个字符'));
+              } else {
+                // 如果输入有效，调用callback没有参数
+                callback();
+              }
+            },
+            trigger: ['blur', 'change']
+          }]
       },
+      isManager: false,
       projectFormData: {
         // 项目名称
         name: '',
         // 项目经理
         managerId: '',
+        // 合同编号
+        contractCode: '',
         // 关联项目
         projectId: '',
         // 项目客户
@@ -165,6 +191,10 @@ export default {
         this.$message.error(data.msg)
       }
     })
+    this.isManager = !!this.$store.state.user.isManager
+    if (this.isManager) {
+      this.projectFormData.projectManagerId = [this.$store.state.user.deptId.toString(), this.$store.state.user.empId.toString()]
+    }
   },
   methods: {
     confirm() {
@@ -186,6 +216,10 @@ export default {
           }
         })
       })
+    },
+    test() {
+      debugger
+      console.log(this.projectFormData.projectManagerId)
     },
     // 取消
     cancel() {

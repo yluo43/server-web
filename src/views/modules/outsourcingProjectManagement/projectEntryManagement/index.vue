@@ -4,11 +4,13 @@
       <el-container>
         <el-header style="height: auto">
           <el-form ref="dataForm" :inline="true" label-width="auto" label-position="right" :model="dataForm">
-            <el-form-item label="学历:" prop="education">
-              <el-input v-model="dataForm.education" placeholder="请输入学历" clearable></el-input>
+            <el-form-item label="姓名:" prop="name">
+              <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable />
             </el-form-item>
-            <el-form-item label="专业:" prop="speciality">
-              <el-input v-model="dataForm.speciality" placeholder="请输入专业" clearable></el-input>
+            <el-form-item label="归属部门:" prop="deptId">
+              <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
+                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
             </el-form-item>
             <el-form-item label="工龄:" prop="jobAge">
               <el-input
@@ -25,26 +27,17 @@
                 @input="handleInput1"
               ></el-input>
             </el-form-item>
-            <el-form-item label="司龄:" prop="departAge">
-              <el-input
-                ref="departAgeStart"
-                v-model="dataForm.departAgeStart"
-                style="width:50px;display: inline-block"
-                @input="handleInput2"
-              ></el-input>
-              <span> - </span>
-              <el-input
-                ref="departAgeEnd"
-                v-model="dataForm.departAgeEnd"
-                style="width:50px; display: inline-block"
-                @input="handleInput3"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="归属部门:" prop="deptId">
-              <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
-                <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
+            <el-form-item label="在离职状态:" prop="departStatus">
+              <el-select v-model="dataForm.departStatus" placeholder="请选择在离职状态" clearable>
+                <el-option v-for="item in depart" :key="item.status" :label="item.name" :value="item.status" />
               </el-select>
             </el-form-item>
+            <el-form-item label="入场项目:" prop="projectIds">
+              <el-select v-model="dataForm.projectIds" multiple placeholder="请选择入场项目" clearable>
+                <el-option v-for="item in chooseProjectList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+
             <div v-if="showFlag" style="display: contents">
               <el-form-item label="工号:" prop="empId">
                 <el-input
@@ -54,8 +47,26 @@
                   clearable
                 />
               </el-form-item>
-              <el-form-item label="姓名:" prop="name">
-                <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable />
+              <el-form-item label="学历:" prop="education">
+                <el-input v-model="dataForm.education" placeholder="请输入学历" clearable></el-input>
+              </el-form-item>
+              <el-form-item label="专业:" prop="speciality">
+                <el-input v-model="dataForm.speciality" placeholder="请输入专业" clearable></el-input>
+              </el-form-item>
+              <el-form-item label="司龄:" prop="departAge">
+                <el-input
+                  ref="departAgeStart"
+                  v-model="dataForm.departAgeStart"
+                  style="width:50px;display: inline-block"
+                  @input="handleInput2"
+                ></el-input>
+                <span> - </span>
+                <el-input
+                  ref="departAgeEnd"
+                  v-model="dataForm.departAgeEnd"
+                  style="width:50px; display: inline-block"
+                  @input="handleInput3"
+                ></el-input>
               </el-form-item>
               <el-form-item label="毕业时间:" prop="graduationDate">
                 <el-date-picker
@@ -108,7 +119,14 @@
         <div class="operate-button">
           <el-button class="btn-download" icon="el-icon-download" type="primary" @click="download()">批量下载</el-button>
         </div>
-        <baseTable ref="table" :table-data="tableData" :multi-select="true" @selectData="selectData">
+        <baseTable
+          ref="table"
+          :table-data="tableData"
+          :multi-select="true"
+          prop-name="departStatus"
+          :html = "html"
+          @selectData="selectData"
+        >
           <template v-slot:projectList="row">
             <div style="display: flex">
 
@@ -158,7 +176,13 @@
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-tooltip class="item" effect="dark" content="标记入场" placement="bottom">
+              <el-tooltip
+                v-if="row.item.departStatusName==='在职'"
+                class="item"
+                effect="dark"
+                content="标记入场"
+                placement="bottom"
+              >
                 <svg-icon
                   :icon-class="'add-icon'"
                   style="height: 18px; width: 18px; margin-right:20px"
@@ -207,7 +231,7 @@
       <record ref="record" :sync-is-list.sync="isList"></record>
     </div>
     <div v-if="isProject">
-      <projectDetail ref="projectDetail" />
+      <projectDetail ref="projectDetail" @changePageFlag="changePageFlag" />
     </div>
   </div>
 </template>
@@ -232,14 +256,40 @@ export default {
       showFlag: false,
       isList: true,
       isProject: false,
+      html: ' <div ">\n' +
+          '          <h3>一个标签代表当前或即将要驻场的一个项目</h3>\n' +
+          '          <div style="display: flex;margin: 10px">\n' +
+          '            <div style="width: 80px;height: 20px; background-color: #EABD7F;"></div><span style="margin-left: 10px;line-height: 20px">橙色底色标签代表该用户在此项目中虚拟入场</span>\n' +
+          '          </div>\n' +
+          '          <div style="display: flex;margin: 10px">\n' +
+          '            <div style="width: 80px;height: 20px; background-color: #F0F1FD;"></div><span style="margin-left: 10px;line-height: 20px">紫色底色标签代表该用户在此项目中真实入场</span>\n' +
+          '          </div>\n' +
+          '          <div style="display: flex;margin: 10px">\n' +
+          '            <div style="width: 80px">\n' +
+          '            <img\n' +
+          '                style="width: 14px;height: 14px;margin-top: 5px"\n' +
+          '                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAATNJREFUOE+dkr9Kw1AUxr/jnyZ1sYUO4qRJBgd9ACcFB32ALoJgUxedKvgcDk62IE0GR1/ASV9AEHQzkWwWFPyDyG0b7pGbSk1igtYz3nN+53znu4fwz6A8bq72XFK5wC2/ZNXkgkZNNBRw7+pHI4FWXdwxSPhtbenPoGX3V0DyMgKYNzxHP0/DkVRz69VCQTsAqETMMyAsAlQZcNwBwSOmDhM/odc99E+nveGOpt3bBnGTAD1LGgMCTPu+U2ipfMIcY6e/RlKeESFyNBbvIY9VA2dyKPmHq2ZdHBNoN04xuOm39b34WwbYvSGoHb+Dgdu0uwlwdvOtMlXUHsG4Dr+mjhOfqEah/CjHjyEBWrZYl4wFiYdW4M6LaObqxYRpLDdI8pXnFgdflDZnlLPNPbnfmnwC3V5mDyDwno8AAAAASUVORK5CYII="\n' +
+          '            />\n' +
+          '            <img\n' +
+          '                style="width: 14px;height: 14px;margin-top: 5px;margin-left: 20px"\n' +
+          '                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAATRJREFUOE+dks9Kw0AQxr9JRUQRIrRNDjYQqOBBTz6Aggd9AO9e9dQ/+xyr9WQLHnwAX8CTvoAg6EUsCE0PSavQg4egTUY3FUmaBP/MbWf2N/Ptt0P4Z1Ae91TXdVWzW6NR1p1c0BFGTQEV6Z38DWwaj0zwLemt/xp0GuYmNFwrgBHuWnJwOQ1HUruNUnVWKwiAdQKZANYAFCcguwB1CXAZeH4LA1k9HqrzJPqitB+i0CZgLksaA77GYX35aNBR9YQ5/aaxHQIXRBQ5+h3Mr0y8F5eccrUnzNNPWQcJDmhb0j2M51KgI4w7gNQb4yPvK1PuJsAHsVicx8IQ4FvQ11TGmWo0Dvyl+DIkwJ4o7xBodfzidexz+Grk1RZmVjbKtfdAu7FbbvRFKXOy3MzL5a7cT00+ANLSYA9TuuAZAAAAAElFTkSuQmCC"\n' +
+          '            />\n' +
+          '            </div>\n' +
+          '            <span span style="margin-left: 10px;line-height: 20px">\n' +
+          '              标签带星号代表项目归属当前登录用户，可以点击跳转项目详情\n' +
+          '            </span>\n' +
+          '          </div>\n' +
+          '        </div>',
       count: 0,
       // 选中的数据
       checkedIds: [],
+      depart: [{ name: '全部', status: '' }, { name: '在职', status: '1' }, { name: '离职', status: '0' }],
       dataForm: {
         // 学历
         education: '',
         // 专业
         speciality: '',
+        departStatus: '',
         // 工龄
         jobAge: [],
         jobAgeStart: '',
@@ -259,7 +309,8 @@ export default {
         // 入职时间
         entryTime: [],
         // 不看所选项目
-        unProjectIds: []
+        unProjectIds: [],
+        projectIds: []
       },
       seniorities: [],
       siLings: [],
@@ -269,7 +320,7 @@ export default {
         theads: [
           { label: '工号', prop: 'empId' },
           { label: '姓名', prop: 'name' },
-          { label: '专业', prop: 'major',width: '150px'  },
+          { label: '专业', prop: 'major', width: '150px' },
           { label: '学历', prop: 'education' },
           { label: '毕业日期', prop: 'graduateDate' },
           { label: '工龄', prop: 'jobAge' },
@@ -292,6 +343,10 @@ export default {
     this.refresh()
   },
   methods: {
+    changePageFlag() {
+      this.isProject = false
+      this.refresh()
+    },
     openProject(projectId) {
       this.isProject = true
       this.$http({
@@ -419,6 +474,8 @@ export default {
       this.dataForm.jobAgeEnd = ''
       this.dataForm.departAgeStart = ''
       this.dataForm.departAgeEnd = ''
+      this.dataForm.unProjectIds = []
+      this.dataForm.projectIds = []
       this.refresh()
     },
     // 获取选中的数据
@@ -518,23 +575,19 @@ export default {
 
 .ownBar {
   color: #2462F9;
-  background-color: #EEF3FF;
+  background-color: #F0F1FD;
 }
 
 // .ownBar:hover {
 //   color: white;
-//   background-color: #EEF3FF;
+//   background-color: #F0F1FD;
 // }
 
 .notOwnBar {
   color: #E37318;
-  background-color: #FDF4ED;
+  background-color: #EABD7F;
 }
 
-// .notOwnBar:hover {
-//   color: white;
-//   background-color: #FDF4ED;
-// }
 
 .add {
   border: 2px solid black;

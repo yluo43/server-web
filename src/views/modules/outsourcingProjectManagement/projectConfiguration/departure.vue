@@ -73,7 +73,7 @@ export default {
           today.setHours(0, 0, 0, 0);
           const targetDate = new Date(this.departurePersonnelInfo.entryTime);
           targetDate.setHours(0, 0, 0, 0);
-          return time.getTime() > today.getTime() || time.getTime() < targetDate.getTime();
+          return  time.getTime() < targetDate.getTime();
         }
       };
     },

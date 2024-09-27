@@ -178,6 +178,7 @@ export default {
       tableData: {
         theads: [
           { label: '项目名称', prop: 'name' },
+          { label: '合同编号', prop: 'contractCode' },
           { label: '项目经理', prop: 'managerName' },
           { label: '关联项目', prop: 'projectName' },
           { label: '项目客户', prop: 'customerName' },

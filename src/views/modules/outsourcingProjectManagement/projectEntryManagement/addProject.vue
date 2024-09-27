@@ -126,6 +126,8 @@
 </template>
 
 <script>
+import {getCName} from "@/utils/auth";
+
 export default {
   data() {
     return {
@@ -166,8 +168,6 @@ export default {
         entryReason: [{ required: false, message: '请输入入场原因', trigger: 'change' }]
       }
     }
-  },
-  mounted() {
   },
   created() {
   },

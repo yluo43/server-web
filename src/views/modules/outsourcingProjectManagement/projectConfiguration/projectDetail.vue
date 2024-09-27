@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-    <div  class="projectName-header">
+    <div class="projectName-header">
       <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick" style="width: 80%">
         <el-tab-pane label="项目信息" name="projectName"></el-tab-pane>
         <el-tab-pane label="入场人员" name="second"></el-tab-pane>
         <el-tab-pane label="离场人员" name="third"></el-tab-pane>
-<!--        <el-tab-pane label="结算信息" name="fourth"></el-tab-pane>-->
+        <!--        <el-tab-pane label="结算信息" name="fourth"></el-tab-pane>-->
       </el-tabs>
 
       <div style="display: flex; align-items: center; margin-left: auto;margin-right: 20px">
@@ -17,7 +17,7 @@
       <span style="font-size: 20px;margin-left: 10px;">{{ initData.name }}</span>
     </div>
     <div v-show="activeName == 'projectName'" class="main">
-      <projectInfo ref="projectInfo" @changeName ="changeName"/>
+      <projectInfo ref="projectInfo" @changeName="changeName"/>
     </div>
     <div v-show="activeName == 'second'" class="main">
       <entryPersonnel :isEntry="true" ref="entryPersonnel"/>
@@ -46,12 +46,12 @@ export default {
   methods: {
     // 初始化
     init(initData) {
-      this.initData=initData
+      this.initData = initData
       this.$refs.projectInfo.init(initData)
       this.$refs.entryPersonnel.init(initData)
       this.$refs.departurePersonnel.init(initData)
     },
-    changeName(name){
+    changeName(name) {
       this.initData.name = name
     },
     // 返回主页面
@@ -71,8 +71,12 @@ export default {
       }
     },
     //tab切换
-    tabClick() {
-
+    tabClick(tab) {
+      if (tab.name === 'second') {
+        this.$refs.entryPersonnel.refresh()
+      } else if (tab.name === 'third') {
+        this.$refs.departurePersonnel.refresh()
+      }
     }
   }
 }
@@ -86,7 +90,8 @@ export default {
     height: 80px;
     background: #ffffff;
     border-radius: 4px 4px 4px 4px;
-    display: flex; align-items: center;
+    display: flex;
+    align-items: center;
   }
 
   .second-header {
@@ -131,6 +136,7 @@ export default {
   justify-content: flex-end;
   box-shadow: 0px -3px 12px 0px rgba(0, 0, 0, 0.1);
 }
+
 .circular {
   width: 8px;
   height: 8px;

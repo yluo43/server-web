@@ -23,7 +23,14 @@
           <template v-else>
             <el-table-column :key="index" :label="item.label" :prop="item.prop" :show-overflow-tooltip="true"
                              :formatter="item.formatter" :sortable="item.sortName != null" :width="item.width">
-              <template slot-scope="scope">
+              <template v-if="!editFlag" slot="header" slot-scope="scope">
+                <!-- 使用 el-tooltip 包裹表头内容 -->
+                <el-tooltip v-if="propName === ''" class="item" effect="dark" content="这是一段非常长的文本提示信息，需要显示在 tooltip 中" placement="top">
+                  <span>{{item.label}}</span>
+                </el-tooltip>
+                <div v-else>{{item.label}}</div>
+              </template>
+              <template v-else slot-scope="scope">
                 <el-input
                     v-if="editingIndex === scope.$index && editingProp ===  item.prop"
                     v-model="scope.row[item.prop]"
@@ -92,8 +99,15 @@ export default {
       type: Boolean,
       default: false
     },
+    propName: {
+      type: String
+    },
     afterSelect: {
       type: Function
+    },
+    editFlag: {
+      type: Boolean,
+      default: true
     },
     auth: {
       type: Boolean,
@@ -127,6 +141,7 @@ export default {
       }
     },
     handleEdit(index, propName) {
+      debugger
       if (this.editingIndex !== null || this.editingProp !== null) {
         this.$emit('updateTable', this.options.dataList[this.editingIndex])
       }
@@ -241,6 +256,7 @@ export default {
       }
     },
     __clickStop: function () {
+      debugger
       // 该方法为了阻止冒泡事件，没什么软用
     },
     // 获取当前选项

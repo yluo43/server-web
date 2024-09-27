@@ -96,6 +96,7 @@ router.beforeEach((to, from, next) => {
 
 export function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
   for (const element of menuList) {
+    // debugger
     element.url = element.url.replace(/^\//, '')
     let children = []
     for (var j = 0; j < element.sons.length; j++) {

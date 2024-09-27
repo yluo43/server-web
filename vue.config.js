@@ -21,6 +21,8 @@ const port = process.env.port || process.env.npm_config_port || 8082 // dev port
 
 const target = 'http://127.0.0.1:8081'
 
+
+// const target = 'http://10.1.62.150/'
 module.exports = {
   /**
    * You will need to set publicPath if you plan to deploy your site under a sub path,

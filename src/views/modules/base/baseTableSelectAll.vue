@@ -48,6 +48,14 @@
               :min-width="item.width"
               :fixed="item.fixed"
             >
+              <template slot="header" slot-scope="scope">
+                <!-- 使用 el-tooltip 包裹表头内容 -->
+                <el-tooltip v-if="item.prop === propName" class="item" effect="black" hide-after="99999999999999999999"  style="display: block;" placement="top" >
+                  <div slot="content" v-html="html"></div>
+                  <span>{{item.label}}</span>
+                </el-tooltip>
+                <div v-else>{{item.label}}</div>
+              </template>
               <template slot-scope="scope">
                 <div style="display: inline" @click.stop="__clickStop">
                   <slot :name="item.slotName" :item="scope.row"></slot>
@@ -66,7 +74,8 @@
               :width="item.width"
               :min-width="item.minWidth"
               :fixed="item.fixed"
-            ></el-table-column>
+            >
+            </el-table-column>
           </template>
         </template>
         <el-table-column type="expand" v-if="options.expandHtml != null">
@@ -110,6 +119,9 @@ export default {
       type: Boolean,
       default: false
     },
+    propName: {
+      type: String,
+    },
     afterSelect: {
       type: Function
     },
@@ -122,6 +134,9 @@ export default {
       default: false
     },
     propHeight: {
+      type: String
+    },
+    html: {
       type: String
     }
   },

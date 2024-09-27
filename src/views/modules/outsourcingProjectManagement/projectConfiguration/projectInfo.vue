@@ -20,6 +20,9 @@
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectFormData.name" placeholder="请输入项目名称" clearable></el-input>
           </el-form-item>
+          <el-form-item label="合同编号:" prop="contractCode">
+            <el-input v-model="projectFormData.contractCode" placeholder="请输入合同编号" clearable></el-input>
+          </el-form-item>
           <el-form-item label="项目经理:" prop="managerId">
             <el-cascader
               v-model="projectManagerId"
@@ -28,6 +31,7 @@
               :show-all-levels="false"
               style="width: 100%"
               @change="changeManagerId"
+              :disabled="isManager"
             >
             </el-cascader>
           </el-form-item>
@@ -90,6 +94,9 @@
           <el-form-item label="项目名称:" prop="name">
             {{ projectFormDataOrigin.name }}
           </el-form-item>
+          <el-form-item label="合同编号:" prop="contractCode">
+            {{ projectFormDataOrigin.contractCode }}
+          </el-form-item>
           <el-form-item label="项目经理:" prop="managerName">
             {{ projectFormDataOrigin.managerName }}
           </el-form-item>
@@ -117,17 +124,42 @@
     <div class="right">
       <div class="left-right-header">
         <div class="header-title">岗位单价信息</div>
-        <el-button
-          class="btn-download"
-          type="primary"
-          icon="el-icon-circle-plus-outline"
-          @click="addUnit"
-        >添加岗位
-        </el-button>
+        <div style="display: flex">
+          <el-button
+            class="btn-download"
+            type="primary"
+            @click="download"
+          >下载模板
+          </el-button>
+          <el-upload
+            class="upload-demo"
+            :show-file-list="false"
+            :action="this.$http.adornUrl('/externalProject/importProjectPost')"
+            :data="{'projectId':projectFormData.id}"
+            :on-success="uploadSuccess"
+            :file-list="fileList"
+          >
+            <el-button class="btn-download" size="small" type="primary">批量导入</el-button>
+          </el-upload>
+          <el-button
+            class="btn-download"
+            type="primary"
+            icon="el-icon-circle-plus-outline"
+            @click="addUnit"
+          >添加岗位
+          </el-button>
+        </div>
       </div>
       <el-divider></el-divider>
       <div style="margin: 20px">
-        <baseTable ref="table" :table-data="tableData" :multi-select="true" @updateTable="updateTable" @handleInput="handleInput">
+        <baseTable
+          ref="table"
+          :table-data="tableData"
+          :multi-select="true"
+          :edit-flag= "false"
+          @updateTable="updateTable"
+          @handleInput="handleInput"
+        >
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
@@ -138,12 +170,19 @@
                   @click="deleteItem(row.item)"
                 />
               </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                <svg-icon
+                  :icon-class="'edit-icon'"
+                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                  @click="alter(row.item)"
+                />
+              </el-tooltip>
             </template>
           </template>
         </baseTable>
       </div>
     </div>
-    <base-drawer ref="addUnitDrawer" title="新增岗位" size="23%">
+    <base-drawer ref="addUnitDrawer" :title="drawerTitle" size="23%">
       <template>
         <addUnit ref="addUnit" @closeDrawer="closeAddUnitDrawer" />
       </template>
@@ -160,6 +199,8 @@ export default {
   components: { baseTable, baseDrawer, addUnit },
   data() {
     return {
+      isManager: false,
+      fileList: [],
       projectFormRules: {
         name: [{ required: true, message: '请输入项目名称', trigger: ['blur', 'change'] },
           {
@@ -172,12 +213,32 @@ export default {
             },
             trigger: ['blur', 'change']
           }],
+        contractCode: [{ required: true, message: '请选择合同编号', trigger: 'change' },
+          {
+            validator: (rule, value, callback) => {
+              // 使用正则表达式匹配英文、数字和特定特殊字符
+              // 注意：这里的正则表达式仅作为示例，你可能需要根据你的需求进行调整
+              const regex = /^[a-zA-Z0-9!@#$%^&*()_+\-=\\[\]{};':"\\|,.<>\/?]+$/
+              if (!regex.test(value)) {
+                // 如果输入不匹配，显示错误消息
+                callback(new Error('项目名称只能包含英文、数字和特殊字符'))
+              } else if (value.length > 100) {
+                // 如果长度超过100个字符，也显示错误消息
+                callback(new Error('项目名称最长不能超过100个字符'))
+              } else {
+                // 如果输入有效，调用callback没有参数
+                callback()
+              }
+            },
+            trigger: ['blur', 'change']
+          }],
         managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
         customerId: [{ required: true, message: '请选择项目客户', trigger: 'change' }],
         startTime: [{ required: true, message: '请选择开始日期', trigger: 'change' }],
         endTime: [{ required: true, message: '请选择结束日期', trigger: 'change' }]
       },
       // 是否是编辑模式
+      drawerTitle: '',
       editMode: false,
       associatedProjects: [],
       membershipGroups: [],
@@ -186,6 +247,7 @@ export default {
           { label: '岗位', prop: 'name' },
           { label: '级别', prop: 'level' },
           { label: '单价（含税/元）', prop: 'unitPrice' },
+          { label: '税率（百分比）', prop: 'taxRate' },
           { label: '单价（不含税/元）', prop: 'taxUnitPrice' },
           { label: '类型（按n天计）', prop: 'type' },
           { label: '操作', slotName: 'clientType' }
@@ -198,6 +260,7 @@ export default {
       projectFormData: {
         // 项目名称
         name: '',
+        contractCode: '',
         // 项目经理
         managerId: '',
         managerName: '',
@@ -216,12 +279,11 @@ export default {
         // 备注
         remark: ''
       },
-      projectFormDataBak: {
-
-      },
+      projectFormDataBak: {},
       projectFormDataOrigin: {
         // 项目名称
         name: '',
+        contractCode: '',
         // 项目经理
         managerId: '',
         managerName: '',
@@ -244,7 +306,6 @@ export default {
   },
   watch: {
     editMode(newVal) {
-      debugger
       if (!newVal) {
         Object.assign(this.projectFormDataBak, this.projectFormData)
         this.$refs.projectForm.resetFields()
@@ -298,13 +359,26 @@ export default {
         this.$message.error(data.msg)
       }
     })
+    this.isManager = !!this.$store.state.user.isManager
   },
   methods: {
+    uploadSuccess(response, file, fileList) {
+      let text = response.msg
+      if (response.msg === 'excel文件中数据不符合要求') {
+        response.payload.forEach(e => {
+          text += '\n' + e
+        })
+      }
+      this.$message.warning(text)
+    },
     init(projectFormData) {
       Object.assign(this.projectFormData, projectFormData)
       this.projectManagerId = [projectFormData.deptId, projectFormData.managerId]
       Object.assign(this.projectFormDataOrigin, this.projectFormData)
       this.refreshTable()
+    },
+    download() {
+      this.$http.downloadPost(this.$http.adornUrl('/externalProject/downloadProjectPostTemplate'), {}, this)
     },
     handleInput(value, prop, scope, options) {
       if (prop === 'type') {
@@ -438,7 +512,14 @@ export default {
       this.$refs.addUnitDrawer.show()
       this.drawerTitle = '新建项目'
       this.$nextTick(function () {
-        this.$refs.addUnit.init(this.projectFormData)
+        this.$refs.addUnit.init(null, this.projectFormData.id)
+      })
+    },
+    alter(row) {
+      this.$refs.addUnitDrawer.show()
+      this.drawerTitle = '修改项目'
+      this.$nextTick(function () {
+        this.$refs.addUnit.init(row)
       })
     },
     // 关闭添加项目抽屉
