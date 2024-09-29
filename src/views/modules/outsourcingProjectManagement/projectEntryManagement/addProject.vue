@@ -24,7 +24,7 @@
               v-model="formData.managerName"
               disabled
               type="text"
-              style="width: 300px"
+              style="width: 300px;"
               placeholder="请输入项目经理"
             ></el-input>
           </el-form-item>
@@ -46,25 +46,25 @@
               placeholder="请输入客户所属集团"
             ></el-input>
           </el-form-item>
-          <el-form-item label="项目开始时间:" prop="startTime">
+          <el-form-item label="项目开始日期:" prop="startTime">
             <el-date-picker
               v-model="formData.startTime"
               disabled
               style="width: 300px"
               type="date"
               value-format="yyyy-MM-dd"
-              placeholder="项目开始时间"
+              placeholder="项目开始日期"
               clearable
             />
           </el-form-item>
-          <el-form-item label="项目结束时间:" prop="endTime">
+          <el-form-item label="项目结束日期:" prop="endTime">
             <el-date-picker
               v-model="formData.endTime"
               disabled
               style="width: 300px"
               type="date"
               value-format="yyyy-MM-dd"
-              placeholder="项目结束时间"
+              placeholder="项目结束日期"
               clearable
             />
           </el-form-item>
@@ -133,6 +133,7 @@ export default {
     return {
       initData: {},
       jobList: [],
+      postLevelSet: [],
       projectList: [],
       formData: {
         projectIndex: '',
@@ -152,16 +153,15 @@ export default {
         postIndex: '',
         entryReason: ''
       },
-      postLevelSet: [],
       rules: {
         projectIndex: [{ required: true, message: '请选择项目名称', trigger: 'change' }],
         projectManager: [{ required: true, message: '项目经理不能为空', trigger: 'blur' }],
         customerName: [{ required: true, message: '项目客户不能为空', trigger: 'blur' }],
         belongGroup: [{ required: true, message: '客户所属集团不能为空', trigger: 'blur' }],
-        startTime: [{ required: true, message: '项目开始时间不能为空', trigger: 'blur' }],
-        endTime: [{ required: true, message: '项目结束时间不能为空', trigger: 'blur' }],
-        entryTime: [{ required: true, message: '请选择入场时间', trigger: 'change' }],
-        planExitTime: [{ required: true, message: '请选择计划离场时间', trigger: 'change' }],
+        startTime: [{ required: true, message: '项目开始日期不能为空', trigger: 'blur' }],
+        endTime: [{ required: true, message: '项目结束日期不能为空', trigger: 'blur' }],
+        entryTime: [{ required: true, message: '请选择入场日期', trigger: 'change' }],
+        planExitTime: [{ required: true, message: '请选择计划离场日期', trigger: 'change' }],
         postIndex: [{ required: true, message: '请选择人员岗位', trigger: 'change' }],
         entryMark: [{ required: true, message: '请选择入场标记', trigger: 'change' }],
         postId: [{ required: true, message: '请选择人员等级', trigger: 'change' }],

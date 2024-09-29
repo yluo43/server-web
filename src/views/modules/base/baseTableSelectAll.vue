@@ -2,6 +2,7 @@
   <div class="el-main__mdgMainTable" style="width: 100%; height: 100%">
     <div>
       <el-table
+        v-if = "showTable"
         ref="table"
         v-loading="options.tableLoading"
         :row-key="(row) => row.id"
@@ -45,12 +46,12 @@
               :show-overflow-tooltip="true"
               :formatter="item.formatter"
               :sortable="item.sortName != null"
-              :min-width="item.width"
+              :min-width="item.prop === propName?getWidth(item,item.width):item.width"
               :fixed="item.fixed"
             >
               <template slot="header" slot-scope="scope">
                 <!-- 使用 el-tooltip 包裹表头内容 -->
-                <el-tooltip v-if="item.prop === propName" class="item" effect="black" hide-after="99999999999999999999"  style="display: block;" placement="top" >
+                <el-tooltip v-if="item.prop === propName" class="item" effect="black"  style="display: block;" placement="top" >
                   <div slot="content" v-html="html"></div>
                   <span>{{item.label}}</span>
                 </el-tooltip>
@@ -160,6 +161,8 @@ export default {
         height: null,
         minHeight: null
       },
+      propSize: null,
+      showTable: true,
       searchParams: {}
     }
   },
@@ -176,6 +179,13 @@ export default {
   methods: {
     cellStyle() {
       return 'text-align:center'
+    },
+    getWidth(item,width){
+      if (!this.propSize) {
+        return width
+      }
+      console.log(width.replace('px',''))
+      return this.propSize *  width.replace('px','') + 'px'
     },
     __calculateHeight() {
       // 根据屏幕高度算表格高度
@@ -374,6 +384,15 @@ export default {
                 }
               })
             })
+            if(this.propName) {
+              let propSize = 0
+              for (let i = 0; i < data.page.list.length; i++) {
+                propSize = data.page.list[i][this.propName].length>propSize?data.page.list[i][this.propName].length:propSize
+              }
+              this.propSize = propSize
+              this.showTable = false
+              this.showTable = true
+            }
           } else {
             this.options.dataList = []
             this.options.totalPage = 0

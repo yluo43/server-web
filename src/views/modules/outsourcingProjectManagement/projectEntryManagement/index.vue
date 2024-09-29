@@ -123,7 +123,7 @@
           ref="table"
           :table-data="tableData"
           :multi-select="true"
-          prop-name="departStatus"
+          prop-name="entryProjectList"
           :html = "html"
           @selectData="selectData"
         >
@@ -289,7 +289,7 @@ export default {
         education: '',
         // 专业
         speciality: '',
-        departStatus: '',
+        entryProjectList: '',
         // 工龄
         jobAge: [],
         jobAgeStart: '',
@@ -298,6 +298,7 @@ export default {
         departAgeEnd: '',
         // 司龄
         departAge: [],
+        departStatus: '',
         // 部门
         deptId: '',
         // 工号
@@ -328,8 +329,8 @@ export default {
           { label: '司龄', prop: 'departAge' },
           { label: '部门', prop: 'department' },
           { label: '在离职状态', prop: 'departStatusName', slotName: 'departStatusName' },
-          { label: '入场外协项目', prop: 'departStatus', slotName: 'projectList', width: '250px' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
+          { label: '入场外协项目', prop: 'entryProjectList', slotName: 'projectList', width: '100px' },
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
         ],
         url: '/externalProject/listEmpProjectEntry'
       }
@@ -576,6 +577,7 @@ export default {
 .ownBar {
   color: #2462F9;
   background-color: #F0F1FD;
+  min-width: 80px;
 }
 
 // .ownBar:hover {
@@ -586,8 +588,8 @@ export default {
 .notOwnBar {
   color: #E37318;
   background-color: #EABD7F;
+  min-width: 80px;
 }
-
 
 .add {
   border: 2px solid black;

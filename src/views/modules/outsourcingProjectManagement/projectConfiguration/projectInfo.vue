@@ -12,10 +12,10 @@
       <el-divider></el-divider>
       <div v-if="editMode" class="form-info">
         <el-form
-          ref="projectForm"
-          :rules="projectFormRules"
-          :model="projectFormData"
-          label-width="100px"
+            ref="projectForm"
+            :rules="projectFormRules"
+            :model="projectFormData"
+            label-width="100px"
         >
           <el-form-item label="项目名称:" prop="name">
             <el-input v-model="projectFormData.name" placeholder="请输入项目名称" clearable></el-input>
@@ -25,33 +25,33 @@
           </el-form-item>
           <el-form-item label="项目经理:" prop="managerId">
             <el-cascader
-              v-model="projectManagerId"
-              :options="projectManagers"
-              placeholder="请选择项目经理"
-              :show-all-levels="false"
-              style="width: 100%"
-              @change="changeManagerId"
-              :disabled="isManager"
+                v-model="projectManagerId"
+                :options="projectManagers"
+                placeholder="请选择项目经理"
+                :show-all-levels="false"
+                style="width: 100%"
+                @change="changeManagerId"
+                :disabled="isManager"
             >
             </el-cascader>
           </el-form-item>
           <el-form-item label="关联项目:" prop="projectId">
             <el-select v-model="projectFormData.projectId" placeholder="请选择关联项目" clearable>
               <el-option
-                v-for="item in associatedProjects"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
+                  v-for="item in associatedProjects"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="项目客户:" prop="customerId">
             <el-select v-model="projectFormData.customerId" placeholder="请选择项目客户" clearable @change="customerChange">
               <el-option
-                v-for="item in customerNames"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
+                  v-for="item in customerNames"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -60,31 +60,31 @@
           </el-form-item>
           <el-form-item label="项目开始日期:" prop="startTime">
             <el-date-picker
-              v-model="projectFormData.startTime"
-              style="width: 100%"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择开始日期"
-              clearable
+                v-model="projectFormData.startTime"
+                style="width: 100%"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择开始日期"
+                clearable
             />
           </el-form-item>
           <el-form-item label="项目结束日期:" prop="endTime">
             <el-date-picker
-              v-model="projectFormData.endTime"
-              style="width: 100%"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="请选择结束日期"
-              clearable
+                v-model="projectFormData.endTime"
+                style="width: 100%"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="请选择结束日期"
+                clearable
             />
           </el-form-item>
           <el-form-item label="备注:" prop="notes">
             <el-input
-              v-model="projectFormData.remark"
-              style="margin-block: 6px"
-              type="textarea"
-              maxlength="100"
-              show-word-limit
+                v-model="projectFormData.remark"
+                style="margin-block: 6px"
+                type="textarea"
+                maxlength="100"
+                show-word-limit
             ></el-input>
           </el-form-item>
         </el-form>
@@ -125,27 +125,12 @@
       <div class="left-right-header">
         <div class="header-title">岗位单价信息</div>
         <div style="display: flex">
+          <el-button class="btn-download" size="small" type="primary" @click="batchUploadFactoryInfo">批量导入</el-button>
           <el-button
-            class="btn-download"
-            type="primary"
-            @click="download"
-          >下载模板
-          </el-button>
-          <el-upload
-            class="upload-demo"
-            :show-file-list="false"
-            :action="this.$http.adornUrl('/externalProject/importProjectPost')"
-            :data="{'projectId':projectFormData.id}"
-            :on-success="uploadSuccess"
-            :file-list="fileList"
-          >
-            <el-button class="btn-download" size="small" type="primary">批量导入</el-button>
-          </el-upload>
-          <el-button
-            class="btn-download"
-            type="primary"
-            icon="el-icon-circle-plus-outline"
-            @click="addUnit"
+              class="btn-download"
+              type="primary"
+              icon="el-icon-circle-plus-outline"
+              @click="addUnit"
           >添加岗位
           </el-button>
         </div>
@@ -153,28 +138,28 @@
       <el-divider></el-divider>
       <div style="margin: 20px">
         <baseTable
-          ref="table"
-          :table-data="tableData"
-          :multi-select="true"
-          :edit-flag= "false"
-          @updateTable="updateTable"
-          @handleInput="handleInput"
+            ref="table"
+            :table-data="tableData"
+            :multi-select="true"
+            :edit-flag="false"
+            @updateTable="updateTable"
+            @handleInput="handleInput"
         >
           <template v-slot:clientType="row">
             <!--类型插槽-->
             <template>
-              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-                <svg-icon
-                  :icon-class="'delete-icon'"
-                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
-                  @click="deleteItem(row.item)"
-                />
-              </el-tooltip>
               <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
                 <svg-icon
-                  :icon-class="'edit-icon'"
-                  style="height: 1.5em; width: 1.5em; margin-right: 2em"
-                  @click="alter(row.item)"
+                    :icon-class="'edit-icon'"
+                    style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                    @click="alter(row.item)"
+                />
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                <svg-icon
+                    :icon-class="'delete-icon'"
+                    style="height: 1.5em; width: 1.5em; margin-right: 2em"
+                    @click="deleteItem(row.item)"
                 />
               </el-tooltip>
             </template>
@@ -184,25 +169,54 @@
     </div>
     <base-drawer ref="addUnitDrawer" :title="drawerTitle" size="23%">
       <template>
-        <addUnit ref="addUnit" @closeDrawer="closeAddUnitDrawer" />
+        <addUnit ref="addUnit" @closeDrawer="closeAddUnitDrawer"/>
       </template>
     </base-drawer>
+    <baseDialog title="批量导入" ref="batchUploadFactoryInfoDialog" width="500px">
+      <template>
+        <div>
+          <el-row
+              style="min-height: 100px; width: 450px; margin-bottom: 10px; padding: 5px 0 0 5px; border-radius: 4px; border: #ebeef5 solid 1px">
+            <el-upload
+                ref="factoryInfoBatchUpload"
+                action=""
+                :on-change="changeUploadFile"
+                :file-list="uploadFileList"
+                :upload-success="uploadSuccess"
+                :accept="'.xls,.xlsx'"
+                :limit="2"
+                :auto-upload="false"
+            >
+              <el-button class="btn-download" slot="trigger" size="small" type="primary">选取文件</el-button>
+              <el-button class="btn-download" style="margin-left: 10px" size="small" @click="download">下载导入模板</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传xls/xlsx文件, 且样式需同模板一致</div>
+            </el-upload>
+          </el-row>
+
+          <el-row style="display: flex; justify-content: right; margin-bottom: 20px">
+            <el-button type="primary" style="margin-right: 10px" @click="submitBatchUpload">确认</el-button>
+            <el-button @click="closeBatchUploadDialog">取消</el-button>
+          </el-row>
+        </div>
+      </template>
+    </baseDialog>
   </div>
 </template>
 
 <script>
 import baseTable from '@/views/modules/base/baseTableEdit.vue'
+import baseDialog from '@/views/modules/base/baseDialog.vue'
 import baseDrawer from '@/views/modules/base/baseDrawer.vue'
 import addUnit from './addUnit.vue'
 
 export default {
-  components: { baseTable, baseDrawer, addUnit },
+  components: {baseTable, baseDrawer, addUnit, baseDialog},
   data() {
     return {
       isManager: false,
-      fileList: [],
+      uploadFileList: [],
       projectFormRules: {
-        name: [{ required: true, message: '请输入项目名称', trigger: ['blur', 'change'] },
+        name: [{required: true, message: '请输入项目名称', trigger: ['blur', 'change']},
           {
             validator: (rule, value, callback) => {
               if (value.length > 30) {
@@ -213,7 +227,7 @@ export default {
             },
             trigger: ['blur', 'change']
           }],
-        contractCode: [{ required: true, message: '请选择合同编号', trigger: 'change' },
+        contractCode: [{required: true, message: '请输入合同编号', trigger: 'change'},
           {
             validator: (rule, value, callback) => {
               // 使用正则表达式匹配英文、数字和特定特殊字符
@@ -232,10 +246,10 @@ export default {
             },
             trigger: ['blur', 'change']
           }],
-        managerId: [{ required: true, message: '请选择项目经理', trigger: 'change' }],
-        customerId: [{ required: true, message: '请选择项目客户', trigger: 'change' }],
-        startTime: [{ required: true, message: '请选择开始日期', trigger: 'change' }],
-        endTime: [{ required: true, message: '请选择结束日期', trigger: 'change' }]
+        managerId: [{required: true, message: '请选择项目经理', trigger: 'change'}],
+        customerId: [{required: true, message: '请选择项目客户', trigger: 'change'}],
+        startTime: [{required: true, message: '请选择开始日期', trigger: 'change'}],
+        endTime: [{required: true, message: '请选择结束日期', trigger: 'change'}]
       },
       // 是否是编辑模式
       drawerTitle: '',
@@ -244,13 +258,13 @@ export default {
       membershipGroups: [],
       tableData: {
         theads: [
-          { label: '岗位', prop: 'name' },
-          { label: '级别', prop: 'level' },
-          { label: '单价（含税/元）', prop: 'unitPrice' },
-          { label: '税率（百分比）', prop: 'taxRate' },
-          { label: '单价（不含税/元）', prop: 'taxUnitPrice' },
-          { label: '类型（按n天计）', prop: 'type' },
-          { label: '操作', slotName: 'clientType' }
+          {label: '岗位', prop: 'name'},
+          {label: '级别', prop: 'level'},
+          {label: '单价（不含税/元）', prop: 'unitPrice'},
+          {label: '税率（%）', prop: 'taxRate'},
+          {label: '单价（含税/元）', prop: 'taxUnitPrice'},
+          {label: '类型（按n天计）', prop: 'type'},
+          {label: '操作', slotName: 'clientType'}
         ],
         url: '/externalProject/listProjectUnitPrice'
       },
@@ -321,7 +335,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/projectSet/listRelProject'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.associatedProjects = data.payload.filter((item) => item.id != 0)
       } else {
@@ -331,7 +345,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/common/getManagerData'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.projectManagers = data.payload.map(dept => {
           const transformedDept = {
@@ -352,7 +366,7 @@ export default {
     this.$http({
       url: this.$http.adornUrl('/externalProject/listCustomer?pageSize=999'),
       method: 'get'
-    }).then(({ data }) => {
+    }).then(({data}) => {
       if (data && data.code === 200) {
         this.customerNames = data.payload.list.filter((item) => item.id != 0)
       } else {
@@ -370,6 +384,61 @@ export default {
         })
       }
       this.$message.warning(text)
+    },
+    // 提交批量导入
+    submitBatchUpload() {
+      let uploadFiles = this.$refs.factoryInfoBatchUpload.uploadFiles
+      if (!uploadFiles || uploadFiles.length === 0) {
+        this.$message.warning('请选择上传文件')
+        return false
+      }
+
+      let formData = new FormData()
+      let uploadFile = uploadFiles[0].raw
+      formData.append('projectId', this.projectFormData.id)
+      formData.append('file', uploadFile)
+      this.$http({
+        url: this.$http.adornUrl('/externalProject/importProjectPost'),
+        method: 'post',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data; charset=utf-8' // 设置请求头为multipart/form-data
+        }
+      }).then(({data}) => {
+        if (data.success) {
+          let text = data.msg
+          if (data.msg === 'excel文件中数据不符合要求') {
+            data.payload.forEach(e => {
+              text += '\t\n' + e
+            })
+            this.$message.warning(text)
+          } else {
+            this.$message.success(text)
+            this.closeBatchUploadDialog()
+            this.refreshTable()
+          }
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    closeBatchUploadDialog() {
+      let uploadFiles = this.$refs.factoryInfoBatchUpload.uploadFiles
+      if (uploadFiles && uploadFiles.length > 0) {
+        this.uploadFileList = []
+      }
+      this.$refs.batchUploadFactoryInfoDialog.hide()
+    },
+    // 批量导入厂商信息-变更文件钩子
+    changeUploadFile(file, fileList) {
+      let fileName = file.name
+      let extension = fileName.split('.').pop()
+      if (extension !== 'xls' && extension !== 'xlsx') {
+        this.$message.warning('只能上传xls/xlsx文件')
+        this.$refs.factoryInfoBatchUpload.clearFiles()
+        return false
+      }
+      this.uploadFileList = fileList.slice(-1)
     },
     init(projectFormData) {
       Object.assign(this.projectFormData, projectFormData)
@@ -406,7 +475,7 @@ export default {
         url: this.$http.adornUrl('/externalProject/updateProjectUnitPrice'),
         method: 'put',
         data: row
-      }).then(({ data }) => {
+      }).then(({data}) => {
         if (data && data.code === 200) {
           this.$message({
             message: '修改成功',
@@ -460,7 +529,7 @@ export default {
           url: this.$http.adornUrl('/externalProject/updateExternalProject'),
           method: 'put',
           data: this.projectFormData
-        }).then(({ data }) => {
+        }).then(({data}) => {
           if (data && data.code === 200) {
             this.$message({
               message: '修改成功',
@@ -484,28 +553,28 @@ export default {
         type: 'warning',
         center: true
       })
-        .then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/externalProject/deleteProjectUnitPrice?id=' + row.id),
-            method: 'delete'
-          }).then(({ data }) => {
-            if (data && data.code === 200) {
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              })
-              this.refreshTable()
-            } else {
-              this.$message.error(data.msg)
-            }
+          .then(() => {
+            this.$http({
+              url: this.$http.adornUrl('/externalProject/deleteProjectUnitPrice?id=' + row.id),
+              method: 'delete'
+            }).then(({data}) => {
+              if (data && data.code === 200) {
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+                this.refreshTable()
+              } else {
+                this.$message.error(data.msg)
+              }
+            })
           })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
           })
-        })
     },
     // 新增
     addUnit() {
@@ -526,6 +595,9 @@ export default {
     closeAddUnitDrawer() {
       this.$refs.addUnitDrawer.hide()
       this.refreshTable()
+    },
+    batchUploadFactoryInfo() {
+      this.$refs.batchUploadFactoryInfoDialog.show()
     }
   }
 }

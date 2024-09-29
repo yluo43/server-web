@@ -20,14 +20,14 @@
             </el-select>
           </el-form-item>
           <div v-if="showFlag" style="display: contents">
-            <el-form-item label="客户所属集团:" prop="relBelongGroups">
-              <el-select v-model="dataForm.relBelongGroups" multiple placeholder="请选择客户所属集团"   clearable>
-                <el-option v-for="item in membershipGroups" :key="item" :label="item" :value="item"></el-option>
-              </el-select>
-            </el-form-item>
             <el-form-item label="项目客户:" prop="relCustomers">
               <el-select v-model="dataForm.relCustomers" multiple placeholder="请选择项目客户" clearable>
                 <el-option v-for="item in customerNames" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="客户所属集团:" prop="relBelongGroups">
+              <el-select v-model="dataForm.relBelongGroups" multiple placeholder="请选择客户所属集团"   clearable>
+                <el-option v-for="item in membershipGroups" :key="item" :label="item" :value="item"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="开始时间:" prop="startTime">

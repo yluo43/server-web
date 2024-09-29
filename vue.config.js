@@ -17,9 +17,9 @@ const name = defaultSettings.title || 'pmis' // page title
 const port = process.env.port || process.env.npm_config_port || 8082 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
-// const target = 'http://10.1.33.168:8081'
+const target = 'http://10.1.33.168:8081'
 
-const target = 'http://127.0.0.1:8081'
+// const target = 'http://127.0.0.1:8081'
 
 
 // const target = 'http://10.1.62.150/'

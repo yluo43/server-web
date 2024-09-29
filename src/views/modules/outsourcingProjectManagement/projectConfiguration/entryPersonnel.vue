@@ -108,6 +108,7 @@
       <template  v-slot:clientType="row">
         <!--类型插槽-->
         <template>
+          <el-button type="text" @click="edit(row.item)">编辑</el-button>
           <el-button type="text" @click="departure(row.item)">离场</el-button>
         </template>
       </template>
@@ -135,6 +136,11 @@
         <departure ref="departure" @refreshTableData="refresh"></departure>
       </template>
     </baseDialog>
+    <baseDialog ref="entryDetailDialog" title="编辑入场信息" width="500px">
+      <template>
+        <entryDetail :job-list="jobListDetail" :postLevelSet="postLevelSet" @jobChange="jobChange" ref="entryDetail" @refreshTableData="refresh"></entryDetail>
+      </template>
+    </baseDialog>
   </div>
 </template>
 
@@ -142,9 +148,10 @@
 import baseTable from '@/views/modules/base/baseTableSelectAll.vue'
 import baseDialog from '@/views/modules/base/baseDialog.vue'
 import departure from './departure.vue'
+import entryDetail from './entryDetail.vue'
 
 export default {
-  components: { baseTable, baseDialog, departure },
+  components: { baseTable, baseDialog, departure ,entryDetail},
   props: {
     isEntry: {
       type: Boolean,
@@ -170,7 +177,7 @@ export default {
           { label: '入场标记', slotName: 'entryMark' },
           { label: '入场原因', prop: 'entryReason' },
           { label: '在离职状态', prop: 'departStatusName',slotName: 'departStatusName'},
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '120px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
         ],
         url: '/externalProject/listProjectEntryPage'
       } :{
@@ -191,6 +198,8 @@ export default {
       },
       deptList: [],
       jobList: [],
+      jobListDetail: {},
+      postLevelSet: [],
       levelNameList: [],
       showFlag: false,
       entryTime: [],
@@ -216,6 +225,35 @@ export default {
   methods: {
     refresh() {
       this.$refs.table.refresh(this.dataConversion(this.queryParams))
+      if (this.isEntry){
+        this.initProject()
+      }
+    },
+    initProject() {
+      // 人员岗位和level
+      this.$http({
+        url: this.$http.adornUrl('/externalProject/listProjectUnitPrice?projectId=' + this.initData.id),
+        method: 'get'
+      }).then(({data}) => {
+        if (data && data.code === 200) {
+          Object.assign(this.jobListDetail, data.payload.list.reduce((acc, item) => {
+            // 如果acc中还没有这个name，就添加一个新对象
+            if (!acc[item.name]) {
+              acc[item.name] = {name: item.name, levels: [{postId: item.id, level: item.level}]}
+            } else {
+              // 如果已经有了，就把level添加到levels数组中
+              acc[item.name].levels.push({postId: item.id, level: item.level})
+            }
+            return acc
+          }, {}))
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    },
+    jobChange(postIndex) {
+      this.postLevelSet.length = 0
+      this.postLevelSet = [...this.jobListDetail[postIndex].levels]
     },
     // 查询条件数据转换
     dataConversion(form) {
@@ -312,6 +350,18 @@ export default {
       this.$refs.departureDialog.show()
       this.$nextTick(() => {
         this.$refs.departure.init(row)
+      })
+    },
+    edit(row){
+      this.$refs.entryDetailDialog.show()
+      Object.keys(this.jobListDetail).forEach(e => {
+        if (e === row.postName) {
+          row.postIndex = e
+        }
+      })
+      this.jobChange(row.postIndex)
+      this.$nextTick(() => {
+        this.$refs.entryDetail.init(row)
       })
     },
     resetForm() {

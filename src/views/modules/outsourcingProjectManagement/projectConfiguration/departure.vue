@@ -13,19 +13,19 @@
       <el-form-item label="级别:" prop="level">
         {{ departurePersonnelInfo.level }}
       </el-form-item>
-      <el-form-item label="入场时间:" prop="entryTime">
+      <el-form-item label="入场日期:" prop="entryTime">
         {{ departurePersonnelInfo.entryTime }}
       </el-form-item>
-      <el-form-item label="计划离场时间:" prop="planExitTime">
+      <el-form-item label="计划离场日期:" prop="planExitTime">
         {{ departurePersonnelInfo.planExitTime }}
       </el-form-item>
-      <el-form-item label="实际离场时间:" prop="exitTime">
+      <el-form-item label="实际离场日期:" prop="exitTime">
         <el-date-picker
           style="width: 300px"
           v-model="departurePersonnelInfo.exitTime"
           type="date"
           value-format="yyyy-MM-dd"
-          placeholder="请选择实际离场时间"
+          placeholder="请选择实际离场日期"
           clearable
           :picker-options="pickerOptions"
         />
@@ -57,7 +57,7 @@ export default {
       },
       pickerOptions: {},
       rules: {
-        exitTime: [{ required: true, trigger: 'blur', message: '请选择实际离场时间' }],
+        exitTime: [{ required: true, trigger: 'blur', message: '请选择实际离场日期' }],
         // exitReason: [{ required: true, trigger: 'blur', message: '请输入离场原因' }]
       }
     }

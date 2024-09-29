@@ -17,33 +17,25 @@
         <el-form-item label="岗位级别:" prop="level">
           <el-input v-model="projectFormData.level" placeholder="岗位级别" clearable></el-input>
         </el-form-item>
-        <el-form-item label="单价（含税/元）:" prop="unitPrice">
+        <el-form-item label="单价（不含税/元）:" prop="unitPrice">
           <el-input
               ref="unitPrice"
               v-model="projectFormData.unitPrice"
-              placeholder="单价（含税/元）"
-              clearable
-              @input="handleInput1"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="税率（百分比）:" prop="taxRate">
-          <el-input
-              ref="unitPrice"
-              v-model="projectFormData.taxRate"
-              placeholder="税率（百分比）"
-              clearable
-              @input="handleInput0"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="单价（不含税/元）:" prop="taxUnitPrice">
-          <el-input
-              ref="taxUnitPrice"
-              v-model="projectFormData.taxUnitPrice"
               placeholder="单价（不含税/元）"
               clearable
               @input="handleInput2"
           ></el-input>
         </el-form-item>
+        <el-form-item label="税率（%）:" prop="taxRate">
+          <el-input
+              ref="taxRate"
+              v-model="projectFormData.taxRate"
+              placeholder="税率（%）"
+              clearable
+              @input="handleInput0"
+          ></el-input>
+        </el-form-item>
+
         <el-form-item label="类型（按n天计）:" prop="type">
           <el-input
               ref="type"
@@ -70,8 +62,7 @@ export default {
       projectFormRules: {
         name: [{required: true, message: '请输入岗位名称', trigger: ['blur', 'change']}],
         level: [{required: true, message: '请输入级别', trigger: 'change'}],
-        unitPrice: [{required: true, message: '请输入单价（含税/元）', trigger: 'change'}],
-        taxRate: [{required: true, message: '请输入税率', trigger: 'change'},
+        taxRate: [{required: true, message: '请输入税率（%）', trigger: 'change'},
           {
             validator: (rule, value, callback) => {
               let numValue = Number(value) || 0;
@@ -87,7 +78,7 @@ export default {
             },
             trigger: ['blur', 'change']
           }],
-        taxUnitPrice: [{required: true, message: '请输入单价（不含税/元）', trigger: 'change'}],
+        unitPrice: [{required: true, message: '请输入单价（不含税/元）', trigger: 'change'}],
         type: [{required: true, message: '请输入类型（按n天计）', trigger: 'change'},
           {
             validator: (rule, value, callback) => {
@@ -112,10 +103,8 @@ export default {
         taxRate: '6',
         // 级别
         level: '',
-        // 单价（含税/元）
-        unitPrice: '',
         // 单价（不含税/元）
-        taxUnitPrice: '',
+        unitPrice: '',
         // 类型（按n天计）
         type: '',
         projectId: ''
@@ -154,7 +143,7 @@ export default {
         this.projectFormData.taxRate = numericValue;
       }
     },
-    handleInput1(value) {
+    handleInput2(value) {
       const regex = /^\d*(\.\d{0,2})?$/
       // 如果不匹配，处理输入
       if (!regex.test(value)) {
@@ -164,25 +153,16 @@ export default {
           this.projectFormData.unitPrice = validValue
         })
       }
-    },
-    handleInput2(value) {
-      const regex = /^\d*(\.\d{0,2})?$/
-      // 如果不匹配，处理输入
-      if (!regex.test(value)) {
-        this.$nextTick(() => {
-          // 找到最后一个有效的数字部分并更新输入框的值
-          const validValue = value.match(/^\d*(\.\d{0,2})?/)[0] || ''
-          this.projectFormData.taxUnitPrice = validValue
-        })
+      if (this.projectFormData.unitPrice &&
+          this.projectFormData.taxRate &&
+          this.projectFormData.unitPrice.length > 0 &&
+          this.projectFormData.taxRate.length > 0
+      ){
       }
     },
     confirm() {
       this.$refs.projectFormData.validate((valid) => {
         if (!valid) {
-          return false
-        }
-        if (this.projectFormData.taxUnitPrice >= this.projectFormData.unitPrice) {
-          this.$message.error('单价（含税/元）一定要大于 单价（不含税/元）')
           return false
         }
         this.$http({
