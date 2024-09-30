@@ -24,17 +24,17 @@ const http = axios.create({
 
 axios.interceptors.response.use(undefined, (err) => {
   // 只重试一次
-  const { config: originalRequest } = err;
+  const { config: originalRequest } = err
   if (
     (err?.code === 'ECONNABORTED' ||
-      err?.message === 'Network Error' ||
-      err?.message?.includes?.('timeout')) &&
-    !originalRequest._retry
+            err?.message === 'Network Error' ||
+            err?.message?.includes?.('timeout')) &&
+        !originalRequest._retry
   ) {
-    originalRequest._retry = true;
-    return axios.request(originalRequest);
+    originalRequest._retry = true
+    return axios.request(originalRequest)
   }
-});
+})
 
 /**
  * 响应拦截
@@ -46,12 +46,12 @@ http.interceptors.response.use(response => {
   }
   return response
 }, error => {
-  if(error.response) {
+  if (error.response) {
     if (error.response.status === 500) {
       Vue.prototype.$message.error('请求异常')
     } else if (error.response.status === 401) { // 401, token失效
       Vue.prototype.$message.error('用户登录信息已失效')
-      router.push({name: 'login'})
+      router.push({ name: 'login' })
     } else if (error.response.status === 403) { // 401, token失效
       Vue.prototype.$message.error('权限不足，请申请下载~')
     }
@@ -60,15 +60,13 @@ http.interceptors.response.use(response => {
   return Promise.reject(error)
 })
 
-
-
 /**
  * 请求地址处理
  * @param {*} actionName action方法名称
  */
 http.adornUrl = (actionName) => {
   // 非生产环境 && 开启代理, 接口前缀统一使用[/proxyApi/]前缀做代理拦截!
-  return (process.env.ENV !== 'production' && process.env.VUE_APP_BASE_API ? process.env.VUE_APP_BASE_API: window.SITE_CONFIG.baseUrl) + actionName
+  return (process.env.ENV !== 'production' && process.env.VUE_APP_BASE_API ? process.env.VUE_APP_BASE_API : window.SITE_CONFIG.baseUrl) + actionName
 }
 
 /**
@@ -77,7 +75,7 @@ http.adornUrl = (actionName) => {
  * @param {*} openDefaultParams 是否开启默认参数?
  */
 http.adornParams = (params = {}, openDefaultParams = true) => {
-  var defaults = {
+  let defaults = {
     't': new Date().getTime()
   }
   return openDefaultParams ? merge(defaults, params) : params
@@ -92,7 +90,7 @@ http.adornParams = (params = {}, openDefaultParams = true) => {
  *  form: 'application/x-www-form-urlencoded; charset=utf-8'
  */
 http.adornData = (data = {}, openDefaultData = true, contentType = 'json') => {
-  var defaults = {
+  let defaults = {
     't': new Date().getTime()
   }
   data = openDefaultData ? merge(defaults, data) : data
@@ -104,74 +102,66 @@ http.download = (url, params = {}, localVue) => {
     params: http.adornParams(params),
     responseType: 'arraybuffer'
   }).then(function (response) {
-    var fileName = response.headers['attachment-name']
-    var contentType = response.headers['content-type']
+    let fileName = response.headers['attachment-name']
+    let contentType = response.headers['content-type']
     if (response.status === 200 && !contentType.startsWith('application/json')) {
-      if(response.data.byteLength<=1024){
+      if (response.data.byteLength <= 1024) {
         Vue.prototype.$message.error('文件不存在')
-      }else {
+      } else {
         // 获取自定义文件名
         // 生成Blob对象，通过创建的a标签点击下载
-        var objectUrl = URL.createObjectURL(new Blob([response.data]))
-        var link = document.createElement('a')
+        let objectUrl = URL.createObjectURL(new Blob([response.data]))
+        let link = document.createElement('a')
         link.download = decodeURIComponent(fileName)
         link.href = objectUrl
         link.click()
       }
     } else {
-      var dataView = new DataView(response.data)
-      var decoder = new TextDecoder('utf8')
-      var errormsg = (JSON.parse(decoder.decode(dataView))).msg
-      localVue.$message.error(errormsg)
+      let dataView = new DataView(response.data)
+      let decoder = new TextDecoder('utf8')
+      let errorMsg = (JSON.parse(decoder.decode(dataView))).msg
+      localVue.$message.error(errorMsg)
     }
     return false
   }).catch(function (error) {
-    if (error.response.status === 403) {
-      return true
-    } else {
-      return false
-    }
+    return error.response.status === 403
   })
 }
 
 http.downloadPost = (url, params = {}, localVue) => {
-   return http.post(url, params,{responseType: 'arraybuffer'}).then(function(response) {
+  return http.post(url, params, { responseType: 'arraybuffer' }).then(function (response) {
     // let fileName = response.headers['filename']
     let disposition = response.headers['content-disposition']
     let array = disposition.split(';')
-    let fileName = undefined
-    for(let i  in array){
-        let array2 = array[i].split('=')
-        if(array2[0].replace(' ','') === 'filename'){
-          fileName = array2[1]
-        }
+    let fileName
+    for (let i in array) {
+      let array2 = array[i].split('=')
+      if (array2[0].replace(' ', '') === 'filename') {
+        fileName = array2[1]
+      }
     }
-    var contentType = response.headers['content-type']
+    let contentType = response.headers['content-type']
     if (response.status === 200 && !contentType.startsWith('application/json')) {
-      if(response.data.byteLength<=1024){
+      if (response.data.byteLength <= 1024) {
         Vue.prototype.$message.error('不存在历史文件及内容页图片')
-      }else {
+      } else {
         // 获取自定义文件名
         // 生成Blob对象，通过创建的a标签点击下载
-        var objectUrl = URL.createObjectURL(new Blob([response.data]))
-        var link = document.createElement('a')
+        let objectUrl = URL.createObjectURL(new Blob([response.data]))
+        let link = document.createElement('a')
         link.download = decodeURIComponent(fileName)
         link.href = objectUrl
         link.click()
       }
     } else {
-      var dataView = new DataView(response.data)
-      var decoder = new TextDecoder('utf8')
-      var errormsg = (JSON.parse(decoder.decode(dataView))).msg
-      localVue.$message.error(errormsg)
+      let dataView = new DataView(response.data)
+      let decoder = new TextDecoder('utf8')
+      let errorMsg = (JSON.parse(decoder.decode(dataView))).msg
+      localVue.$message.error(errorMsg)
     }
     return false
-  }).catch(function(error) {
-    if(error.response.status===403){
-      return true
-    }else {
-      return false
-    }
+  }).catch(function (error) {
+    return error.response.status === 403
   })
 }
 

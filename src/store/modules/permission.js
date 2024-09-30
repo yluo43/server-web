@@ -24,6 +24,7 @@ const permission = {
           const accessedRoutes = filterAsyncRouter(res.data.menus)
           accessedRoutes.push({ path: '*', redirect: '/404', hidden: true })
           commit('SET_ROUTES', accessedRoutes)
+          console.log(accessedRoutes)
           resolve(accessedRoutes)
         })
       })

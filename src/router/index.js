@@ -29,21 +29,19 @@ Vue.use(Router)
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-//公共路由
+// 公共路由
 export const constantRoutes = [
   ...systemRouters
 ]
 
-
-const router =  new Router({
+const router = new Router({
   // mode: 'history', // require service support
   mode: 'history',
   scrollBehavior: () => ({ y: 0 }),
   isAddDynamicMenuRoutes: false, // 是否已经添加动态(菜单)路由
   routes: constantRoutes,
-  base: '/'   //路由中的前缀
+  base: '/' // 路由中的前缀
 })
-
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomm ent-357941465
 export function resetRouter() {
@@ -52,7 +50,7 @@ export function resetRouter() {
 }
 
 const whiteList = [
-  { path: '/login', component: '@/views/login', name: 'login', meta: { title: '登录' } }
+  { path: '/login', component: '@/views/login', name: 'login', meta: { title: '登录' }}
 ] // no redirect whitelist   [登录,下载输出文件]列为白名单
 
 router.beforeEach((to, from, next) => {
@@ -74,16 +72,14 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
     httpRequest({
-      url:httpRequest.adornUrl('/userInfo/menu'),
-      method: 'get',
-    }).then(({data}) => {
+      url: httpRequest.adornUrl('/userInfo/menu'),
+      method: 'get'
+    }).then(({ data }) => {
       if (data && data.code === 200) {
-          // if(!getMenu()) {
-            fnAddDynamicMenuRoutes(data.payload.menuList)
+        fnAddDynamicMenuRoutes(data.payload.menuList)
         localStorage.setItem('buttons', JSON.stringify(data.payload.permissions || '[]'))
-        // setMenu()
-          // }
-          router.options.isAddDynamicMenuRoutes = true
+
+        router.options.isAddDynamicMenuRoutes = true
 
         // sessionStorage.setItem('permissions', JSON.stringify(data.permissions || '[]'))
         next({ ...to, replace: true })
@@ -98,44 +94,42 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-
-
 export function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
-
-  for (var i = 0; i < menuList.length; i++) {
-    menuList[i].url = menuList[i].url.replace(/^\//, '')
+  for (const element of menuList) {
+    // debugger
+    element.url = element.url.replace(/^\//, '')
     let children = []
-    for (var j = 0; j < menuList[i].sons.length; j++) {
-      let location = menuList[i].sons[j].location;
+    for (var j = 0; j < element.sons.length; j++) {
+      let location = element.sons[j].location
       var routeSon = {
-        path: menuList[i].sons[j].url,
+        path: element.sons[j].url,
         component: (resolve) => require([`@/views/modules/${location}`], resolve),
-        name:  menuList[i].sons[j].ename,
+        name: element.sons[j].ename,
         hidden: false,
         meta: {
-          menuId: menuList[i].sons[j].menuId,
-          title: menuList[i].sons[j].menuName,
+          menuId: element.sons[j].menuId,
+          title: element.sons[j].menuName
         }
       }
       children.push(routeSon)
     }
-    var route = {
-      path: menuList[i].url,
+    let route = {
+      path: element.url,
       component: Layout,
-      name:  menuList[i].ename.replace(/\//g, '-'),
+      name: element.ename.replace(/\//g, '-'),
       children: children,
-      icon: 'el-icon-'+menuList[i].icon,
+      icon: 'el-icon-' + element.icon,
       hidden: false,
       meta: {
-        menuId: menuList[i].menuId,
-        title: menuList[i].menuName,
+        menuId: element.menuId,
+        title: element.menuName
       }
     }
     routes.push(route)
   }
 
   router.options.routes = systemRouters.concat(routes)
-  router.matcher = new Router().matcher //match
+  router.matcher = new Router().matcher // match
   router.addRoutes(router.options.routes)
   console.log(router)
   // router.addRoutes(
@@ -144,15 +138,13 @@ export function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
   //   [{ path: '*', redirect: { name: '404' }}])
 }
 
-
-
 function fnCurrentRouteType (route, globalRoutes = []) {
-  var temp = []
-  for (var i = 0; i < globalRoutes.length; i++) {
-    if (route.path === globalRoutes[i].path) {
+  let temp = []
+  for (const element of globalRoutes) {
+    if (route.path === element.path) {
       return 'global'
-    } else if (globalRoutes[i].children && globalRoutes[i].children.length >= 1) {
-      temp = temp.concat(globalRoutes[i].children)
+    } else if (element.children && element.children.length >= 1) {
+      temp = temp.concat(element.children)
     }
   }
   return temp.length >= 1 ? fnCurrentRouteType(route, temp) : 'main'

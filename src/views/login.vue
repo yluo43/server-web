@@ -164,7 +164,9 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setEmpId: 'user/SET_EMPID'
+      setEmpId: 'user/SET_EMPID',
+      setIsManager: 'user/SET_IS_MANAGER',
+      setDeptId: 'user/SET_DEPT_ID'
     }),
     showPwd() {
       if (this.passwordType === 'password') {
@@ -190,6 +192,8 @@ export default {
           this.$message.success('登录成功')
           setCName(result.data.payload.name)
           this.setEmpId(result.data.payload.empId)
+          this.setIsManager(result.data.payload.isManager)
+          this.setDeptId(result.data.payload.deptId)
           this.$http({
             url: this.$http.adornUrl('/userInfo/menu'),
             method: 'get'

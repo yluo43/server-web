@@ -8,7 +8,9 @@ const getDefaultState = () => {
     token: getToken(),
     cName: getCName,
     avatar: getUserID,
-    empId: ''
+    empId: '',
+    isManager: false,
+    deptId: ''
   }
 }
 
@@ -32,6 +34,12 @@ const mutations = {
   },
   SET_EMPID: (state, empId) => {
     state.empId = empId
+  },
+  SET_IS_MANAGER: (state, isManager) => {
+    state.isManager = isManager
+  },
+  SET_DEPT_ID:  (state, deptId) => {
+    state.deptId = deptId
   }
 }
 
