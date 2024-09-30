@@ -50,8 +50,8 @@
               <el-form-item label="学历:" prop="education">
                 <el-input v-model="dataForm.education" placeholder="请输入学历" clearable></el-input>
               </el-form-item>
-              <el-form-item label="专业:" prop="speciality">
-                <el-input v-model="dataForm.speciality" placeholder="请输入专业" clearable></el-input>
+              <el-form-item label="专业:" prop="major">
+                <el-input v-model="dataForm.major" placeholder="请输入专业" clearable></el-input>
               </el-form-item>
               <el-form-item label="司龄:" prop="departAge">
                 <el-input
@@ -288,7 +288,7 @@ export default {
         // 学历
         education: '',
         // 专业
-        speciality: '',
+        major: '',
         entryProjectList: '',
         // 工龄
         jobAge: [],

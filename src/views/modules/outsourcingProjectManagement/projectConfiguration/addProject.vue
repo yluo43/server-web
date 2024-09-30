@@ -177,8 +177,8 @@ export default {
       this.projectFormData.projectManagerId = [this.$store.state.user.deptId.toString(), this.$store.state.user.empId.toString()]
     }
 
-    if(this.isManager){
-      this.empId  = this.$store.state.user.empId.toString()
+    if (this.isManager){
+      this.empId = this.$store.state.user.empId.toString()
     }
     this.initProject()
 
