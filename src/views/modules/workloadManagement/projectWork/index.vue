@@ -98,7 +98,7 @@
             <div>
               <baseTable :tableData="tableData" ref="table" :type="null" propHeight="425px">
                 <template v-slot:reportWorkName="row">
-                  <template v-if="row.item.taskStatus === 2">
+                  <template v-if="row.item.taskStatus === 2 || (row.item.taskStatus === 3 && row.item.hasConfirm > 0)">
                     <el-badge value="待确认" class="small-badge badge-table">
                       <span>{{ row.item.reportWorkName }}</span>
                     </el-badge>
@@ -117,7 +117,10 @@
                   <template v-if="row.item.taskStatus === 2">
                     <span>确认中</span>
                   </template>
-                  <template v-if="row.item.taskStatus === 3">
+                  <template v-if="row.item.taskStatus === 3 && row.item.hasConfirm > 0">
+                    <span>存在待确认数据</span>
+                  </template>
+                  <template v-if="row.item.taskStatus === 3 && row.item.hasConfirm == 0">
                     <span>待归档</span>
                   </template>
                   <template v-if="row.item.taskStatus === 4">
@@ -127,7 +130,19 @@
                 <!-- 操作 -->
                 <template v-slot:clientType="row">
                   <template>
-                    <el-button type="text" :disabled="row.item.taskStatus != 2" style="width: 100px" @click="goToTrack(row)">>>去确认</el-button>
+                    <el-button
+                      type="text"
+                      :disabled="
+                        row.item.taskStatus === 0 ||
+                        row.item.taskStatus === 1 ||
+                        (row.item.taskStatus === 3 && row.item.hasConfirm === 0) ||
+                        row.item.taskStatus === 4
+                      "
+                      style="width: 100px"
+                      @click="goToTrack(row)"
+                    >
+                      >>去确认
+                    </el-button>
                     <el-button
                       type="text"
                       :disabled="row.item.taskStatus == 0 || row.item.taskStatus == 1 || row.item.taskStatus == 2"

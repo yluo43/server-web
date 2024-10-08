@@ -80,7 +80,7 @@
           <div>
             <baseTable ref="taskListTable" :table-data="taskList" :type="null" propHeight="425px">
               <template v-slot:reportWorkName="row">
-                <div v-if="row.item.taskStatus == 1 || (row.item.taskStatus == 2 && row.item.hasReject > 0)">
+                <div v-if="row.item.taskStatus == 1 || ((row.item.taskStatus == 2 || row.item.taskStatus == 3) && row.item.hasReject > 0)">
                   {{ row.item.reportWorkName }}
                   <el-tag type="danger" effect="dark">待填报</el-tag>
                 </div>
@@ -96,11 +96,11 @@
                 <template v-if="row.item.taskStatus == 2 && row.item.hasReject == 0">
                   <span>确认中</span>
                 </template>
-                <template v-if="row.item.taskStatus == 2 && row.item.hasReject > 0">
+                <template v-if="(row.item.taskStatus == 2 || row.item.taskStatus == 3) && row.item.hasReject > 0">
                   <span>存在驳回记录</span>
                 </template>
 
-                <template v-if="row.item.taskStatus == 3">
+                <template v-if="row.item.taskStatus == 3 && row.item.hasReject == 0">
                   <span>待归档</span>
                 </template>
                 <template v-if="row.item.taskStatus == 4">
