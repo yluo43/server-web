@@ -234,7 +234,6 @@ export default {
       })
     },
     test() {
-      debugger
       console.log(this.projectFormData.projectManagerId)
     },
     // 取消

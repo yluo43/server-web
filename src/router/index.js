@@ -131,7 +131,6 @@ export function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
   router.options.routes = systemRouters.concat(routes)
   router.matcher = new Router().matcher // match
   router.addRoutes(router.options.routes)
-  console.log(router)
   // router.addRoutes(
   //   routes)
   // router.addRoutes(

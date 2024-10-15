@@ -10,7 +10,7 @@ const getDefaultState = () => {
     avatar: getUserID,
     empId: '',
     isManager: false,
-    deptId: ''
+    deptId: '',
   }
 }
 

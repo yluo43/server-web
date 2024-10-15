@@ -6,6 +6,12 @@
         v-bind:style="{ 'min-height': options.minHeight }" @selection-change="__handleSelectionChange"
         @sort-change="__changeTableSort" @row-dblclick="__rowDblclick" @row-click="__rowClick" @select="__select"
         @select-all="__selectAll" size="mini" ref="table">
+        <el-table-column
+            v-if="showNum"
+            type="index"
+            width="50"
+            label="序号">
+        </el-table-column>
         <template v-for="(item, index) in options.theads">
           <template v-if="item.slotName != null">
             <el-table-column :key="index" :label="item.label" :prop="item.prop" :show-overflow-tooltip="true"
@@ -31,7 +37,7 @@
       </el-table>
     </div>
     <!-- Footer Area -->
-    <div class="foot-area">
+    <div v-if="!hidePage" class="foot-area">
       <el-pagination style="text-align: right" @size-change="__sizeChangeHandle" @current-change="__currentChangeHandle"
         :current-page="options.curPage" :page-sizes="[10, 20, 30]" :page-size="options.pageSize" :total="options.count"
         layout="total, sizes, prev, pager, next, jumper">
@@ -73,6 +79,10 @@ export default {
       default: false
     },
     hidePage: {
+      type: Boolean,
+      default: false
+    },
+    showNum: {
       type: Boolean,
       default: false
     },
@@ -284,6 +294,11 @@ export default {
       this.$nextTick(() => {
         this.$refs.tableColSetPage.init()
       })
+    },
+    fakeData(data){
+      this.options.dataList = data.page.list
+      this.options.count = data.page.totalCount
+      this.options.data = data
     }
   }
 }

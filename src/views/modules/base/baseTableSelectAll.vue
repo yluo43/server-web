@@ -103,6 +103,7 @@
 </template>
 
 <script>
+import _ from 'lodash';
 export default {
   props: {
     tableData: {
@@ -184,7 +185,6 @@ export default {
       if (!this.propSize) {
         return width
       }
-      console.log(width.replace('px',''))
       return this.propSize *  width.replace('px','') + 'px'
     },
     __calculateHeight() {
@@ -276,18 +276,16 @@ export default {
       this.$refs.table.clearSelection()
     },
     __rowClick(row, column, event) {
-      let foundIndex = this.options.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(row))
-      if (foundIndex != -1) {
-        this.options.multipleSelection.splice(foundIndex, 1)
-        this.$refs.table.toggleRowSelection(row, false)
-      } else {
-        this.options.multipleSelection.push(row)
-        this.$refs.table.toggleRowSelection(row)
-      }
-      this.$emit('selectData', this.options.multipleSelection)
-      if (this.afterSelect != null) {
-        this.afterSelect()
-      }
+      // let foundIndex = this.options.multipleSelection.findIndex((item) => _.isEqual(item, row));
+      // if (foundIndex !== -1) {
+      //   this.options.multipleSelection.splice(foundIndex, 1);
+      // } else {
+      //   this.options.multipleSelection.push(row);
+      // }
+      // this.$emit('selectData', this.options.multipleSelection);
+      // if (this.afterSelect != null) {
+      //   this.afterSelect();
+      // }
     },
     selectone(row) {
       this.$refs.table.clearSelection()
@@ -295,15 +293,16 @@ export default {
       this.$refs.table.toggleRowSelection(row, true)
     },
     __select(selection, row) {
-      let foundIndex = this.options.multipleSelection.findIndex((item) => JSON.stringify(item) === JSON.stringify(row))
-      if (foundIndex != -1) {
-        this.options.multipleSelection.splice(foundIndex, 1)
-      } else {
-        this.options.multipleSelection.push(row)
-      }
-      this.$emit('selectData', this.options.multipleSelection)
+      // let foundIndex = this.options.multipleSelection.findIndex((item) => _.isEqual(item, row));
+      // if (foundIndex !== -1) {
+      //   this.options.multipleSelection.splice(foundIndex, 1);
+      // } else {
+      //   this.options.multipleSelection.push(row);
+      // }
+      // this.$emit('selectData', this.options.multipleSelection);
+      this.$emit('selectData', selection);
       if (this.afterSelect != null) {
-        this.afterSelect()
+        this.afterSelect();
       }
     },
     __selectAll(selection) {
@@ -410,6 +409,11 @@ export default {
         .catch(() => {
           this.options.tableLoading = false
         })
+    },
+    fakeData(data){
+      this.options.dataList = data.page.list
+      this.options.count = data.page.totalCount
+      this.options.data = data
     },
     refresh(params) {
       // 对象为空刷新，就是找上一次的查询条件刷

@@ -141,7 +141,6 @@ export default {
       }
     },
     handleEdit(index, propName) {
-      debugger
       if (this.editingIndex !== null || this.editingProp !== null) {
         this.$emit('updateTable', this.options.dataList[this.editingIndex])
       }
@@ -256,7 +255,6 @@ export default {
       }
     },
     __clickStop: function () {
-      debugger
       // 该方法为了阻止冒泡事件，没什么软用
     },
     // 获取当前选项

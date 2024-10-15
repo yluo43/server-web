@@ -114,7 +114,6 @@ export default {
           return time.getTime() < targetDate.getTime();
         }
       }
-      debugger
       this.changeEntryMark()
     },
     changeEntryMark() {

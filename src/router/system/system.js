@@ -13,7 +13,12 @@ export default [
     component: () => import('@/views/login'),
     hidden: true
   },
-
+  {
+    path: '/office',
+    name: 'office',
+    component: () => import('@/views/modules/common/office'),
+    hidden: true
+  },
   {
     path: '/index123',
     component: Layout,

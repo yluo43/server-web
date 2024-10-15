@@ -97,12 +97,15 @@ http.adornData = (data = {}, openDefaultData = true, contentType = 'json') => {
   return contentType === 'json' ? JSON.stringify(data) : qs.stringify(data)
 }
 
-http.download = (url, params = {}, localVue) => {
+http.download = (url, params = {}, localVue, fileNameOld) => {
   return http.get(url, {
     params: http.adornParams(params),
     responseType: 'arraybuffer'
   }).then(function (response) {
     let fileName = response.headers['attachment-name']
+    if (fileNameOld != null) {
+      fileName = fileNameOld
+    }
     let contentType = response.headers['content-type']
     if (response.status === 200 && !contentType.startsWith('application/json')) {
       if (response.data.byteLength <= 1024) {

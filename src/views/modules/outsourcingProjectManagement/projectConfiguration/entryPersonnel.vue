@@ -25,7 +25,7 @@
       </el-form-item>
       <div v-if="showFlag" style="display: contents">
         <el-form-item label="级别:" prop="levelList">
-          <el-select v-model="queryParams.levelList" placeholder="请选择岗位" clearable multiple>
+          <el-select v-model="queryParams.levelList" placeholder="请选择级别" clearable multiple>
             <el-option v-for="item in levelNameList" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>

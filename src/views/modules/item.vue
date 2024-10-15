@@ -127,7 +127,6 @@ export default {
     },
     // 添加标签
     updateType(type,paymentId) {
-      debugger
       this.$http({
         url: this.$http.adornUrl('/payment/update'),
         method: 'post',
