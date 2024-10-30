@@ -17,6 +17,7 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择投入开始日期"
           @change="timeChange"
+          :picker-options="pickerOptions"
           clearable
         />
       </el-form-item>
@@ -28,6 +29,7 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择投入结束日期"
           @change="timeChange"
+          :picker-options="pickerOptions"
           clearable
         />
       </el-form-item>
@@ -49,6 +51,7 @@ export default {
         intoStartTime: '',
         intoEndTime: ''
       },
+      pickerOptions: {},
       row: {},
       teamMembers: [],
       rules: {
@@ -96,15 +99,15 @@ export default {
       this.addOrderData.orderId = row.id
       this.addOrderData.intoStartTime = row.startTime
       this.addOrderData.intoEndTime = row.endTime
-      // this.pickerOptions = {
-      //   disabledDate: (time) => {
-      //     const targetDate0 = new Date(initData.endTime)
-      //     targetDate0.setHours(0, 0, 0, 0)
-      //     const targetDate1 = new Date(initData.startTime)
-      //     targetDate1.setHours(0, 0, 0, 0)
-      //     return time.getTime() > targetDate0.getTime() || time.getTime() < targetDate1.getTime()
-      //   }
-      // }
+      this.pickerOptions = {
+        disabledDate: (time) => {
+          const startTime = new Date(row.startTime)
+          startTime.setHours(0, 0, 0, 0)
+          const endTime = new Date(row.endTime)
+          endTime.setHours(0, 0, 0, 0)
+          return time.getTime() > endTime.getTime() || time.getTime() < startTime.getTime()
+        }
+      }
       this.getPersons(row,projectId)
     },
     timeChange() {

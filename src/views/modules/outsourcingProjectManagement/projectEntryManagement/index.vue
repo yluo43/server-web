@@ -7,8 +7,8 @@
             <el-form-item label="姓名:" prop="name">
               <el-input v-model="dataForm.name" placeholder="请输入姓名" clearable />
             </el-form-item>
-            <el-form-item label="归属部门:" prop="deptId">
-              <el-select v-model="dataForm.deptId" placeholder="请选择归属部门" clearable>
+            <el-form-item label="归属部门:" prop="deptIds">
+              <el-select v-model="dataForm.deptIds" placeholder="请选择归属部门" clearable multiple collapse-tags>
                 <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -33,7 +33,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="入场项目:" prop="projectIds">
-              <el-select v-model="dataForm.projectIds" multiple placeholder="请选择入场项目" clearable>
+              <el-select v-model="dataForm.projectIds" multiple collapse-tags placeholder="请选择入场项目" clearable>
                 <el-option v-for="item in chooseProjectList" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
@@ -93,7 +93,7 @@
                 />
               </el-form-item>
               <el-form-item label="不看所选项目:" prop="unProjectIds">
-                <el-select v-model="dataForm.unProjectIds" multiple placeholder="请选择项目" clearable>
+                <el-select v-model="dataForm.unProjectIds" multiple collapse-tags placeholder="请选择项目" clearable>
                   <el-option v-for="item in chooseProjectList" :key="item.id" :label="item.name" :value="item.id" />
                 </el-select>
               </el-form-item>
@@ -300,7 +300,7 @@ export default {
         departAge: [],
         departStatus: '',
         // 部门
-        deptId: '',
+        deptIds: [],
         // 工号
         empId: '',
         // 姓名

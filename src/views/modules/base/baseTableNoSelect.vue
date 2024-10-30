@@ -1,13 +1,22 @@
 <template>
   <div class="el-main__mdgMainTable" style="width: 100%; height: 100%">
     <div>
-      <el-table border stripe highlight-current-row fixed :data="options.dataList" default-expand-all
-        v-loading="options.tableLoading" :height="options.height" :max-height="options.maxHeight" style="width: 100%"
-        v-bind:style="{ 'min-height': options.minHeight }" @selection-change="__handleSelectionChange"
-        @sort-change="__changeTableSort" @row-dblclick="__rowDblclick" @row-click="__rowClick" @select="__select"
-        @select-all="__selectAll" size="mini" ref="table">
+      <el-table
+          border
+          stripe
+          highlight-current-row
+          fixed
+          :data="options.dataList"
+          :header-cell-style="{ 'text-align': 'center' }"
+          default-expand-all
+          :cell-style="cellStyle"
+          v-loading="options.tableLoading" :height="options.height" :max-height="options.maxHeight" style="width: 100%"
+          v-bind:style="{ 'min-height': options.minHeight }" @selection-change="__handleSelectionChange"
+          @sort-change="__changeTableSort" @row-dblclick="__rowDblclick" @row-click="__rowClick" @select="__select"
+          @select-all="__selectAll" size="mini" ref="table">
         <el-table-column
             v-if="showNum"
+            align="center"
             type="index"
             width="50"
             label="序号">
@@ -16,6 +25,13 @@
           <template v-if="item.slotName != null">
             <el-table-column :key="index" :label="item.label" :prop="item.prop" :show-overflow-tooltip="true"
               :formatter="item.formatter" :sortable="item.sortName != null" :min-width="item.width">
+              <template slot="header" slot-scope="scope">
+                <!-- 使用 el-tooltip 包裹表头内容 -->
+                <div v-if="containsName(propName,item.prop)" style="font-weight: bold" >
+                  {{item.label}}
+                </div>
+                <div v-else>{{item.label}}</div>
+              </template>
               <template slot-scope="scope">
                 <div @click.stop="__clickStop" style="display: inline">
                   <slot :name="item.slotName" v-bind:item="scope.row"></slot>
@@ -25,7 +41,7 @@
           </template>
           <template v-else>
             <el-table-column :key="index" :label="item.label" :prop="item.prop" :show-overflow-tooltip="true"
-              :formatter="item.formatter" :sortable="item.sortName != null" :width="item.width">
+                             :formatter="item.formatter" :sortable="item.sortName != null" :width="item.width">
             </el-table-column>
           </template>
         </template>
@@ -38,9 +54,10 @@
     </div>
     <!-- Footer Area -->
     <div v-if="!hidePage" class="foot-area">
-      <el-pagination style="text-align: right" @size-change="__sizeChangeHandle" @current-change="__currentChangeHandle"
-        :current-page="options.curPage" :page-sizes="[10, 20, 30]" :page-size="options.pageSize" :total="options.count"
-        layout="total, sizes, prev, pager, next, jumper">
+      <el-pagination style="text-align: center" @size-change="__sizeChangeHandle" @current-change="__currentChangeHandle"
+                     :current-page="options.curPage" :page-sizes="[10, 20, 30]" :page-size="options.pageSize"
+                     :total="options.count"
+                     layout="total, sizes, prev, pager, next, jumper">
       </el-pagination>
     </div>
   </div>
@@ -92,7 +109,13 @@ export default {
     auth: {
       type: Boolean,
       default: true
-    }
+    },
+    propName: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    },
   },
   components: {},
   created() {
@@ -105,6 +128,17 @@ export default {
     })
   },
   methods: {
+    containsName(arr, obj){
+      console.log(arr)
+      console.log(obj)
+      return arr.some(item => {
+        return Object.keys(obj).length === Object.keys(item).length &&
+            Object.keys(obj).every(key => obj[key] === item[key]);
+      });
+    },
+    cellStyle() {
+      return 'text-align:center'
+    },
     __calculateHeight() {
       // 根据屏幕高度算表格高度
       if (window.innerHeight < 800) {
@@ -165,8 +199,8 @@ export default {
       if (!this.multiSelect) {
         // 单选
         if (
-          this.$refs.table.selection == null ||
-          this.$refs.table.selection[0] !== row
+            this.$refs.table.selection == null ||
+            this.$refs.table.selection[0] !== row
         ) {
           this.$refs.table.clearSelection()
           this.$refs.table.toggleRowSelection(row)
@@ -210,7 +244,7 @@ export default {
         this.$refs.table.toggleRowSelection(row, true)
       }
     },
-    __clickStop: function() {
+    __clickStop: function () {
       // 该方法为了阻止冒泡事件，没什么软用
     },
     // 获取当前选项
@@ -246,37 +280,37 @@ export default {
         url: this.$http.adornUrl(this.options.url),
         method: 'get',
         params: this.$http.adornParams(
-          Object.assign(searchParams, {
-            curPage: this.options.curPage,
-            pageSize: this.options.pageSize,
-            order: this.options.order,
-            orderKey: this.options.orderKey
-          })
+            Object.assign(searchParams, {
+              curPage: this.options.curPage,
+              pageSize: this.options.pageSize,
+              order: this.options.order,
+              orderKey: this.options.orderKey
+            })
         )
       })
-        .then(({ data }) => {
-          if (data && data.code === 200) {
-            data.page=data.payload
-            this.options.dataList = data.page.list
-            this.options.count = data.page.totalCount
-            this.options.data = data
-          } else {
-            this.options.dataList = []
-            this.options.totalPage = 0
-            this.$alert(data.msg)
-          }
-          this.options.tableLoading = false
-          if (this.$listeners['afterQuery']) {
-            this.$emit('afterQuery')
-          }
-          // 修改错位问题
-          this.$nextTick(() => {
-            this.$refs.table.doLayout()
+          .then(({data}) => {
+            if (data && data.code === 200) {
+              data.page = data.payload
+              this.options.dataList = data.page.list
+              this.options.count = data.page.totalCount
+              this.options.data = data
+            } else {
+              this.options.dataList = []
+              this.options.totalPage = 0
+              this.$alert(data.msg)
+            }
+            this.options.tableLoading = false
+            if (this.$listeners['afterQuery']) {
+              this.$emit('afterQuery')
+            }
+            // 修改错位问题
+            this.$nextTick(() => {
+              this.$refs.table.doLayout()
+            })
           })
-        })
-        .catch((e) => {
-          this.options.tableLoading = false
-        })
+          .catch((e) => {
+            this.options.tableLoading = false
+          })
     },
     refresh(params) {
       // 对象为空刷新，就是找上一次的查询条件刷
@@ -295,7 +329,7 @@ export default {
         this.$refs.tableColSetPage.init()
       })
     },
-    fakeData(data){
+    fakeData(data) {
       this.options.dataList = data.page.list
       this.options.count = data.page.totalCount
       this.options.data = data
@@ -304,11 +338,15 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.el-table thead th{
+.el-table thead th {
   background: #cbe5ff !important;
   color: rgb(90, 89, 89);
   height: 45px;
   font-size: 15px;
   font-weight: 600;
+}
+
+.el-table .el-table__cell {
+  text-align: center !important;
 }
 </style>

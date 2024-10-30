@@ -211,6 +211,11 @@ import addUnit from './addUnit.vue'
 
 export default {
   components: { baseTable, baseDrawer, addUnit, baseDialog },
+  props: {
+    initData: {
+      type: Object
+    }
+  },
   data() {
     return {
       isManager: false,
@@ -445,9 +450,9 @@ export default {
       }
       this.uploadFileList = fileList.slice(-1)
     },
-    init(projectFormData) {
-      Object.assign(this.projectFormData, projectFormData)
-      this.projectManagerId = [projectFormData.deptId, projectFormData.managerId]
+    init() {
+      Object.assign(this.projectFormData, this.initData)
+      this.projectManagerId = [this.initData.deptId, this.initData.managerId]
       Object.assign(this.projectFormDataOrigin, this.projectFormData)
       this.refreshTable()
     },
@@ -544,6 +549,7 @@ export default {
             })
             Object.assign(this.projectFormDataOrigin, this.projectFormData)
             this.$emit('changeName', this.projectFormData.name)
+            this.$emit('changeProject', this.projectFormData)
             this.editMode = false
           } else {
             this.$message.error(data.msg)

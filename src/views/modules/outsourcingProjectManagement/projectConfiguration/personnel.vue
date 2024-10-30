@@ -9,24 +9,24 @@
           label-position="left"
           :model="queryParams"
         >
-          <el-form-item label="工号:" prop="empId">
-            <el-input v-model="queryParams.empId" placeholder="请输入工号" clearable></el-input>
+          <el-form-item label="工号:" prop="empId" >
+            <el-input v-model="queryParams.empId" placeholder="请输入工号" oninput="this.value = this.value.replace(/[^0-9]/g, '')"clearable></el-input>
           </el-form-item>
-          <el-form-item label="姓名:" prop="name">
+          <el-form-item label="姓名:" prop="empName">
             <el-input v-model="queryParams.empName" placeholder="请输入姓名" clearable></el-input>
           </el-form-item>
-          <el-form-item label="归属部门:" prop="deptId">
-            <el-select v-model="queryParams.deptId" placeholder="请选择归属部门" clearable>
+          <el-form-item label="归属部门:" prop="deptIds">
+            <el-select v-model="queryParams.deptIds" placeholder="请选择归属部门" clearable multiple collapse-tags>
               <el-option v-for="item in deptList" :key="item.id" :label="item.name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item label="岗位:" prop="postNames">
-            <el-select v-model="queryParams.postNames" placeholder="请选择岗位" clearable multiple>
+            <el-select v-model="queryParams.postNames" placeholder="请选择岗位" clearable multiple collapse-tags>
               <el-option v-for="item in jobList" :key="item" :label="item" :value="item" />
             </el-select>
           </el-form-item>
           <el-form-item label="级别:" prop="levels">
-            <el-select v-model="queryParams.levels" placeholder="请选择级别" clearable multiple>
+            <el-select v-model="queryParams.levels" placeholder="请选择级别" clearable multiple collapse-tags>
               <el-option v-for="item in levelNameList" :key="item" :label="item" :value="item" />
             </el-select>
           </el-form-item>
@@ -146,6 +146,7 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="请选择投入开始日期"
+            :picker-options="pickerOptions"
             clearable
           />
         </el-form-item>
@@ -156,6 +157,7 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="请选择投入结束日期"
+            :picker-options="pickerOptions"
             clearable
           />
         </el-form-item>
@@ -191,8 +193,30 @@ export default {
   props: {},
   data() {
     return {
+      pickerOptions: {},
       editRules: {
-        intoStartTime: [{ required: true, message: '请选择投入开始日期', trigger: ['blur', 'change'] }],
+        intoStartTime: [{ required: true, message: '请选择投入开始日期', trigger: ['blur', 'change'] },
+          {
+            validator: (rule, value, callback) => {
+              if (new Date(value) > new Date(this.editData.intoEndTime)) {
+                callback(new Error('投入开始日期不能晚于投入结束日期'))
+              } else {
+                callback();
+              }
+            },
+            trigger: ['blur','change']
+          }],
+        intoEndTime: [
+          {
+            validator: (rule, value, callback) => {
+              if (new Date(value) < new Date(this.editData.intoStartTime)) {
+                callback(new Error('投入结束日期不能早于投入开始日期'))
+              } else {
+                callback();
+              }
+            },
+            trigger: ['blur','change']
+          }],
         postIndex: [{ required: true, message: '请选择人员岗位', trigger: ['blur', 'change'] }],
         postId: [{ required: true, message: '请选择人员等级', trigger: ['blur', 'change'] }]
       },
@@ -243,7 +267,7 @@ export default {
       queryParams: {
         empId: '',
         empName: '',
-        deptId: '',
+        deptIds: [],
         postNames: '',
         levels: '',
         entryMark: ''
@@ -273,7 +297,7 @@ export default {
     // 获取所属部门
     getDept() {
       this.$http({
-        url: this.$http.adornUrl('/common/getDeptByRole'),
+        url: this.$http.adornUrl('/common/getDept'),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -286,7 +310,7 @@ export default {
     // 获取岗位信息
     getJob() {
       this.$http({
-        url: this.$http.adornUrl('/externalProject/listProjectUnitPrice?projectId=' + this.initData.id),
+        url: this.$http.adornUrl('/externalProject/listProjectUnitPrice?pageSize=999&projectId=' + this.initData.id),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -393,7 +417,7 @@ export default {
     initProject() {
       // 人员岗位和level
       this.$http({
-        url: this.$http.adornUrl('/externalProject/listProjectUnitPrice?projectId=' + this.initData.id),
+        url: this.$http.adornUrl('/externalProject/listProjectUnitPrice?pageSize=999&projectId=' + this.initData.id),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {
@@ -458,6 +482,15 @@ export default {
       // 塞假数据
       // this.$refs.table.fakeData(this.fakeData)
       this.refresh()
+      this.pickerOptions = {
+        disabledDate: (time) => {
+          const startTime = new Date(row.startTime)
+          startTime.setHours(0, 0, 0, 0)
+          const endTime = new Date(row.endTime)
+          endTime.setHours(0, 0, 0, 0)
+          return time.getTime() > endTime.getTime() || time.getTime() < startTime.getTime()
+        }
+      }
     },
     // 添加人员
     addPerson() {
@@ -528,8 +561,8 @@ export default {
       this.$refs.entryPersonnelForm.resetFields()
       this.queryParams.projectId = this.initData.id
       this.queryParams.orderId = this.initData.orderId
-      this.startDate = []
-      this.endDate = []
+      this.intoStartTime = []
+      this.intoEndTime = []
       this.refresh()
     }
   }
@@ -556,6 +589,14 @@ export default {
     border-radius: 50%;
     background: linear-gradient(311deg, #3d6ce1 0%, #4d82ff 100%);
   }
+}
+.chooseResult {
+  height: 30px;
+  line-height: 30px;
+  margin: 16px auto;
+  display: block;
+  background: #e8f3ff;
+  border-radius: 4px;
 }
 
 </style>

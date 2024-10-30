@@ -2,13 +2,13 @@
   <div>
     <el-form ref="orderInfoForm" :model="orderInfo" label-width="100px" label-position="right" :rules="rules">
       <el-form-item label="订单名称:" prop="name">
-        <el-input v-model="orderInfo.name" placeholder="请输入订单名称" style="width: 300px;" type="text" rows="5" :maxlength="100" show-word-limit />
+        <el-input  class="limited-input" v-model="orderInfo.name" placeholder="请输入订单名称" style="width: 300px;" type="text" rows="5" :maxlength="100" show-word-limit />
       </el-form-item>
       <el-form-item label="订单编号:" prop="code">
-        <el-input v-model="orderInfo.code" placeholder="请输入订单编号" style="width: 300px;" type="text" rows="5" :maxlength="100" show-word-limit />
+        <el-input class="limited-input" v-model="orderInfo.code" placeholder="请输入订单编号" style="width: 300px;" type="text" rows="5" :maxlength="100" show-word-limit />
       </el-form-item>
       <el-form-item label="订单周期:" prop="period">
-        <el-input v-model="orderInfo.period" placeholder="文字描述。例：2024年第一季度" style="width: 300px;" type="text" rows="5" :maxlength="100" show-word-limit />
+        <el-input class="limited-input" v-model="orderInfo.period" placeholder="文字描述。例：2024年第一季度" style="width: 300px;" type="text" rows="5" :maxlength="100" show-word-limit />
       </el-form-item>
       <el-form-item label="订单开始日期:" prop="startTime">
         <el-date-picker
@@ -138,4 +138,12 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+::v-deep .limited-input  .el-input__inner {
+  box-sizing: border-box;
+  /* 设置宽度为100%，但实际上由于padding的存在，文本宽度只会占据90% */
+  width: 100%;
+  /* 通过padding控制文本的显示宽度 */
+  padding-right: 19% !important; /* 使用!important确保覆盖其他可能的样式 */
+}
+</style>

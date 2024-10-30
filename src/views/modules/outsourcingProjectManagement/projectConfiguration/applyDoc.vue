@@ -2,7 +2,7 @@
   <div class="container">
     <el-button type="primary" style="width: 100px;margin-block: 10px" @click="outDoc">导出结算单</el-button>
     <div class="projectName-header">
-      <el-header style="height: auto; padding: 0">
+      <el-header style="height: auto; padding: 0;width: 100%">
         <el-form
           ref="entryPersonnelForm"
           :inline="true"
@@ -10,26 +10,48 @@
           label-position="left"
         >
           <h1>订单信息</h1>
-          <div style="display: flex;width: 100%;justify-content: space-between;">
-            <el-form-item style="width:  400px" label="项目名称:" prop="name">
-              {{ initData.name }}
+          <div class="outBox">
+            <el-form-item   label="项目名称:" prop="name">
+              <el-tooltip   :content="initData.name" placement="top" >
+                <span>{{initData.name}}</span>
+              </el-tooltip>
             </el-form-item>
-            <el-form-item style="width:  400px" label="合同编号:" prop="contractCode">
-              {{ initData.contractCode }}
+            <el-form-item  label="合同编号:" prop="contractCode">
+              <el-tooltip   :content="initData.contractCode" placement="top" >
+                <span>{{initData.contractCode}}</span>
+              </el-tooltip>
             </el-form-item>
-            <el-form-item style="width:  400px" label="项目开始日期:" prop="startTime">
-              {{ initData.startTime }}
+            <el-form-item  label="项目开始日期:" prop="startTime">
+              <el-tooltip   :content="initData.startTime" placement="top" >
+                <span>{{initData.startTime}}</span>
+              </el-tooltip>
+            </el-form-item>
+            <el-form-item  label="项目结束日期:" prop="startTime">
+              <el-tooltip   :content="initData.endTime" placement="top" >
+                <span>{{initData.endTime}}</span>
+              </el-tooltip>
             </el-form-item>
           </div>
-          <div style="display: flex;width: 100%;justify-content: space-between;">
-            <el-form-item style="width:  400px" label="订单名称:" prop="name">
-              {{ order.name }}
+          <div class="outBox">
+            <el-form-item  label="订单名称:" prop="name">
+              <el-tooltip   :content="order.name" placement="top" >
+                <span>{{order.name}}</span>
+              </el-tooltip>
             </el-form-item>
-            <el-form-item style="width:  400px" label="订单编号:" prop="code">
-              {{ order.code }}
+            <el-form-item label="订单编号:" prop="code">
+              <el-tooltip   :content="order.code" placement="top" >
+                <span>{{order.code}}</span>
+              </el-tooltip>
             </el-form-item>
-            <el-form-item style="width:  400px" label="订单开始日期:" prop="startTime">
-              {{ order.startTime }}
+            <el-form-item  label="订单开始日期:" prop="startTime">
+              <el-tooltip   :content="order.startTime" placement="top" >
+                <span>{{order.startTime}}</span>
+              </el-tooltip>
+            </el-form-item>
+            <el-form-item  label="订单结束日期:" prop="startTime">
+              <el-tooltip   :content="order.endTime" placement="top" >
+                <span>{{order.endTime}}</span>
+              </el-tooltip>
             </el-form-item>
           </div>
         </el-form>
@@ -37,7 +59,20 @@
     </div>
     <div class="projectTable">
       <h1>订单明细</h1>
-      <baseTable ref="table" :table-data="tableData" :hide-page="true" :show-num="true"/>
+      <baseTable :propName="propName" ref="table" :table-data="tableData" :hide-page="true" :show-num="true">
+        <template v-slot:workload="row">
+          <!--类型插槽-->
+          <div  style="font-weight: bold" >
+            {{row.item.workload}}
+          </div>
+        </template>
+        <template v-slot:taxCost="row">
+          <!--类型插槽-->
+          <div  style="font-weight: bold" >
+            {{row.item.taxCost}}
+          </div>
+        </template>
+      </baseTable>
       <div style="margin-top:50px;width: 100%; margin-bottom: 20px; display: flex; justify-content: right">
         <div> 总计金额（不含税）：{{sumMoney}}元</div>
       </div>
@@ -59,6 +94,7 @@ export default {
   props: {},
   data() {
     return {
+      propName: ['workload', 'taxCost'],
       editRules: {
         startDate: [{ required: true, message: '请选择投入开始日期', trigger: ['blur', 'change'] }],
         postIndex: [{ required: true, message: '请选择人员岗位', trigger: ['blur', 'change'] }],
@@ -80,15 +116,14 @@ export default {
           { label: '税率（%）', prop: 'taxRate' },
           { label: '单价（含税/元）', prop: 'taxUnitPrice' },
           { label: '类型（天）', prop: 'type' },
-          { label: '工作量（天）', prop: 'workload' },
+          { label: '工作量（天）', prop: 'workload',slotName: 'workload'},
           { label: '费用（不含税/元）', prop: 'cost' },
-          { label: '费用（含税/元）', prop: 'taxCost' },
+          { label: '费用（含税/元）', prop: 'taxCost',slotName: 'taxCost' },
         ],
         url: ''
       },
       jobListDetail: {},
       planExitTime: [],
-      deptList: [],
       jobList: [],
       levelNameList: [],
       deleteIds: [],
@@ -129,30 +164,16 @@ export default {
       }
     }
   },
-  mounted() {
-    this.getDept()
-  },
+  mounted() {},
   methods: {
     outDoc() {
-      this.$http.downloadPost(this.$http.adornUrl('/itemProcurement/export/purchaseOrder'),{})
+      this.$http.download(this.$http.adornUrl('/externalProject/exportProjectOrderStatement'), {orderId: this.order.id})
     },
     // 返回上一级页面
     handlerFlag() {
       this.$emit('changeFlag')
     },
-    // 获取所属部门
-    getDept() {
-      this.$http({
-        url: this.$http.adornUrl('/common/getDeptByRole'),
-        method: 'get'
-      }).then(({ data }) => {
-        if (data && data.code === 200) {
-          this.deptList = data.payload.filter((item) => item.id !== 0)
-        } else {
-          this.$message.error(data.msg)
-        }
-      })
-    },
+
     // 获取岗位信息
     getJob() {
       this.$http({
@@ -303,6 +324,22 @@ export default {
 
   .search-form {
     margin-top: 20px;
+  }
+  .outBox {
+    display: flex;
+    width: 100%;
+  }
+  ::v-deep .el-form-item {
+    overflow: hidden; /* 隐藏超出部分的内容 */
+    position: relative; /* 设置相对定位以便内部元素可以绝对定位 */
+    flex: 1; /* 所有子元素均分容器的高度 */
+    box-sizing: border-box; /* 确保padding和border不会增加元素的外部尺寸 */
+  }
+  ::v-deep .el-form-item__content  {
+    white-space: nowrap; /* 防止文本换行 */
+    overflow: hidden; /* 隐藏超出部分的内容 */
+    text-overflow: ellipsis; /* 在内容超出时显示省略号 */
+    max-width:60%; /* 确保宽度与容器一致 */
   }
 }
 

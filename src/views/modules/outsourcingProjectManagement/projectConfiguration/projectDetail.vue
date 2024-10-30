@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="projectName-header">
-      <el-tabs v-model="activeName" type="border-card" @tab-click="tabClick" style="width: 80%">
+      <el-tabs v-model="activeName" type="border-card" style="width: 80%" @tab-click="tabClick">
         <el-tab-pane label="项目信息" name="projectName"></el-tab-pane>
         <el-tab-pane label="项目订单" name="order"></el-tab-pane>
         <el-tab-pane label="入场人员" name="entry"></el-tab-pane>
@@ -29,18 +29,17 @@
       </div>
       <!-- 靠右的元素 -->
     </div>
-    <div style="height: 16px"/>
     <div v-show="activeName === 'projectName'" class="main">
-      <projectInfo ref="projectInfo" @changeName="changeName"/>
+      <projectInfo ref="projectInfo" :init-data="initData" @changeName="changeName" @changeProject="changeProject" />
     </div>
     <div v-show="activeName === 'order'" class="main">
-      <order :isEntry="true" ref="order" @changeName="changeName"/>
+      <order ref="order" :is-entry="true" :init-data="initData" @changeName="changeName" />
     </div>
     <div v-show="activeName === 'entry'" class="main">
-      <entryPersonnel :isEntry="true" ref="entryPersonnel"/>
+      <entryPersonnel ref="entryPersonnel" :is-entry="true" :init-data="initData" />
     </div>
     <div v-show="activeName === 'departure'" class="main">
-      <entryPersonnel :isEntry="false" ref="departurePersonnel"/>
+      <entryPersonnel ref="departurePersonnel" :is-entry="false" :init-data="initData" />
     </div>
   </div>
 </template>
@@ -50,7 +49,7 @@ import entryPersonnel from './entryPersonnel'
 import order from './order'
 
 export default {
-  components: {projectInfo, entryPersonnel,order},
+  components: { projectInfo, entryPersonnel, order },
   data() {
     return {
       title: '',
@@ -67,13 +66,19 @@ export default {
     // 初始化
     init(initData) {
       this.initData = initData
-      this.$refs.projectInfo.init(initData)
-      this.$refs.entryPersonnel.init(initData)
-      this.$refs.departurePersonnel.init(initData)
-      this.$refs.order.init(initData)
+      this.$nextTick(() => {
+        this.$refs.projectInfo.init()
+        this.$refs.order.init()
+        this.$refs.entryPersonnel.init()
+        this.$refs.departurePersonnel.init()
+      })
     },
-    changeName(name,orderName) {
-      if(orderName){
+    changeProject(initData) {
+      this.initData = {}
+      Object.assign(this.initData, initData)
+    },
+    changeName(name, orderName) {
+      if (orderName) {
         this.title = orderName
         this.showClose = true
       } else {
@@ -96,7 +101,7 @@ export default {
         this.$refs.order.refresh()
       }
     },
-    handlerFlag(){
+    handlerFlag() {
       this.$refs.order.handlerFlag()
     }
   }

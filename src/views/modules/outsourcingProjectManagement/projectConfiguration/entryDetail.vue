@@ -9,6 +9,8 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="请选择入场日期"
+            :picker-options="pickerOptions"
+            @change= "changeEntryTime"
         />
       </el-form-item>
       <el-form-item label="计划离场日期:" prop="planExitTime">
@@ -18,6 +20,7 @@
             type="date"
             value-format="yyyy-MM-dd"
             placeholder="请选择计划离场日期"
+            :picker-options="pickerOptionsAgain"
             clearable
         />
       </el-form-item>
@@ -34,12 +37,24 @@
       </el-form-item>
       <el-form-item label="入场标记:" prop="entryMark">
         <el-radio-group v-model="departurePersonnelInfo.entryMark" style="width: 300px" @change="changeEntryMark">
-          <el-radio :label="0">
-            真实入场
-          </el-radio>
-          <el-radio :label="1">
-            虚拟入场
-          </el-radio>
+          <div style="display: flex;  justify-content: space-between; width: 100%;">
+            <div style="flex-basis: 50%;">
+              <el-radio :label="0">
+                真实入场
+              </el-radio>
+              <el-radio :label="2">
+                虚拟入场（代付款）
+              </el-radio>
+            </div>
+            <div style="flex-basis: 50%;">
+              <el-radio :label="1" style="text-align: left;"> <!-- 确保文本左对齐 -->
+                虚拟入场（补差价）
+              </el-radio>
+              <el-radio :label="3" style="text-align: left;"> <!-- 确保文本左对齐 -->
+                虚拟入场（其他）
+              </el-radio>
+            </div>
+          </div>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="入场原因:" prop="entryReason">
@@ -66,6 +81,9 @@ export default {
     },
     postLevelSet: {
       type: Array
+    },
+    initData: {
+      type: Object
     }
   },
   data() {
@@ -84,9 +102,35 @@ export default {
         entryMark: ''
       },
       pickerOptions: {},
+      pickerOptionsAgain: {},
       rules: {
-        entryTime: [{required: true, message: '请选择入场日期', trigger: 'change'}],
-        planExitTime: [{required: true, message: '请选择计划离场时间', trigger: 'change'}],
+        entryTime: [{required: true, message: '请选择入场日期', trigger: 'change'},
+          {
+            validator: (rule, value, callback) => {
+              if (new Date(value) > new Date(this.initData.endTime)) {
+                callback(new Error('入场日期不能晚于项目结束日期'))
+              } else if (new Date(value) < new Date(this.initData.startTime)) {
+                callback(new Error('入场日期不能早于项目开始日期'))
+              } else {
+                callback();
+              }
+            },
+            trigger: ['blur','change']
+          }],
+        planExitTime: [{required: true, message: '请选择计划离场时间', trigger: 'change'},{
+          validator: (rule, value, callback) => {
+            if (new Date(value) > new Date(this.initData.endTime)) {
+              callback(new Error('计划离场时间不能晚于项目结束日期'))
+            } else if (new Date(value) < new Date(this.initData.startTime)) {
+              callback(new Error('计划离场时间不能早于项目开始日期'))
+            } else if (new Date(value) < new Date(this.departurePersonnelInfo.entryTime)) {
+              callback(new Error('计划离场时间不能早于入场日期'))
+            } else {
+              callback();
+            }
+          },
+          trigger: ['blur','change']
+        }],
         postIndex: [{required: true, message: '请选择人员岗位', trigger: 'change'}],
         postId: [{required: true, message: '请选择人员等级', trigger: 'blur'}],
         entryMark: [{required: true, message: '请选择入场标记', trigger: 'change'}],
@@ -107,20 +151,44 @@ export default {
       Object.assign(this.departurePersonnelInfo, initData)
       this.pickerOptions = {
         disabledDate: (time) => {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          const targetDate = new Date(this.departurePersonnelInfo.entryTime);
-          targetDate.setHours(0, 0, 0, 0);
-          return time.getTime() < targetDate.getTime();
+          const startTime = new Date(this.initData.startTime)
+          startTime.setHours(0, 0, 0, 0)
+          const endTime = new Date(this.initData.endTime)
+          endTime.setHours(0, 0, 0, 0)
+          return time.getTime() > endTime.getTime() || time.getTime() < startTime.getTime()
+        }
+      }
+      this.pickerOptionsAgain = {
+        disabledDate: (time) => {
+          const startTime = new Date(this.initData.startTime)
+          startTime.setHours(0, 0, 0, 0)
+          const entryTime = new Date(this.departurePersonnelInfo.entryTime)
+          entryTime.setHours(0, 0, 0, 0)
+          const endTime = new Date(this.initData.endTime)
+          endTime.setHours(0, 0, 0, 0)
+          return time.getTime() > endTime.getTime() || time.getTime() < startTime.getTime() || time.getTime() < entryTime.getTime()
         }
       }
       this.changeEntryMark()
     },
+    changeEntryTime(){
+      this.pickerOptionsAgain = {
+        disabledDate: (time) => {
+          const startTime = new Date(this.initData.startTime)
+          startTime.setHours(0, 0, 0, 0)
+          const entryTime = new Date(this.departurePersonnelInfo.entryTime)
+          entryTime.setHours(0, 0, 0, 0)
+          const endTime = new Date(this.initData.endTime)
+          endTime.setHours(0, 0, 0, 0)
+          return time.getTime() > endTime.getTime() || time.getTime() < startTime.getTime() || time.getTime() < entryTime.getTime()
+        }
+      }
+    },
     changeEntryMark() {
-      if (this.departurePersonnelInfo.entryMark === 1) {
-        this.rules.entryReason[0].required = true
-      } else {
+      if (this.departurePersonnelInfo.entryMark === 0) {
         this.rules.entryReason[0].required = false
+      } else {
+        this.rules.entryReason[0].required = true
       }
     },
     // 确认

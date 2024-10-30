@@ -14,8 +14,8 @@
         <el-form-item label="订单编号:" prop="code">
           <el-input v-model="queryParams.code" placeholder="请输入订单编号" clearable></el-input>
         </el-form-item>
-        <el-form-item label="订单周期:" prop="deptId">
-          <el-input v-model="queryParams.name" placeholder="请输入订单周期" clearable></el-input>
+        <el-form-item label="订单周期:" prop="period">
+          <el-input v-model="queryParams.period" placeholder="请输入订单周期" clearable></el-input>
         </el-form-item>
         <el-form-item label="订单开始日期:" prop="startTime">
           <el-date-picker
@@ -80,27 +80,32 @@
           <el-upload
             class="upload-demo"
             multiple
+            :on-progress="handleProgress"
             :limit="10"
             :action="url"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
             :show-file-list="false"
-            :on-success="getApplyDocData"
-            :on-exceed="handleExceed"
+            :on-success="onSuccess"
+            :on-error="handleError"
+            :before-upload="beforeUpload"
             :data="row"
             :file-list="fileList"
             :accept="'.xlsx,.pdf,.docx'"
           >
-            <el-button style="margin-bottom: 20px" size="small" type="primary">上传</el-button>
+            <div style="display: flex;height: 28px">
+            <el-button  size="small" type="primary">上传</el-button>
+              <div style="margin-left:10px;line-height: 28px">最多上传10个文件，仅支持docx、xlsx、pdf</div>
+            </div>
+            <div v-if="progress >= 0" class="progress-wrapper">
+              <el-progress :percentage="progress" />
+            </div>
           </el-upload>
           <baseTable ref="applyDocTable" :hide-page="true" :show-num="true" :table-data="applyDocData">
             <template v-slot:clientType="row">
               <!--类型插槽-->
               <template>
-                <el-button type="text" @click="look(row.item)">预览</el-button>
-                <el-button type="text" @click="download(row.item)">下载</el-button>
-                <el-button type="text" @click="removeFile(row.item)">删除</el-button>
+                <el-button class="new-button" type="text" @click="look(row.item)">预览</el-button>
+                <el-button class="new-button" type="text" @click="download(row.item)">下载</el-button>
+                <el-button class="new-button" type="text" @click="removeFile(row.item)">删除</el-button>
               </template>
             </template>
           </baseTable>
@@ -124,34 +129,43 @@ import personnel from './personnel.vue'
 import applyDoc from './applyDoc.vue'
 
 export default {
-  components: { baseTable, baseDialog, addOrder, personnel, applyDoc},
-  props: {},
+  components: { baseTable, baseDialog, addOrder, personnel, applyDoc },
+  props: {
+    initData: {
+      type: Object
+    }
+  },
   data() {
     return {
       url: '',
-      initData: {},
       title: '',
       flag: 0,
       fileList: [],
       orderForm: {},
-      entryMarks: [{ id: 0, name: '真实入场' }, { id: 1, name: '虚拟入场' }],
+      progress: -1,
+      entryMarks: [
+        {id: 0, name: '真实入场'},
+        {id: 1, name: '虚拟入场（补差价）'},
+        {id: 2, name: '虚拟入场（代付款）'},
+        {id: 3, name: '虚拟入场（其他）'}
+      ],
       tableData: {
         theads: [
-          { label: '订单名称', prop: 'name' },
+          { label: '订单名称', prop: 'name' ,width: '270px'},
           { label: '订单编号', prop: 'code' },
           { label: '订单周期', prop: 'period' },
           { label: '订单开始日期', prop: 'startTime' },
           { label: '订单结束日期', prop: 'endTime' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '420px' }
         ],
         url: '/externalProject/listProjectOrder'
       },
       applyDocData: {
         theads: [
-          { label: '文件名', prop: 'fileName' },
+          { label: '文件名', prop: 'fileName' ,width: '600px'},
           { label: '上传用户', prop: 'uploadUser' },
           { label: '上传时间', prop: 'uploadTime' },
-          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '200px' }
+          { label: '操作', prop: 'clientType', slotName: 'clientType', width: '100px' }
         ],
         url: '/externalProject/listProjectEntryPage'
       },
@@ -199,15 +213,15 @@ export default {
       } else if (row.fileName.endsWith('.xlsx') || row.fileName.endsWith('.xls') || row.fileName.endsWith('.xlt')) {
         // row.filePath = 'http://static.shanhuxueyuan.com/demo/excel.xlsx'
         let src = encodeURIComponent(row.filePath)
-        window.open('/office?type=xlsx&src='+src, '_blank')
+        window.open('/office?type=xlsx&src=' + src, '_blank')
       } else if (row.fileName.endsWith('.pdf')) {
         // row.filePath = 'http://static.shanhuxueyuan.com/demo/test.pdf'
         let src = encodeURIComponent(row.filePath)
-        window.open('/office?type=pdf&src='+src, '_blank')
+        window.open('/office?type=pdf&src=' + src, '_blank')
       }
     },
     download(row) {
-      this.$http.download(row.filePath, {}, this,row.fileName)
+      this.$http.download(row.filePath, {}, this, row.fileName)
     },
     refresh() {
       this.$refs.table.refresh(this.dataConversion(this.queryParams))
@@ -253,7 +267,7 @@ export default {
       })
         .then(() => {
           this.$http({
-            url: this.$http.adornUrl('/externalProject/deleteOrderCustomerStatement?id='+row.id),
+            url: this.$http.adornUrl('/externalProject/deleteOrderCustomerStatement?id=' + row.id),
             method: 'delete'
           }).then(({ data }) => {
             if (data && data.code === 200) {
@@ -283,7 +297,7 @@ export default {
       })
         .then(() => {
           this.$http({
-            url: this.$http.adornUrl('/externalProject/deleteProjectOrder?id='+row.id),
+            url: this.$http.adornUrl('/externalProject/deleteProjectOrder?id=' + row.id),
             method: 'delete'
           }).then(({ data }) => {
             if (data && data.code === 200) {
@@ -329,9 +343,8 @@ export default {
       delete params.endTime
       return params
     },
-    init(initData) {
-      Object.assign(this.initData, initData)
-      this.queryParams.projectId = initData.id
+    init() {
+      this.queryParams.projectId = this.initData.id
       this.refresh()
     },
     addOrEditOrder(row) {
@@ -346,13 +359,13 @@ export default {
       })
     },
     applyDocPage(row) {
-      this.row = { orderId: row.id}
+      this.row = { orderId: row.id }
       this.$refs.applyDocDialog.show()
       this.$nextTick(() => {
         this.getApplyDocData()
       })
     },
-    getApplyDocData(){
+    getApplyDocData() {
       this.$http({
         url: this.$http.adornUrl('/externalProject/listOrderCustomerStatement?orderId=' + this.row.orderId),
         method: 'get'
@@ -386,17 +399,26 @@ export default {
       this.startTime = []
       this.refresh()
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
+    beforeUpload(file) {
+      if (!file.name.endsWith('.docx') && !file.name.endsWith('.pdf') && !file.name.endsWith('.xlsx')) {
+        this.$message.error('最多上传10个文件，仅支持docx、xlsx、pdf')
+        return false
+      }
     },
-    handlePreview(file) {
-      console.log(file)
+    onSuccess(data) {
+      if (data.code !== 200){
+        this.$message.error(data.msg)
+        return
+      }
+      this.getApplyDocData()
+      this.progress = -1
     },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    handleProgress(event, file, fileList) {
+      this.progress = Math.round((event.percent || file.percent) );
     },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`)
+    handleError(err, file, fileList) {
+      this.$message.error(`${file.name} 上传失败`)
+      this.progress = -1
     }
   }
 }
@@ -422,5 +444,9 @@ export default {
   display: inline-block;
   border-radius: 3px;
   width: 65px;
+}
+.new-button {
+  width: unset;
+  min-width: unset;margin-left: unset
 }
 </style>

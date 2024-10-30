@@ -51,7 +51,7 @@
             >
               <template slot="header" slot-scope="scope">
                 <!-- 使用 el-tooltip 包裹表头内容 -->
-                <el-tooltip v-if="item.prop === propName" class="item" effect="black"  style="display: block;" placement="top" >
+                <el-tooltip v-if="item.prop === propName"  effect="black" style="display: block;" placement="top" >
                   <div slot="content" v-html="html"></div>
                   <span>{{item.label}}</span>
                 </el-tooltip>

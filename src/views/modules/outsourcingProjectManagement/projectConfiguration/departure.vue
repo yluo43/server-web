@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form ref="departurePersonnelInfoForm" :model="departurePersonnelInfo" label-width="100px" label-position="right" :rules="rules">
-      <el-form-item label="工号:" prop="empId">
+      <el-form-item label="工号:" prop="empId" >
         {{ departurePersonnelInfo.empId }}
       </el-form-item>
       <el-form-item label="姓名:" prop="name">
@@ -43,6 +43,11 @@
 
 <script>
 export default {
+  props: {
+    initData: {
+      type: Object
+    }
+  },
   data() {
     return {
       departurePersonnelInfo: {
@@ -72,8 +77,13 @@ export default {
           const today = new Date();
           today.setHours(0, 0, 0, 0);
           const targetDate = new Date(this.departurePersonnelInfo.entryTime);
+          console.log(this.ini)
           targetDate.setHours(0, 0, 0, 0);
-          return  time.getTime() < targetDate.getTime();
+          const startTime = new Date(this.initData.startTime)
+          startTime.setHours(0, 0, 0, 0)
+          const endTime = new Date(this.initData.endTime)
+          endTime.setHours(0, 0, 0, 0)
+          return time.getTime() > endTime.getTime() || time.getTime() < startTime.getTime() || time.getTime() < targetDate.getTime()
         }
       };
     },

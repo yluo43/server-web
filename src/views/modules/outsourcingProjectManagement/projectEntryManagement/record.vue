@@ -57,12 +57,12 @@
           <el-input v-model="queryParams.managerName" placeholder="请输入项目经理" clearable></el-input>
         </el-form-item>
         <el-form-item label="项目客户:" prop="relCustomers">
-          <el-select v-model="queryParams.relCustomers" multiple placeholder="请选择项目客户" clearable>
+          <el-select v-model="queryParams.relCustomers" multiple collapse-tags placeholder="请选择项目客户" clearable>
             <el-option v-for="item in customerNames" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="客户所属集团:" prop="relBelongGroups">
-          <el-select v-model="queryParams.relBelongGroups" multiple placeholder="请选择客户所属集团" clearable>
+          <el-select v-model="queryParams.relBelongGroups" multiple collapse-tags placeholder="请选择客户所属集团" clearable>
             <el-option v-for="item in membershipGroups" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
@@ -74,8 +74,8 @@
               <el-option  key="1" label="在场" value="1" />
             </el-select>
           </el-form-item>
-          <el-form-item label="入场标记:" prop="entryMark">
-            <el-select v-model="queryParams.entryMark" placeholder="请选择入场标记" clearable>
+          <el-form-item label="入场标记:" prop="entryMarks">
+            <el-select v-model="queryParams.entryMarks" placeholder="请选择入场标记" multiple collapse-tags clearable>
               <el-option v-for="item in entryMarks" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
@@ -139,7 +139,7 @@
 
         <template v-slot:entryMark="row">
           <div :class="row.item.entryMark===0?'ownBar':'notOwnBar'">
-            {{ row.item.entryMark === 0 ? '真实入场' : '虚拟入场' }}
+            {{ row.item.entryMarkName}}
           </div>
         </template>
         <template v-slot:entryIsName="row">
@@ -177,7 +177,12 @@ export default {
       count: 0,
       checkedIds: [],
       entryPersonnelForm: {},
-      entryMarks: [{ id: '', name: '全部' },{ id: 0, name: '真实入场' }, { id: 1, name: '虚拟入场' }],
+      entryMarks: [
+        {id: 0, name: '真实入场'},
+        {id: 1, name: '虚拟入场（补差价）'},
+        {id: 2, name: '虚拟入场（代付款）'},
+        {id: 3, name: '虚拟入场（其他）'}
+      ],
       tableData: {
         theads: [
           { label: '项目名称', prop: 'projectName', width: '250px' },
@@ -185,7 +190,7 @@ export default {
           { label: '项目客户', prop: 'customerName' },
           { label: '客户所属集团', prop: 'belongGroup' },
           { label: '入场日期', prop: 'entryTime' },
-          { label: '入场标记', slotName: 'entryMark' },
+          { label: '入场标记', slotName: 'entryMark' , width: '150px'},
           { label: '入场原因', prop: 'entryReason' },
           { label: '岗位', prop: 'postName' },
           { label: '级别', prop: 'postLevel' },
@@ -208,7 +213,7 @@ export default {
         relCustomers: [],
         relBelongGroups: [],
         entryIs: '',
-        entryMark: ''
+        entryMarks: []
       },
       baseData: {
         empId: '',
@@ -360,7 +365,6 @@ export default {
   background-color: #FDF4ED;
   display: inline-block;
   border-radius: 3px;
-  width: 65px;
 }
 
 .left-right-header {
