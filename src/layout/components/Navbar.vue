@@ -2,7 +2,7 @@
   <div>
     <div class="navbar">
       <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar"></hamburger>
-      <span class="welcomeTitle">欢迎进入PMIS项目管理信息系统</span>
+      <span class="welcomeTitle">欢迎进入GoalDay-Admin</span>
       <div class="right-menu">
         <!-- 用户信息 -->
         <span v-html="'\u00a0\u00a0\u00a0\u00a0'" />
@@ -62,7 +62,7 @@ export default {
       removeToken()
       removeCName()
       this.$http({
-        url: this.$http.adornUrl(`/userLogin/logout`),
+        url: this.$http.adornUrl(`/logout`),
         method: 'get'
       }).then(({ data }) => {
         if (data && data.code === 200) {

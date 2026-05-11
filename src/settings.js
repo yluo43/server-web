@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '物联网项目结算平台',
+  title: '1h3q - 管理后台',
 
   /**
    * @type {boolean} true | false

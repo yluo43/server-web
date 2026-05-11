@@ -461,11 +461,6 @@
   display: none !important;
 }
 
-.el-button {
-  width: 70px;
-  height: 28px;
-}
-
 
 .chooseResult span{
   cursor: pointer;
@@ -484,7 +479,7 @@
   justify-content: flex-end;
   align-items: center;
   border-top: 1px solid lightgray;
-  
+
 }
 .el-form-item__label{
   padding: 0 6px 0 0;
@@ -514,13 +509,13 @@
 .operate-button{
   margin: 24px 0 16px 0;
 }
-// .el-message-box--center 
+// .el-message-box--center
 .el-message-box--center .el-message-box__title {
   justify-content: flex-start;
   margin-left: 17px;
 }
  .el-message-box--center .el-message-box__content{
-  text-align: left; 
+  text-align: left;
   padding-left: 48px;
 }
 .el-message-box--center .el-message-box__btns{

@@ -37,7 +37,7 @@ export function validatelogin(username, password) {
     password
   }
   return request({
-    url: '/userLogin/login',
+    url: '/login',
     method: 'post',
     params:data
   }).then(result => {

@@ -15,12 +15,13 @@ const http = axios.create({
 /**
  * 请求拦截
  */
-// http.interceptors.request.use(config => {
-//   config.headers['token'] = Vue.cookie.get('token') // 请求头带上token
-//   return config
-// }, error => {
-//   return Promise.reject(error)
-// })
+http.interceptors.request.use(config => {
+  console.log(Vue.cookie.get('token'))
+  config.headers['token'] = Vue.cookie?Vue.cookie.get('token'):null
+  return config
+}, error => {
+  return Promise.reject(error)
+})
 
 axios.interceptors.response.use(undefined, (err) => {
   // 只重试一次
@@ -41,6 +42,7 @@ axios.interceptors.response.use(undefined, (err) => {
  */
 http.interceptors.response.use(response => {
   if (response.data && response.data.code === 401) { // 401, token失效
+    localStorage.removeItem('token');
     Vue.prototype.$message.error('用户登录信息已失效')
     router.push({ name: 'login' })
   }
@@ -50,10 +52,14 @@ http.interceptors.response.use(response => {
     if (error.response.status === 500) {
       Vue.prototype.$message.error('请求异常')
     } else if (error.response.status === 401) { // 401, token失效
+      localStorage.removeItem('token');
       Vue.prototype.$message.error('用户登录信息已失效')
       router.push({ name: 'login' })
     } else if (error.response.status === 403) { // 401, token失效
       Vue.prototype.$message.error('权限不足，请申请下载~')
+    } else if (error.response.status === 400) { // 400,业务异常
+      console.log(error.response)
+      Vue.prototype.$message.error(error.response.data.msg)
     }
   }
   console.log(error)
@@ -61,12 +67,41 @@ http.interceptors.response.use(response => {
 })
 
 /**
+ * 获取当前系统的 API 基础路径
+ */
+http.getSystemBaseUrl = () => {
+  // 从 localStorage 获取当前选择的系统，默认为 'goalday'
+  let currentSystem = localStorage.getItem('currentSystem')
+
+  // 如果 localStorage 中没有值，初始化为 'goalday'
+  if (!currentSystem) {
+    currentSystem = 'goalday'
+    localStorage.setItem('currentSystem', currentSystem)
+  }
+
+  // 根据系统类型返回不同的基础路径
+  const systemUrls = {
+    goalday: (process.env.ENV !== 'production' && process.env.VUE_APP_BASE_API ? process.env.VUE_APP_BASE_API : window.SITE_CONFIG.baseUrl),
+    eggnote: (process.env.ENV !== 'production' ? '/eggnote' : 'https://api.1h3q.com:12345/eggnote'),
+    'eggnote-test': (process.env.ENV !== 'production' ? '/eggnote-test' : 'http://127.0.0.1:8082/eggnote')
+  }
+
+  return systemUrls[currentSystem] || systemUrls.goalday
+}
+
+/**
  * 请求地址处理
  * @param {*} actionName action方法名称
+ * @param {boolean} useSystemSwitch 是否使用系统切换（默认false，始终走GoalDay）
  */
-http.adornUrl = (actionName) => {
-  // 非生产环境 && 开启代理, 接口前缀统一使用[/proxyApi/]前缀做代理拦截!
-  return (process.env.ENV !== 'production' && process.env.VUE_APP_BASE_API ? process.env.VUE_APP_BASE_API : window.SITE_CONFIG.baseUrl) + actionName
+http.adornUrl = (actionName, useSystemSwitch = false) => {
+  // 默认使用 GoalDay 的地址（登录、登出、后台管理等）
+  if (!useSystemSwitch) {
+    return (process.env.ENV !== 'production' && process.env.VUE_APP_BASE_API ? process.env.VUE_APP_BASE_API : window.SITE_CONFIG.baseUrl) + actionName
+  }
+
+  // 根据当前选择的系统切换地址（用户数据接口）
+  return http.getSystemBaseUrl() + actionName
 }
 
 /**

@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 
 const TokenKey = 'JSESSIONID'
 const chineseName = 'eb-cbm-chineseName'
-const userID = 'eb-cbm-userID'
+const userID = 'user-id'
 
 export function getToken() {
   return Cookies.get(TokenKey)

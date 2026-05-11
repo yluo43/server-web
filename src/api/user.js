@@ -1,18 +1,25 @@
-import request from '@/utils/request'
+import http from '@/utils/httpRequest'
 
+/**
+ * 管理员登录
+ * @param {Object} data - 登录数据
+ * @param {string} data.username - 用户名
+ * @param {string} data.password - 密码
+ * @param {string} [data.smsCode] - 验证码（可选）
+ * @param {number} [data.type] - 登录类型（可选，默认0）
+ * @param {string} [data.inviteCode] - 邀请码（可选）
+ */
 export function login(data) {
-  return request({
-    url: '/userLogin/login/' + data.username,
-    method: 'get',
-    xhrFields: {
-      withCredentials: true
-    }
+  return http({
+    url: http.adornUrl('/login'),
+    method: 'post',
+    data: data
   })
 }
 
 export function logout() {
-  return request({
-    url: '/userLogin/logout',
+  return http({
+    url: http.adornUrl('/login/logout'),
     method: 'get'
   })
 }
@@ -24,8 +31,8 @@ export function updateUserPwd(userID, oldPassword, newPassword) {
     oldPassword,
     newPassword
   }
-  return request({
-    url: '/user/updatePwd',
+  return http({
+    url: http.adornUrl('/user/updatePwd'),
     method: 'put',
     params: data
   })

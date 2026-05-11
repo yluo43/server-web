@@ -18,6 +18,7 @@ import * as echarts from 'echarts'
 import { hasPermission } from '@/utils/common'
 
 // import VueCookie from 'vue-cookie'
+import VueCookie from 'vue-cookie'
 import './assets/icon/iconfont.css'
 
 import '@/icons' // icon
@@ -35,7 +36,7 @@ Vue.directive('auth', hasButton)
 Vue.prototype.hasPermission = hasPermission
 
 Vue.use(Vue2OrgTree)
-// Vue.use(VueCookie)
+Vue.use(VueCookie)
 
 // 挂载全局
 Vue.prototype.$http = httpRequest // ajax请求方法

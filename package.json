@@ -1,8 +1,8 @@
 {
-  "name": "cbm-web",
-  "version": "4.4.0",
-  "description": "",
-  "author": "ebupt",
+  "name": "1h3q",
+  "version": "1.0.0",
+  "description": "GoalDay and Eggnote Admin Management System",
+  "author": "1h3q",
   "scripts": {
     "dev": "vue-cli-service serve --host 0.0.0.0",
     "build": "vue-cli-service build",

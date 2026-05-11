@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import systemRouters from './system/system'
-import Layout from '@/layout'
-import httpRequest from '@/utils/httpRequest'
 
 Vue.use(Router)
 
@@ -35,119 +33,27 @@ export const constantRoutes = [
 ]
 
 const router = new Router({
-  // mode: 'history', // require service support
   mode: 'history',
   scrollBehavior: () => ({ y: 0 }),
-  isAddDynamicMenuRoutes: false, // 是否已经添加动态(菜单)路由
   routes: constantRoutes,
-  base: '/' // 路由中的前缀
+  base: '/'
 })
-
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomm ent-357941465
-export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
-}
-
-const whiteList = [
-  { path: '/login', component: '@/views/login', name: 'login', meta: { title: '登录' }}
-] // no redirect whitelist   [登录,下载输出文件]列为白名单
 
 router.beforeEach((to, from, next) => {
-  // start progress bar
-  // NProgress.start()
-  // set page title
-  // document.title = getPageTitle(to.meta.title)
-
-  // determine whether the user has logged in
-
-  // if(!hasToken) {
-  //   router.push({ name: 'login' })
-  // }
-  // 添加动态(菜单)路由
-  // 1. 已经添加 or 全局路由, 直接访问
-  // 2. 获取菜单列表, 添加并保存本地存储
-  if (router.options.isAddDynamicMenuRoutes || fnCurrentRouteType(to, whiteList) === 'global') {
-    next()
-  } else {
-    next()
-    httpRequest({
-      url: httpRequest.adornUrl('/userInfo/menu'),
-      method: 'get'
-    }).then(({ data }) => {
-      if (data && data.code === 200) {
-        fnAddDynamicMenuRoutes(data.payload.menuList)
-        localStorage.setItem('buttons', JSON.stringify(data.payload.permissions || '[]'))
-
-        router.options.isAddDynamicMenuRoutes = true
-
-        // sessionStorage.setItem('permissions', JSON.stringify(data.permissions || '[]'))
-        next({ ...to, replace: true })
-      } else {
-        sessionStorage.setItem('menuList', '[]')
-        sessionStorage.setItem('permissions', '[]')
-        router.push({ name: 'login' })
-      }
-    }).catch((e) => {
-      router.push({ name: 'login' })
-    })
-  }
+  // 简化路由守卫，直接放行所有路由
+  // 如果需要登录验证，可以在这里添加
+  next()
 })
 
-export function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
-  for (const element of menuList) {
-    // debugger
-    element.url = element.url.replace(/^\//, '')
-    let children = []
-    for (var j = 0; j < element.sons.length; j++) {
-      let location = element.sons[j].location
-      var routeSon = {
-        path: element.sons[j].url,
-        component: (resolve) => require([`@/views/modules/${location}`], resolve),
-        name: element.sons[j].ename,
-        hidden: false,
-        meta: {
-          menuId: element.sons[j].menuId,
-          title: element.sons[j].menuName
-        }
-      }
-      children.push(routeSon)
-    }
-    let route = {
-      path: element.url,
-      component: Layout,
-      name: element.ename.replace(/\//g, '-'),
-      children: children,
-      icon: 'el-icon-' + element.icon,
-      hidden: false,
-      meta: {
-        menuId: element.menuId,
-        title: element.menuName
-      }
-    }
-    routes.push(route)
-  }
+// 移除动态路由功能，因为我们不再使用 modules 目录
+// export function fnAddDynamicMenuRoutes (menuList = [], routes = []) {
+//   ... 已删除
+// }
 
-  router.options.routes = systemRouters.concat(routes)
-  router.matcher = new Router().matcher // match
-  router.addRoutes(router.options.routes)
-  // router.addRoutes(
-  //   routes)
-  // router.addRoutes(
-  //   [{ path: '*', redirect: { name: '404' }}])
-}
-
-function fnCurrentRouteType (route, globalRoutes = []) {
-  let temp = []
-  for (const element of globalRoutes) {
-    if (route.path === element.path) {
-      return 'global'
-    } else if (element.children && element.children.length >= 1) {
-      temp = temp.concat(element.children)
-    }
-  }
-  return temp.length >= 1 ? fnCurrentRouteType(route, temp) : 'main'
-}
+// 移除路由类型判断函数
+// function fnCurrentRouteType (route, globalRoutes = []) {
+//   ... 已删除
+// }
 
 router.afterEach(() => {
   // finish progress bar

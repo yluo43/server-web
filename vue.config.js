@@ -7,20 +7,21 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'pmis' // page title
+const name = defaultSettings.title || 'GoalDay' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
 // You can change the port by the following methods:
 // port = 9528 npm run dev OR npm run dev --port = 9528
-const port = process.env.port || process.env.npm_config_port || 8082 // dev port
+const port = process.env.port || process.env.npm_config_port || 8079 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 // const target = 'http://10.1.33.168:8081'
 
-const target = 'http://127.0.0.1:8081'
-
+const goaldayTarget = 'http://127.0.0.1:8081/admin'
+const eggnoteTarget = 'https://api.1h3q.com:12345/admin'
+const eggnoteTestTarget = 'http://127.0.0.1:8082/admin'
 
 // const target = 'http://10.1.62.150/'
 module.exports = {
@@ -41,18 +42,36 @@ module.exports = {
   },
   devServer: {
     port: port,
+    host: '0.0.0.0', // 允许外部访问
     open: true,
+    disableHostCheck: true, // 禁用 host 检查，解决 CORS 问题
     overlay: {
       warnings: false,
       errors: true
     },
     proxy: {
-      // 这个是监听你前端的请求前缀
-      [process.env.VUE_APP_BASE_API]: {
-        target: target,
+      // GoalDay API 代理配置
+      '/admin': {
+        target: goaldayTarget,
         changeOrigin: true, //配置跨域
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          '^/admin': ''
+        }
+      },
+      // Eggnote API 代理配置（测试环境）
+      '/eggnote-test': {
+        target: eggnoteTestTarget,
+        changeOrigin: true, //配置跨域
+        pathRewrite: {
+          '^/eggnote-test': ''
+        }
+      },
+      // Eggnote API 代理配置（生产环境）
+      '/eggnote': {
+        target: eggnoteTarget,
+        changeOrigin: true, //配置跨域
+        pathRewrite: {
+          '^/eggnote': ''
         }
       }
     }
