@@ -25,7 +25,7 @@
         <el-option
           v-for="template in templateList"
           :key="template.templateNo"
-          :label="`${template.templateNo} ${template.cName || template.name} ${getTypeName(template.type)}`"
+          :label="`${template.templateNo} ${template.cname || template.name} ${getTypeName(template.type)}`"
           :value="template.templateNo"
         />
       </el-select>
@@ -200,7 +200,7 @@
             <el-option
               v-for="template in templateList"
               :key="template.templateNo"
-              :label="`${template.templateNo} ${template.cName || template.name} ${getTypeName(template.type)}`"
+              :label="`${template.templateNo} ${template.cname || template.name} ${getTypeName(template.type)}`"
               :value="template.templateNo"
             />
           </el-select>
@@ -572,7 +572,7 @@ export default {
     getTemplateName(templateNo) {
       const template = this.templateList.find(t => t.templateNo === templateNo)
       if (template) {
-        return `${template.templateNo} ${template.cName || template.name} ${this.getTypeName(template.type)}`
+        return `${template.templateNo} ${template.cname || template.name} ${this.getTypeName(template.type)}`
       }
       return '-'
     },
