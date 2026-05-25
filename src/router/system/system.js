@@ -44,6 +44,12 @@ export default [
     hidden: true
   },
   {
+    path: '/taskManagement',
+    name: 'taskManagement',
+    component: () => import('@/views/taskManagement/index'),
+    hidden: true
+  },
+  {
     path: '/404',
     component: (resolve) => require(['@/views/404'], resolve),
     name: '404',

@@ -19,9 +19,10 @@ const port = process.env.port || process.env.npm_config_port || 8079 // dev port
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 // const target = 'http://10.1.33.168:8081'
 
-const goaldayTarget = 'http://127.0.0.1:8081/admin'
-const eggnoteTarget = 'https://api.1h3q.com:12345/admin'
-const eggnoteTestTarget = 'http://127.0.0.1:8082/admin'
+const goaldayTarget = 'https://api.1h3q.com/admin'
+const eggnoteTarget = 'https://api.1h3q.com:8080/admin'
+// const eggnoteTestTarget = 'https://api.1h3q.com:12345/admin'
+const eggnoteTestTarget = 'http://localhost:8082/admin'
 
 // const target = 'http://10.1.62.150/'
 module.exports = {

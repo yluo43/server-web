@@ -43,6 +43,14 @@
           <i class="el-icon-key" />
           <span slot="title">兑换码管理</span>
         </el-menu-item>
+        <el-menu-item
+          v-if="currentSystem === 'eggnote' || currentSystem === 'eggnote-test'"
+          index="taskManagement"
+          @click="$router.push('/taskManagement')"
+        >
+          <i class="el-icon-s-check" />
+          <span slot="title">任务管理</span>
+        </el-menu-item>
       </el-menu>
     </div>
     <div class="header-right">
