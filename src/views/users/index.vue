@@ -50,11 +50,13 @@
       </el-select>
 
       <el-date-picker
-        v-model="queryParams.registerDate"
-        type="date"
-        placeholder="注册时间"
+        v-model="queryParams.registerDateRange"
+        type="daterange"
+        range-separator="至"
+        start-placeholder="注册开始日期"
+        end-placeholder="注册结束日期"
         clearable
-        class="filter-item"
+        class="filter-item date-range"
         value-format="yyyy-MM-dd"
         @change="handleQuery"
       />
@@ -75,6 +77,16 @@
       >
         重置
       </el-button>
+
+      <el-button
+        type="success"
+        icon="el-icon-download"
+        class="filter-item"
+        :loading="exportLoading"
+        @click="handleExport"
+      >
+        导出
+      </el-button>
     </div>
 
     <div class="table-container">
@@ -87,7 +99,7 @@
       >
 <!--        <el-table-column prop="userId" label="用户ID" width="180" />-->
         <el-table-column prop="phone" label="手机号"  />
-        <el-table-column prop="mail" label="邮箱" />
+        <el-table-column prop="mail" label="邮箱" width="180" show-overflow-tooltip />
         <el-table-column label="会员类型" width="100" align="center">
           <template #default="{ row }">
             <el-tag v-if="row.isForever" type="warning">永久会员</el-tag>
@@ -101,6 +113,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="inviteNumber" label="可邀请个数" width="100" align="center" />
+        <el-table-column prop="payCount" label="支付次数" width="90" align="center" />
+        <el-table-column prop="firstPayTime" label="首次支付时间" width="160" />
+        <el-table-column prop="firstPayAmount" label="首次支付金额" width="120" align="right" />
+        <el-table-column prop="lastPayTime" label="最新支付时间" width="160" />
+        <el-table-column prop="lastPayAmount" label="最新支付金额" width="120" align="right" />
         <el-table-column prop="createTime" label="注册时间" width="160" />
         <el-table-column prop="expireDate" label="过期时间" width="120" />
         <el-table-column label="操作" width="100" align="center" fixed="right">
@@ -128,7 +145,7 @@
 </template>
 
 <script>
-import { getClientUserList } from '@/api/stats'
+import { getClientUserList, exportClientUserList } from '@/api/stats'
 import PageHeader from '@/components/PageHeader'
 
 export default {
@@ -139,6 +156,7 @@ export default {
   data() {
     return {
       loading: false,
+      exportLoading: false,
       tableData: [],
       total: 0,
       queryParams: {
@@ -146,9 +164,7 @@ export default {
         mail: '',
         status: null,
         isForever: null,
-        year: null,
-        month: null,
-        registerDate: null,
+        registerDateRange: null,
         page: 1,
         limit: 10
       }
@@ -158,8 +174,8 @@ export default {
     // 从路由query参数获取日期
     const { registerDate } = this.$route.query
     if (registerDate) {
-      // 设置注册日期筛选
-      this.queryParams.registerDate = registerDate
+      // 将单个日期设为范围 [date, date]
+      this.queryParams.registerDateRange = [registerDate, registerDate]
     }
     this.fetchData()
 
@@ -181,9 +197,19 @@ export default {
       this.loading = true
 
       const params = {
-        ...this.queryParams,
+        phone: this.queryParams.phone,
+        mail: this.queryParams.mail,
+        status: this.queryParams.status,
+        isForever: this.queryParams.isForever,
         page: this.queryParams.page,
         limit: this.queryParams.limit
+      }
+
+      // 转换日期范围
+      const range = this.queryParams.registerDateRange
+      if (range && range.length === 2) {
+        params.registerDateStart = range[0]
+        params.registerDateEnd = range[1]
       }
 
       // 移除空值参数
@@ -222,9 +248,7 @@ export default {
         mail: '',
         status: null,
         isForever: null,
-        year: null,
-        month: null,
-        registerDate: null,
+        registerDateRange: null,
         page: 1,
         limit: 10
       }
@@ -250,6 +274,60 @@ export default {
     handleSystemChange() {
       // 系统切换时重新获取数据
       this.fetchData()
+    },
+
+    handleExport() {
+      this.exportLoading = true
+
+      const params = {
+        phone: this.queryParams.phone,
+        mail: this.queryParams.mail,
+        status: this.queryParams.status,
+        isForever: this.queryParams.isForever
+      }
+
+      // 转换日期范围
+      const range = this.queryParams.registerDateRange
+      if (range && range.length === 2) {
+        params.registerDateStart = range[0]
+        params.registerDateEnd = range[1]
+      }
+      Object.keys(params).forEach(key => {
+        if (params[key] === '' || params[key] === null || params[key] === undefined) {
+          delete params[key]
+        }
+      })
+
+      exportClientUserList(params)
+        .then(response => {
+          this.exportLoading = false
+          const blob = new Blob([response.data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          })
+          // 从 Content-Disposition 头解析文件名
+          const disposition = response.headers['content-disposition']
+          let filename = '用户列表.xlsx'
+          if (disposition) {
+            const match = disposition.match(/filename\*=utf-8''(.+?)(?:;|$)/)
+            if (match) {
+              filename = decodeURIComponent(match[1])
+            }
+          }
+          const url = URL.createObjectURL(blob)
+          const link = document.createElement('a')
+          link.href = url
+          link.download = filename
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          URL.revokeObjectURL(url)
+          this.$message.success('导出成功')
+        })
+        .catch(error => {
+          this.exportLoading = false
+          console.error('导出用户列表失败:', error)
+          this.$message.error('导出失败')
+        })
     }
   }
 }
@@ -284,6 +362,11 @@ export default {
       // 日期选择器样式
       &.el-date-picker {
         width: 200px;
+      }
+
+      &.date-range {
+        width: 320px;
+        min-width: 320px;
       }
 
       &.search-btn {

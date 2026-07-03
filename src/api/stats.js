@@ -49,3 +49,16 @@ export function getClientUserList(params) {
     params: params
   })
 }
+
+/**
+ * 导出客户端用户列表为Excel
+ * @param {Object} params - 查询参数（与 getClientUserList 一致）
+ */
+export function exportClientUserList(params) {
+  return http({
+    url: http.adornUrl('/user/client-list/export', true),
+    method: 'get',
+    params: params,
+    responseType: 'arraybuffer'
+  })
+}
